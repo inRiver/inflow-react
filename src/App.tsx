@@ -1,122 +1,88 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import React from 'react';
+import { Box, AppBar, Toolbar, Typography, CssBaseline, Container } from '@mui/material';
+import { CustomThemeProvider } from './app/ThemeContext';
+import { ThemeToggle } from './components/ThemeToggle';
+import { DemoFrame } from './showcase/DemoFrame';
+import { CodeBlock } from './showcase/CodeBlock';
+import { PropsPlayground } from './showcase/PropsPlayground';
 
-function App() {
-  const [count, setCount] = useState(0)
+function AppContent() {
+  const [playgroundValues, setPlaygroundValues] = React.useState<Record<string, unknown>>({
+    variant: 'contained',
+    fullWidth: false,
+    label: 'Test Button',
+  });
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: 'background.default' }}>
+      <CssBaseline />
+      <AppBar position="static" color="default" elevation={1}>
+        <Toolbar>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 'bold' }}>
+            Inriver Showcase App
+          </Typography>
+          <ThemeToggle />
+        </Toolbar>
+      </AppBar>
 
-      <div className="ticks"></div>
+      <Container maxWidth="lg" sx={{ mt: 4, mb: 8, flexGrow: 1 }}>
+        <Typography variant="h4" gutterBottom>
+          Infrastructure Components (Wave 1A)
+        </Typography>
+        <Typography variant="body1" color="text.secondary" paragraph>
+          These are the core components built for the showcase app. Try toggling the theme in the top right!
+        </Typography>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+        <Typography variant="h5" sx={{ mt: 6, mb: 2 }}>
+          1. DemoFrame (Error Boundary)
+        </Typography>
+        <DemoFrame title="Healthy Component">
+          <Box sx={{ p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
+            This component renders successfully.
+          </Box>
+        </DemoFrame>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+        <Typography variant="h5" sx={{ mt: 6, mb: 2 }}>
+          2. CodeBlock
+        </Typography>
+        <CodeBlock
+          language="tsx"
+          code={`import { Button } from '@mui/material';
+
+export function Example() {
+  return <Button variant="contained">Hello World</Button>;
+}`}
+        />
+
+        <Typography variant="h5" sx={{ mt: 6, mb: 2 }}>
+          3. PropsPlayground
+        </Typography>
+        <PropsPlayground
+          schema={[
+            { name: 'label', type: 'text', label: 'Button Label' },
+            { name: 'variant', type: 'select', options: ['text', 'outlined', 'contained'], label: 'Variant' },
+            { name: 'fullWidth', type: 'boolean', label: 'Full Width' },
+          ]}
+          values={playgroundValues}
+          onChange={setPlaygroundValues}
+        />
+        <Box sx={{ mt: 2, p: 2, bgcolor: 'background.paper', borderRadius: 1, border: '1px solid', borderColor: 'divider' }}>
+          <Typography variant="body2" component="pre" sx={{ m: 0 }}>
+            {JSON.stringify(playgroundValues, null, 2)}
+          </Typography>
+        </Box>
+
+      </Container>
+    </Box>
+  );
 }
 
-export default App
+function App() {
+  return (
+    <CustomThemeProvider>
+      <AppContent />
+    </CustomThemeProvider>
+  );
+}
+
+export default App;
