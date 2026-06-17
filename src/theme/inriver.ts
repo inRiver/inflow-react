@@ -101,7 +101,7 @@ export const theme = createTheme({
     },
     divider: T.outlineVariant,
     action: { disabled: 'rgba(0,0,0,0.38)', disabledBackground: 'rgba(0,0,0,0.12)' },
-    background: { default: '#ffffff', paper: '#ffffff' },
+    background: { default: T.navy100, paper: '#ffffff' },
     inriver: {
       navy900: T.navy900,
       navy800: T.navy800,
@@ -136,12 +136,12 @@ export const theme = createTheme({
     h3: { fontWeight: 400, fontSize: '3rem', lineHeight: 1.167, letterSpacing: 0 },
     h4: { fontWeight: 400, fontSize: '2.125rem', lineHeight: 1.235, letterSpacing: '0.25px' },
     h5: { fontWeight: 400, fontSize: '1.5rem', lineHeight: 1.334, letterSpacing: 0 },
-    h6: { fontWeight: 700, fontSize: '1.375rem', lineHeight: '36px', letterSpacing: '0.15px' },
+    h6: { fontWeight: 700, fontSize: '1.25rem', lineHeight: '24px', letterSpacing: '0.15px' },
     subtitle1: { fontWeight: 400, fontSize: '1rem', lineHeight: 1.5, letterSpacing: '0.15px' },
     subtitle2: { fontWeight: 500, fontSize: '0.875rem', lineHeight: '20px', letterSpacing: '0.1px' },
     body1: { fontWeight: 400, fontSize: '1rem', lineHeight: '24px', letterSpacing: '0.5px' },
     body2: { fontWeight: 400, fontSize: '0.875rem', lineHeight: '20px', letterSpacing: '0.25px' },
-    button: { fontWeight: 500, fontSize: '0.875rem', lineHeight: '20px', letterSpacing: '0.1px', textTransform: 'none' },
+    button: { fontWeight: 500, fontSize: '0.875rem', lineHeight: '20px', letterSpacing: '0.1px', textTransform: 'capitalize' },
     caption: { fontWeight: 400, fontSize: '0.75rem', lineHeight: '16px', letterSpacing: '0.4px' },
     overline: { fontWeight: 400, fontSize: '0.75rem', lineHeight: 1, letterSpacing: '1px', textTransform: 'uppercase' },
   },
@@ -149,7 +149,7 @@ export const theme = createTheme({
   components: {
     MuiCssBaseline: {
       styleOverrides: {
-        body: { backgroundColor: '#ffffff', color: T.onSurface },
+        body: { backgroundColor: T.navy100, color: T.onSurface },
       },
     },
 
@@ -183,7 +183,7 @@ export const theme = createTheme({
     MuiToggleButton: {
       styleOverrides: {
         root: {
-          textTransform: 'none',
+          textTransform: 'capitalize',
           fontWeight: 500,
           letterSpacing: '0.1px',
           borderColor: T.outline,
@@ -253,6 +253,22 @@ export const theme = createTheme({
       },
     },
 
+    MuiAppBar: {
+      defaultProps: {
+        color: 'primary',
+      },
+      styleOverrides: {
+        root: {
+          backgroundColor: T.navy700,
+          color: '#ffffff',
+          boxShadow: E1,
+        },
+        colorPrimary: {
+          backgroundColor: T.navy700,
+          color: '#ffffff',
+        },
+      },
+    },
     MuiPaper: { styleOverrides: { rounded: { borderRadius: T.radiusSm } }, defaultProps: { elevation: 1 } },
     MuiCard: { styleOverrides: { root: { borderRadius: T.radiusSm } }, defaultProps: { elevation: 1 } },
     MuiDialog: { styleOverrides: { paper: { borderRadius: T.radiusXl } } },
@@ -261,8 +277,8 @@ export const theme = createTheme({
         root: {
           backgroundColor: T.surfaceHighest,
           padding: 24,
-          fontSize: '1.5rem',
-          fontWeight: 400,
+          fontSize: '1.25rem',
+          fontWeight: 700,
           lineHeight: 1.334,
           letterSpacing: 0,
         },
@@ -312,7 +328,7 @@ export const theme = createTheme({
     MuiTableCell: {
       styleOverrides: {
         root: { borderColor: T.outlineVariant, fontSize: '0.875rem', letterSpacing: '0.25px' },
-        head: { fontWeight: 600, color: T.onSurface },
+        head: { fontWeight: 600, color: T.navy800 },
       },
     },
     MuiTableRow: {

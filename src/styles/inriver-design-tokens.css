@@ -1,0 +1,927 @@
+/* =============================================================
+   Inriver Design Tokens
+   Generated from: Figma – MUI for Figma v6.1.0 - Material UI
+   Combined from: breakpoints, material-colors, metadata,
+                  palette-light, shape, spacing, typography
+
+   SINGLE SOURCE OF TRUTH. Merged in (June 2026): the @font-face
+   declarations, base element styles, and legacy --iv-* aliases
+   formerly held in colors_and_type.css (now deleted).
+   ============================================================= */
+
+/* ── Fonts ──────────────────────────────────────────────────── */
+@font-face {
+  font-family: "Inter";
+  src: url("../../InFlow - (UX) Inriver Design System/fonts/Inter-VariableFont.ttf") format("truetype-variations");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("../../InFlow - (UX) Inriver Design System/fonts/Inter-Italic-VariableFont.ttf") format("truetype-variations");
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+:root {
+
+  /* ── Version ────────────────────────────────────────────── */
+  --version: "6.1.0"; /* @kind other */
+
+  /* ── Breakpoints ────────────────────────────────────────── */
+  --breakpoint-xs: 444px;
+  --breakpoint-sm: 600px;
+  --breakpoint-md: 900px;
+  --breakpoint-lg: 1200px;
+  --breakpoint-xl: 1536px;
+
+  /* ── Material Colours – Grey ────────────────────────────── */
+  --grey-50: #fafafa;
+  --grey-100: #f5f5f5;
+  --grey-200: #eeeeee;
+  --grey-300: #e0e0e0;
+  --grey-400: #bdbdbd;
+  --grey-500: #9e9e9e;
+  --grey-600: #757575;
+  --grey-700: #616161;
+  --grey-800: #424242;
+  --grey-900: #212121;
+  --grey-a100: #f5f5f5;
+  --grey-a200: #eeeeee;
+  --grey-a400: #bdbdbd;
+  --grey-a700: #616161;
+
+  /* ── Material Colours – Blue ────────────────────────────── */
+  --blue-50: #e3f2fd;
+  --blue-100: #bbdefb;
+  --blue-200: #90caf9;
+  --blue-300: #64b5f6;
+  --blue-400: #485d92;
+  --blue-500: #2196f3;
+  --blue-600: #1e88e5;
+  --blue-700: #0b2d6e;
+  --blue-800: #003687;
+  --blue-900: #0d47a1;
+  --blue-a100: #82b1ff;
+  --blue-a200: #448aff;
+  --blue-a400: #2979ff;
+  --blue-a700: #2962ff;
+
+  /* ── Material Colours – Purple ──────────────────────────── */
+  --purple-50: #f3e5f5;
+  --purple-100: #e1bee7;
+  --purple-200: #ce93d8;
+  --purple-300: #ba68c8;
+  --purple-400: #ab47bc;
+  --purple-500: #9c27b0;
+  --purple-600: #8e24aa;
+  --purple-700: #7b1fa2;
+  --purple-800: #6a1b9a;
+  --purple-900: #4a148c;
+  --purple-a100: #ea80fc;
+  --purple-a200: #e040fb;
+  --purple-a400: #d500f9;
+  --purple-a700: #aa00ff;
+
+  /* ── Material Colours – Red ─────────────────────────────── */
+  --red-50: #feebee;
+  --red-100: #fecdd2;
+  --red-200: #ef9a9a;
+  --red-300: #e57373;
+  --red-400: #ef5350;
+  --red-500: #f44336;
+  --red-600: #e53935;
+  --red-700: #ba1a1a;
+  --red-800: #c62828;
+  --red-900: #b71c1c;
+  --red-a100: #ff8a80;
+  --red-a200: #ff5252;
+  --red-a400: #ff1744;
+  --red-a700: #d50000;
+
+  /* ── Material Colours – Green ───────────────────────────── */
+  --green-50: #e8f5e9;
+  --green-100: #c8e6c9;
+  --green-200: #a5d6a7;
+  --green-300: #81c784;
+  --green-400: #66bb6a;
+  --green-500: #4caf50;
+  --green-600: #43a047;
+  --green-700: #388e3c;
+  --green-800: #2c9b4b;
+  --green-900: #1b5e20;
+  --green-a100: #b9f6ca;
+  --green-a200: #69f0ae;
+  --green-a400: #00e676;
+  --green-a700: #00c853;
+
+  /* ── Material Colours – Orange ──────────────────────────── */
+  --orange-50: #fff3e0;
+  --orange-100: #ffe0b2;
+  --orange-200: #ffcc80;
+  --orange-300: #ffb74d;
+  --orange-400: #ffa726;
+  --orange-500: #ff9800;
+  --orange-600: #fb8c00;
+  --orange-700: #ff6424;
+  --orange-800: #ff6424;
+  --orange-900: #e65100;
+  --orange-a100: #ffd180;
+  --orange-a200: #ffab40;
+  --orange-a400: #ff9100;
+  --orange-a700: #ff6d00;
+
+  /* ── Material Colours – Light Blue ─────────────────────── */
+  --lightblue-50: #e1f5fe;
+  --lightblue-100: #b3e5fc;
+  --lightblue-200: #81d4fa;
+  --lightblue-300: #4fc3f7;
+  --lightblue-400: #2067cc;
+  --lightblue-500: #2067cc;
+  --lightblue-600: #039be5;
+  --lightblue-700: #0057cf;
+  --lightblue-800: #00419f;
+  --lightblue-900: #00419f;
+  --lightblue-a100: #80d8ff;
+  --lightblue-a200: #40c4ff;
+  --lightblue-a400: #00b0ff;
+  --lightblue-a700: #0091ea;
+
+  /* ── Material Colours – Indigo ──────────────────────────── */
+  --indigo-50: #dae2ff;
+  --indigo-100: #c5cae9;
+  --indigo-200: #9fa8da;
+  --indigo-300: #7986cb;
+  --indigo-400: #5c6bc0;
+  --indigo-500: #3f51b5;
+  --indigo-600: #3949ab;
+  --indigo-700: #303f9f;
+  --indigo-800: #283593;
+  --indigo-900: #1a237e;
+  --indigo-a100: #8c9eff;
+  --indigo-a200: #536dfe;
+  --indigo-a400: #3d5afe;
+  --indigo-a700: #304ffe;
+
+  /* ── Material Colours – Deep Purple ────────────────────── */
+  --deeppurple-50: #ede7f6;
+  --deeppurple-100: #d1c4e9;
+  --deeppurple-200: #b39ddb;
+  --deeppurple-300: #9575cd;
+  --deeppurple-400: #7e57c2;
+  --deeppurple-500: #673ab7;
+  --deeppurple-600: #5e35b1;
+  --deeppurple-700: #512da8;
+  --deeppurple-800: #4527a0;
+  --deeppurple-900: #311b92;
+  --deeppurple-a100: #b388ff;
+  --deeppurple-a200: #7c4dff;
+  --deeppurple-a400: #651fff;
+  --deeppurple-a700: #6200ea;
+
+  /* ── Material Colours – Amber ───────────────────────────── */
+  --amber-50: #fff8e1;
+  --amber-100: #ffecb3;
+  --amber-200: #ffe082;
+  --amber-300: #ffd54f;
+  --amber-400: #ffca28;
+  --amber-500: #ffc107;
+  --amber-600: #ffb300;
+  --amber-700: #ffa000;
+  --amber-800: #ff8f00;
+  --amber-900: #ff6f00;
+  --amber-a100: #ffe57f;
+  --amber-a200: #ffd740;
+  --amber-a400: #ffc400;
+  --amber-a700: #ffab00;
+
+  /* ── Material Colours – Blue Grey ──────────────────────── */
+  --bluegrey-50: #eceff1;
+  --bluegrey-100: #cfd8dc;
+  --bluegrey-200: #b0bec5;
+  --bluegrey-300: #90a4ae;
+  --bluegrey-400: #78909c;
+  --bluegrey-500: #607d8b;
+  --bluegrey-600: #546e7a;
+  --bluegrey-700: #455a64;
+  --bluegrey-800: #37474f;
+  --bluegrey-900: #263238;
+  --bluegrey-a100: #cfd8dc;
+  --bluegrey-a200: #b0bec5;
+  --bluegrey-a400: #78909c;
+  --bluegrey-a700: #455a64;
+
+  /* ── Material Colours – Cyan ────────────────────────────── */
+  --cyan-50: #e0f7fa;
+  --cyan-100: #b2ebf2;
+  --cyan-200: #80deea;
+  --cyan-300: #4dd0e1;
+  --cyan-400: #26c6da;
+  --cyan-500: #00bcd4;
+  --cyan-600: #00acc1;
+  --cyan-700: #0097a7;
+  --cyan-800: #00838f;
+  --cyan-900: #006064;
+  --cyan-a100: #84ffff;
+  --cyan-a200: #18ffff;
+  --cyan-a400: #00e5ff;
+  --cyan-a700: #00b8d4;
+
+  /* ── Material Colours – Deep Orange ────────────────────── */
+  --deeporange-50: #fbe9e7;
+  --deeporange-100: #ffccbc;
+  --deeporange-200: #ffab91;
+  --deeporange-300: #ff8a65;
+  --deeporange-400: #ff7043;
+  --deeporange-500: #ff5722;
+  --deeporange-600: #f4511e;
+  --deeporange-700: #e64a19;
+  --deeporange-800: #d84315;
+  --deeporange-900: #bf360c;
+  --deeporange-a100: #ff9e80;
+  --deeporange-a200: #ff6e40;
+  --deeporange-a400: #ff3d00;
+  --deeporange-a700: #dd2c00;
+
+  /* ── Material Colours – Pink ────────────────────────────── */
+  --pink-50: #fce4ec;
+  --pink-100: #f8bbd0;
+  --pink-200: #f48fb1;
+  --pink-300: #f06292;
+  --pink-400: #ec407a;
+  --pink-500: #e91e63;
+  --pink-600: #d81b60;
+  --pink-700: #c2185b;
+  --pink-800: #ad1457;
+  --pink-900: #880e4f;
+  --pink-a100: #ff80ab;
+  --pink-a200: #ff4081;
+  --pink-a400: #f50057;
+  --pink-a700: #c51162;
+
+  /* ── Material Colours – Teal ────────────────────────────── */
+  --teal-50: #e0f2f1;
+  --teal-100: #b2dfdb;
+  --teal-200: #80cbc4;
+  --teal-300: #4db6ac;
+  --teal-400: #26a69a;
+  --teal-500: #009688;
+  --teal-600: #00897b;
+  --teal-700: #00796b;
+  --teal-800: #00695c;
+  --teal-900: #004d40;
+  --teal-a100: #a7ffeb;
+  --teal-a200: #64ffda;
+  --teal-a400: #1de9b6;
+  --teal-a700: #00bfa5;
+
+  /* ── Material Colours – Light Green ────────────────────── */
+  --lightgreen-50: #f1f8e9;
+  --lightgreen-100: #dcedc8;
+  --lightgreen-200: #c5e1a5;
+  --lightgreen-300: #aed581;
+  --lightgreen-400: #8bc34a;
+  --lightgreen-500: #8bc34a;
+  --lightgreen-600: #7cb342;
+  --lightgreen-700: #689f38;
+  --lightgreen-800: #558b2f;
+  --lightgreen-900: #33691e;
+  --lightgreen-a100: #ccff90;
+  --lightgreen-a200: #b2ff59;
+  --lightgreen-a400: #76ff03;
+  --lightgreen-a700: #64dd17;
+
+  /* ── Material Colours – Lime ────────────────────────────── */
+  --lime-50: #f9fbe7;
+  --lime-100: #f0f4c3;
+  --lime-200: #e6ee9c;
+  --lime-300: #dce775;
+  --lime-400: #d4e157;
+  --lime-500: #cddc39;
+  --lime-600: #c0ca33;
+  --lime-700: #afb42b;
+  --lime-800: #9e9d24;
+  --lime-900: #827717;
+  --lime-a100: #f4ff81;
+  --lime-a200: #eeff41;
+  --lime-a400: #c6ff00;
+  --lime-a700: #aeea00;
+
+  /* ── Material Colours – Yellow ──────────────────────────── */
+  --yellow-50: #fffde7;
+  --yellow-100: #fff9c4;
+  --yellow-200: #fff59d;
+  --yellow-300: #fff176;
+  --yellow-400: #ffee58;
+  --yellow-500: #ffeb3b;
+  --yellow-600: #fdd835;
+  --yellow-700: #fbc02d;
+  --yellow-800: #f9a825;
+  --yellow-900: #f57f17;
+  --yellow-a100: #ffff8d;
+  --yellow-a200: #ffff00;
+  --yellow-a400: #ffea00;
+  --yellow-a700: #ffd600;
+
+  /* ── Palette – Light Mode ───────────────────────────────── */
+  --palette-primary-main: var(--blue-700);         /* #0b2d6e */
+  --palette-primary-dark: var(--blue-800);         /* #003687 */
+  --palette-primary-light: var(--blue-400);        /* #485d92 */
+  --palette-primary-contrast-text: #ffffff;
+
+  --palette-secondary-main: #22243d;
+  --palette-secondary-dark: #000000;
+  --palette-secondary-light: #22243d;
+  --palette-secondary-contrast-text: #ffffff;
+
+  --palette-error-main: var(--red-700);            /* #ba1a1a */
+  --palette-error-dark: var(--red-800);            /* #c62828 */
+  --palette-error-light: var(--red-400);           /* #ef5350 */
+  --palette-error-contrast-text: #ffffff;
+
+  --palette-warning-main: var(--orange-700);       /* #ff6424 */
+  --palette-warning-dark: var(--orange-900);       /* #e65100 */
+  --palette-warning-light: var(--orange-500);      /* #ff9800 */
+  --palette-warning-contrast-text: #ffffff;
+
+  --palette-info-main: var(--lightblue-700);       /* #0057cf */
+  --palette-info-dark: var(--lightblue-800);       /* #00419f */
+  --palette-info-light: var(--lightblue-500);      /* #2067cc */
+  --palette-info-contrast-text: #ffffff;
+
+  --palette-success-main: var(--green-800);        /* #2c9b4b */
+  --palette-success-dark: var(--green-900);        /* #1b5e20 */
+  --palette-success-light: var(--green-500);       /* #4caf50 */
+  --palette-success-contrast-text: #ffffff;
+
+  --palette-background-default: #ffffff;
+  --palette-background-paper: #ffffff;
+
+  --palette-text-primary: rgba(0, 0, 0, 0.87);
+  --palette-text-secondary: rgba(0, 0, 0, 0.6);
+  --palette-text-disabled: rgba(0, 0, 0, 0.38);
+
+  --palette-divider: rgba(0, 0, 0, 0.12);
+
+  /* Input / component borders */
+  --components-input-outlined-enabled-border: #727787;
+  --components-input-outlined-hover-border: #000000;
+  --components-input-standard-enabled-border: #000000;
+  --components-input-standard-hover-border: #000000;
+  --components-input-filled-enabled-fill: rgba(0, 0, 0, 0.06);
+  --components-input-filled-hover-fill: rgba(0, 0, 0, 0.09);
+
+  /* Alert backgrounds */
+  --components-alert-error-color: #5f2120;
+  --components-alert-error-background: #fdeded;
+  --components-alert-warning-color: #663c00;
+  --components-alert-warning-background: #fff4e5;
+  --components-alert-info-color: #014361;
+  --components-alert-info-background: #e5f6fd;
+  --components-alert-success-color: #1e4620;
+  --components-alert-success-background: #edf7ed;
+
+  /* Misc component tokens */
+  --components-rating-active-fill: #ffb400;
+  --components-avatar-fill: var(--grey-400);
+  --components-switch-knob-fill-enabled: var(--grey-50);
+  --components-chip-default-enabled-border: var(--grey-400);
+  --components-tooltip-fill: #616161;
+  --components-backdrop-fill: rgba(0, 0, 0, 0.5);
+  --components-appbar-default-fill: var(--grey-100);
+  --components-snackbar-fill: #323232;
+  --components-stepper-connector: var(--grey-400);
+  --elevation-outlined: #e0e0e0;
+
+  /* ── Shape ──────────────────────────────────────────────── */
+  --shape-border-radius: 5px;
+  --shape-border-radius-none: 0px;
+
+  /* ── Spacing ────────────────────────────────────────────── */
+  --spacing-1: 8px;
+  --spacing-2: 16px;
+  --spacing-3: 24px;
+  --spacing-4: 32px;
+  --spacing-5: 40px;
+  --spacing-6: 48px;
+  --spacing-7: 56px;
+  --spacing-8: 64px;
+  --spacing-9: 72px;
+  --spacing-10: 80px;
+  --spacing-11: 88px;
+  --spacing-12: 96px;
+
+  /* ── Typography ─────────────────────────────────────────── */
+  --font-family: "Inter", sans-serif;
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --font-size-xs: 0.625rem;    /* 10px  */
+  --font-size-sm: 0.75rem;     /* 12px  */
+  --font-size-body2: 0.8125rem; /* 13px  */
+  --font-size-base: 0.875rem;  /* 14px  */
+  --font-size-md: 0.9375rem;   /* 15px  */
+  --font-size-lg: 1rem;        /* 16px  */
+  --font-size-xl: 1.25rem;     /* 20px  */
+  --font-size-2xl: 1.5rem;     /* 24px  */
+  --font-size-3xl: 2.125rem;   /* 34px  */
+  --font-size-4xl: 3rem;       /* 48px  */
+  --font-size-5xl: 3.75rem;    /* 60px  */
+  --font-size-6xl: 6rem;       /* 96px  */
+
+  /* ── Custom Inriver Tokens ──────────────────────────────── */
+  --custom-primary-tab: #c3defe;
+
+  /* Row states — see inriver-row-states.css for full reference */
+  --custom-row-default:           #ffffff;
+  --custom-row-on-hover:          #f1f6fe;
+  --custom-row-selected:          rgba(11, 45, 110, 0.08);
+  --custom-row-selected-hover:    rgba(11, 45, 110, 0.14);
+  --custom-row-disabled:          #fafafa;
+  --custom-row-focused-bg:        #f1f6fe;
+  --custom-row-focus-ring:        0 0 0 2px rgba(11, 45, 110, 0.4);
+
+  /* Semantic / highlight states */
+  --custom-row-mandatory:         #c9dcff;
+  --custom-highlight-yellow:      #faedd1;
+  --custom-highlight-red:         #f4d9d9;
+  --custom-highlight-green:       #d6efdd;
+
+  /* Expanded row & child table */
+  --custom-row-expanded-parent:   #f5f5f5;
+  --custom-row-child-table-bg:    #ffffff;
+
+  /* Diff text highlights */
+  --custom-diff-removed-bg:       #f4d9d9;
+  --custom-diff-removed-text:     #5f2120;
+  --custom-diff-added-bg:         #d6efdd;
+  --custom-diff-added-text:       #1e4620;
+  --custom-certainty-high: #2c9b4b;
+  --custom-certainty-medium: #fbc02d;
+  --custom-button-hover: #91c2fd;
+  --custom-background: #ebf1fc;
+  --custom-dialog-header: #e3e9f8;
+  --custom-search: #ebf1fc;
+  --custom-outline: #727787;
+
+  /* ── Overlay & focus opacity values ────────────────────────
+     Semi-transparent colours used for overlays, focus rings,
+     hover states and shadows. Defined as tokens so no rgba()
+     literals appear in component files.
+  ─────────────────────────────────────────────────────────── */
+  --color-scrim:                rgba(0, 0, 0, 0.5);         /* modal/backdrop overlay */
+  --color-overlay-loading:      rgba(255, 255, 255, 0.7);   /* loading spinner overlay bg */
+  --custom-range-selection-bg:  rgba(195, 222, 254, 0.25);  /* AG Grid range-selection fill */
+  --custom-primary-tab-hover:   rgba(195, 222, 254, 0.4);   /* pagination button / tab hover */
+  --custom-input-focus-shadow:  0 0 0 2px rgba(11, 45, 110, 0.15); /* focus ring on inputs */
+  --custom-pinned-left-shadow:  2px 0 4px rgba(0, 0, 0, 0.08);    /* left-pinned column */
+  --custom-pinned-right-shadow: -2px 0 4px rgba(0, 0, 0, 0.08);   /* right-pinned column */
+  --custom-bottom-nav-shadow:   0 -1px 4px rgba(0, 0, 0, 0.08);   /* bottom navigation bar */
+
+  /* ── Custom Component Dimensions & Nav Colours ──────────────
+     Structural tokens for the custom React components
+     (InriverGlobalHeader / InriverPageHeader / InriverAppNav).
+     Added so those components read 100% from tokens — no
+     // REVIEW gaps. Heights/sizes are off the 8pt scale by design
+     (they mirror the Figma component specs).
+  ─────────────────────────────────────────────────────────── */
+  /* Heights / hit targets */
+  --custom-global-header-height: 64px;
+  --custom-page-header-height:   76px;
+  --custom-icon-button-size:     48px;   /* icon-button hit target */
+  --custom-avatar-size:          40px;   /* header account avatar */
+  --custom-button-height:        40px;   /* Inriver "large" action button */
+
+  /* Global header layout */
+  --custom-header-search-width:     400px;
+  --custom-header-search-padding-x: 14px;
+  --custom-header-gap:              10px;
+  --custom-icon-button-hover:       var(--state-primary-08);  /* 8% navy */
+
+  /* Page header layout */
+  --custom-page-header-padding: 10px 10px 10px 21px;
+  --custom-button-padding-x:    22px;
+
+  /* App nav rail */
+  --custom-nav-width:           80px;
+  --custom-nav-pill-width:      56px;
+  --custom-nav-pill-height:     32px;
+  --custom-nav-icon-size:       22px;
+  --custom-nav-label-size:      11px;
+  --custom-nav-padding-y:       12px;
+  --custom-nav-item-padding-y:  6px;
+  --custom-nav-item-padding-x:  8px;
+  --custom-nav-item-gap:        2px;
+  --custom-nav-on-surface:        var(--color-on-navigation-surface);        /* inactive icon/label */
+  --custom-nav-on-surface-active: var(--color-on-navigation-surface-active); /* active icon/label */
+  --custom-nav-item-hover:        var(--color-nav-item-hover);               /* hover pill on dark nav */
+  --custom-nav-dot:               rgba(255, 255, 255, 0.15);                 /* placeholder dot */
+  --custom-nav-dot-active:        rgba(255, 255, 255, 0.30);                 /* placeholder dot (first) */
+
+  /* Expandable side-nav rail (InriverNavRail) — icon-left/label-right,
+     collapses 240px → 56px. Surface is the brighter primary navy (#0b2d6e),
+     distinct from the compact rail above. */
+  --custom-navrail-width:            240px;                       /* expanded */
+  --custom-navrail-width-collapsed:  56px;                        /* icon-only */
+  --custom-navrail-surface:          var(--iv-navy-700);          /* #0b2d6e rail bg */
+  --custom-navrail-item-height:      44px;
+  --custom-navrail-item-radius:      var(--iv-radius-md);         /* 8px */
+  --custom-navrail-icon-size:        22px;
+  --custom-navrail-label-size:       14px;
+  --custom-navrail-item-hover:       rgba(255, 255, 255, 0.08);   /* hover row on dark nav */
+  --custom-navrail-item-active:      rgba(255, 255, 255, 0.18);   /* active row on dark nav */
+  --custom-navrail-on-surface:       #ffffff;                     /* icon + label */
+  --custom-navrail-chevron:          rgba(255, 255, 255, 0.70);   /* submenu chevron */
+  --custom-navrail-section:          rgba(255, 255, 255, 0.40);   /* section header label */
+  --custom-navrail-divider:          rgba(255, 255, 255, 0.20);   /* collapsed section divider */
+  --custom-navrail-flyout-surface:   var(--iv-bg);                /* white submenu / More popover */
+  --custom-navrail-flyout-shadow:    0 8px 24px rgba(0, 0, 0, 0.18);
+
+  /* ── Semantic Colour Aliases ────────────────────────────────
+     Stable names for use in components and the CLAUDE.md guide.
+     All values resolve to tokens already defined above.
+  ─────────────────────────────────────────────────────────── */
+
+  /* Primary */
+  --color-primary-container:    var(--palette-primary-dark);         /* #003687 — filled button, key CTA bg */
+  --color-primary-bold:         var(--palette-primary-main);         /* #0b2d6e — pressed state, text links, active tab */
+  --color-primary-muted:        var(--blue-400);                     /* #485d92 — slider handle, active track */
+  --color-on-primary:           var(--palette-primary-contrast-text);/* #ffffff — text/icon on primary surfaces */
+  --color-on-primary-container: var(--palette-primary-contrast-text);/* #ffffff */
+
+  /* Secondary */
+  --color-secondary-container:    var(--palette-secondary-main);          /* #22243d — tonal button bg */
+  --color-on-secondary-container: var(--palette-secondary-contrast-text); /* #ffffff — text on tonal button */
+
+  /* Surface */
+  --color-on-surface:                #191b24;  /* Default body text (darker than rgba 87%) */
+  --color-on-surface-variant:        #424655;  /* Secondary text, labels, icons */
+  --color-surface-variant:           #d8e0f4;  /* Slider inactive track */
+  --color-surface-container-low:     #f1f6fe;  /* Elevated card/button bg */
+  --color-surface-container-highest: var(--custom-dialog-header); /* #e3e9f8 — filled input bg, dialog header, tab bar */
+
+  /* Neutral */
+  --color-white:           #ffffff;
+  --color-background:      var(--custom-background);     /* #ebf1fc — page/app background */
+  --color-outline:         var(--components-input-outlined-enabled-border); /* #727787 — input borders */
+  --color-outline-variant: #c2c6d8;                      /* Chip borders, subtle dividers */
+
+  /* Navigation — Inriver_Color/sys/colors/navigation/surface-navigation */
+  --color-navigation-surface:        var(--palette-secondary-main); /* #22243d — dark navy nav bg */
+  --color-on-navigation-surface:     rgba(255, 255, 255, 0.7);      /* inactive icons/text on dark nav */
+  --color-on-navigation-surface-active: #ffffff;                    /* active icons/text on dark nav */
+  --color-nav-item-hover:            rgba(255, 255, 255, 0.08);     /* hover state on dark nav */
+  --color-nav-item-active-bg:        rgba(255, 255, 255, 0.12);     /* selected item bg on dark nav */
+  --color-nav-item-active-hover:     rgba(255, 255, 255, 0.20);     /* selected+hover on dark nav */
+
+  /* ── State Layers ───────────────────────────────────────────
+     Apply as background-color overlays on interactive elements.
+  ─────────────────────────────────────────────────────────── */
+
+  /* Neutral surface hover/focus */
+  --state-on-surface-12: rgba(29, 27, 32, 0.12);
+
+  /* Primary (filled button hover/focus/pressed) */
+  --state-primary-08: rgba(11, 45, 110, 0.08);   /* hover */
+  --state-primary-12: rgba(11, 45, 110, 0.12);   /* focus / pressed */
+
+  /* On-primary overlay (on top of filled button) */
+  --state-on-primary-08: rgba(255, 255, 255, 0.08);  /* hover */
+  --state-on-primary-12: rgba(255, 255, 255, 0.12);  /* focus / pressed */
+
+  /* On-secondary-container (tonal button) */
+  --state-on-secondary-container-08: rgba(74, 68, 89, 0.08);
+  --state-on-secondary-container-12: rgba(74, 68, 89, 0.12);
+
+  /* ── Elevation / Shadows ────────────────────────────────────
+     Two levels used across the system.
+  ─────────────────────────────────────────────────────────── */
+  --elevation-1:
+    0 1px 3px 1px rgba(0, 0, 0, 0.15),
+    0 1px 2px 0   rgba(0, 0, 0, 0.30);
+
+  --elevation-2:
+    0 2px 6px 2px rgba(0, 0, 0, 0.15),
+    0 1px 2px 0   rgba(0, 0, 0, 0.30);
+
+  --elevation-3:
+    0 4px 8px 3px rgba(0, 0, 0, 0.15),
+    0 1px 3px 0   rgba(0, 0, 0, 0.30);
+
+  /* ── Semantic Typography ────────────────────────────────────
+     Line-heights and letter-spacing per Figma text styles.
+  ─────────────────────────────────────────────────────────── */
+
+  /* Headline */
+  --text-headline-large-font-size:      30px;
+  --text-headline-large-font-weight:    400;
+  --text-headline-large-line-height:    40px;
+  --text-headline-large-letter-spacing: 0px;
+
+  --text-headline-small-font-size:      24px;
+  --text-headline-small-font-weight:    400;
+  --text-headline-small-line-height:    32px;
+  --text-headline-small-letter-spacing: 0px;
+
+  /* Title
+     Figma source: Inriver_Text/title/large → *Custom / Page Heading component
+     MUI equivalent: <Typography variant="h6"> (Inriver customized to 700) */
+  --text-title-large-font-size:      22px;
+  --text-title-large-font-weight:    700;
+  --text-title-large-line-height:    36px;
+  --text-title-large-letter-spacing: 0.15px;
+
+  --text-title-medium-font-size:      16px;
+  --text-title-medium-font-weight:    500;
+  --text-title-medium-line-height:    24px;
+  --text-title-medium-letter-spacing: 0.15px;
+
+  --text-title-small-font-size:      14px;
+  --text-title-small-font-weight:    500;
+  --text-title-small-line-height:    20px;
+  --text-title-small-letter-spacing: 0.1px;
+
+  /* Body */
+  --text-body-large-font-size:      16px;
+  --text-body-large-font-weight:    400;
+  --text-body-large-line-height:    24px;
+  --text-body-large-letter-spacing: 0.5px;
+
+  --text-body-medium-font-size:      14px;
+  --text-body-medium-font-weight:    400;
+  --text-body-medium-line-height:    20px;
+  --text-body-medium-letter-spacing: 0.25px;
+
+  --text-body-small-font-size:      12px;
+  --text-body-small-font-weight:    400;
+  --text-body-small-line-height:    16px;
+  --text-body-small-letter-spacing: 0.4px;
+
+  /* Label */
+  --text-label-large-font-size:      14px;
+  --text-label-large-font-weight:    500;
+  --text-label-large-line-height:    20px;
+  --text-label-large-letter-spacing: 0.1px;
+
+  /* Font family alias */
+  --font-family-base: var(--font-family);  /* 'Inter', sans-serif */
+
+  /* ── Border Radius Scale ────────────────────────────────────
+     Named scale extracted from Figma component geometry.
+  ─────────────────────────────────────────────────────────── */
+  --radius-xs:   4px;      /* Text field, Menu container */
+  --radius-sm:   5px;      /* Button — matches --shape-border-radius */
+  --radius-md:   8px;      /* Chip */
+  --radius-lg:   10px;     /* Nav item (drawer), Tab badge indicator */
+  --radius-xl:   28px;     /* Dialog, Date picker */
+  --radius-full: 9999px;   /* Icon button, pill shapes */
+
+  /* ── Component Dimensions ───────────────────────────────────
+     Heights, paddings, and widths used by the CSS classes below.
+  ─────────────────────────────────────────────────────────── */
+
+  /* Heights */
+  --size-chip-height:       32px;
+
+  /* Button heights — Inriver four-tier scale */
+  --size-button-height:        40px;   /* Large (default) */
+  --size-button-height-lg:     40px;
+  --size-button-height-md:     32px;
+  --size-button-height-sm:     30px;
+  --size-button-height-xs:     20px;
+  --size-field-height:      56px;   /* Standard text field, Menu item, Nav drawer item */
+  --size-field-height-sm:   40px;   /* Compact/small text field */
+  --size-tab-height:        48px;
+  --size-icon-touch:        48px;   /* Icon button touch target */
+  --size-slider-height:     44px;   /* Slider (standard) */
+  --size-slider-height-sm:  30px;   /* Slider (small) */
+  --size-slider-track:      16px;   /* Slider track thickness */
+
+  /* Page header */
+  --size-page-header-height:       76px;
+  --page-header-padding-vertical:  10px;
+  --page-header-padding-left:      21px;
+  --page-header-padding-right:     10px;
+
+  /* Grid (InriverGrid / AG Grid) */
+  --size-grid-row-height:          52px;
+  --size-grid-header-height:       var(--spacing-6); /* 48px */
+  --size-grid-cell-widget-spacing: 12px;
+
+  /* Button */
+  --button-padding-x: 24px;
+  --button-padding-y: 10px;
+
+  /* Chip */
+  --chip-padding-x: 16px;
+  --chip-padding-y:  6px;
+
+  /* Text field */
+  --field-padding-left:     16px;
+  --field-padding-vertical:  4px;
+
+  /* Menu */
+  --menu-padding-y:       8px;
+  --menu-min-width:     112px;
+  --menu-max-width:     280px;
+  --menu-item-padding-x: 12px;
+  --menu-item-padding-y:  8px;
+  --menu-item-gap:       12px;
+
+  /* Navigation Drawer */
+  --nav-item-padding-left:  16px;
+  --nav-item-padding-right: 24px;
+  --nav-item-padding-y:     16px;
+  --nav-item-gap:           12px;
+
+  /* Dialog */
+  --dialog-min-width:         280px;
+  --dialog-max-width:         560px;
+  --dialog-padding:            24px;
+  --dialog-actions-padding-y:  24px;
+  --dialog-actions-padding-x:  16px;
+
+  /* ── Legacy --iv-* aliases (merged from colors_and_type.css) ──
+     Stable names consumed by the custom React components
+     (InriverGlobalHeader, InriverPageHeader, InriverRowStates).
+     Prefer the canonical --color-, --text-, --radius-, --spacing-
+     tokens for new work; these remain so the custom components have
+     a single, documented set of brand handles to read from.
+  ─────────────────────────────────────────────────────────── */
+  --iv-font-sans: var(--font-family-base);
+  --iv-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Brand */
+  --iv-navy-900: #16243d;
+  --iv-navy-800: #22243d;
+  --iv-navy-700: var(--color-primary-bold);        /* #0b2d6e */
+  --iv-navy-600: #0057cf;
+  --iv-navy-500: #2e96ff;
+  --iv-navy-100: #ebf1fc;                          /* page background */
+  --iv-navy-050: #f5f8fd;
+  --iv-purple-LEGACY-DO-NOT-USE: #9747ff;          /* DEPRECATED: old purple accent — use canonical secondary tokens */
+  --iv-purple-100: #ebe0ff;
+
+  /* Text */
+  --iv-ink:       var(--color-on-surface);         /* #191b24 */
+  --iv-fg-1:      var(--color-on-surface);
+  --iv-fg-2:      var(--color-on-surface-variant); /* #424655 */
+  --iv-fg-3:      #505050;
+  --iv-fg-muted:  #9e9e9e;
+
+  /* Borders / surfaces */
+  --iv-border:        var(--color-outline-variant); /* #c2c6d8 */
+  --iv-border-soft:   #e0e0e0;
+  --iv-border-strong: #bdbdbd;
+  --iv-bg:            var(--color-white);
+  --iv-bg-alt:        #fafafa;
+  --iv-bg-muted:      var(--color-background);     /* #ebf1fc */
+
+  /* Semantic */
+  --iv-success:      var(--palette-success-main);
+  --iv-success-dark: var(--palette-success-dark);
+  --iv-success-bg:   #e8f5e9;
+  --iv-warning:      var(--palette-warning-main);
+  --iv-warning-alt:  #ff6424;
+  --iv-warning-bg:   #fff4e5;
+  --iv-error:        var(--palette-error-main);
+  --iv-error-dark:   var(--palette-error-dark);
+  --iv-error-bg:     #fdeded;
+  --iv-info:         var(--palette-info-main);
+  --iv-info-alt:     #2196f3;
+  --iv-info-bg:      #e5f6fd;
+  --iv-teal:         #02b2af;
+
+  /* Radius */
+  --iv-radius-xs:   var(--radius-xs);   /* 4 */
+  --iv-radius-sm:   var(--radius-sm);   /* 5 */
+  --iv-radius:      var(--radius-sm);
+  --iv-radius-md:   var(--radius-md);   /* 8 */
+  --iv-radius-lg:   var(--radius-lg);   /* 10 */
+  --iv-radius-pill: var(--radius-full);
+
+  /* Elevation */
+  --iv-shadow-0: none;
+  --iv-shadow-1: var(--elevation-1);
+  --iv-shadow-2: var(--elevation-2);
+  --iv-shadow-3: var(--elevation-3);
+  --iv-shadow-hover: var(--elevation-1);
+}
+
+
+/* =============================================================
+   BASE ELEMENT STYLES (merged from colors_and_type.css)
+   ============================================================= */
+html, body {
+  font-family: var(--font-family-base);
+  font-size:   var(--text-body-large-font-size);
+  line-height: var(--text-body-large-line-height);
+  color:       var(--color-on-surface);
+  background:  var(--color-white);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+}
+
+h1,h2,h3,h4,h5,h6 { margin: 0; color: var(--color-on-surface); font-family: var(--font-family-base); }
+h1 { font: 300 96px/1.167 var(--font-family-base); letter-spacing: -1.5px; }
+h2 { font: 300 60px/1.2   var(--font-family-base); letter-spacing: -0.5px; }
+h3 { font: 400 48px/1.167 var(--font-family-base); }
+h4 { font: 400 34px/1.235 var(--font-family-base); letter-spacing: 0.25px; }
+h5 { font: 400 var(--text-headline-small-font-size)/var(--text-headline-small-line-height) var(--font-family-base); }
+h6 { font: var(--text-title-large-font-weight) var(--text-title-large-font-size)/var(--text-title-large-line-height) var(--font-family-base); letter-spacing: var(--text-title-large-letter-spacing); }
+
+code, kbd, samp, pre { font-family: var(--iv-font-mono); }
+
+
+/* =============================================================
+   UTILITY — Elevation
+   ============================================================= */
+.elevation-0 { box-shadow: none; }
+.elevation-1 { box-shadow: var(--elevation-1); }
+.elevation-2 { box-shadow: var(--elevation-2); }
+
+
+/* =============================================================
+   UTILITY — Typography
+   ============================================================= */
+.text-headline-large {
+  font-family:    var(--font-family-base);
+  font-size:      var(--text-headline-large-font-size);
+  font-weight:    var(--text-headline-large-font-weight);
+  line-height:    var(--text-headline-large-line-height);
+  letter-spacing: var(--text-headline-large-letter-spacing);
+}
+.text-headline-small {
+  font-family:    var(--font-family-base);
+  font-size:      var(--text-headline-small-font-size);
+  font-weight:    var(--text-headline-small-font-weight);
+  line-height:    var(--text-headline-small-line-height);
+  letter-spacing: var(--text-headline-small-letter-spacing);
+}
+.text-title-large {
+  font-family:    var(--font-family-base);
+  font-size:      var(--text-title-large-font-size);
+  font-weight:    var(--text-title-large-font-weight);
+  line-height:    var(--text-title-large-line-height);
+  letter-spacing: var(--text-title-large-letter-spacing);
+}
+.text-title-medium {
+  font-family:    var(--font-family-base);
+  font-size:      var(--text-title-medium-font-size);
+  font-weight:    var(--text-title-medium-font-weight);
+  line-height:    var(--text-title-medium-line-height);
+  letter-spacing: var(--text-title-medium-letter-spacing);
+}
+.text-title-small {
+  font-family:    var(--font-family-base);
+  font-size:      var(--text-title-small-font-size);
+  font-weight:    var(--text-title-small-font-weight);
+  line-height:    var(--text-title-small-line-height);
+  letter-spacing: var(--text-title-small-letter-spacing);
+}
+.text-body-large {
+  font-family:    var(--font-family-base);
+  font-size:      var(--text-body-large-font-size);
+  font-weight:    var(--text-body-large-font-weight);
+  line-height:    var(--text-body-large-line-height);
+  letter-spacing: var(--text-body-large-letter-spacing);
+}
+.text-body-medium {
+  font-family:    var(--font-family-base);
+  font-size:      var(--text-body-medium-font-size);
+  font-weight:    var(--text-body-medium-font-weight);
+  line-height:    var(--text-body-medium-line-height);
+  letter-spacing: var(--text-body-medium-letter-spacing);
+}
+.text-body-small {
+  font-family:    var(--font-family-base);
+  font-size:      var(--text-body-small-font-size);
+  font-weight:    var(--text-body-small-font-weight);
+  line-height:    var(--text-body-small-line-height);
+  letter-spacing: var(--text-body-small-letter-spacing);
+}
+.text-label-large {
+  font-family:    var(--font-family-base);
+  font-size:      var(--text-label-large-font-size);
+  font-weight:    var(--text-label-large-font-weight);
+  line-height:    var(--text-label-large-line-height);
+  letter-spacing: var(--text-label-large-letter-spacing);
+}
+
+
+/* =============================================================
+   COMPONENT STYLES
+   -------------------------------------------------------------
+   Standard MUI components (Button, Chip, TextField, Select,
+   Dialog, Menu, Slider, Tabs, etc.) are NOT styled here. They are
+   provided by Material UI, themed via inriver-theme.js.
+   Custom Inriver components (global header, page header, full-width
+   tabs, app nav, data-table row states) live as React components in
+   /mui/Inriver*.jsx and read the --iv-* / --custom-* tokens above.
+   ============================================================= */

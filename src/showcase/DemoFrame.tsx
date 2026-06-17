@@ -34,9 +34,33 @@ export class DemoFrame extends Component<DemoFrameProps, DemoFrameState> {
     const { children, title } = this.props;
 
     return (
-      <Paper variant="outlined" sx={{ p: 3, my: 2, position: 'relative', overflow: 'hidden' }}>
+      <Paper 
+        elevation={0}
+        sx={{ 
+          borderRadius: "5px",
+          border: "1px solid var(--iv-border)",
+          bgcolor: "#fff",
+          px: 4, 
+          py: 3.5, 
+          my: 2, 
+          position: 'relative', 
+          overflow: 'auto', 
+          maxWidth: '100%' 
+        }}
+      >
         {title && (
-          <Typography variant="overline" color="text.secondary" sx={{ display: 'block', mb: 2 }}>
+          <Typography 
+            align="center"
+            sx={{ 
+              textTransform: "uppercase",
+              letterSpacing: "1px",
+              fontSize: 13,
+              fontWeight: 600,
+              color: "var(--iv-fg-2)",
+              mb: 3,
+              display: 'block'
+            }}
+          >
             {title}
           </Typography>
         )}

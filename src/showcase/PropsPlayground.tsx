@@ -8,9 +8,9 @@ import {
   MenuItem,
   FormControlLabel,
   Checkbox,
-  Grid2 as Grid,
   Paper,
   Divider,
+  Box,
 } from '@mui/material';
 
 export type PropType = 'text' | 'select' | 'boolean';
@@ -38,12 +38,39 @@ export const PropsPlayground: React.FC<PropsPlaygroundProps> = ({ schema, values
   }
 
   return (
-    <Paper variant="outlined" sx={{ p: 3, my: 2, bgcolor: 'background.default' }}>
-      <Typography variant="overline" color="text.secondary" sx={{ display: 'block', mb: 2 }}>
+    <Paper 
+      elevation={0}
+      sx={{ 
+        bgcolor: "var(--iv-navy-100, #ebf1fc)",
+        border: "1px solid var(--iv-border)",
+        borderRadius: "5px",
+        px: 4, 
+        py: 3.5, 
+        my: 2 
+      }}
+    >
+      <Typography 
+        align="center"
+        sx={{ 
+          textTransform: "uppercase",
+          letterSpacing: "1px",
+          fontSize: 13,
+          fontWeight: 600,
+          color: "var(--iv-fg-2)",
+          mb: 3,
+          display: 'block'
+        }}
+      >
         Props Playground
       </Typography>
       <Divider sx={{ mb: 3 }} />
-      <Grid container spacing={3}>
+      <Box sx={{
+        display: "flex",
+        flexWrap: "wrap",
+        gap: 3,
+        alignItems: "center",
+        justifyContent: "center"
+      }}>
         {schema.map((prop) => {
           const { name, type, options, label } = prop;
           const displayLabel = label || name;
@@ -51,7 +78,7 @@ export const PropsPlayground: React.FC<PropsPlaygroundProps> = ({ schema, values
 
           if (type === 'text') {
             return (
-              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={name}>
+              <Box key={name} sx={{ minWidth: 200 }}>
                 <TextField
                   fullWidth
                   size="small"
@@ -59,13 +86,13 @@ export const PropsPlayground: React.FC<PropsPlaygroundProps> = ({ schema, values
                   value={currentValue || ''}
                   onChange={(e) => handleChange(name, e.target.value)}
                 />
-              </Grid>
+              </Box>
             );
           }
 
           if (type === 'select') {
             return (
-              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={name}>
+              <Box key={name} sx={{ minWidth: 200 }}>
                 <FormControl fullWidth size="small">
                   <InputLabel id={`select-label-${name}`}>{displayLabel}</InputLabel>
                   <Select
@@ -81,13 +108,13 @@ export const PropsPlayground: React.FC<PropsPlaygroundProps> = ({ schema, values
                     ))}
                   </Select>
                 </FormControl>
-              </Grid>
+              </Box>
             );
           }
 
           if (type === 'boolean') {
             return (
-              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={name}>
+              <Box key={name}>
                 <FormControlLabel
                   control={
                     <Checkbox
@@ -97,13 +124,13 @@ export const PropsPlayground: React.FC<PropsPlaygroundProps> = ({ schema, values
                   }
                   label={displayLabel}
                 />
-              </Grid>
+              </Box>
             );
           }
 
           return null;
         })}
-      </Grid>
+      </Box>
     </Paper>
   );
 };

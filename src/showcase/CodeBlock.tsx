@@ -13,14 +13,17 @@ import copy from 'clipboard-copy';
 interface CodeBlockProps {
   code: string;
   language?: string;
+  plain?: boolean;
 }
 
-export const CodeBlock: React.FC<CodeBlockProps> = ({ code, language = 'tsx' }) => {
+export const CodeBlock: React.FC<CodeBlockProps> = ({ code, language = 'tsx', plain = false }) => {
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    Prism.highlightAll();
-  }, [code, language]);
+    if (!plain) {
+      Prism.highlightAll();
+    }
+  }, [code, language, plain]);
 
   const handleCopy = async () => {
     try {
@@ -34,12 +37,15 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ code, language = 'tsx' }) 
 
   return (
     <Box
+      className="code-block"
       sx={{
         position: 'relative',
-        borderRadius: 1,
+        borderRadius: "5px",
         overflow: 'hidden',
-        bgcolor: '#2d2d2d',
+        bgcolor: '#16243d',
+        boxShadow: "0px 2px 8px rgba(0,0,0,0.15)",
         my: 2,
+        maxWidth: '100%',
       }}
     >
       <Box
@@ -47,29 +53,60 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ code, language = 'tsx' }) 
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          px: 2,
-          py: 1,
-          bgcolor: '#1e1e1e',
-          borderBottom: '1px solid #444',
+          px: 2.5,
+          py: 1.25,
+          bgcolor: 'rgba(255,255,255,0.04)',
+          borderBottom: '1px solid rgba(255,255,255,0.08)',
         }}
       >
-        <Typography variant="caption" sx={{ color: '#ccc', fontFamily: 'monospace' }}>
+        <Typography sx={{ 
+          fontFamily: "Roboto Mono, monospace",
+          fontSize: 12,
+          letterSpacing: "1.5px",
+          fontWeight: 500,
+          color: "rgba(255,255,255,0.55)"
+        }}>
           {language.toUpperCase()}
         </Typography>
         <Tooltip title={copied ? 'Copied!' : 'Copy code'} placement="left">
           <IconButton 
             size="small" 
             onClick={handleCopy} 
-            sx={{ color: copied ? 'success.main' : '#ccc' }}
+            sx={{ 
+              color: copied ? 'success.main' : 'rgba(255,255,255,0.7)',
+              "&:hover": { color: "#fff", bgcolor: "rgba(255,255,255,0.08)" }
+            }}
           >
             {copied ? <CheckIcon fontSize="small" /> : <ContentCopyIcon fontSize="small" />}
           </IconButton>
         </Tooltip>
       </Box>
-      <Box sx={{ overflowX: 'auto', p: 2 }}>
-        <pre style={{ margin: 0, padding: 0, backgroundColor: 'transparent' }}>
+      <Box 
+        component="pre" 
+        sx={{ 
+          m: 0,
+          px: 3,
+          py: 2.5,
+          fontFamily: plain ? "Roboto Mono, monospace" : "inherit",
+          fontSize: 14,
+          lineHeight: 1.7,
+          color: "#c9d4ea",
+          whiteSpace: "pre",
+          overflowX: "auto",
+          backgroundColor: 'transparent',
+          textAlign: 'left',
+          '& code': {
+            background: 'transparent',
+            padding: 0,
+            ...(plain ? { color: '#c9d4ea' } : {}),
+          },
+        }}
+      >
+        {plain ? (
+          <code>{code}</code>
+        ) : (
           <code className={`language-${language}`}>{code}</code>
-        </pre>
+        )}
       </Box>
     </Box>
   );
