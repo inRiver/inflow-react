@@ -87,7 +87,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ code, language = 'tsx', pl
           m: 0,
           px: 3,
           py: 2.5,
-          fontFamily: plain ? "Roboto Mono, monospace" : "inherit",
+          fontFamily: "Roboto Mono, ui-monospace, SFMono-Regular, Consolas, monospace",
           fontSize: 14,
           lineHeight: 1.7,
           color: "#c9d4ea",
@@ -97,7 +97,12 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ code, language = 'tsx', pl
           textAlign: 'left',
           '& code': {
             background: 'transparent',
+            display: 'block',
             padding: 0,
+            fontFamily: 'inherit',
+            fontSize: 'inherit',
+            lineHeight: 'inherit',
+            letterSpacing: 'normal',
             ...(plain ? { color: '#c9d4ea' } : {}),
           },
         }}
