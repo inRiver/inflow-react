@@ -3,6 +3,23 @@ import { Link } from 'react-router-dom';
 import { COMPONENT_CATEGORIES, EXAMPLE_PAGES, getAllComponents } from '../showcase/categories';
 import * as Icons from '@mui/icons-material';
 
+const categoryIcons = {
+  Campaign: Icons.Campaign,
+  Category: Icons.Category,
+  Dashboard: Icons.Dashboard,
+  Edit: Icons.Edit,
+  Explore: Icons.Explore,
+  TableRows: Icons.TableRows,
+};
+
+const exampleIcons = {
+  Dashboard: Icons.Dashboard,
+  Dialog: Icons.RateReview,
+  Inbox: Icons.Inbox,
+  Login: Icons.Login,
+  TableChart: Icons.TableChart,
+};
+
 export function LandingPage() {
   const totalComponents = getAllComponents().length;
 
@@ -47,7 +64,7 @@ export function LandingPage() {
 
         <Grid container spacing={3}>
           {Object.values(COMPONENT_CATEGORIES).map((category) => {
-            const Icon = (Icons as any)[category.icon] || Icons.Category;
+            const Icon = categoryIcons[category.icon as keyof typeof categoryIcons] || Icons.Category;
             return (
               <Grid item xs={12} sm={6} md={4} key={category.id}>
                 <Card sx={{ height: '100%' }}>
@@ -80,7 +97,7 @@ export function LandingPage() {
           </Typography>
           <Grid container spacing={2}>
             {EXAMPLE_PAGES.map((example) => {
-              const Icon = (Icons as any)[example.icon] || Icons.ViewModule;
+              const Icon = exampleIcons[example.icon as keyof typeof exampleIcons] || Icons.ViewModule;
               return (
                 <Grid item xs={12} sm={6} md={4} key={example.id}>
                   <Card>
@@ -153,6 +170,14 @@ export function LandingPage() {
             More Resources
           </Typography>
           <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap', gap: 2 }}>
+            <Button 
+              variant="outlined" 
+              component={Link} 
+              to="/guidelines"
+              startIcon={<Icons.IntegrationInstructions />}
+            >
+              Import Guidelines
+            </Button>
             <Button 
               variant="outlined" 
               component={Link} 

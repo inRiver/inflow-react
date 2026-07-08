@@ -5,6 +5,7 @@ import { ComponentsIndexPage } from '../pages/ComponentsIndexPage';
 import { TokensPage } from '../pages/TokensPage';
 import { ComponentPage } from '../pages/ComponentPage';
 import { PreRenderedPage } from '../pages/PreRenderedPage';
+import { GuidelinesPage } from '../pages/GuidelinesPage';
 import { NotFoundPage } from '../pages/NotFoundPage';
 import LoginScreen from '../pages/screens/LoginScreen';
 import DashboardScreen from '../pages/screens/DashboardScreen';
@@ -19,6 +20,7 @@ export const router = createBrowserRouter([
       children: [
         { index: true, element: <LandingPage /> },
         { path: 'components', element: <ComponentsIndexPage /> },
+        { path: 'guidelines', element: <GuidelinesPage /> },
         { path: 'tokens', element: <TokensPage /> },
         { path: 'pre-rendered', element: <PreRenderedPage /> },
         { path: 'components/:componentName', element: <ComponentPage /> },

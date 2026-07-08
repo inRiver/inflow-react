@@ -154,6 +154,46 @@ export const ComponentSidebar: React.FC<ComponentSidebarProps> = ({
               <ListItemText primary="Overview" primaryTypographyProps={{ fontWeight: 'bold' }} />
             </ListItemButton>
           </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton
+              onClick={() => handleNavigate('/guidelines')}
+              selected={location.pathname === '/guidelines'}
+              sx={{
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: 2,
+                  justifyContent: 'center',
+                }}
+              >
+                <Icon baseClassName="material-icons-outlined">integration_instructions</Icon>
+              </ListItemIcon>
+              <ListItemText primary="Import Guidelines" primaryTypographyProps={{ fontWeight: 'bold' }} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton
+              onClick={() => handleNavigate('/tokens')}
+              selected={location.pathname === '/tokens'}
+              sx={{
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: 2,
+                  justifyContent: 'center',
+                }}
+              >
+                <Icon baseClassName="material-icons-outlined">palette</Icon>
+              </ListItemIcon>
+              <ListItemText primary="Design Tokens" primaryTypographyProps={{ fontWeight: 'bold' }} />
+            </ListItemButton>
+          </ListItem>
           <Divider sx={{ my: 1 }} />
         </List>
 
