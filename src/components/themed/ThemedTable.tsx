@@ -1,4 +1,5 @@
 import { forwardRef } from 'react';
+import type { ForwardedRef, ReactElement, ReactNode, RefAttributes } from 'react';
 import { 
   Table, 
   TableBody, 
@@ -11,15 +12,17 @@ import {
 import type { TableProps } from '@mui/material';
 import { inriverTokens } from '../../theme/tokens';
 
-export interface Column<T = any> {
+type TableRowData = Record<string, unknown>;
+
+export interface Column<T extends TableRowData = TableRowData> {
   id: string;
   label: string;
   /** Function to render a specific cell, or keyof T */
-  render?: (row: T) => React.ReactNode;
+  render?: (row: T) => ReactNode;
   align?: 'left' | 'center' | 'right';
 }
 
-export interface ThemedTableProps<T = any> extends Omit<TableProps, 'data'> {
+export interface ThemedTableProps<T extends TableRowData = TableRowData> extends Omit<TableProps, 'data'> {
   /** Array of column definitions */
   columns: Column<T>[];
   /** Array of data objects */
@@ -48,14 +51,16 @@ export interface ThemedTableProps<T = any> extends Omit<TableProps, 'data'> {
  * <ThemedTable columns={columns} data={myData} striped />
  * ```
  */
-export const ThemedTable = forwardRef<HTMLTableElement, ThemedTableProps<any>>(
-  ({ columns, data, keyExtractor, striped = false, sx, ...props }, ref) => {
+const ThemedTableBase = <T extends TableRowData = TableRowData>(
+  { columns, data, keyExtractor, striped = false, sx, ...props }: ThemedTableProps<T>,
+  ref: ForwardedRef<HTMLTableElement>
+) => {
     return (
       <TableContainer component={Paper} elevation={0} sx={{ border: `1px solid ${inriverTokens.colors.outlineVariant}`, borderRadius: inriverTokens.radius.sm }}>
         <Table ref={ref} sx={[...(Array.isArray(sx) ? sx : [sx])]} {...props}>
           <TableHead>
             <TableRow>
-              {columns.map((column: Column<any>) => (
+              {columns.map((column) => (
                 <TableCell 
                   key={column.id} 
                   align={column.align || 'left'}
@@ -72,7 +77,7 @@ export const ThemedTable = forwardRef<HTMLTableElement, ThemedTableProps<any>>(
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((row: any, index: number) => (
+            {data.map((row, index) => (
               <TableRow 
                 key={keyExtractor ? keyExtractor(row, index) : index}
                 sx={{
@@ -85,7 +90,7 @@ export const ThemedTable = forwardRef<HTMLTableElement, ThemedTableProps<any>>(
                   })
                 }}
               >
-                {columns.map((column: Column<any>) => (
+                {columns.map((column) => (
                   <TableCell 
                     key={column.id} 
                     align={column.align || 'left'}
@@ -95,7 +100,7 @@ export const ThemedTable = forwardRef<HTMLTableElement, ThemedTableProps<any>>(
                       letterSpacing: '0.25px'
                     }}
                   >
-                    {column.render ? column.render(row) : (row as any)[column.id]}
+                    {column.render ? column.render(row) : String(row[column.id] ?? '')}
                   </TableCell>
                 ))}
               </TableRow>
@@ -111,8 +116,11 @@ export const ThemedTable = forwardRef<HTMLTableElement, ThemedTableProps<any>>(
         </Table>
       </TableContainer>
     );
-  }
-);
+  };
 
-// Need to safely assert the displayName for the generically typed component
-(ThemedTable as any).displayName = 'ThemedTable';
+const ForwardedThemedTable = forwardRef(ThemedTableBase);
+ForwardedThemedTable.displayName = 'ThemedTable';
+
+export const ThemedTable = ForwardedThemedTable as <T extends TableRowData = TableRowData>(
+  props: ThemedTableProps<T> & RefAttributes<HTMLTableElement>
+) => ReactElement | null;
