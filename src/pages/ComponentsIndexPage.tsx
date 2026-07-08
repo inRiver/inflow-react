@@ -3,6 +3,15 @@ import { Link } from 'react-router-dom';
 import * as Icons from '@mui/icons-material';
 import { COMPONENT_CATEGORIES, getAllComponents, getComponentLabel } from '../showcase/categories';
 
+const categoryIcons = {
+  Campaign: Icons.Campaign,
+  Category: Icons.Category,
+  Dashboard: Icons.Dashboard,
+  Edit: Icons.Edit,
+  Explore: Icons.Explore,
+  TableRows: Icons.TableRows,
+};
+
 export function ComponentsIndexPage() {
   const totalComponents = getAllComponents().length;
 
@@ -20,7 +29,7 @@ export function ComponentsIndexPage() {
 
         <Grid container spacing={3}>
           {Object.values(COMPONENT_CATEGORIES).map((category) => {
-            const Icon = (Icons as any)[category.icon] || Icons.Category;
+            const Icon = categoryIcons[category.icon as keyof typeof categoryIcons] || Icons.Category;
 
             return (
               <Grid item xs={12} md={6} key={category.id}>
