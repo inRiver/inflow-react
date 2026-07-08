@@ -29,7 +29,7 @@ export const ThemedChip = forwardRef<HTMLDivElement, ThemedChipProps>(
   ({ inriverVariant = true, sx, ...props }, ref) => {
     
     const customStyles = inriverVariant ? {
-      borderRadius: inriverTokens.radius.full,
+      borderRadius: `${inriverTokens.radius.full}px`,
       fontWeight: inriverTokens.typography.fontWeights.medium,
       letterSpacing: '0.1px',
       ...(props.variant === 'outlined' && {

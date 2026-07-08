@@ -33,7 +33,7 @@ export const ThemedTextField = forwardRef<HTMLDivElement, ThemedTextFieldProps>(
         sx={[
           {
             '& .MuiOutlinedInput-root': {
-              borderRadius: inriverTokens.radius.xs,
+              borderRadius: `${inriverTokens.radius.xs}px`,
               '& .MuiOutlinedInput-notchedOutline': {
                 borderColor: inriverTokens.colors.outline,
               },

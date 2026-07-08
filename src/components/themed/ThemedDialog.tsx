@@ -48,7 +48,7 @@ export const ThemedDialog = forwardRef<HTMLDivElement, ThemedDialogProps>(
         onClose={onClose}
         PaperProps={{
           sx: {
-            borderRadius: inriverTokens.radius.xl,
+            borderRadius: `${inriverTokens.radius.xl}px`,
           }
         }}
         sx={[...(Array.isArray(sx) ? sx : [sx])]}

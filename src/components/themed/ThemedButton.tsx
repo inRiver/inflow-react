@@ -35,7 +35,7 @@ export const ThemedButton = forwardRef<HTMLButtonElement, ThemedButtonProps>(
     // Apply explicit tokens if requested, otherwise fallback to standard MUI styles
     // The global theme inriver.ts also styles MuiButton, but this provides a standalone guaranteed look
     const customStyles = inriverVariant ? {
-      borderRadius: inriverTokens.radius.sm,
+      borderRadius: `${inriverTokens.radius.sm}px`,
       fontWeight: inriverTokens.typography.fontWeights.medium,
       letterSpacing: '0.1px',
       ...(props.variant === 'contained' && (props.color === 'primary' || !props.color) && {

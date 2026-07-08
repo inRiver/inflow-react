@@ -41,7 +41,7 @@ export const ThemedCard = forwardRef<HTMLDivElement, ThemedCardProps>(
         elevation={1}
         sx={[
           {
-            borderRadius: inriverTokens.radius.sm,
+            borderRadius: `${inriverTokens.radius.sm}px`,
             boxShadow: inriverTokens.shadows.e1,
           },
           ...(Array.isArray(sx) ? sx : [sx])

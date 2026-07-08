@@ -56,7 +56,7 @@ const ThemedTableBase = <T extends TableRowData = TableRowData>(
   ref: ForwardedRef<HTMLTableElement>
 ) => {
     return (
-      <TableContainer component={Paper} elevation={0} sx={{ border: `1px solid ${inriverTokens.colors.outlineVariant}`, borderRadius: inriverTokens.radius.sm }}>
+        <TableContainer component={Paper} elevation={0} sx={{ border: `1px solid ${inriverTokens.colors.outlineVariant}`, borderRadius: `${inriverTokens.radius.sm}px` }}>
         <Table ref={ref} sx={[...(Array.isArray(sx) ? sx : [sx])]} {...props}>
           <TableHead>
             <TableRow>
