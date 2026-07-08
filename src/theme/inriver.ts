@@ -22,6 +22,20 @@ interface InriverPalette {
   diffRemovedText: string;
   diffAddedBg: string;
   diffAddedText: string;
+  surfaceLowest: string;
+  surfaceContainer: string;
+  surfaceContainerHigh: string;
+  primaryFixed: string;
+  secondaryFixed: string;
+  tertiaryFixed: string;
+  inverseSurface: string;
+  inverseOnSurface: string;
+  certaintyHigh: string;
+  certaintyMedium: string;
+  highlightGreen: string;
+  highlightRed: string;
+  highlightYellow: string;
+  mandatoryRow: string;
 }
 
 declare module '@mui/material/styles' {
@@ -46,11 +60,25 @@ const T = {
   onSurface: '#191b24',
   onSurfaceVariant: '#424655',
   surfaceVariant: '#d8e0f4',
+  surfaceLowest: '#ffffff',
+  surfaceContainer: '#edf2fb',
+  surfaceContainerHigh: '#e8edf7',
   surfaceLow: '#f1f6fe',
   surfaceHighest: '#e3e9f8',
   outline: '#727787',
   outlineVariant: '#c2c6d8',
   primaryTab: '#c3defe',
+  primaryFixed: '#dae2ff',
+  secondaryFixed: '#dfe2f9',
+  tertiaryFixed: '#ffd8e4',
+  inverseSurface: '#2e3038',
+  inverseOnSurface: '#f0f0f7',
+  certaintyHigh: '#2c9b4b',
+  certaintyMedium: '#ff9800',
+  highlightGreen: '#d6efdd',
+  highlightRed: '#f4d9d9',
+  highlightYellow: '#fff2cc',
+  mandatoryRow: '#e6f1ff',
   white: '#ffffff',
 
   rowHover: '#f1f6fe',
@@ -122,6 +150,20 @@ export const theme = createTheme({
       diffRemovedText: T.diffRemovedText,
       diffAddedBg: T.diffAddedBg,
       diffAddedText: T.diffAddedText,
+      surfaceLowest: T.surfaceLowest,
+      surfaceContainer: T.surfaceContainer,
+      surfaceContainerHigh: T.surfaceContainerHigh,
+      primaryFixed: T.primaryFixed,
+      secondaryFixed: T.secondaryFixed,
+      tertiaryFixed: T.tertiaryFixed,
+      inverseSurface: T.inverseSurface,
+      inverseOnSurface: T.inverseOnSurface,
+      certaintyHigh: T.certaintyHigh,
+      certaintyMedium: T.certaintyMedium,
+      highlightGreen: T.highlightGreen,
+      highlightRed: T.highlightRed,
+      highlightYellow: T.highlightYellow,
+      mandatoryRow: T.mandatoryRow,
     },
   },
 
@@ -149,7 +191,33 @@ export const theme = createTheme({
   components: {
     MuiCssBaseline: {
       styleOverrides: {
-        body: { backgroundColor: T.navy100, color: T.onSurface },
+        body: {
+          backgroundColor: T.navy100,
+          color: T.onSurface,
+          '--inri-surface-container-lowest-color': T.surfaceLowest,
+          '--inri-surface-container-low-color': T.surfaceLow,
+          '--inri-surface-container-color': T.surfaceContainer,
+          '--inri-surface-container-high-color': T.surfaceContainerHigh,
+          '--inri-surface-container-highest-color': T.surfaceHighest,
+          '--inri-primary-color': T.navy700,
+          '--inri-primary-fixed-color': T.primaryFixed,
+          '--inri-secondary-fixed-color': T.secondaryFixed,
+          '--inri-tertiary-fixed-color': T.tertiaryFixed,
+          '--inri-on-surface-color': T.onSurface,
+          '--inri-on-surface-variant-color': T.onSurfaceVariant,
+          '--inri-inverse-surface-color': T.inverseSurface,
+          '--inri-inverse-on-surface-color': T.inverseOnSurface,
+          '--inri-outline-color': T.outline,
+          '--inri-outline-variant-color': T.outlineVariant,
+          '--inri-certainty-high-color': T.certaintyHigh,
+          '--inri-certainty-medium-color': T.certaintyMedium,
+          '--inri-highlight-green-color': T.highlightGreen,
+          '--inri-highlight-red-color': T.highlightRed,
+          '--inri-highlight-yellow-color': T.highlightYellow,
+          '--inri-row-hover-color': T.rowHover,
+          '--inri-row-selected-color': T.rowSelected,
+          '--inri-mandatory-row-color': T.mandatoryRow,
+        },
       },
     },
 
@@ -291,11 +359,11 @@ export const theme = createTheme({
       styleOverrides: {
         paper: { borderRadius: T.radiusXs },
         option: {
-          '&:hover': { backgroundColor: `${T.rowHover} !important` },
-          '&.Mui-focused': { backgroundColor: `${T.rowHover} !important` },
+          '&:hover': { backgroundColor: T.rowHover },
+          '&.Mui-focused': { backgroundColor: T.rowHover },
           '&[aria-selected="true"]': {
-            backgroundColor: `${T.rowSelected} !important`,
-            '&:hover, &.Mui-focused': { backgroundColor: `${T.rowSelectedHover} !important` },
+            backgroundColor: T.rowSelected,
+            '&:hover, &.Mui-focused': { backgroundColor: T.rowSelectedHover },
           },
         },
         groupLabel: { color: T.onSurfaceVariant, fontWeight: 600 },
@@ -318,9 +386,24 @@ export const theme = createTheme({
     MuiDrawer: { styleOverrides: { paper: { borderRight: `1px solid ${T.outlineVariant}` } } },
 
     MuiChip: {
+      defaultProps: { size: 'small' },
       styleOverrides: {
-        root: { borderRadius: T.radiusFull, fontWeight: 500, letterSpacing: '0.1px' },
-        outlined: { borderColor: T.outlineVariant, color: T.onSurfaceVariant },
+        root: {
+          borderRadius: T.radiusFull,
+          fontWeight: 500,
+          letterSpacing: '0.1px',
+          maxWidth: '100%',
+        },
+        sizeSmall: { height: 28 },
+        sizeMedium: { height: 32 },
+        label: { paddingLeft: 12, paddingRight: 12 },
+        outlined: { borderColor: T.outlineVariant, color: T.onSurfaceVariant, backgroundColor: T.white },
+        outlinedPrimary: {
+          borderColor: T.outlineVariant,
+          color: T.navy800,
+          backgroundColor: T.white,
+          '&:hover': { borderColor: T.navy400, backgroundColor: T.rowHover },
+        },
         filledPrimary: { backgroundColor: T.primaryTab, color: T.navy700 },
       },
     },
@@ -347,7 +430,7 @@ export const theme = createTheme({
     MuiTab: {
       styleOverrides: {
         root: {
-          textTransform: 'none',
+          textTransform: 'capitalize',
           fontWeight: 500,
           letterSpacing: '0.1px',
           color: T.onSurfaceVariant,

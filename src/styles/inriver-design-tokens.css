@@ -4,26 +4,10 @@
    Combined from: breakpoints, material-colors, metadata,
                   palette-light, shape, spacing, typography
 
-   SINGLE SOURCE OF TRUTH. Merged in (June 2026): the @font-face
-   declarations, base element styles, and legacy --iv-* aliases
-   formerly held in colors_and_type.css (now deleted).
+   SINGLE SOURCE OF TRUTH. Merged in (June 2026): base element
+   styles and legacy --iv-* aliases formerly held in
+   colors_and_type.css (now deleted). Inter is loaded by index.html.
    ============================================================= */
-
-/* ── Fonts ──────────────────────────────────────────────────── */
-@font-face {
-  font-family: "Inter";
-  src: url("../../InFlow - (UX) Inriver Design System/fonts/Inter-VariableFont.ttf") format("truetype-variations");
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Inter";
-  src: url("../../InFlow - (UX) Inriver Design System/fonts/Inter-Italic-VariableFont.ttf") format("truetype-variations");
-  font-weight: 100 900;
-  font-style: italic;
-  font-display: swap;
-}
 
 :root {
 
