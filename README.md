@@ -233,6 +233,14 @@ export function ProductStatus() {
 }
 ```
 
+Dark-mode availability is controlled by the exported `INFLOW_DARK_MODE_ENABLED` flag from `src/theme/featureFlags.ts`. Consuming apps can check the live package value directly instead of relying on this README to stay current:
+
+```ts
+import { INFLOW_DARK_MODE_ENABLED } from '@inriver/inflow';
+```
+
+As of this writing, the flag is `false`, so the published package is currently light-mode only. Treat that as a snapshot, not a guarantee: the flag value in code is the authoritative current status.
+
 ## Peer dependencies
 
 Consuming apps own React, React DOM, MUI, and Emotion. The theme package declares them as peers so apps do not get duplicate React trees or duplicate MUI style engines.

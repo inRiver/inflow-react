@@ -13,6 +13,7 @@ import {
   Typography,
 } from '@mui/material';
 import { CodeBlock } from '../showcase/CodeBlock';
+import { INFLOW_DARK_MODE_ENABLED } from '../theme';
 
 const installCode = `npm install @inriver/inflow@react19-mui6.3 @mui/material@\">=6.3.0 <6.4.0\" @emotion/react @emotion/styled react@^19 react-dom@^19`;
 
@@ -79,6 +80,8 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
     </ThemeProvider>
   );
 }`;
+
+const colorModeFlagCode = `import { INFLOW_DARK_MODE_ENABLED } from '@inriver/inflow';`;
 
 const componentCode = `import { Stack } from '@mui/material';
 import { ThemedButton, ThemedChip, ThemedTextField } from '@inriver/inflow';
@@ -226,6 +229,48 @@ export function GuidelinesPage() {
           This repo is package-ready, not publish-by-default. Releases must go through an approved
           React/MUI compatibility checkpoint; direct publishing to <code>latest</code> is blocked.
         </Alert>
+
+        <Card>
+          <CardContent>
+            <Stack spacing={2}>
+              <Typography variant="h5">Color mode support</Typography>
+              {INFLOW_DARK_MODE_ENABLED ? (
+                <>
+                  <Box>
+                    <Chip label="Light + dark mode available" color="success" variant="outlined" />
+                  </Box>
+                  <Typography variant="body2" color="text.secondary">
+                    Both light and dark mode are currently supported. Consuming apps can request
+                    either mode when creating an Inflow theme, and the exported flag is the
+                    authoritative runtime check for whether dark mode is available in the current
+                    package build.
+                  </Typography>
+                </>
+              ) : (
+                <>
+                  <Box>
+                    <Chip label="Light mode only" color="default" variant="outlined" />
+                  </Box>
+                  <Typography variant="body2" color="text.secondary">
+                    Dark mode is currently disabled behind the published
+                    <code> INFLOW_DARK_MODE_ENABLED </code>
+                    feature flag. If a consuming app calls{' '}
+                    <code>createInflowTheme('dark')</code> or{' '}
+                    <code>createDefaultTheme('dark')</code> while the flag is off, the request
+                    resolves to light mode instead, and development builds log a{' '}
+                    <code>console.warn</code>. This is a deliberate product toggle, not a permanent
+                    API limitation, so consumers should check the exported flag instead of assuming
+                    dark mode availability.
+                  </Typography>
+                </>
+              )}
+              <Typography variant="body2" color="text.secondary">
+                Consuming apps can read the live package status directly:
+              </Typography>
+              <CodeBlock code={colorModeFlagCode} language="tsx" />
+            </Stack>
+          </CardContent>
+        </Card>
 
         <Card>
           <CardContent>
