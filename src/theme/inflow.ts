@@ -1,6 +1,7 @@
 // Canonical source: docs/mui/inflow-theme.js
 import { createTheme } from '@mui/material/styles';
 import type { Shadows } from '@mui/material/styles';
+import { resolveInflowColorMode } from './featureFlags';
 
 export type InflowColorMode = 'light' | 'dark';
 
@@ -207,7 +208,8 @@ export const getInflowPalette = (mode: InflowColorMode): InflowPalette => {
   };
 };
 
-export const createInflowTheme = (mode: InflowColorMode = 'light') => {
+export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
+  const mode = resolveInflowColorMode(requestedMode);
   const T = getInflowTokensForMode(mode);
 
   return createTheme({

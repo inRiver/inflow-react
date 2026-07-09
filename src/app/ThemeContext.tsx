@@ -1,14 +1,14 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
-import { createDefaultTheme, createInflowTheme, type InflowColorMode } from '../theme';
+import {
+  createDefaultTheme,
+  createInflowTheme,
+  INFLOW_DARK_MODE_ENABLED,
+  type InflowColorMode,
+} from '../theme';
 
 type ThemeType = 'inflow' | 'default';
 type ColorModePreference = InflowColorMode | 'system';
-
-// Temporarily disabled per product decision - flip to true to re-enable the light/dark mode toggle.
-// All underlying dark-mode theme logic remains intact below. When false, resolvedColorMode always
-// evaluates to 'light' and the color-mode toggle button is hidden in RootLayout.
-const DARK_MODE_ENABLED = false;
 
 const THEME_STORAGE_KEY = 'showcase-theme';
 const COLOR_MODE_STORAGE_KEY = 'inflow-color-mode';
@@ -33,7 +33,7 @@ type ThemeContextType = {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 // eslint-disable-next-line react-refresh/only-export-components
-export { DARK_MODE_ENABLED };
+export { INFLOW_DARK_MODE_ENABLED as DARK_MODE_ENABLED };
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const useShowcaseTheme = () => {
@@ -99,20 +99,20 @@ export const CustomThemeProvider: React.FC<{ children: React.ReactNode }> = ({ c
     setCurrentTheme((prev) => (prev === 'inflow' ? 'default' : 'inflow'));
   };
 
-   const cycleColorMode = () => {
-     if (!DARK_MODE_ENABLED) return; // No-op when dark mode is disabled
-     setColorModePreference((previousMode) => {
-       if (previousMode === 'system') return 'light';
-       if (previousMode === 'light') return 'dark';
-       return 'system';
-     });
-   };
+  const cycleColorMode = () => {
+    if (!INFLOW_DARK_MODE_ENABLED) return; // No-op when dark mode is disabled
+    setColorModePreference((previousMode) => {
+      if (previousMode === 'system') return 'light';
+      if (previousMode === 'light') return 'dark';
+      return 'system';
+    });
+  };
 
-   const resolvedColorMode: InflowColorMode = DARK_MODE_ENABLED
-     ? colorModePreference === 'system'
-       ? systemColorMode
-       : colorModePreference
-     : 'light'; // Always light when dark mode is disabled
+  const resolvedColorMode: InflowColorMode = INFLOW_DARK_MODE_ENABLED
+    ? colorModePreference === 'system'
+      ? systemColorMode
+      : colorModePreference
+    : 'light'; // Always light when dark mode is disabled
 
   const themeToApply = useMemo(
     () => (currentTheme === 'inflow' ? createInflowTheme(resolvedColorMode) : createDefaultTheme(resolvedColorMode)),
