@@ -12,6 +12,7 @@ import {
   Divider,
   Box,
 } from '@mui/material';
+import { InlineCustomizationPlayground } from './InlineCustomizationPlayground';
 
 export type PropType = 'text' | 'select' | 'boolean';
 
@@ -26,22 +27,21 @@ interface PropsPlaygroundProps {
   schema: PropSchema[];
   values: Record<string, unknown>;
   onChange: (newValues: Record<string, unknown>) => void;
+  title?: string;
 }
 
-export const PropsPlayground: React.FC<PropsPlaygroundProps> = ({ schema, values, onChange }) => {
+export const PropsPlayground: React.FC<PropsPlaygroundProps> = ({ schema, values, onChange, title = 'Props Playground' }) => {
   const handleChange = (name: string, value: unknown) => {
     onChange({ ...values, [name]: value });
   };
 
-  if (!schema || schema.length === 0) {
-    return null;
-  }
+  const hasSchema = schema && schema.length > 0;
 
   return (
     <Paper 
       elevation={0}
       sx={{ 
-        bgcolor: "var(--iv-navy-100, #ebf1fc)",
+        bgcolor: "#fff",
         border: "1px solid var(--iv-border)",
         borderRadius: "5px",
         px: 4, 
@@ -61,9 +61,10 @@ export const PropsPlayground: React.FC<PropsPlaygroundProps> = ({ schema, values
           display: 'block'
         }}
       >
-        Props Playground
+        {title}
       </Typography>
-      <Divider sx={{ mb: 3 }} />
+      <Divider sx={{ mb: hasSchema ? 3 : 0 }} />
+      {hasSchema && (
       <Box sx={{
         display: "flex",
         flexWrap: "wrap",
@@ -131,6 +132,8 @@ export const PropsPlayground: React.FC<PropsPlaygroundProps> = ({ schema, values
           return null;
         })}
       </Box>
+      )}
+      <InlineCustomizationPlayground />
     </Paper>
   );
 };

@@ -1,13 +1,22 @@
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Container, Typography, Alert, Box, Button, Stack } from '@mui/material';
+import { Container, Typography, Alert, Box, Button, Stack, GlobalStyles } from '@mui/material';
 import { Link } from 'react-router-dom';
 import * as Icons from '@mui/icons-material';
 import { demoRegistry } from '../showcase/demos/registry';
 import { normalizeComponentId } from '../showcase/categories';
 import { ComponentBreadcrumb } from '../components/navigation';
+import {
+  getCustomizationPreviewStyles,
+  type CustomizationMethodId,
+  type CustomizationValuesByMethod,
+} from '../showcase/ComponentCustomizationPanel';
+import { CustomizationPlaygroundContext } from '../showcase/CustomizationPlaygroundContext';
 
 export function ComponentPage() {
   const { componentName } = useParams();
+  const [activeCustomizationMethod, setActiveCustomizationMethod] = useState<CustomizationMethodId>('sx');
+  const [customizationValuesByMethod, setCustomizationValuesByMethod] = useState<CustomizationValuesByMethod>({});
   
   if (!componentName) {
     return (
@@ -62,7 +71,27 @@ export function ComponentPage() {
       <Box sx={{ mb: 2 }}>
         <ComponentBreadcrumb componentName={registryKey} />
       </Box>
-      <DemoComponent />
+      <GlobalStyles
+        styles={(theme) => getCustomizationPreviewStyles(
+          registryKey,
+          activeCustomizationMethod,
+          customizationValuesByMethod,
+          theme,
+        )}
+      />
+      <Box className="ComponentCustomizationPreviewScope">
+        <CustomizationPlaygroundContext.Provider
+          value={{
+            componentId: registryKey,
+            activeMethod: activeCustomizationMethod,
+            valuesByMethod: customizationValuesByMethod,
+            onActiveMethodChange: setActiveCustomizationMethod,
+            onValuesByMethodChange: setCustomizationValuesByMethod,
+          }}
+        >
+        <DemoComponent />
+        </CustomizationPlaygroundContext.Provider>
+      </Box>
     </Container>
   );
 }
