@@ -253,5 +253,6 @@ The tight MUI range is deliberate: this checkpoint is validated for MUI 6.3. A n
 ## Documentation map
 
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) - how the theme codebase works.
+- [`docs/PUBLISHING.md`](docs/PUBLISHING.md) - first public npm publish checklist for `@inriver/inflow`.
 - [`docs/VERSIONING.md`](docs/VERSIONING.md) - release channels, fragmentation control, and adoption guidance.
 - `/guidelines` in the showcase - live import, migration, and usage guidance. This replaces the old static migration guide.
