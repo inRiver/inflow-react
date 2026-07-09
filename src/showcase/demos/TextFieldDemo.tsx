@@ -69,7 +69,7 @@ import { TextField } from '@mui/material';
 
   return (
     <>
-      <DemoFrame title="TextField - Interactive">
+      <DemoFrame title="Text Field - Interactive">
         <TextField {...props} />
       </DemoFrame>
 

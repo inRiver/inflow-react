@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Select, MenuItem, FormControl, InputLabel, Stack } from '@mui/material';
+import { Select, MenuItem, FormControl, InputLabel, Stack, Box } from '@mui/material';
 import { DemoFrame } from '../DemoFrame';
 import { CodeBlock } from '../CodeBlock';
 import { PropsPlayground } from '../PropsPlayground';
@@ -54,14 +54,15 @@ import { Select } from '@mui/material';
   return (
     <>
       <DemoFrame title="Select - Interactive">
-        
-        <FormControl {...props} fullWidth>
-          <InputLabel>Age</InputLabel>
-          <Select label="Age" value={10}>
-            <MenuItem value={10}>Ten</MenuItem>
-            <MenuItem value={20}>Twenty</MenuItem>
-          </Select>
-        </FormControl>
+        <Box sx={{ width: 300 }}>
+          <FormControl {...props} fullWidth>
+            <InputLabel>Age</InputLabel>
+            <Select label="Age" value={10}>
+              <MenuItem value={10}>Ten</MenuItem>
+              <MenuItem value={20}>Twenty</MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
       </DemoFrame>
 
       <PropsPlayground 
@@ -76,15 +77,15 @@ import { Select } from '@mui/material';
         <Stack spacing={2} direction="column">
           
           <Stack direction="row" spacing={2}>
-            <FormControl>
+            <FormControl sx={{ minWidth: 140 }}>
               <InputLabel>Default</InputLabel>
               <Select label="Default" value={10}><MenuItem value={10}>Ten</MenuItem></Select>
             </FormControl>
-            <FormControl disabled>
+            <FormControl disabled sx={{ minWidth: 140 }}>
               <InputLabel>Disabled</InputLabel>
               <Select label="Disabled" value={10}><MenuItem value={10}>Ten</MenuItem></Select>
             </FormControl>
-            <FormControl error>
+            <FormControl error sx={{ minWidth: 140 }}>
               <InputLabel>Error</InputLabel>
               <Select label="Error" value={10}><MenuItem value={10}>Ten</MenuItem></Select>
             </FormControl>
