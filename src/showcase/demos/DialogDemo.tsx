@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { DialogTitle, DialogContent, DialogContentText, DialogActions, Button, Stack, Paper } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, Stack, Paper } from '@mui/material';
 import { DemoFrame } from '../DemoFrame';
 import { CodeBlock } from '../CodeBlock';
 import { PropsPlayground } from '../PropsPlayground';
@@ -10,6 +10,7 @@ export function DialogDemo() {
   "maxWidth": "sm",
   "fullWidth": false
 });
+  const [open, setOpen] = useState(false);
 
   const schema: PropSchema[] = [
   {
@@ -41,17 +42,22 @@ import { Dialog } from '@mui/material';
   return (
     <>
       <DemoFrame title="Dialog - Interactive">
-        
-        <Paper elevation={24} sx={{ p: 0, m: 2, position: 'relative' }}>
+        <Button onClick={() => setOpen(true)}>Open Dialog</Button>
+        <Dialog
+          open={open}
+          onClose={() => setOpen(false)}
+          maxWidth={props.maxWidth}
+          fullWidth={!!props.fullWidth}
+        >
           <DialogTitle>Dialog Title</DialogTitle>
           <DialogContent>
             <DialogContentText>Dialog content goes here.</DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button>Cancel</Button>
-            <Button>Agree</Button>
+            <Button onClick={() => setOpen(false)}>Cancel</Button>
+            <Button onClick={() => setOpen(false)}>Agree</Button>
           </DialogActions>
-        </Paper>
+        </Dialog>
       </DemoFrame>
 
       <PropsPlayground 
@@ -64,14 +70,27 @@ import { Dialog } from '@mui/material';
 
       <DemoFrame title="All States">
         <Stack spacing={2} direction="column">
-          
-          <Stack spacing={4}>
-            <Paper elevation={24}>
-              <DialogTitle>Default</DialogTitle>
-              <DialogContent><DialogContentText>Simple text</DialogContentText></DialogContent>
-              <DialogActions><Button>OK</Button></DialogActions>
-            </Paper>
-          </Stack>
+          <Paper
+            variant="outlined"
+            sx={{
+              maxWidth: 480,
+              width: '100%',
+              mx: 'auto',
+              borderRadius: 1,
+              overflow: 'hidden',
+            }}
+          >
+            <DialogTitle>Review product changes</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                This static preview shows the themed dialog title, content, and action layout without requiring interaction.
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button variant="text">Cancel</Button>
+              <Button variant="contained">Confirm</Button>
+            </DialogActions>
+          </Paper>
         </Stack>
       </DemoFrame>
     </>

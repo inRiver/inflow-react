@@ -48,7 +48,7 @@ import { LinearProgress } from '@mui/material';
 
   return (
     <>
-      <DemoFrame title="LinearProgress - Interactive">
+      <DemoFrame title="Linear Progress - Interactive">
         <Box sx={{ width: '100%' }}><LinearProgress {...props} value={50} valueBuffer={75} /></Box>
       </DemoFrame>
 

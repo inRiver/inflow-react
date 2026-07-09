@@ -63,7 +63,16 @@ import { Alert } from '@mui/material';
             <Alert severity="info">Info alert</Alert>
             <Alert severity="warning">Warning alert</Alert>
             <Alert severity="error">Error alert</Alert>
-            <Alert severity="error" action={<Button color="inherit" size="small">UNDO</Button>}>Action alert</Alert>
+            <Alert
+              severity="error"
+              action={
+                <Button color="inherit" size="small" variant="text">
+                  UNDO
+                </Button>
+              }
+            >
+              Action alert
+            </Alert>
           </Stack>
         </Stack>
       </DemoFrame>

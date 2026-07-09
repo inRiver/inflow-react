@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CircularProgress, Stack } from '@mui/material';
+import { CircularProgress, Stack, Typography } from '@mui/material';
 import { DemoFrame } from '../DemoFrame';
 import { CodeBlock } from '../CodeBlock';
 import { PropsPlayground } from '../PropsPlayground';
@@ -47,7 +47,7 @@ import { CircularProgress } from '@mui/material';
 
   return (
     <>
-      <DemoFrame title="CircularProgress - Interactive">
+      <DemoFrame title="Circular Progress - Interactive">
         <CircularProgress {...props} value={50} />
       </DemoFrame>
 
@@ -67,7 +67,12 @@ import { CircularProgress } from '@mui/material';
             <CircularProgress variant="determinate" value={75} />
             <CircularProgress color="secondary" />
             <CircularProgress color="error" />
-            <CircularProgress size={20} />
+            <Stack spacing={0.75} alignItems="center">
+              <CircularProgress size={20} />
+              <Typography variant="caption" color="text.secondary">
+                size=20
+              </Typography>
+            </Stack>
           </Stack>
         </Stack>
       </DemoFrame>
