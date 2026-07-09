@@ -4,24 +4,33 @@ import { DemoFrame } from '../DemoFrame';
 import { CodeBlock } from '../CodeBlock';
 import { PropsPlayground } from '../PropsPlayground';
 import type { PropSchema } from '../PropsPlayground';
+import { inriverTokens } from '../../theme';
 
 export function MenuDemo() {
-  const [props, setProps] = useState<Record<string, any>>({});
+  const [props, setProps] = useState<Record<string, any>>({
+  "dense": false
+});
 
-  const schema: PropSchema[] = [];
+  const schema: PropSchema[] = [
+  {
+    "name": "dense",
+    "type": "boolean"
+  }
+];
 
   const codeExample = `
-import { Menu } from '@mui/material';
+ import { MenuList } from '@mui/material';
 
-<Menu 
+<MenuList 
+  dense={props.dense}
 />`;
 
   return (
     <>
       <DemoFrame title="Menu - Interactive">
         
-        <Paper sx={{ width: 200, maxWidth: '100%' }}>
-          <MenuList>
+        <Paper sx={{ width: 200, maxWidth: '100%', borderRadius: `${inriverTokens.radius.xs}px` }}>
+          <MenuList dense={props.dense}>
             <MenuItem>Profile</MenuItem>
             <MenuItem>My account</MenuItem>
             <MenuItem>Logout</MenuItem>
@@ -41,7 +50,7 @@ import { Menu } from '@mui/material';
         <Stack spacing={2} direction="column">
           
           <Stack direction="row" spacing={4}>
-            <Paper>
+            <Paper sx={{ borderRadius: `${inriverTokens.radius.xs}px` }}>
               <MenuList>
                 <MenuItem>Default</MenuItem>
                 <MenuItem disabled>Disabled</MenuItem>

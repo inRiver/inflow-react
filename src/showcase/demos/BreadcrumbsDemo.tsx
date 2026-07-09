@@ -7,22 +7,44 @@ import type { PropSchema } from '../PropsPlayground';
 
 export function BreadcrumbsDemo() {
   const [props, setProps] = useState<Record<string, any>>({
+  "separator": "/",
   "maxItems": 8
 });
 
-  const schema: PropSchema[] = [];
+  const schema: PropSchema[] = [
+  {
+    "name": "separator",
+    "type": "select",
+    "options": [
+      "/",
+      ">",
+      "•"
+    ]
+  },
+  {
+    "name": "maxItems",
+    "type": "select",
+    "options": [
+      "8",
+      "3",
+      "2"
+    ]
+  }
+];
 
   const codeExample = `
 import { Breadcrumbs } from '@mui/material';
 
 <Breadcrumbs 
+  separator={props.separator}
+  maxItems={Number(props.maxItems)}
 />`;
 
   return (
     <>
       <DemoFrame title="Breadcrumbs - Interactive">
         
-        <Breadcrumbs aria-label="breadcrumb" {...props}>
+        <Breadcrumbs aria-label="breadcrumb" {...props} maxItems={Number(props.maxItems)}>
           <Link underline="hover" color="inherit" href="/">Home</Link>
           <Link underline="hover" color="inherit" href="/catalog">Catalog</Link>
           <Typography color="text.primary">Accessories</Typography>

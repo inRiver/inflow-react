@@ -56,9 +56,9 @@ import { Tabs } from '@mui/material';
         
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={0} {...props}>
-            <Tab label="Item One" />
-            <Tab label="Item Two" />
-            <Tab label="Item Three" />
+            <Tab label="Recent orders" />
+            <Tab label="Saved items" />
+            <Tab label="Account settings" />
           </Tabs>
         </Box>
       </DemoFrame>
