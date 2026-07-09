@@ -25,3 +25,5 @@ dist-ssr
 _ref/*
 .sisyphus/*
 pres/
+.playwright-mcp/
+qa-review/
