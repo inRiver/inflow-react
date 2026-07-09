@@ -1,7 +1,7 @@
 import { forwardRef } from 'react';
 import { Card, CardHeader, CardContent, CardActions } from '@mui/material';
 import type { CardProps } from '@mui/material';
-import { inriverTokens } from '../../theme/tokens';
+import { inflowTokens } from '../../theme/tokens';
 
 export interface ThemedCardProps extends Omit<CardProps, 'title'> {
   /** Optional title to render in the card header */
@@ -17,8 +17,8 @@ export interface ThemedCardProps extends Omit<CardProps, 'title'> {
 /**
  * ThemedCard
  * 
- * A pre-rendered, themed card component that follows the Inriver design system.
- * It applies specific Inriver design tokens for shadows, border-radius, and provides
+ * A pre-rendered, themed card component that follows the Inflow design system.
+ * It applies specific Inflow design tokens for shadows, border-radius, and provides
  * optional built-in slots for title, subheader, and actions.
  *
  * @example
@@ -41,8 +41,8 @@ export const ThemedCard = forwardRef<HTMLDivElement, ThemedCardProps>(
         elevation={1}
         sx={[
           {
-            borderRadius: `${inriverTokens.radius.sm}px`,
-            boxShadow: inriverTokens.shadows.e1,
+            borderRadius: `${inflowTokens.radius.sm}px`,
+            boxShadow: inflowTokens.shadows.e1,
           },
           ...(Array.isArray(sx) ? sx : [sx])
         ]}

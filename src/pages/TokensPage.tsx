@@ -1,5 +1,5 @@
 import { Container, Typography, Stack, Box, Card, Grid, Paper } from '@mui/material';
-import { inriverTokens } from '../theme/tokens';
+import { inflowTokens } from '../theme/tokens';
 
 export function TokensPage() {
   return (
@@ -53,9 +53,9 @@ export function TokensPage() {
 
         {/* Tokens extracted */}
         <Box>
-          <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>Inriver Extracted Palette Tokens</Typography>
+          <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>Inflow Extracted Palette Tokens</Typography>
           <Grid container spacing={2}>
-            {Object.entries(inriverTokens.colors).map(([key, value]) => {
+            {Object.entries(inflowTokens.colors).map(([key, value]) => {
               if (typeof value === 'string') {
                 return (
                   <Grid item xs={12} sm={4} md={2} key={key}>

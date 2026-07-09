@@ -1,15 +1,15 @@
 import { forwardRef } from 'react';
 import { TextField } from '@mui/material';
 import type { TextFieldProps } from '@mui/material';
-import { inriverTokens } from '../../theme/tokens';
+import { inflowTokens } from '../../theme/tokens';
 
 export type ThemedTextFieldProps = TextFieldProps;
 
 /**
  * ThemedTextField
  * 
- * A pre-rendered, themed text field component that follows the Inriver design system.
- * It extends the standard MUI TextField and applies specific Inriver design tokens
+ * A pre-rendered, themed text field component that follows the Inflow design system.
+ * It extends the standard MUI TextField and applies specific Inflow design tokens
  * for border colors, focus states, and error states.
  *
  * @example
@@ -33,43 +33,43 @@ export const ThemedTextField = forwardRef<HTMLDivElement, ThemedTextFieldProps>(
         sx={[
           {
             '& .MuiOutlinedInput-root': {
-              borderRadius: `${inriverTokens.radius.xs}px`,
+              borderRadius: `${inflowTokens.radius.xs}px`,
               '& .MuiOutlinedInput-notchedOutline': {
-                borderColor: inriverTokens.colors.outline,
+                borderColor: inflowTokens.colors.outline,
               },
               '&:hover .MuiOutlinedInput-notchedOutline': {
-                borderColor: inriverTokens.colors.onSurface,
+                borderColor: inflowTokens.colors.onSurface,
               },
               '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                borderColor: inriverTokens.colors.navy700,
+                borderColor: inflowTokens.colors.navy700,
                 borderWidth: 2,
               },
               '&.Mui-error .MuiOutlinedInput-notchedOutline': {
-                borderColor: inriverTokens.colors.error.main,
+                borderColor: inflowTokens.colors.error.main,
               },
               '&.Mui-error.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                borderColor: inriverTokens.colors.error.main,
+                borderColor: inflowTokens.colors.error.main,
               },
             },
             '& .MuiInputLabel-root': {
               '&.Mui-focused': {
-                color: inriverTokens.colors.navy700,
+                color: inflowTokens.colors.navy700,
               },
               '&.Mui-error': {
-                color: inriverTokens.colors.error.main,
+                color: inflowTokens.colors.error.main,
               },
             },
             '& .MuiFilledInput-root': {
-              backgroundColor: inriverTokens.colors.surfaceHighest,
-              borderRadius: `${inriverTokens.radius.xs}px ${inriverTokens.radius.xs}px 0 0`,
+              backgroundColor: inflowTokens.colors.surfaceHighest,
+              borderRadius: `${inflowTokens.radius.xs}px ${inflowTokens.radius.xs}px 0 0`,
               '&:hover': {
                 backgroundColor: '#dbe2f4',
               },
               '&.Mui-focused': {
-                backgroundColor: inriverTokens.colors.surfaceHighest,
+                backgroundColor: inflowTokens.colors.surfaceHighest,
               },
               '&:after': {
-                borderBottomColor: inriverTokens.colors.navy700,
+                borderBottomColor: inflowTokens.colors.navy700,
               },
             },
           },

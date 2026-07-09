@@ -1,18 +1,18 @@
 import { forwardRef } from 'react';
 import { Chip } from '@mui/material';
 import type { ChipProps } from '@mui/material';
-import { inriverTokens } from '../../theme/tokens';
+import { inflowTokens } from '../../theme/tokens';
 
 export interface ThemedChipProps extends ChipProps {
-  /** If true, applies specific inriver colors regardless of global overrides */
-  inriverVariant?: boolean;
+  /** If true, applies specific inflow colors regardless of global overrides */
+  inflowVariant?: boolean;
 }
 
 /**
  * ThemedChip
  * 
- * A pre-rendered, themed chip component that follows the Inriver design system.
- * It applies specific Inriver design tokens for radius, colors, and delete icons.
+ * A pre-rendered, themed chip component that follows the Inflow design system.
+ * It applies specific Inflow design tokens for radius, colors, and delete icons.
  *
  * @example
  * ```tsx
@@ -26,35 +26,35 @@ export interface ThemedChipProps extends ChipProps {
  * ```
  */
 export const ThemedChip = forwardRef<HTMLDivElement, ThemedChipProps>(
-  ({ inriverVariant = true, sx, ...props }, ref) => {
+  ({ inflowVariant = true, sx, ...props }, ref) => {
     
-    const customStyles = inriverVariant ? {
-      borderRadius: `${inriverTokens.radius.full}px`,
-      fontWeight: inriverTokens.typography.fontWeights.medium,
+    const customStyles = inflowVariant ? {
+      borderRadius: `${inflowTokens.radius.full}px`,
+      fontWeight: inflowTokens.typography.fontWeights.medium,
       letterSpacing: '0.1px',
       ...(props.variant === 'outlined' && {
-        borderColor: inriverTokens.colors.outlineVariant,
+        borderColor: inflowTokens.colors.outlineVariant,
         color: props.color === 'primary'
-          ? inriverTokens.colors.navy800
-          : inriverTokens.colors.onSurfaceVariant,
+          ? inflowTokens.colors.navy800
+          : inflowTokens.colors.onSurfaceVariant,
       }),
       ...(props.variant !== 'outlined' && props.color === 'primary' && {
-        backgroundColor: inriverTokens.colors.primaryTab,
-        color: inriverTokens.colors.navy700,
+        backgroundColor: inflowTokens.colors.primaryTab,
+        color: inflowTokens.colors.navy700,
         '& .MuiChip-deleteIcon': {
-          color: inriverTokens.colors.navy700,
+          color: inflowTokens.colors.navy700,
           opacity: 0.7,
           '&:hover': {
             opacity: 1,
-            color: inriverTokens.colors.navyDark,
+            color: inflowTokens.colors.navyDark,
           }
         }
       }),
       ...(props.variant !== 'outlined' && props.color === 'error' && {
-        backgroundColor: inriverTokens.colors.diffRemovedBg,
-        color: inriverTokens.colors.diffRemovedText,
+        backgroundColor: inflowTokens.colors.diffRemovedBg,
+        color: inflowTokens.colors.diffRemovedText,
         '& .MuiChip-deleteIcon': {
-          color: inriverTokens.colors.diffRemovedText,
+          color: inflowTokens.colors.diffRemovedText,
           opacity: 0.7,
           '&:hover': {
             opacity: 1,
@@ -62,8 +62,8 @@ export const ThemedChip = forwardRef<HTMLDivElement, ThemedChipProps>(
         }
       }),
       ...(props.variant !== 'outlined' && props.color === 'success' && {
-        backgroundColor: inriverTokens.colors.diffAddedBg,
-        color: inriverTokens.colors.diffAddedText,
+        backgroundColor: inflowTokens.colors.diffAddedBg,
+        color: inflowTokens.colors.diffAddedText,
       }),
     } : {};
 

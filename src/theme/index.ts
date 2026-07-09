@@ -1,4 +1,4 @@
 // Barrel exports for theme module
-export { theme as inriverTheme } from './inriver';
+export { inflowTheme } from './inflow';
 export { defaultTheme } from './default';
-export { inriverTokens, inriverCustomColors, inriverSpacing } from './tokens';
+export { inflowTokens, inflowCustomColors, inflowSpacing } from './tokens';

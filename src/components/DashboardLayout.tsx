@@ -32,7 +32,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             { label: 'New Project', variant: 'filled', icon: 'add', onClick: () => {} }
           ]} 
         />
-        <Box component="main" sx={{ flex: 1, bgcolor: 'inriver.navy100', overflow: 'auto', p: 3 }}>
+        <Box component="main" sx={{ flex: 1, bgcolor: 'inflow.navy100', overflow: 'auto', p: 3 }}>
           {children}
         </Box>
       </Box>

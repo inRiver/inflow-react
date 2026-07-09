@@ -69,11 +69,11 @@ export function LegacySafeTable(props: ThemedTableProps<LegacyRow>) {
 }`;
 
 const providerCode = `import { CssBaseline, ThemeProvider } from '@mui/material';
-import { inriverTheme } from 'inriver-react-theme';
+import { inflowTheme } from 'inriver-react-theme';
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
-    <ThemeProvider theme={inriverTheme}>
+    <ThemeProvider theme={inflowTheme}>
       <CssBaseline />
       {children}
     </ThemeProvider>
@@ -102,14 +102,14 @@ export const CompactStatusChip = styled(ThemedChip)(({ theme }) => ({
 }));`;
 
 const tokenCode = `import { Box } from '@mui/material';
-import { inriverTokens } from 'inriver-react-theme';
+import { inflowTokens } from 'inriver-react-theme';
 
 export function TokenExample() {
   return (
     <Box
       sx={{
-        borderRadius: inriverTokens.radius.sm,
-        backgroundColor: inriverTokens.colors.surfaceLow,
+        borderRadius: inflowTokens.radius.sm,
+        backgroundColor: inflowTokens.colors.surfaceLow,
         p: 2,
       }}
     />
@@ -130,8 +130,8 @@ npm unlink inriver-react-theme
 npm install  # Reinstalls from Azure Artifacts or git`;
 
 const publicExports = [
-  'inriverTheme and defaultTheme',
-  'inriverTokens, inriverCustomColors, and inriverSpacing',
+  'inflowTheme and defaultTheme',
+  'inflowTokens, inflowCustomColors, and inflowSpacing',
   'ThemedButton, ThemedChip, ThemedTextField, ThemedCard, ThemedDialog, and ThemedTable',
 ];
 

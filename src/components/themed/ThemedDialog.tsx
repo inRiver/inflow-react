@@ -7,7 +7,7 @@ import {
   IconButton
 } from '@mui/material';
 import type { DialogProps } from '@mui/material';
-import { inriverTokens } from '../../theme/tokens';
+import { inflowTokens } from '../../theme/tokens';
 
 export interface ThemedDialogProps extends Omit<DialogProps, 'title'> {
   /** The title of the dialog */
@@ -23,8 +23,8 @@ export interface ThemedDialogProps extends Omit<DialogProps, 'title'> {
 /**
  * ThemedDialog
  * 
- * A pre-rendered, themed dialog component that follows the Inriver design system.
- * Built-in slots for title, actions, and content, styling them with Inriver tokens.
+ * A pre-rendered, themed dialog component that follows the Inflow design system.
+ * Built-in slots for title, actions, and content, styling them with Inflow tokens.
  *
  * @example
  * ```tsx
@@ -48,7 +48,7 @@ export const ThemedDialog = forwardRef<HTMLDivElement, ThemedDialogProps>(
         onClose={onClose}
         PaperProps={{
           sx: {
-            borderRadius: `${inriverTokens.radius.xl}px`,
+            borderRadius: `${inflowTokens.radius.xl}px`,
           }
         }}
         sx={[...(Array.isArray(sx) ? sx : [sx])]}
@@ -57,7 +57,7 @@ export const ThemedDialog = forwardRef<HTMLDivElement, ThemedDialogProps>(
         {title && (
           <DialogTitle 
             sx={{
-              backgroundColor: inriverTokens.colors.surfaceHighest,
+              backgroundColor: inflowTokens.colors.surfaceHighest,
               padding: '24px',
               fontSize: '1.5rem',
               fontWeight: 400,
@@ -74,7 +74,7 @@ export const ThemedDialog = forwardRef<HTMLDivElement, ThemedDialogProps>(
                 aria-label="close"
                 onClick={(e) => onClose(e, 'closeButtonClick')}
                 sx={{
-                  color: inriverTokens.colors.onSurfaceVariant,
+                  color: inflowTokens.colors.onSurfaceVariant,
                 }}
               >
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

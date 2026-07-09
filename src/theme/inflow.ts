@@ -1,8 +1,8 @@
-// Canonical source: docs/mui/inriver-theme.js
+// Canonical source: docs/mui/inflow-theme.js
 import { createTheme } from '@mui/material/styles';
 import type { Shadows } from '@mui/material/styles';
 
-interface InriverPalette {
+interface InflowPalette {
   navy900: string;
   navy800: string;
   navy700: string;
@@ -39,8 +39,8 @@ interface InriverPalette {
 }
 
 declare module '@mui/material/styles' {
-  interface Palette { inriver: InriverPalette; }
-  interface PaletteOptions { inriver?: InriverPalette; }
+  interface Palette { inflow: InflowPalette; }
+  interface PaletteOptions { inflow?: InflowPalette; }
 }
 
 const T = {
@@ -110,7 +110,7 @@ const shadows = [
   ...Array.from({ length: 16 }, () => E3),
 ] as Shadows;
 
-export const theme = createTheme({
+export const inflowTheme = createTheme({
   shape: { borderRadius: T.radiusSm },
   spacing: 8,
   shadows,
@@ -131,7 +131,7 @@ export const theme = createTheme({
     divider: T.outlineVariant,
     action: { disabled: 'rgba(0,0,0,0.38)', disabledBackground: 'rgba(0,0,0,0.12)' },
     background: { default: T.navy100, paper: '#ffffff' },
-    inriver: {
+    inflow: {
       navy900: T.navy900,
       navy800: T.navy800,
       navy700: T.navy700,
@@ -195,29 +195,29 @@ export const theme = createTheme({
         body: {
           backgroundColor: T.navy100,
           color: T.onSurface,
-          '--inri-surface-container-lowest-color': T.surfaceLowest,
-          '--inri-surface-container-low-color': T.surfaceLow,
-          '--inri-surface-container-color': T.surfaceContainer,
-          '--inri-surface-container-high-color': T.surfaceContainerHigh,
-          '--inri-surface-container-highest-color': T.surfaceHighest,
-          '--inri-primary-color': T.navy700,
-          '--inri-primary-fixed-color': T.primaryFixed,
-          '--inri-secondary-fixed-color': T.secondaryFixed,
-          '--inri-tertiary-fixed-color': T.tertiaryFixed,
-          '--inri-on-surface-color': T.onSurface,
-          '--inri-on-surface-variant-color': T.onSurfaceVariant,
-          '--inri-inverse-surface-color': T.inverseSurface,
-          '--inri-inverse-on-surface-color': T.inverseOnSurface,
-          '--inri-outline-color': T.outline,
-          '--inri-outline-variant-color': T.outlineVariant,
-          '--inri-certainty-high-color': T.certaintyHigh,
-          '--inri-certainty-medium-color': T.certaintyMedium,
-          '--inri-highlight-green-color': T.highlightGreen,
-          '--inri-highlight-red-color': T.highlightRed,
-          '--inri-highlight-yellow-color': T.highlightYellow,
-          '--inri-row-hover-color': T.rowHover,
-          '--inri-row-selected-color': T.rowSelected,
-          '--inri-mandatory-row-color': T.mandatoryRow,
+          '--infl-surface-container-lowest-color': T.surfaceLowest,
+          '--infl-surface-container-low-color': T.surfaceLow,
+          '--infl-surface-container-color': T.surfaceContainer,
+          '--infl-surface-container-high-color': T.surfaceContainerHigh,
+          '--infl-surface-container-highest-color': T.surfaceHighest,
+          '--infl-primary-color': T.navy700,
+          '--infl-primary-fixed-color': T.primaryFixed,
+          '--infl-secondary-fixed-color': T.secondaryFixed,
+          '--infl-tertiary-fixed-color': T.tertiaryFixed,
+          '--infl-on-surface-color': T.onSurface,
+          '--infl-on-surface-variant-color': T.onSurfaceVariant,
+          '--infl-inverse-surface-color': T.inverseSurface,
+          '--infl-inverse-on-surface-color': T.inverseOnSurface,
+          '--infl-outline-color': T.outline,
+          '--infl-outline-variant-color': T.outlineVariant,
+          '--infl-certainty-high-color': T.certaintyHigh,
+          '--infl-certainty-medium-color': T.certaintyMedium,
+          '--infl-highlight-green-color': T.highlightGreen,
+          '--infl-highlight-red-color': T.highlightRed,
+          '--infl-highlight-yellow-color': T.highlightYellow,
+          '--infl-row-hover-color': T.rowHover,
+          '--infl-row-selected-color': T.rowSelected,
+          '--infl-mandatory-row-color': T.mandatoryRow,
         },
       },
     },

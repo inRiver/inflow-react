@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
-import { inriverTheme, defaultTheme } from '../theme';
+import { inflowTheme, defaultTheme } from '../theme';
 
-type ThemeType = 'inriver' | 'default';
+type ThemeType = 'inflow' | 'default';
 
 type ThemeContextType = {
   currentTheme: ThemeType;
@@ -23,7 +23,7 @@ export const useTheme = () => {
 export const CustomThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentTheme, setCurrentTheme] = useState<ThemeType>(() => {
     const savedTheme = localStorage.getItem('showcase-theme');
-    return (savedTheme === 'inriver' || savedTheme === 'default') ? savedTheme : 'inriver';
+    return (savedTheme === 'inflow' || savedTheme === 'default') ? savedTheme : 'inflow';
   });
 
   useEffect(() => {
@@ -31,10 +31,10 @@ export const CustomThemeProvider: React.FC<{ children: React.ReactNode }> = ({ c
   }, [currentTheme]);
 
   const toggleTheme = () => {
-    setCurrentTheme((prev) => (prev === 'inriver' ? 'default' : 'inriver'));
+    setCurrentTheme((prev) => (prev === 'inflow' ? 'default' : 'inflow'));
   };
 
-  const themeToApply = currentTheme === 'inriver' ? inriverTheme : defaultTheme;
+  const themeToApply = currentTheme === 'inflow' ? inflowTheme : defaultTheme;
 
   return (
     <ThemeContext.Provider value={{ currentTheme, toggleTheme }}>

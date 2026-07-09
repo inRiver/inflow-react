@@ -10,7 +10,7 @@ import {
   Paper
 } from '@mui/material';
 import type { TableProps } from '@mui/material';
-import { inriverTokens } from '../../theme/tokens';
+import { inflowTokens } from '../../theme/tokens';
 
 type TableRowData = Record<string, unknown>;
 
@@ -36,8 +36,8 @@ export interface ThemedTableProps<T extends TableRowData = TableRowData> extends
 /**
  * ThemedTable
  * 
- * A pre-rendered, themed table component that follows the Inriver design system.
- * It provides a simplified data/columns API while applying Inriver styling.
+ * A pre-rendered, themed table component that follows the Inflow design system.
+ * It provides a simplified data/columns API while applying Inflow styling.
  *
  * @example
  * ```tsx
@@ -56,7 +56,7 @@ const ThemedTableBase = <T extends TableRowData = TableRowData>(
   ref: ForwardedRef<HTMLTableElement>
 ) => {
     return (
-        <TableContainer component={Paper} elevation={0} sx={{ border: `1px solid ${inriverTokens.colors.outlineVariant}`, borderRadius: `${inriverTokens.radius.sm}px` }}>
+        <TableContainer component={Paper} elevation={0} sx={{ border: `1px solid ${inflowTokens.colors.outlineVariant}`, borderRadius: `${inflowTokens.radius.sm}px` }}>
         <Table ref={ref} sx={[...(Array.isArray(sx) ? sx : [sx])]} {...props}>
           <TableHead>
             <TableRow>
@@ -66,9 +66,9 @@ const ThemedTableBase = <T extends TableRowData = TableRowData>(
                   align={column.align || 'left'}
                   sx={{ 
                     fontWeight: 600, 
-                    color: inriverTokens.colors.onSurface,
-                    borderColor: inriverTokens.colors.outlineVariant,
-                    backgroundColor: inriverTokens.colors.white
+                    color: inflowTokens.colors.onSurface,
+                    borderColor: inflowTokens.colors.outlineVariant,
+                    backgroundColor: inflowTokens.colors.white
                   }}
                 >
                   {column.label}
@@ -83,7 +83,7 @@ const ThemedTableBase = <T extends TableRowData = TableRowData>(
                 sx={{
                   '&:last-child td, &:last-child th': { border: 0 },
                   '&:hover': {
-                    backgroundColor: inriverTokens.colors.rowHover,
+                    backgroundColor: inflowTokens.colors.rowHover,
                   },
                   ...(striped && index % 2 === 1 && {
                     backgroundColor: 'rgba(0, 0, 0, 0.02)'
@@ -95,7 +95,7 @@ const ThemedTableBase = <T extends TableRowData = TableRowData>(
                     key={column.id} 
                     align={column.align || 'left'}
                     sx={{
-                      borderColor: inriverTokens.colors.outlineVariant,
+                      borderColor: inflowTokens.colors.outlineVariant,
                       fontSize: '0.875rem',
                       letterSpacing: '0.25px'
                     }}
@@ -107,7 +107,7 @@ const ThemedTableBase = <T extends TableRowData = TableRowData>(
             ))}
             {data.length === 0 && (
               <TableRow>
-                <TableCell colSpan={columns.length} align="center" sx={{ py: 4, color: inriverTokens.colors.onSurfaceVariant }}>
+                <TableCell colSpan={columns.length} align="center" sx={{ py: 4, color: inflowTokens.colors.onSurfaceVariant }}>
                   No data available
                 </TableCell>
               </TableRow>

@@ -211,7 +211,7 @@ export const ComponentSidebar: React.FC<ComponentSidebarProps> = ({
                 onChange={(e) => onSearchQueryChange(e.target.value)}
                 sx={{
                   '& .MuiOutlinedInput-root': {
-                    backgroundColor: theme.palette.inriver.surfaceHighest,
+                    backgroundColor: theme.palette.inflow.surfaceHighest,
                     '& fieldset': {
                       border: 'none',
                     },

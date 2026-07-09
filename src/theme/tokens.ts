@@ -1,8 +1,8 @@
-// Extracted design tokens from Inriver theme
+// Extracted design tokens from Inflow theme
 // These tokens are used for documentation and direct access to design system values
 
-// Custom palette extensions for Inriver-specific tokens
-export const inriverCustomColors = {
+// Custom palette extensions for Inflow-specific tokens
+export const inflowCustomColors = {
   background: '#EBF1FC',
   buttonHover: '#91C2FD',
   certaintyHigh: '#2C9B4B',
@@ -17,7 +17,7 @@ export const inriverCustomColors = {
 } as const;
 
 // Spacing tokens mapped to design system variables
-export const inriverSpacing = {
+export const inflowSpacing = {
   xxs: 4,  // $spacing-xxs
   xs: 8,   // $spacing-xs
   s: 16,   // $spacing-s
@@ -27,7 +27,7 @@ export const inriverSpacing = {
 } as const;
 
 // Core design tokens extracted from theme
-export const inriverTokens = {
+export const inflowTokens = {
   colors: {
     navy900: '#16243d',
     navy800: '#22243d',
@@ -72,7 +72,7 @@ export const inriverTokens = {
     full: 9999,
   },
   
-  spacing: inriverSpacing,
+  spacing: inflowSpacing,
   
   shadows: {
     e1: '0 1px 3px 1px rgba(0,0,0,0.15), 0 1px 2px 0 rgba(0,0,0,0.30)',

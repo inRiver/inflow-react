@@ -73,7 +73,7 @@ export const DataTable: React.FC = () => {
       </Box>
       
       {sel.length > 0 && (
-        <Box sx={{ px: 2, py: 1, bgcolor: 'inriver.surfaceLow', display: 'flex', alignItems: 'center', gap: 2 }} data-testid="bulk-action-bar">
+        <Box sx={{ px: 2, py: 1, bgcolor: 'inflow.surfaceLow', display: 'flex', alignItems: 'center', gap: 2 }} data-testid="bulk-action-bar">
           <Typography variant="body2" color="primary.main">{sel.length} selected</Typography>
           <Button size="small" variant="text" startIcon={<MI size={16}>publish</MI>}>Publish</Button>
           <Button size="small" variant="text" startIcon={<MI size={16}>auto_fix_high</MI>}>Enrich</Button>
