@@ -1,6 +1,7 @@
 # Inflow Design System
 
-Internal React/MUI theme package and live showcase for Inflow product UIs.
+Shared Inflow React/MUI design-system package and live showcase for product UIs.
+Published on public npm as `@inriver/inflow` for internal Inriver teams and authorized external partners.
 
 > Note: This package was previously known internally as `inriver-react-theme`.
 

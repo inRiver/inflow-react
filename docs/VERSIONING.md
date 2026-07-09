@@ -87,7 +87,7 @@ Avoid `^` for apps that must not pick up a new compatibility checkpoint automati
 sequenceDiagram
   participant Theme as Theme repo
   participant App as Consuming app
-  participant Feed as Azure Artifacts/npm feed
+  participant Feed as public npm registry
   participant Git as Git source tags
 
   Theme->>Theme: implement + build
@@ -97,6 +97,8 @@ sequenceDiagram
   Theme->>Git: create immutable source tag
   Feed-->>App: app updates only when it chooses
 ```
+
+Public npm is the primary consumer registry for `@inriver/inflow`. Internal source control or CI can still live in Azure DevOps or other private infrastructure without changing the release-channel model.
 
 ```bash
 npm version patch

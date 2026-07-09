@@ -354,7 +354,7 @@ export function ComponentPage() {
                 </Box>
 
                 <Typography variant="body1" color="text.secondary">
-                  Content and usage guidelines for this component will be expanded in a future update.
+                  These are baseline usage patterns for this component category; component-specific guidance can grow here over time.
                 </Typography>
 
                 <Box component="ul" sx={{ m: 0, pl: 2.5, color: 'text.secondary' }}>
@@ -386,8 +386,8 @@ export function ComponentPage() {
                 </Box>
 
                 <Typography variant="body1" color="text.secondary">
-                  This component inherits MUI&apos;s built-in accessibility behavior. Component-specific accessibility
-                  guidance for Inflow will be expanded in a future update.
+                  This component inherits MUI&apos;s built-in accessibility behavior. These notes establish the baseline,
+                  and component-specific Inflow accessibility guidance can expand here as needed.
                 </Typography>
 
                 <MuiLink

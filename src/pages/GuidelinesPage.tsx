@@ -429,7 +429,7 @@ export function GuidelinesPage() {
         <Card>
           <CardContent>
             <Stack spacing={2}>
-              <Typography variant="h5">4. Patch within the same checkpoint</Typography>
+              <Typography variant="h5">4. Handle retired checkpoints and functional bugs</Typography>
               <Typography variant="body2" color="text.secondary">
                 Once the team has moved to a newer checkpoint, older checkpoints are considered
                 frozen compatibility lines. Visual tweaks can usually be handled with local
@@ -458,10 +458,11 @@ export function GuidelinesPage() {
         <Card>
           <CardContent>
             <Stack spacing={2}>
-              <Typography variant="h5">5. Separate style tweaks from functional bugs</Typography>
+              <Typography variant="h5">5. Wrap the app once at the root</Typography>
               <Typography variant="body2" color="text.secondary">
-                The exported theme carries the palette, typography, component overrides, CSS
-                variables, and baseline surface colors used by this showcase.
+                Wrap the application root once with <code>ThemeProvider</code>, the exported
+                <code>inflowTheme</code>, and <code>CssBaseline</code> so regular MUI components
+                inherit the shared Inflow baseline everywhere.
               </Typography>
               <CodeBlock code={providerCode} language="tsx" />
             </Stack>
@@ -471,11 +472,11 @@ export function GuidelinesPage() {
         <Card>
           <CardContent>
             <Stack spacing={2}>
-              <Typography variant="h5">6. Wrap the app once at the root</Typography>
+              <Typography variant="h5">6. Use Themed components directly</Typography>
               <Typography variant="body2" color="text.secondary">
-                Use plain MUI components for regular cases under <code>ThemeProvider</code>. Use
-                the exported <code>Themed*</code> components when teams want the style-first
-                wrappers that enforce Inflow tokens even across projects.
+                Use the exported <code>Themed*</code> wrappers directly for common Inflow UI
+                patterns such as actions, status indicators, and form inputs. They package shared
+                styling decisions into reusable components that stay consistent across apps.
               </Typography>
               <CodeBlock code={componentCode} language="tsx" />
             </Stack>
@@ -485,7 +486,7 @@ export function GuidelinesPage() {
         <Card>
           <CardContent>
             <Stack spacing={2}>
-              <Typography variant="h5">7. Import themed components directly</Typography>
+              <Typography variant="h5">7. Extend wrappers with styled()</Typography>
               <Typography variant="body2" color="text.secondary">
                 For reusable project-specific variants, prefer composition or <code>styled()</code>
                 over inheritance. This keeps props, refs, and MUI theme behavior intact.
@@ -498,20 +499,7 @@ export function GuidelinesPage() {
         <Card>
           <CardContent>
             <Stack spacing={2}>
-              <Typography variant="h5">8. Extend wrappers with MUI styled</Typography>
-              <Typography variant="body2" color="text.secondary">
-                For reusable project-specific variants, prefer composition or <code>styled()</code>
-                over inheritance. This keeps props, refs, and MUI theme behavior intact.
-              </Typography>
-              <CodeBlock code={styledCode} language="tsx" />
-            </Stack>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent>
-            <Stack spacing={2}>
-              <Typography variant="h5">9. Use tokens sparingly for custom surfaces</Typography>
+              <Typography variant="h5">8. Use tokens sparingly for custom surfaces</Typography>
               <Typography variant="body2" color="text.secondary">
                 Prefer the MUI theme first. Reach for tokens when building custom surfaces that are
                 not MUI components or when a value needs to be shared outside <code>sx</code>.
