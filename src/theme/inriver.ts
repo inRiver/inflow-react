@@ -75,6 +75,7 @@ const T = {
   inverseOnSurface: '#f0f0f7',
   certaintyHigh: '#2c9b4b',
   certaintyMedium: '#ff9800',
+  ratingActive: '#0b2d6e',
   highlightGreen: '#d6efdd',
   highlightRed: '#f4d9d9',
   highlightYellow: '#fff2cc',
@@ -178,7 +179,7 @@ export const theme = createTheme({
     h3: { fontWeight: 400, fontSize: '3rem', lineHeight: 1.167, letterSpacing: 0 },
     h4: { fontWeight: 400, fontSize: '2.125rem', lineHeight: 1.235, letterSpacing: '0.25px' },
     h5: { fontWeight: 400, fontSize: '1.5rem', lineHeight: 1.334, letterSpacing: 0 },
-    h6: { fontWeight: 700, fontSize: '1.25rem', lineHeight: '24px', letterSpacing: '0.15px' },
+    h6: { fontWeight: 700, fontSize: '1.375rem', lineHeight: '36px', letterSpacing: '0.15px' },
     subtitle1: { fontWeight: 400, fontSize: '1rem', lineHeight: 1.5, letterSpacing: '0.15px' },
     subtitle2: { fontWeight: 500, fontSize: '0.875rem', lineHeight: '20px', letterSpacing: '0.1px' },
     body1: { fontWeight: 400, fontSize: '1rem', lineHeight: '24px', letterSpacing: '0.5px' },
@@ -232,10 +233,10 @@ export const theme = createTheme({
           backgroundColor: T.navy700,
           '&:hover': { backgroundColor: T.navyDark },
         },
-        outlined: { borderColor: T.outline },
+        outlined: { borderColor: T.outlineVariant },
         outlinedPrimary: {
           color: T.navy700,
-          borderColor: T.outline,
+          borderColor: T.outlineVariant,
           '&:hover': { borderColor: T.navy700, backgroundColor: 'rgba(11,45,110,0.08)' },
         },
         textPrimary: { color: T.navy700 },
@@ -258,6 +259,8 @@ export const theme = createTheme({
           '&.Mui-selected': {
             backgroundColor: T.primaryTab,
             color: T.navy700,
+            fontWeight: 700,
+            boxShadow: `inset 0 0 0 1px ${T.navy700}`,
             '&:hover': { backgroundColor: T.primaryTab },
           },
         },
@@ -298,26 +301,104 @@ export const theme = createTheme({
         },
       },
     },
-    MuiInputLabel: { styleOverrides: { root: { '&.Mui-focused': { color: T.navy700 } } } },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          lineHeight: 1,
+          '&.MuiInputLabel-outlined.MuiInputLabel-shrink': {
+            transform: 'translate(14px, -6px) scale(0.75)',
+          },
+          '&.Mui-focused': { color: T.navy700 },
+        },
+      },
+    },
 
-    MuiCheckbox: { styleOverrides: { root: { color: T.outline, '&.Mui-checked': { color: T.navy700 } } } },
-    MuiRadio: { styleOverrides: { root: { color: T.outline, '&.Mui-checked': { color: T.navy700 } } } },
+    MuiCheckbox: {
+      styleOverrides: {
+        root: ({ ownerState, theme }) => {
+          if (ownerState.disabled) return {};
+          const colorKey = ownerState.color;
+          const checkedColor =
+            colorKey === 'primary'
+              ? theme.palette.primary.main
+              : colorKey === 'secondary'
+                ? theme.palette.secondary.main
+                : colorKey === 'error'
+                  ? theme.palette.error.main
+                  : colorKey === 'info'
+                    ? theme.palette.info.main
+                    : colorKey === 'success'
+                      ? theme.palette.success.main
+                      : colorKey === 'warning'
+                        ? theme.palette.warning.main
+                        : T.navy700;
+          return { color: T.outline, '&.Mui-checked': { color: checkedColor } };
+        },
+      },
+    },
+    MuiRadio: {
+      styleOverrides: {
+        root: ({ ownerState, theme }) => {
+          if (ownerState.disabled) return {};
+          const colorKey = ownerState.color;
+          const checkedColor =
+            colorKey === 'primary'
+              ? theme.palette.primary.main
+              : colorKey === 'secondary'
+                ? theme.palette.secondary.main
+                : colorKey === 'error'
+                  ? theme.palette.error.main
+                  : colorKey === 'info'
+                    ? theme.palette.info.main
+                    : colorKey === 'success'
+                      ? theme.palette.success.main
+                      : colorKey === 'warning'
+                        ? theme.palette.warning.main
+                        : T.navy700;
+          return { color: T.outline, '&.Mui-checked': { color: checkedColor } };
+        },
+      },
+    },
     MuiSwitch: {
       styleOverrides: {
-        switchBase: {
-          '&.Mui-checked': {
-            color: '#fff',
-            '& + .MuiSwitch-track': { backgroundColor: T.navy700, opacity: 1 },
-          },
+        switchBase: ({ ownerState, theme }) => {
+          if (ownerState.disabled) return {};
+          const colorKey = ownerState.color;
+          const trackColor =
+            colorKey === 'primary'
+              ? theme.palette.primary.main
+              : colorKey === 'secondary'
+                ? theme.palette.secondary.main
+                : colorKey === 'error'
+                  ? theme.palette.error.main
+                  : colorKey === 'info'
+                    ? theme.palette.info.main
+                    : colorKey === 'success'
+                      ? theme.palette.success.main
+                      : colorKey === 'warning'
+                        ? theme.palette.warning.main
+                        : T.navy700;
+          return {
+            '&.Mui-checked': {
+              color: '#fff',
+              '& + .MuiSwitch-track': { backgroundColor: trackColor, opacity: 1 },
+            },
+          };
         },
       },
     },
     MuiSlider: {
       styleOverrides: {
-        root: { color: T.navy400 },
+        colorPrimary: { color: T.navy400 },
         rail: { backgroundColor: T.surfaceVariant, opacity: 1 },
-        track: { backgroundColor: T.navy400, border: 'none' },
-        thumb: { backgroundColor: T.navy400 },
+        track: { backgroundColor: 'currentColor', border: 'none' },
+        thumb: { backgroundColor: 'currentColor' },
+      },
+    },
+    MuiRating: {
+      styleOverrides: {
+        iconFilled: { color: T.ratingActive },
+        iconHover: { color: T.ratingActive },
       },
     },
 
@@ -345,14 +426,14 @@ export const theme = createTheme({
         root: {
           backgroundColor: T.surfaceHighest,
           padding: 24,
-          fontSize: '1.25rem',
-          fontWeight: 700,
+          fontSize: '1.5rem',
+          fontWeight: 400,
           lineHeight: 1.334,
           letterSpacing: 0,
         },
       },
     },
-    MuiDialogContent: { styleOverrides: { root: { padding: '24px' } } },
+    MuiDialogContent: { styleOverrides: { root: { padding: '24px', paddingTop: '24px !important' } } },
     MuiDialogActions: { styleOverrides: { root: { padding: '8px 24px 24px' } } },
     MuiMenu: { styleOverrides: { paper: { borderRadius: T.radiusXs } } },
     MuiAutocomplete: {
@@ -383,20 +464,81 @@ export const theme = createTheme({
     MuiTooltip: {
       styleOverrides: { tooltip: { backgroundColor: '#616161', fontSize: '0.75rem', borderRadius: T.radiusXs } },
     },
+    MuiBadge: {
+      styleOverrides: {
+        badge: ({ ownerState, theme }) => {
+          const colorKey = ownerState.color;
+          const backgroundColor =
+            colorKey === 'primary'
+              ? theme.palette.primary.main
+              : colorKey === 'secondary'
+                ? theme.palette.secondary.main
+                : colorKey === 'error'
+                  ? theme.palette.error.main
+                  : colorKey === 'info'
+                    ? theme.palette.info.main
+                    : colorKey === 'success'
+                      ? theme.palette.success.main
+                      : colorKey === 'warning'
+                        ? theme.palette.warning.main
+                        : theme.palette.grey[400];
+
+          return {
+            backgroundColor,
+            color: T.white,
+            ...(ownerState.variant === 'dot'
+              ? {
+                  minWidth: 8,
+                  height: 8,
+                  borderRadius: 4,
+                  padding: 0,
+                }
+              : {
+                  fontWeight: 500,
+                  fontSize: '0.6875rem',
+                  lineHeight: '16px',
+                  minWidth: 16,
+                  height: 16,
+                  padding: '0 4px',
+                  borderRadius: 8,
+                }),
+          };
+        },
+      },
+    },
     MuiDrawer: { styleOverrides: { paper: { borderRight: `1px solid ${T.outlineVariant}` } } },
 
     MuiChip: {
-      defaultProps: { size: 'small' },
+      defaultProps: { size: 'medium' },
       styleOverrides: {
         root: {
           borderRadius: T.radiusFull,
           fontWeight: 500,
           letterSpacing: '0.1px',
           maxWidth: '100%',
+          '&.MuiChip-sizeSmall': {
+            height: 24,
+            fontSize: '0.75rem',
+          },
+          '&.MuiChip-sizeMedium': {
+            height: 32,
+            fontSize: '0.875rem',
+          },
+          '&.MuiChip-sizeSmall > .MuiChip-label': {
+            paddingLeft: 8,
+            paddingRight: 8,
+          },
+          '&.MuiChip-sizeMedium > .MuiChip-label': {
+            paddingLeft: 12,
+            paddingRight: 12,
+          },
+          '&.MuiChip-sizeSmall > .MuiChip-icon, &.MuiChip-sizeSmall > .MuiChip-deleteIcon': {
+            fontSize: 14,
+          },
+          '&.MuiChip-sizeMedium > .MuiChip-icon, &.MuiChip-sizeMedium > .MuiChip-deleteIcon': {
+            fontSize: 18,
+          },
         },
-        sizeSmall: { height: 28 },
-        sizeMedium: { height: 32 },
-        label: { paddingLeft: 12, paddingRight: 12 },
         outlined: { borderColor: T.outlineVariant, color: T.onSurfaceVariant, backgroundColor: T.white },
         outlinedPrimary: {
           borderColor: T.outlineVariant,
@@ -407,11 +549,21 @@ export const theme = createTheme({
         filledPrimary: { backgroundColor: T.primaryTab, color: T.navy700 },
       },
     },
-    MuiAvatar: { styleOverrides: { root: { backgroundColor: T.navy700, fontSize: '0.875rem' } } },
+    MuiAvatar: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          backgroundColor: theme.palette.grey[400],
+          color: T.white,
+          fontSize: '1.25rem',
+          fontWeight: 400,
+          letterSpacing: '0.14px',
+        }),
+      },
+    },
     MuiTableCell: {
       styleOverrides: {
         root: { borderColor: T.outlineVariant, fontSize: '0.875rem', letterSpacing: '0.25px' },
-        head: { fontWeight: 600, color: T.navy800 },
+        head: { fontWeight: 600, color: T.onSurface },
       },
     },
     MuiTableRow: {
@@ -430,7 +582,7 @@ export const theme = createTheme({
     MuiTab: {
       styleOverrides: {
         root: {
-          textTransform: 'capitalize',
+          textTransform: 'none',
           fontWeight: 500,
           letterSpacing: '0.1px',
           color: T.onSurfaceVariant,
@@ -439,13 +591,33 @@ export const theme = createTheme({
       },
     },
     MuiPaginationItem: {
-      styleOverrides: { root: { '&.Mui-selected': { backgroundColor: T.primaryTab, color: T.navy700 } } },
+      styleOverrides: {
+        root: {
+          '&&.Mui-selected, &&.Mui-selected:hover, &&.Mui-selected.Mui-focusVisible': {
+            backgroundColor: `${T.navy700} !important`,
+            border: `1px solid ${T.navy700}`,
+            color: `${T.white} !important`,
+            fontWeight: 600,
+          },
+        },
+      },
     },
     MuiBreadcrumbs: { styleOverrides: { separator: { color: T.onSurfaceVariant } } },
     MuiLink: { defaultProps: { color: 'primary' }, styleOverrides: { root: { textDecorationColor: 'inherit' } } },
     MuiStepIcon: {
       styleOverrides: {
         root: { '&.Mui-active': { color: T.navy700 }, '&.Mui-completed': { color: T.navy700 } },
+      },
+    },
+    MuiBottomNavigationAction: {
+      styleOverrides: {
+        root: {
+          color: T.onSurfaceVariant,
+          '& .MuiBottomNavigationAction-label, & .MuiSvgIcon-root': { color: T.onSurfaceVariant },
+          '&&.Mui-selected, &&.Mui-selected .MuiBottomNavigationAction-label, &&.Mui-selected .MuiSvgIcon-root': {
+            color: `${T.navy700} !important`,
+          },
+        },
       },
     },
 
@@ -457,7 +629,37 @@ export const theme = createTheme({
         standardSuccess: { backgroundColor: '#edf7ed', color: '#1e4620' },
       },
     },
-    MuiSnackbarContent: { styleOverrides: { root: { backgroundColor: '#323232', borderRadius: T.radiusSm } } },
+    MuiSnackbarContent: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#c9dcff',
+          color: T.onSurface,
+          borderRadius: T.radiusMd,
+          boxShadow: 'none',
+          minHeight: 48,
+          padding: '12px 16px',
+          fontSize: '0.875rem',
+          fontWeight: 400,
+          lineHeight: '20px',
+          letterSpacing: '0.25px',
+          '& .MuiSnackbarContent-message': {
+            padding: 0,
+          },
+          '& .MuiSnackbarContent-action': {
+            marginRight: 0,
+            paddingLeft: 16,
+          },
+          '& .MuiButton-root': {
+            color: T.navy700,
+            minWidth: 'auto',
+            padding: 0,
+          },
+          '& .MuiIconButton-root': {
+            color: T.onSurface,
+          },
+        },
+      },
+    },
     MuiLinearProgress: { styleOverrides: { root: { borderRadius: T.radiusFull } } },
     MuiAccordion: { styleOverrides: { root: { borderRadius: 0, '&:before': { display: 'none' } } } },
   },

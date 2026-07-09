@@ -49,6 +49,7 @@ export const inriverTokens = {
     surfaceHighest: '#e3e9f8',
     outline: '#727787',
     outlineVariant: '#c2c6d8',
+    ratingActive: '#0b2d6e',
     primaryTab: '#c3defe',
     white: '#ffffff',
     
