@@ -20,7 +20,7 @@ import SettingsBrightnessOutlinedIcon from '@mui/icons-material/SettingsBrightne
 import PaletteOutlinedIcon from '@mui/icons-material/PaletteOutlined';
 import { ComponentSidebar } from '../components/navigation/ComponentSidebar';
 import { ComponentSearchDialog } from '../components/navigation/ComponentSearchDialog';
-import { useShowcaseTheme } from './ThemeContext';
+import { useShowcaseTheme, DARK_MODE_ENABLED } from './ThemeContext';
 
 export function RootLayout() {
   const theme = useTheme();
@@ -184,32 +184,34 @@ export function RootLayout() {
                   </Typography>
                 </ButtonBase>
 
-                <Tooltip title={`Color mode: ${colorModeLabel}. Click to switch to ${nextColorModePreference}.`}>
-                  <ButtonBase
-                    onClick={cycleColorMode}
-                    aria-label={`Color mode: ${colorModeLabel}. Click to switch to ${nextColorModePreference}.`}
-                    sx={{
-                      borderRadius: 2.5,
-                      border: `1px solid ${alpha(theme.palette.common.white, 0.18)}`,
-                      bgcolor: alpha(theme.palette.common.white, 0.08),
-                      px: 1.5,
-                      py: 1,
-                      color: 'inherit',
-                      gap: 1,
-                      transition: theme.transitions.create(['background-color', 'border-color', 'transform']),
-                      '&:hover': {
-                        bgcolor: alpha(theme.palette.common.white, 0.12),
-                        borderColor: alpha(theme.palette.common.white, 0.28),
-                        transform: 'translateY(-1px)',
-                      },
-                    }}
-                  >
-                    <ColorModeIcon fontSize="small" />
-                    <Typography variant="body2" sx={{ fontWeight: 700 }}>
-                      {colorModePreference === 'system' ? 'System' : colorModeLabel}
-                    </Typography>
+                {DARK_MODE_ENABLED && (
+                  <Tooltip title={`Color mode: ${colorModeLabel}. Click to switch to ${nextColorModePreference}.`}>
+                    <ButtonBase
+                      onClick={cycleColorMode}
+                      aria-label={`Color mode: ${colorModeLabel}. Click to switch to ${nextColorModePreference}.`}
+                      sx={{
+                        borderRadius: 2.5,
+                        border: `1px solid ${alpha(theme.palette.common.white, 0.18)}`,
+                        bgcolor: alpha(theme.palette.common.white, 0.08),
+                        px: 1.5,
+                        py: 1,
+                        color: 'inherit',
+                        gap: 1,
+                        transition: theme.transitions.create(['background-color', 'border-color', 'transform']),
+                        '&:hover': {
+                          bgcolor: alpha(theme.palette.common.white, 0.12),
+                          borderColor: alpha(theme.palette.common.white, 0.28),
+                          transform: 'translateY(-1px)',
+                        },
+                      }}
+                    >
+                      <ColorModeIcon fontSize="small" />
+                      <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                        {colorModePreference === 'system' ? 'System' : colorModeLabel}
+                      </Typography>
                     </ButtonBase>
                   </Tooltip>
+                )}
 
                 <Tooltip title={`Theme variant: ${themeVariantLabel}. Click to switch to ${nextThemeVariantLabel}.`}>
                   <ButtonBase
@@ -254,9 +256,9 @@ export function RootLayout() {
                   <PaletteOutlinedIcon fontSize="small" />
                 </IconButton>
               </Tooltip>
-            )}
+             )}
 
-            {isMobile && (
+            {isMobile && DARK_MODE_ENABLED && (
               <Tooltip title={`Color mode: ${colorModeLabel}. Click to switch to ${nextColorModePreference}.`}>
                 <IconButton
                   color="inherit"

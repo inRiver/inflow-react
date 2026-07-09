@@ -27,3 +27,13 @@ _ref/*
 pres/
 .playwright-mcp/
 qa-review/
+
+# Ad-hoc verification scripts/screenshots dropped at repo root by manual QA
+# passes (should live in .playwright-mcp/ or qa-review/ instead, but ignore
+# them here too as a safety net)
+/*.mjs
+/*.png
+/*.jpg
+/*.jpeg
+/VERIFICATION_REPORT*.txt
+/*_VERIFICATION_REPORT.txt
