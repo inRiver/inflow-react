@@ -2,7 +2,7 @@ import { createTheme } from '@mui/material/styles';
 
 /**
  * Default MUI v6 theme - vanilla Material Design
- * Used for side-by-side comparison with Inriver theme
+ * Used for side-by-side comparison with the Inflow theme
  */
 export const defaultTheme = createTheme({
   palette: {

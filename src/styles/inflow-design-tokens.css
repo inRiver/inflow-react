@@ -1,5 +1,5 @@
 /* =============================================================
-   Inriver Design Tokens
+   Inflow Design Tokens
    Generated from: Figma – MUI for Figma v6.1.0 - Material UI
    Combined from: breakpoints, material-colors, metadata,
                   palette-light, shape, spacing, typography
@@ -418,10 +418,10 @@
   --font-size-5xl: 3.75rem;    /* 60px  */
   --font-size-6xl: 6rem;       /* 96px  */
 
-  /* ── Custom Inriver Tokens ──────────────────────────────── */
+  /* ── Custom Inflow Tokens ──────────────────────────────── */
   --custom-primary-tab: #c3defe;
 
-  /* Row states — see inriver-row-states.css for full reference */
+  /* Row states — see inflow-row-states.css for full reference */
   --custom-row-default:           #ffffff;
   --custom-row-on-hover:          #f1f6fe;
   --custom-row-selected:          rgba(11, 45, 110, 0.08);
@@ -469,7 +469,7 @@
 
   /* ── Custom Component Dimensions & Nav Colours ──────────────
      Structural tokens for the custom React components
-     (InriverGlobalHeader / InriverPageHeader / InriverAppNav).
+     (InflowGlobalHeader / InflowPageHeader / InflowAppNav).
      Added so those components read 100% from tokens — no
      // REVIEW gaps. Heights/sizes are off the 8pt scale by design
      (they mirror the Figma component specs).
@@ -479,7 +479,7 @@
   --custom-page-header-height:   76px;
   --custom-icon-button-size:     48px;   /* icon-button hit target */
   --custom-avatar-size:          40px;   /* header account avatar */
-  --custom-button-height:        40px;   /* Inriver "large" action button */
+  --custom-button-height: 40px; /* Inflow "large" action button */
 
   /* Global header layout */
   --custom-header-search-width:     400px;
@@ -507,7 +507,7 @@
   --custom-nav-dot:               rgba(255, 255, 255, 0.15);                 /* placeholder dot */
   --custom-nav-dot-active:        rgba(255, 255, 255, 0.30);                 /* placeholder dot (first) */
 
-  /* Expandable side-nav rail (InriverNavRail) — icon-left/label-right,
+  /* Expandable side-nav rail (InflowNavRail) — icon-left/label-right,
      collapses 240px → 56px. Surface is the brighter primary navy (#0b2d6e),
      distinct from the compact rail above. */
   --custom-navrail-width:            240px;                       /* expanded */
@@ -555,7 +555,7 @@
   --color-outline:         var(--components-input-outlined-enabled-border); /* #727787 — input borders */
   --color-outline-variant: #c2c6d8;                      /* Chip borders, subtle dividers */
 
-  /* Navigation — Inriver_Color/sys/colors/navigation/surface-navigation */
+  /* Navigation — Inflow_Color/sys/colors/navigation/surface-navigation */
   --color-navigation-surface:        var(--palette-secondary-main); /* #22243d — dark navy nav bg */
   --color-on-navigation-surface:     rgba(255, 255, 255, 0.7);      /* inactive icons/text on dark nav */
   --color-on-navigation-surface-active: #ffffff;                    /* active icons/text on dark nav */
@@ -612,9 +612,9 @@
   --text-headline-small-line-height:    32px;
   --text-headline-small-letter-spacing: 0px;
 
-  /* Title
-     Figma source: Inriver_Text/title/large → *Custom / Page Heading component
-     MUI equivalent: <Typography variant="h6"> (Inriver customized to 700) */
+   /* Title
+      Figma source: Inflow_Text/title/large → *Custom / Page Heading component
+      MUI equivalent: <Typography variant="h6"> (Inflow customized to 700) */
   --text-title-large-font-size:      22px;
   --text-title-large-font-weight:    700;
   --text-title-large-line-height:    36px;
@@ -672,7 +672,7 @@
   /* Heights */
   --size-chip-height:       32px;
 
-  /* Button heights — Inriver four-tier scale */
+  /* Button heights — Inflow four-tier scale */
   --size-button-height:        40px;   /* Large (default) */
   --size-button-height-lg:     40px;
   --size-button-height-md:     32px;
@@ -692,7 +692,7 @@
   --page-header-padding-left:      21px;
   --page-header-padding-right:     10px;
 
-  /* Grid (InriverGrid / AG Grid) */
+  /* Grid (InflowGrid / AG Grid) */
   --size-grid-row-height:          52px;
   --size-grid-header-height:       var(--spacing-6); /* 48px */
   --size-grid-cell-widget-spacing: 12px;
@@ -732,7 +732,7 @@
 
   /* ── Legacy --iv-* aliases (merged from colors_and_type.css) ──
      Stable names consumed by the custom React components
-     (InriverGlobalHeader, InriverPageHeader, InriverRowStates).
+     (InflowGlobalHeader, InflowPageHeader, InflowRowStates).
      Prefer the canonical --color-, --text-, --radius-, --spacing-
      tokens for new work; these remain so the custom components have
      a single, documented set of brand handles to read from.
@@ -904,8 +904,8 @@ code, kbd, samp, pre { font-family: var(--iv-font-mono); }
    -------------------------------------------------------------
    Standard MUI components (Button, Chip, TextField, Select,
    Dialog, Menu, Slider, Tabs, etc.) are NOT styled here. They are
-   provided by Material UI, themed via inriver-theme.js.
-   Custom Inriver components (global header, page header, full-width
+   provided by Material UI, themed via inflow-theme.js.
+   Custom Inflow components (global header, page header, full-width
    tabs, app nav, data-table row states) live as React components in
-   /mui/Inriver*.jsx and read the --iv-* / --custom-* tokens above.
+   /mui/Inflow*.jsx and read the --iv-* / --custom-* tokens above.
    ============================================================= */

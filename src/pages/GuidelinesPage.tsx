@@ -14,37 +14,37 @@ import {
 } from '@mui/material';
 import { CodeBlock } from '../showcase/CodeBlock';
 
-const installCode = `npm install inriver-react-theme@react19-mui6.3 @mui/material@\">=6.3.0 <6.4.0\" @emotion/react @emotion/styled react@^19 react-dom@^19`;
+const installCode = `npm install @inriver/inflow@react19-mui6.3 @mui/material@\">=6.3.0 <6.4.0\" @emotion/react @emotion/styled react@^19 react-dom@^19`;
 
 const releaseTagCode = `# Release only after validating this checkpoint against consuming apps.
 # The package is private by default; remove "private": true only in an approved release branch.
-INRIVER_THEME_RELEASE_TAG=react19-mui6.3 npm publish --tag react19-mui6.3
+INFLOW_THEME_RELEASE_TAG=react19-mui6.3 npm publish --tag react19-mui6.3
 
 # Promote to latest only after teams have intentionally adopted and verified it.
-npm dist-tag add inriver-react-theme@0.1.0 latest`;
+npm dist-tag add @inriver/inflow@0.1.0 latest`;
 
 const hardTagCode = `# Create one immutable source anchor for the exact package artifact.
 # Format: theme/<compatibility-checkpoint>/v<package-version>
-git tag -a theme/react19-mui6.3/v0.1.0 -m "inriver-react-theme 0.1.0 - React 19 / MUI 6.3"
+git tag -a theme/react19-mui6.3/v0.1.0 -m "@inriver/inflow 0.1.0 - React 19 / MUI 6.3"
 git push origin theme/react19-mui6.3/v0.1.0
 
 # Recovery/security reference points:
-# - npm exact artifact: inriver-react-theme@0.1.0
+# - npm exact artifact: @inriver/inflow@0.1.0
 # - source hard tag: theme/react19-mui6.3/v0.1.0
-# - moving channel: inriver-react-theme@react19-mui6.3`;
+# - moving channel: @inriver/inflow@react19-mui6.3`;
 
 const patchReleaseCode = `# Fix a component issue while staying on React 19 / MUI 6.3.
 npm version patch
 npm run build
 
 # Publish the new immutable package version to the same moving checkpoint tag.
-INRIVER_THEME_RELEASE_TAG=react19-mui6.3 npm publish --tag react19-mui6.3
+INFLOW_THEME_RELEASE_TAG=react19-mui6.3 npm publish --tag react19-mui6.3
 
 # Optional: inspect where the compatibility tag points after publishing.
-npm dist-tag ls inriver-react-theme`;
+npm dist-tag ls @inriver/inflow`;
 
 const wrapperExtensionCode = `import { styled } from '@mui/material/styles';
-import { ThemedChip } from 'inriver-react-theme';
+import { ThemedChip } from '@inriver/inflow';
 
 // Local adapter for a legacy consuming UI. Do not backport this into old theme lines.
 export const LegacyStatusChip = styled(ThemedChip)(({ theme }) => ({
@@ -52,7 +52,7 @@ export const LegacyStatusChip = styled(ThemedChip)(({ theme }) => ({
   borderColor: theme.palette.divider,
 }));`;
 
-const behaviorAdapterCode = `import { ThemedTable, type ThemedTableProps } from 'inriver-react-theme';
+const behaviorAdapterCode = `import { ThemedTable, type ThemedTableProps } from '@inriver/inflow';
 
 type LegacyRow = Record<string, unknown>;
 
@@ -69,7 +69,7 @@ export function LegacySafeTable(props: ThemedTableProps<LegacyRow>) {
 }`;
 
 const providerCode = `import { CssBaseline, ThemeProvider } from '@mui/material';
-import { inflowTheme } from 'inriver-react-theme';
+import { inflowTheme } from '@inriver/inflow';
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
@@ -81,7 +81,7 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
 }`;
 
 const componentCode = `import { Stack } from '@mui/material';
-import { ThemedButton, ThemedChip, ThemedTextField } from 'inriver-react-theme';
+import { ThemedButton, ThemedChip, ThemedTextField } from '@inriver/inflow';
 
 export function ProductStatus() {
   return (
@@ -94,7 +94,7 @@ export function ProductStatus() {
 }`;
 
 const styledCode = `import { styled } from '@mui/material/styles';
-import { ThemedChip } from 'inriver-react-theme';
+import { ThemedChip } from '@inriver/inflow';
 
 export const CompactStatusChip = styled(ThemedChip)(({ theme }) => ({
   height: 24,
@@ -102,7 +102,7 @@ export const CompactStatusChip = styled(ThemedChip)(({ theme }) => ({
 }));`;
 
 const tokenCode = `import { Box } from '@mui/material';
-import { inflowTokens } from 'inriver-react-theme';
+import { inflowTokens } from '@inriver/inflow';
 
 export function TokenExample() {
   return (
@@ -122,11 +122,11 @@ npm link
 
 # In your consuming app directory:
 cd C:\\Development\\your-app
-npm link inriver-react-theme`;
+npm link @inriver/inflow`;
 
 const npmLinkCleanupCode = `# When you're done developing:
 cd C:\\Development\\your-app
-npm unlink inriver-react-theme
+npm unlink @inriver/inflow
 npm install  # Reinstalls from Azure Artifacts or git`;
 
 const publicExports = [
@@ -138,12 +138,12 @@ const publicExports = [
 const releaseTerms = [
   {
     label: 'Exact package version',
-    example: 'inriver-react-theme@0.1.1',
+    example: '@inriver/inflow@0.1.1',
     description: 'Immutable artifact. Use this when a consuming app wants zero movement until someone updates the lockfile intentionally.',
   },
   {
     label: 'Compatibility checkpoint tag',
-    example: 'inriver-react-theme@react19-mui6.3',
+    example: '@inriver/inflow@react19-mui6.3',
     description: 'Moving release channel for the same React/MUI contract. Component fixes can advance this tag from 0.1.0 to 0.1.1 without changing the checkpoint.',
   },
   {
@@ -161,18 +161,18 @@ const releaseTerms = [
 const architectureItems = [
   {
     label: 'Theme source of truth',
-    path: 'src/theme/inriver.ts',
+    path: 'src/theme/inflow.ts',
     description: 'Owns the MUI createTheme setup: palette, typography, shadows, component defaults, and style overrides.',
   },
   {
     label: 'Token exports',
     path: 'src/theme/tokens.ts',
-    description: 'Raw Inriver values for custom surfaces that cannot rely on normal MUI theming.',
+    description: 'Raw Inflow values for custom surfaces that cannot rely on normal MUI theming.',
   },
   {
     label: 'Public wrapper layer',
     path: 'src/components/themed/',
-    description: 'Small reusable components for repeated Inriver-specific UI patterns across apps.',
+    description: 'Small reusable components for repeated Inflow-specific UI patterns across apps.',
   },
   {
     label: 'Package boundary',
@@ -184,7 +184,7 @@ const architectureItems = [
 const dependencyChoices = [
   {
     label: 'Complete freeze',
-    example: 'inriver-react-theme@0.1.0',
+    example: '@inriver/inflow@0.1.0',
     description: 'Use when an app needs zero movement until its lockfile changes intentionally.',
   },
   {
@@ -194,12 +194,12 @@ const dependencyChoices = [
   },
   {
     label: 'Validated checkpoint',
-    example: 'inriver-react-theme@react19-mui6.3',
+    example: '@inriver/inflow@react19-mui6.3',
     description: 'Follows the latest approved patch for the same React/MUI baseline.',
   },
   {
     label: 'Local iteration',
-    example: 'npm link inriver-react-theme',
+    example: 'npm link @inriver/inflow',
     description: 'Use only while developing locally; do not treat this as a release channel.',
   },
 ];
@@ -213,11 +213,11 @@ export function GuidelinesPage() {
             Package usage
           </Typography>
           <Typography variant="h3" gutterBottom>
-            Importing the Inriver theme in another project
+            Importing the Inflow theme in another project
           </Typography>
           <Typography variant="subtitle1" color="text.secondary">
             Use this repo as a versioned MUI theme and component layer. The package gives teams a
-            shared Inriver UI baseline without forcing every app onto unvalidated bleeding-edge
+            shared Inflow UI baseline without forcing every app onto unvalidated bleeding-edge
             theme changes.
           </Typography>
         </Box>
@@ -252,7 +252,7 @@ export function GuidelinesPage() {
               <Typography variant="h5">How the repo is structured</Typography>
               <Typography variant="body2" color="text.secondary">
                 The showcase and the library live together, but only the package boundary is stable
-                API. Apps should import from <code>inriver-react-theme</code>, not from source files,
+                API. Apps should import from <code>@inriver/inflow</code>, not from source files,
                 showcase pages, or demo components.
               </Typography>
               <List dense disablePadding>
@@ -417,8 +417,8 @@ export function GuidelinesPage() {
                 A checkpoint tag is a release channel, not a frozen artifact. If a component bug is
                 fixed without changing the React/MUI compatibility contract, publish a new package
                 version and move the same tag forward. Apps pinned to
-                <code>inriver-react-theme@0.1.0</code> stay frozen; apps using
-                <code>inriver-react-theme@react19-mui6.3</code> get the latest validated patch for
+                <code>@inriver/inflow@0.1.0</code> stay frozen; apps using
+                <code>@inriver/inflow@react19-mui6.3</code> get the latest validated patch for
                 that checkpoint when they reinstall or update their lockfile.
               </Typography>
               <CodeBlock code={patchReleaseCode} language="bash" plain />
@@ -475,7 +475,7 @@ export function GuidelinesPage() {
               <Typography variant="body2" color="text.secondary">
                 Use plain MUI components for regular cases under <code>ThemeProvider</code>. Use
                 the exported <code>Themed*</code> components when teams want the style-first
-                wrappers that enforce Inriver tokens even across projects.
+                wrappers that enforce Inflow tokens even across projects.
               </Typography>
               <CodeBlock code={componentCode} language="tsx" />
             </Stack>

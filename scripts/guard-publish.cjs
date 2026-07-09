@@ -1,17 +1,17 @@
-const expectedTag = process.env.INRIVER_THEME_RELEASE_TAG;
+const expectedTag = process.env.INFLOW_THEME_RELEASE_TAG;
 const npmTag = process.env.npm_config_tag || 'latest';
 const checkpointTagPattern = /^react\d+-mui\d+(?:\.\d+)?$/;
 
 if (!expectedTag) {
   console.error(
-    'Publishing is blocked. Set INRIVER_THEME_RELEASE_TAG to an approved checkpoint tag, for example react19-mui6.3.'
+    'Publishing is blocked. Set INFLOW_THEME_RELEASE_TAG to an approved checkpoint tag, for example react19-mui6.3.'
   );
   process.exit(1);
 }
 
 if (!checkpointTagPattern.test(expectedTag)) {
   console.error(
-    `Invalid INRIVER_THEME_RELEASE_TAG "${expectedTag}". Use a checkpoint tag like react19-mui6.3.`
+    `Invalid INFLOW_THEME_RELEASE_TAG "${expectedTag}". Use a checkpoint tag like react19-mui6.3.`
   );
   process.exit(1);
 }

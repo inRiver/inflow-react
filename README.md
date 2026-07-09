@@ -1,21 +1,23 @@
-# Inriver React Theme
+# Inflow Design System
 
-Internal React/MUI theme package and live showcase for Inriver product UIs.
+Internal React/MUI theme package and live showcase for Inflow product UIs.
+
+> Note: This package was previously known internally as `inriver-react-theme`.
 
 The goal of this repository is not to force every app onto the newest design work immediately. It gives teams a shared theme contract, versioned compatibility checkpoints, and a local development workflow so theme changes can be tested before they become a dependency for other apps.
 
 ## What this repo owns
 
-- **Canonical MUI theme** in `src/theme/inriver.ts`.
+- **Canonical MUI theme** in `src/theme/inflow.ts`.
 - **Design token exports** in `src/theme/tokens.ts` for custom surfaces that cannot use MUI directly.
-- **Small themed wrapper layer** in `src/components/themed/` for common Inriver-styled components.
+- **Small themed wrapper layer** in `src/components/themed/` for common Inflow-styled components.
 - **Live showcase** under `src/pages`, `src/showcase`, and `src/app` for design review and developer examples.
 - **Library build** from `src/index.ts` to `dist/index.js`, `dist/index.cjs`, and `dist/index.d.ts`.
 
 Consuming apps should import from the package root only:
 
 ```ts
-import { inriverTheme, ThemedButton, inriverTokens } from 'inriver-react-theme';
+import { inflowTheme, ThemedButton, inflowTokens } from '@inriver/inflow';
 ```
 
 Do not import showcase pages, demo components, or internal source paths from consuming apps. Those are documentation/demo code, not the stable package surface.
@@ -31,7 +33,7 @@ This repo avoids both by separating **immutable versions** from **moving compati
 
 ```mermaid
 flowchart LR
-  ThemeRepo["inriver-react-theme"] --> Exact["Exact versions\n0.1.0, 0.1.1"]
+  ThemeRepo["@inriver/inflow"] --> Exact["Exact versions\n0.1.0, 0.1.1"]
   ThemeRepo --> Tags["Compatibility tags\nreact19-mui6.3"]
   ThemeRepo --> Local["Local npm link\nactive development"]
 
@@ -44,10 +46,10 @@ flowchart LR
 
 | Mechanism | Example | Purpose |
 | --- | --- | --- |
-| Exact package version | `inriver-react-theme@0.1.0` | Immutable artifact. Use when an app wants no movement. |
-| Compatibility checkpoint tag | `inriver-react-theme@react19-mui6.3` | Moving channel for the same React/MUI contract. Patch fixes can move here after validation. |
+| Exact package version | `@inriver/inflow@0.1.0` | Immutable artifact. Use when an app wants no movement. |
+| Compatibility checkpoint tag | `@inriver/inflow@react19-mui6.3` | Moving channel for the same React/MUI contract. Patch fixes can move here after validation. |
 | Source recovery tag | `theme/react19-mui6.3/v0.1.0` | Immutable Git anchor for audit, rollback, and security review. |
-| `latest` | `inriver-react-theme@latest` | Only promoted after teams intentionally adopt and verify a checkpoint. Never publish directly to it. |
+| `latest` | `@inriver/inflow@latest` | Only promoted after teams intentionally adopt and verify a checkpoint. Never publish directly to it. |
 
 The publish guard in `scripts/guard-publish.cjs` enforces this: releases must use an approved checkpoint tag such as `react19-mui6.3`, and direct publishing to `latest` is blocked.
 
@@ -56,7 +58,7 @@ For production apps that want safe patches but not new checkpoints, prefer a pat
 ```json
 {
   "dependencies": {
-    "inriver-react-theme": "~0.1.0"
+    "@inriver/inflow": "~0.1.0"
   }
 }
 ```
@@ -69,7 +71,7 @@ See [`docs/VERSIONING.md`](docs/VERSIONING.md) for the full release and adoption
 
 ```mermaid
 flowchart TB
-  Source["src/theme/inriver.ts\nCanonical MUI theme"] --> ThemeBarrel["src/theme/index.ts"]
+  Source["src/theme/inflow.ts\nCanonical MUI theme"] --> ThemeBarrel["src/theme/index.ts"]
   Tokens["src/theme/tokens.ts\nRaw token exports"] --> ThemeBarrel
   Wrappers["src/components/themed\nReusable wrappers"] --> PublicEntry["src/index.ts\nPackage boundary"]
   ThemeBarrel --> PublicEntry
@@ -82,11 +84,11 @@ flowchart TB
 ```
 
 ```text
-inriver-react-theme/
+@inriver/inflow/
 ├── src/
 │   ├── index.ts                  # Public package entry: theme + themed components only
 │   ├── theme/
-│   │   ├── inriver.ts            # Canonical MUI createTheme source
+│   │   ├── inflow.ts             # Canonical MUI createTheme source
 │   │   ├── tokens.ts             # Raw design tokens for custom surfaces
 │   │   ├── default.ts            # Vanilla MUI comparison theme
 │   │   └── index.ts              # Theme barrel exports
@@ -136,7 +138,7 @@ This builds both the showcase app and the importable package.
 
 Use this when a developer is changing the theme and wants a consuming app to use the local package without publishing or committing a temporary Git tag.
 
-In `inriver-react-theme`:
+In the theme repo:
 
 ```bash
 npm install
@@ -147,7 +149,7 @@ npm link
 In the consuming app:
 
 ```bash
-npm link inriver-react-theme
+npm link @inriver/inflow
 npm ls react
 ```
 
@@ -156,7 +158,7 @@ Restart the consuming app dev server after theme changes. If React hook errors a
 When finished:
 
 ```bash
-npm unlink inriver-react-theme
+npm unlink @inriver/inflow
 npm install
 ```
 
@@ -167,13 +169,13 @@ Do not commit `file:` paths or local-link-only dependency changes.
 Use Azure Artifacts for stable versions:
 
 ```bash
-npm install inriver-react-theme@react19-mui6.3
+npm install @inriver/inflow@react19-mui6.3
 ```
 
 or pin exactly:
 
 ```bash
-npm install inriver-react-theme@0.1.0
+npm install @inriver/inflow@0.1.0
 ```
 
 ### Publish a validated checkpoint
@@ -181,13 +183,13 @@ npm install inriver-react-theme@0.1.0
 ```bash
 npm version patch
 npm run build
-INRIVER_THEME_RELEASE_TAG=react19-mui6.3 npm publish --tag react19-mui6.3
+INFLOW_THEME_RELEASE_TAG=react19-mui6.3 npm publish --tag react19-mui6.3
 ```
 
 Promote to `latest` only after adoption verification:
 
 ```bash
-npm dist-tag add inriver-react-theme@0.1.1 latest
+npm dist-tag add @inriver/inflow@0.1.1 latest
 ```
 
 ## Usage in consuming apps
@@ -196,11 +198,11 @@ Wrap the app once at the root:
 
 ```tsx
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import { inriverTheme } from 'inriver-react-theme';
+import { inflowTheme } from '@inriver/inflow';
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
-    <ThemeProvider theme={inriverTheme}>
+    <ThemeProvider theme={inflowTheme}>
       <CssBaseline />
       {children}
     </ThemeProvider>
@@ -208,11 +210,11 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
 }
 ```
 
-Then use regular MUI components under the theme. Use `Themed*` wrappers when a shared Inriver-specific component contract is useful:
+Then use regular MUI components under the theme. Use `Themed*` wrappers when a shared Inflow-specific component contract is useful:
 
 ```tsx
 import { Stack } from '@mui/material';
-import { ThemedButton, ThemedChip, ThemedTextField } from 'inriver-react-theme';
+import { ThemedButton, ThemedChip, ThemedTextField } from '@inriver/inflow';
 
 export function ProductStatus() {
   return (
@@ -241,7 +243,7 @@ The tight MUI range is deliberate: this checkpoint is validated for MUI 6.3. A n
 
 ## Contribution rules
 
-1. Update `src/theme/inriver.ts` first for palette, typography, component defaults, and MUI overrides.
+1. Update `src/theme/inflow.ts` first for palette, typography, component defaults, and MUI overrides.
 2. Update `src/theme/tokens.ts` only when custom/non-MUI surfaces need direct token access.
 3. Add or change `src/components/themed/*` only when a repeated component pattern deserves a shared wrapper.
 4. Keep showcase examples aligned with real usage, but do not treat showcase-only components as package API.

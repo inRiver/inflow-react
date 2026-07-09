@@ -28,10 +28,10 @@ export function LandingPage() {
       <Stack spacing={6}>
         <Box>
           <Typography variant="h3" gutterBottom>
-            Inriver MUI Theme Showcase
+            Inflow Design System Showcase
           </Typography>
           <Typography variant="subtitle1" color="text.secondary">
-            Explore all {totalComponents} Material UI components themed for Inriver
+            Explore all {totalComponents} Material UI components themed for Inflow
           </Typography>
         </Box>
 

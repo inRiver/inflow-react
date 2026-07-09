@@ -2,7 +2,7 @@
 
 The theme package needs to solve two problems at the same time:
 
-1. Give teams one shared Inriver design system.
+1. Give teams one shared Inflow design system.
 2. Avoid forcing every app onto unvalidated bleeding-edge changes.
 
 The strategy is to publish immutable package versions and expose moving compatibility tags only after validation.
@@ -24,11 +24,11 @@ flowchart TB
 
 | Concept | Example | Meaning |
 | --- | --- | --- |
-| Exact version | `inriver-react-theme@0.1.0` | A frozen package artifact. Once published, it does not change. |
+| Exact version | `@inriver/inflow@0.1.0` | A frozen package artifact. Once published, it does not change. |
 | Patch range | `~0.1.0` | Accepts `0.1.x` fixes but blocks `0.2.0` and above. |
 | Compatibility tag | `react19-mui6.3` | A moving channel for the same React/MUI baseline. |
 | Source tag | `theme/react19-mui6.3/v0.1.0` | Immutable Git tag for the source that produced a package version. |
-| `latest` | `inriver-react-theme@latest` | General default only after adoption verification. |
+| `latest` | `@inriver/inflow@latest` | General default only after adoption verification. |
 
 Published versions must be treated as immutable. If a release is wrong, publish a new patch version; do not try to replace the same version.
 
@@ -63,11 +63,11 @@ Checkpoint tags can move across patch versions, for example from `0.1.0` to `0.1
 
 | App need | Dependency choice |
 | --- | --- |
-| Complete freeze | `inriver-react-theme@0.1.0` |
+| Complete freeze | `@inriver/inflow@0.1.0` |
 | Safe patch updates only | `~0.1.0` |
-| Follow validated React/MUI checkpoint | `inriver-react-theme@react19-mui6.3` |
-| Evaluate upcoming baseline | `inriver-react-theme@next` or a prerelease package |
-| Local theme iteration | `npm link inriver-react-theme` |
+| Follow validated React/MUI checkpoint | `@inriver/inflow@react19-mui6.3` |
+| Evaluate upcoming baseline | `@inriver/inflow@next` or a prerelease package |
+| Local theme iteration | `npm link @inriver/inflow` |
 
 Avoid `^` for apps that must not pick up a new compatibility checkpoint automatically.
 
@@ -101,16 +101,16 @@ sequenceDiagram
 ```bash
 npm version patch
 npm run build
-INRIVER_THEME_RELEASE_TAG=react19-mui6.3 npm publish --tag react19-mui6.3
+INFLOW_THEME_RELEASE_TAG=react19-mui6.3 npm publish --tag react19-mui6.3
 
-git tag -a theme/react19-mui6.3/v0.1.1 -m "inriver-react-theme 0.1.1 - React 19 / MUI 6.3"
+git tag -a theme/react19-mui6.3/v0.1.1 -m "@inriver/inflow 0.1.1 - React 19 / MUI 6.3"
 git push origin theme/react19-mui6.3/v0.1.1
 ```
 
 Promote only after teams agree the checkpoint is safe as the default:
 
 ```bash
-npm dist-tag add inriver-react-theme@0.1.1 latest
+npm dist-tag add @inriver/inflow@0.1.1 latest
 ```
 
 ## Local development is not a release channel
@@ -118,13 +118,13 @@ npm dist-tag add inriver-react-theme@0.1.1 latest
 Use `npm link` when a developer is actively changing the theme and testing it in another local app.
 
 ```bash
-# in inriver-react-theme
+# in @inriver/inflow
 npm install
 npm run build
 npm link
 
 # in the consuming app
-npm link inriver-react-theme
+npm link @inriver/inflow
 npm ls react
 ```
 
@@ -141,7 +141,7 @@ Do not create long-lived bespoke theme branches for every app. That creates the 
 
 ## Governance principles
 
-- One canonical theme source: `src/theme/inriver.ts`.
+- One canonical theme source: `src/theme/inflow.ts`.
 - One public package boundary: `src/index.ts`.
 - Immutable package versions for auditability.
 - Moving checkpoint tags for validated patch flow.

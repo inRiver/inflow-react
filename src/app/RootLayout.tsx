@@ -63,7 +63,7 @@ export function RootLayout() {
               noWrap
               onClick={() => navigate('/')}
             >
-              Inriver MUI Theme Showcase
+              Inflow Design System Showcase
             </Typography>
           </Toolbar>
         </AppBar>

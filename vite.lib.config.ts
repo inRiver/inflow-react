@@ -7,7 +7,7 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(import.meta.dirname, 'src/index.ts'),
-      name: 'InriverReactTheme',
+      name: 'Inflow',
       formats: ['es', 'cjs'],
       fileName: (format) => (format === 'es' ? 'index.js' : 'index.cjs'),
     },

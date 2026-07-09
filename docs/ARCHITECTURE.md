@@ -1,8 +1,8 @@
-# Inriver React Theme Architecture
+# Inflow Design System Architecture
 
 This repository has two jobs:
 
-1. Build the importable `inriver-react-theme` package.
+1. Build the importable `@inriver/inflow` package.
 2. Host a live showcase so designers and developers can review the theme in context.
 
 Those two jobs share code, but they are intentionally not the same public API.
@@ -41,9 +41,9 @@ export * from './components/themed';
 
 That means consumers get:
 
-- `inriverTheme`
+- `inflowTheme`
 - `defaultTheme`
-- `inriverTokens`, `inriverCustomColors`, `inriverSpacing`
+- `inflowTokens`, `inflowCustomColors`, `inflowSpacing`
 - `ThemedButton`, `ThemedChip`, `ThemedTextField`, `ThemedCard`, `ThemedDialog`, `ThemedTable`
 
 They should not import from `src/pages`, `src/showcase`, `src/app`, or individual source paths. The library build and declarations are limited by `tsconfig.lib.json` to the package boundary:
@@ -56,12 +56,12 @@ src/components/themed/**/*
 
 ## Theme source of truth
 
-`src/theme/inriver.ts` is the canonical theme definition. It owns:
+`src/theme/inflow.ts` is the canonical theme definition. It owns:
 
 ```mermaid
 flowchart LR
-  Tokens["Design tokens"] --> Theme["src/theme/inriver.ts"]
-  Theme --> Palette["Palette + Inriver extensions"]
+  Tokens["Design tokens"] --> Theme["src/theme/inflow.ts"]
+  Theme --> Palette["Palette + Inflow extensions"]
   Theme --> Typography["Typography"]
   Theme --> Shape["Shape + shadows"]
   Theme --> Overrides["MUI component overrides"]
@@ -72,7 +72,7 @@ flowchart LR
   Provider --> Wrappers["Themed wrappers"]
 ```
 
-- palette and Inriver-specific palette extensions;
+- palette and Inflow-specific palette extensions;
 - typography and font stack;
 - spacing and shape defaults;
 - elevation/shadow values;
@@ -97,7 +97,7 @@ Do not reach for tokens first when a normal MUI component under `ThemeProvider` 
 
 Use wrapper components when:
 
-- the same Inriver-specific component pattern appears in multiple apps;
+- the same Inflow-specific component pattern appears in multiple apps;
 - the component needs a simplified API, such as `ThemedTable` with `columns` and `data`;
 - a local app would otherwise copy the same token-heavy `sx` block repeatedly.
 
@@ -105,7 +105,7 @@ Prefer plain MUI components when:
 
 - the global theme already gives the expected look;
 - the styling is one-off and local to one app;
-- the wrapper would hide useful MUI behavior without adding an Inriver convention.
+- the wrapper would hide useful MUI behavior without adding an Inflow convention.
 
 Wrapper components should preserve MUI ergonomics: forward refs, extend the relevant MUI prop type, and keep `sx` composable.
 
@@ -154,7 +154,7 @@ sequenceDiagram
 
 For theme changes:
 
-1. Start in `src/theme/inriver.ts`.
+1. Start in `src/theme/inflow.ts`.
 2. Add token exports only if non-MUI consumers need direct values.
 3. Add a themed wrapper only for repeated cross-app patterns.
 4. Update showcase demos or `/guidelines` when the intended usage changes.

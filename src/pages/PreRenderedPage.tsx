@@ -13,7 +13,7 @@ import {
 const componentsList = [
   {
     name: 'ThemedButton',
-    description: 'A button component with Inriver tokens.',
+    description: 'A button component with Inflow tokens.',
     code: `<ThemedButton variant="contained">Primary Action</ThemedButton>
 <ThemedButton variant="outlined">Secondary</ThemedButton>
 <ThemedButton variant="text">Text Button</ThemedButton>`,
@@ -27,7 +27,7 @@ const componentsList = [
   },
   {
     name: 'ThemedTextField',
-    description: 'A text field component with Inriver tokens.',
+    description: 'A text field component with Inflow tokens.',
     code: `<ThemedTextField label="Username" placeholder="Enter username" />
 <ThemedTextField label="Password" type="password" error helperText="Incorrect password" />`,
     component: (
@@ -39,7 +39,7 @@ const componentsList = [
   },
   {
     name: 'ThemedCard',
-    description: 'A card component with Inriver tokens.',
+    description: 'A card component with Inflow tokens.',
     code: `<ThemedCard 
   title="Project Title" 
   subheader="Created on Jan 1, 2026"
@@ -61,7 +61,7 @@ const componentsList = [
   },
   {
     name: 'ThemedChip',
-    description: 'A chip component with Inriver tokens.',
+    description: 'A chip component with Inflow tokens.',
     code: `<ThemedChip label="Active" color="primary" />
 <ThemedChip label="Removed" color="error" onDelete={() => {}} />
 <ThemedChip label="Added" color="success" />
@@ -77,7 +77,7 @@ const componentsList = [
   },
   {
     name: 'ThemedTable',
-    description: 'A table component with Inriver tokens.',
+    description: 'A table component with Inflow tokens.',
     code: `const columns = [
   { id: 'id', label: 'ID' },
   { id: 'name', label: 'Name' },
@@ -119,7 +119,7 @@ export const PreRenderedPage: React.FC = () => {
     <Box sx={{ p: 4, maxWidth: 1200, margin: '0 auto' }}>
       <Typography variant="h4" gutterBottom>Pre-Rendered Themed Components</Typography>
       <Typography variant="body1" color="text.secondary" paragraph>
-        Production-ready components utilizing Inriver design tokens that can be easily copy-pasted into projects.
+        Production-ready components utilizing Inflow design tokens that can be easily copy-pasted into projects.
       </Typography>
 
       <Divider sx={{ my: 4 }} />
@@ -159,30 +159,30 @@ export const PreRenderedPage: React.FC = () => {
         ))}
 
         {/* ThemedDialog needs special handling for open/close state */}
-        <Box>
-          <Typography variant="h5" gutterBottom>ThemedDialog</Typography>
-          <Typography variant="body2" color="text.secondary" paragraph>
-            A dialog component with Inriver tokens.
-          </Typography>
+         <Box>
+           <Typography variant="h5" gutterBottom>ThemedDialog</Typography>
+           <Typography variant="body2" color="text.secondary" paragraph>
+             A dialog component with Inflow tokens.
+           </Typography>
           
           <Paper variant="outlined" sx={{ p: 3, mb: 2, backgroundColor: '#f9f9fa' }}>
             <ThemedButton onClick={() => setDialogOpen(true)}>Open Dialog</ThemedButton>
             
-            <ThemedDialog
-              open={dialogOpen}
-              onClose={() => setDialogOpen(false)}
-              title="Edit Settings"
-              actions={
-                <Stack direction="row" spacing={1}>
-                  <ThemedButton variant="outlined" onClick={() => setDialogOpen(false)}>Cancel</ThemedButton>
-                  <ThemedButton onClick={() => setDialogOpen(false)}>Save Changes</ThemedButton>
-                </Stack>
-              }
-            >
-              <Typography>
-                Configure the settings below. This dialog uses Inriver tokens for border-radius and background colors.
-              </Typography>
-            </ThemedDialog>
+             <ThemedDialog
+               open={dialogOpen}
+               onClose={() => setDialogOpen(false)}
+               title="Edit Settings"
+               actions={
+                 <Stack direction="row" spacing={1}>
+                   <ThemedButton variant="outlined" onClick={() => setDialogOpen(false)}>Cancel</ThemedButton>
+                   <ThemedButton onClick={() => setDialogOpen(false)}>Save Changes</ThemedButton>
+                 </Stack>
+               }
+             >
+               <Typography>
+                 Configure the settings below. This dialog uses Inflow tokens for border-radius and background colors.
+               </Typography>
+             </ThemedDialog>
           </Paper>
 
           <Box sx={{ position: 'relative' }}>
