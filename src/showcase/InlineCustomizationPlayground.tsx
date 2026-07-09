@@ -14,6 +14,7 @@ import {
   Typography,
 } from '@mui/material';
 import {
+  ComponentCustomizationPanel,
   getCustomizationMethodsForComponent,
   type CustomizationMethodId,
   type CustomizationValuesByMethod,
@@ -179,6 +180,8 @@ export function InlineCustomizationPlayground() {
           );
         })}
       </Box>
+
+      <ComponentCustomizationPanel componentId={componentId} />
     </Stack>
   );
 }
