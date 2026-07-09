@@ -47,7 +47,7 @@ export const ThemedButton = forwardRef<HTMLButtonElement, ThemedButtonProps>(
       }),
       ...(props.variant === 'outlined' && (props.color === 'primary' || !props.color) && {
         color: inriverTokens.colors.navy700,
-        borderColor: inriverTokens.colors.outline,
+        borderColor: inriverTokens.colors.outlineVariant,
         '&:hover': {
           borderColor: inriverTokens.colors.navy700,
           backgroundColor: alpha(inriverTokens.colors.navy700, 0.08),

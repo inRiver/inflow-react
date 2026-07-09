@@ -52,7 +52,7 @@ export const ThemedCard = forwardRef<HTMLDivElement, ThemedCardProps>(
           <CardHeader 
             title={title} 
             subheader={subheader}
-            titleTypographyProps={{ variant: 'h6', fontWeight: 600 }}
+            titleTypographyProps={{ variant: 'subtitle1' }}
             sx={{ pb: 0 }}
           />
         )}

@@ -34,7 +34,9 @@ export const ThemedChip = forwardRef<HTMLDivElement, ThemedChipProps>(
       letterSpacing: '0.1px',
       ...(props.variant === 'outlined' && {
         borderColor: inriverTokens.colors.outlineVariant,
-        color: inriverTokens.colors.onSurfaceVariant,
+        color: props.color === 'primary'
+          ? inriverTokens.colors.navy800
+          : inriverTokens.colors.onSurfaceVariant,
       }),
       ...(props.variant !== 'outlined' && props.color === 'primary' && {
         backgroundColor: inriverTokens.colors.primaryTab,

@@ -85,7 +85,7 @@ export const ThemedDialog = forwardRef<HTMLDivElement, ThemedDialogProps>(
           </DialogTitle>
         )}
         
-        <DialogContent sx={{ padding: '24px', mt: title ? 1 : 0 }}>
+        <DialogContent sx={{ padding: '24px', paddingTop: '24px !important' }}>
           {children}
         </DialogContent>
         

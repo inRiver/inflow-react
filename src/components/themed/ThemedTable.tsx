@@ -68,7 +68,7 @@ const ThemedTableBase = <T extends TableRowData = TableRowData>(
                     fontWeight: 600, 
                     color: inriverTokens.colors.onSurface,
                     borderColor: inriverTokens.colors.outlineVariant,
-                    backgroundColor: inriverTokens.colors.surfaceHighest
+                    backgroundColor: inriverTokens.colors.white
                   }}
                 >
                   {column.label}
