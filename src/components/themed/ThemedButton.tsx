@@ -1,7 +1,7 @@
 import { forwardRef } from 'react';
 import { Button, alpha } from '@mui/material';
 import type { ButtonProps } from '@mui/material';
-import { inflowTokens } from '../../theme/tokens';
+import type { Theme } from '@mui/material/styles';
 
 export interface ThemedButtonProps extends ButtonProps {
   /**
@@ -31,35 +31,34 @@ export interface ThemedButtonProps extends ButtonProps {
  */
 export const ThemedButton = forwardRef<HTMLButtonElement, ThemedButtonProps>(
   ({ inflowVariant = true, sx, ...props }, ref) => {
-    
-    // Apply explicit tokens if requested, otherwise fallback to standard MUI styles
-    // The global theme inflow.ts also styles MuiButton, but this provides a standalone guaranteed look
-    const customStyles = inflowVariant ? {
-      borderRadius: `${inflowTokens.radius.sm}px`,
-      fontWeight: inflowTokens.typography.fontWeights.medium,
-      letterSpacing: '0.1px',
-      ...(props.variant === 'contained' && (props.color === 'primary' || !props.color) && {
-        backgroundColor: inflowTokens.colors.navy700,
-        color: inflowTokens.colors.white,
-        '&:hover': {
-          backgroundColor: inflowTokens.colors.navyDark,
-        },
-      }),
-      ...(props.variant === 'outlined' && (props.color === 'primary' || !props.color) && {
-        color: inflowTokens.colors.navy700,
-        borderColor: inflowTokens.colors.outlineVariant,
-        '&:hover': {
-          borderColor: inflowTokens.colors.navy700,
-          backgroundColor: alpha(inflowTokens.colors.navy700, 0.08),
-        },
-      }),
-      ...(props.variant === 'text' && (props.color === 'primary' || !props.color) && {
-        color: inflowTokens.colors.navy700,
-        '&:hover': {
-          backgroundColor: alpha(inflowTokens.colors.navy700, 0.08),
-        },
-      }),
-    } : {};
+    const customStyles = inflowVariant
+      ? (theme: Theme) => ({
+          borderRadius: `${theme.shape.borderRadius}px`,
+          fontWeight: theme.typography.fontWeightMedium,
+          letterSpacing: '0.1px',
+          ...(props.variant === 'contained' && (props.color === 'primary' || !props.color) && {
+            backgroundColor: theme.palette.primary.main,
+            color: theme.palette.primary.contrastText,
+            '&:hover': {
+              backgroundColor: theme.palette.primary.dark,
+            },
+          }),
+          ...(props.variant === 'outlined' && (props.color === 'primary' || !props.color) && {
+            color: theme.palette.primary.main,
+            borderColor: theme.palette.inflow.outlineVariant,
+            '&:hover': {
+              borderColor: theme.palette.primary.main,
+              backgroundColor: alpha(theme.palette.primary.main, 0.08),
+            },
+          }),
+          ...(props.variant === 'text' && (props.color === 'primary' || !props.color) && {
+            color: theme.palette.primary.main,
+            '&:hover': {
+              backgroundColor: alpha(theme.palette.primary.main, 0.08),
+            },
+          }),
+        })
+      : undefined;
 
     return (
       <Button

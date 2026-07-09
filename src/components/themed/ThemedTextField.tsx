@@ -1,7 +1,7 @@
 import { forwardRef } from 'react';
 import { TextField } from '@mui/material';
 import type { TextFieldProps } from '@mui/material';
-import { inflowTokens } from '../../theme/tokens';
+import type { Theme } from '@mui/material/styles';
 
 export type ThemedTextFieldProps = TextFieldProps;
 
@@ -31,48 +31,48 @@ export const ThemedTextField = forwardRef<HTMLDivElement, ThemedTextFieldProps>(
         variant="outlined"
         size="small"
         sx={[
-          {
+          (theme: Theme) => ({
             '& .MuiOutlinedInput-root': {
-              borderRadius: `${inflowTokens.radius.xs}px`,
+              borderRadius: `${theme.shape.borderRadius}px`,
               '& .MuiOutlinedInput-notchedOutline': {
-                borderColor: inflowTokens.colors.outline,
+                borderColor: theme.palette.inflow.outline,
               },
               '&:hover .MuiOutlinedInput-notchedOutline': {
-                borderColor: inflowTokens.colors.onSurface,
+                borderColor: theme.palette.text.primary,
               },
               '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                borderColor: inflowTokens.colors.navy700,
+                borderColor: theme.palette.primary.main,
                 borderWidth: 2,
               },
               '&.Mui-error .MuiOutlinedInput-notchedOutline': {
-                borderColor: inflowTokens.colors.error.main,
+                borderColor: theme.palette.error.main,
               },
               '&.Mui-error.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                borderColor: inflowTokens.colors.error.main,
+                borderColor: theme.palette.error.main,
               },
             },
             '& .MuiInputLabel-root': {
               '&.Mui-focused': {
-                color: inflowTokens.colors.navy700,
+                color: theme.palette.primary.main,
               },
               '&.Mui-error': {
-                color: inflowTokens.colors.error.main,
+                color: theme.palette.error.main,
               },
             },
             '& .MuiFilledInput-root': {
-              backgroundColor: inflowTokens.colors.surfaceHighest,
-              borderRadius: `${inflowTokens.radius.xs}px ${inflowTokens.radius.xs}px 0 0`,
+              backgroundColor: theme.palette.inflow.surfaceHighest,
+              borderRadius: `${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0 0`,
               '&:hover': {
-                backgroundColor: '#dbe2f4',
+                backgroundColor: theme.palette.inflow.surfaceContainerHigh,
               },
               '&.Mui-focused': {
-                backgroundColor: inflowTokens.colors.surfaceHighest,
+                backgroundColor: theme.palette.inflow.surfaceHighest,
               },
               '&:after': {
-                borderBottomColor: inflowTokens.colors.navy700,
+                borderBottomColor: theme.palette.primary.main,
               },
             },
-          },
+          }),
           ...(Array.isArray(sx) ? sx : [sx])
         ]}
         {...props}

@@ -1,7 +1,7 @@
 import { forwardRef } from 'react';
 import { Card, CardHeader, CardContent, CardActions } from '@mui/material';
 import type { CardProps } from '@mui/material';
-import { inflowTokens } from '../../theme/tokens';
+import type { Theme } from '@mui/material/styles';
 
 export interface ThemedCardProps extends Omit<CardProps, 'title'> {
   /** Optional title to render in the card header */
@@ -40,10 +40,10 @@ export const ThemedCard = forwardRef<HTMLDivElement, ThemedCardProps>(
         ref={ref}
         elevation={1}
         sx={[
-          {
-            borderRadius: `${inflowTokens.radius.sm}px`,
-            boxShadow: inflowTokens.shadows.e1,
-          },
+          (theme: Theme) => ({
+            borderRadius: `${theme.shape.borderRadius}px`,
+            boxShadow: theme.shadows[1],
+          }),
           ...(Array.isArray(sx) ? sx : [sx])
         ]}
         {...props}

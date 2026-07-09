@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import { 
+import {
   Dialog, 
   DialogTitle, 
   DialogContent, 
@@ -7,7 +7,7 @@ import {
   IconButton
 } from '@mui/material';
 import type { DialogProps } from '@mui/material';
-import { inflowTokens } from '../../theme/tokens';
+import type { Theme } from '@mui/material/styles';
 
 export interface ThemedDialogProps extends Omit<DialogProps, 'title'> {
   /** The title of the dialog */
@@ -47,9 +47,9 @@ export const ThemedDialog = forwardRef<HTMLDivElement, ThemedDialogProps>(
         ref={ref}
         onClose={onClose}
         PaperProps={{
-          sx: {
-            borderRadius: `${inflowTokens.radius.xl}px`,
-          }
+          sx: (theme: Theme) => ({
+            borderRadius: `${theme.shape.borderRadius * 5.6}px`,
+          }),
         }}
         sx={[...(Array.isArray(sx) ? sx : [sx])]}
         {...props}
@@ -57,7 +57,7 @@ export const ThemedDialog = forwardRef<HTMLDivElement, ThemedDialogProps>(
         {title && (
           <DialogTitle 
             sx={{
-              backgroundColor: inflowTokens.colors.surfaceHighest,
+              backgroundColor: 'inflow.surfaceHighest',
               padding: '24px',
               fontSize: '1.5rem',
               fontWeight: 400,
@@ -74,7 +74,7 @@ export const ThemedDialog = forwardRef<HTMLDivElement, ThemedDialogProps>(
                 aria-label="close"
                 onClick={(e) => onClose(e, 'closeButtonClick')}
                 sx={{
-                  color: inflowTokens.colors.onSurfaceVariant,
+                  color: 'text.secondary',
                 }}
               >
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

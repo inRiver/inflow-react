@@ -10,7 +10,7 @@ import {
   Paper
 } from '@mui/material';
 import type { TableProps } from '@mui/material';
-import { inflowTokens } from '../../theme/tokens';
+import type { Theme } from '@mui/material/styles';
 
 type TableRowData = Record<string, unknown>;
 
@@ -56,7 +56,14 @@ const ThemedTableBase = <T extends TableRowData = TableRowData>(
   ref: ForwardedRef<HTMLTableElement>
 ) => {
     return (
-        <TableContainer component={Paper} elevation={0} sx={{ border: `1px solid ${inflowTokens.colors.outlineVariant}`, borderRadius: `${inflowTokens.radius.sm}px` }}>
+        <TableContainer
+          component={Paper}
+          elevation={0}
+          sx={(theme: Theme) => ({
+            border: `1px solid ${theme.palette.inflow.outlineVariant}`,
+            borderRadius: `${theme.shape.borderRadius}px`,
+          })}
+        >
         <Table ref={ref} sx={[...(Array.isArray(sx) ? sx : [sx])]} {...props}>
           <TableHead>
             <TableRow>
@@ -64,12 +71,12 @@ const ThemedTableBase = <T extends TableRowData = TableRowData>(
                 <TableCell 
                   key={column.id} 
                   align={column.align || 'left'}
-                  sx={{ 
-                    fontWeight: 600, 
-                    color: inflowTokens.colors.onSurface,
-                    borderColor: inflowTokens.colors.outlineVariant,
-                    backgroundColor: inflowTokens.colors.white
-                  }}
+                  sx={(theme: Theme) => ({
+                    fontWeight: 600,
+                    color: theme.palette.text.primary,
+                    borderColor: theme.palette.inflow.outlineVariant,
+                    backgroundColor: theme.palette.background.paper,
+                  })}
                 >
                   {column.label}
                 </TableCell>
@@ -80,25 +87,25 @@ const ThemedTableBase = <T extends TableRowData = TableRowData>(
             {data.map((row, index) => (
               <TableRow 
                 key={keyExtractor ? keyExtractor(row, index) : index}
-                sx={{
+                sx={(theme: Theme) => ({
                   '&:last-child td, &:last-child th': { border: 0 },
                   '&:hover': {
-                    backgroundColor: inflowTokens.colors.rowHover,
+                    backgroundColor: theme.palette.inflow.rowHover,
                   },
                   ...(striped && index % 2 === 1 && {
-                    backgroundColor: 'rgba(0, 0, 0, 0.02)'
-                  })
-                }}
+                    backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0, 0, 0, 0.02)',
+                  }),
+                })}
               >
                 {columns.map((column) => (
                   <TableCell 
                     key={column.id} 
                     align={column.align || 'left'}
-                    sx={{
-                      borderColor: inflowTokens.colors.outlineVariant,
+                    sx={(theme: Theme) => ({
+                      borderColor: theme.palette.inflow.outlineVariant,
                       fontSize: '0.875rem',
-                      letterSpacing: '0.25px'
-                    }}
+                      letterSpacing: '0.25px',
+                    })}
                   >
                     {column.render ? column.render(row) : String(row[column.id] ?? '')}
                   </TableCell>
@@ -107,7 +114,7 @@ const ThemedTableBase = <T extends TableRowData = TableRowData>(
             ))}
             {data.length === 0 && (
               <TableRow>
-                <TableCell colSpan={columns.length} align="center" sx={{ py: 4, color: inflowTokens.colors.onSurfaceVariant }}>
+                <TableCell colSpan={columns.length} align="center" sx={{ py: 4, color: 'text.secondary' }}>
                   No data available
                 </TableCell>
               </TableRow>

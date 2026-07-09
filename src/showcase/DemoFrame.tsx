@@ -36,30 +36,30 @@ export class DemoFrame extends Component<DemoFrameProps, DemoFrameState> {
     return (
       <Paper 
         elevation={0}
-        sx={{ 
-          borderRadius: "5px",
-          border: "1px solid var(--iv-border)",
-          bgcolor: "#fff",
+        sx={(theme) => ({ 
+          borderRadius: '5px',
+          border: `1px solid ${theme.palette.divider}`,
+          bgcolor: 'background.paper',
           px: 4, 
           py: 3.5, 
           my: 2, 
           position: 'relative', 
           overflow: 'auto', 
           maxWidth: '100%' 
-        }}
+        })}
       >
         {title && (
           <Typography 
             align="center"
-            sx={{ 
-              textTransform: "uppercase",
-              letterSpacing: "1px",
+            sx={(theme) => ({ 
+              textTransform: 'uppercase',
+              letterSpacing: '1px',
               fontSize: 13,
               fontWeight: 600,
-              color: "var(--iv-fg-2)",
+              color: theme.palette.text.secondary,
               mb: 3,
               display: 'block'
-            }}
+            })}
           >
             {title}
           </Typography>
