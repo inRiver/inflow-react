@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Container, Stack } from '@mui/material';
+import { Box, Container, Stack, Typography } from '@mui/material';
 import { DemoFrame } from '../DemoFrame';
 import { CodeBlock } from '../CodeBlock';
 import { PropsPlayground } from '../PropsPlayground';
@@ -42,14 +42,41 @@ import { Container } from '@mui/material';
   maxWidth={props.maxWidth}
   disableGutters={props.disableGutters}
   fixed={props.fixed}
-/>`;
+>
+  <Box
+    sx={{
+      bgcolor: '#e3e9f8',
+      border: '1px dashed',
+      borderColor: 'primary.main',
+      borderRadius: 1,
+      py: 4,
+      textAlign: 'center',
+    }}
+  >
+    <Typography>
+      Container content (maxWidth: {props.maxWidth || 'lg'})
+    </Typography>
+  </Box>
+</Container>`;
 
   return (
     <>
       <DemoFrame title="Container - Interactive">
-        
-        <Container {...props} sx={{ bgcolor: 'cfe8fc', height: '10vh' }}>
-          Container Content
+        <Container {...props}>
+          <Box
+            sx={{
+              bgcolor: '#e3e9f8',
+              border: '1px dashed',
+              borderColor: 'primary.main',
+              borderRadius: 1,
+              py: 4,
+              textAlign: 'center',
+            }}
+          >
+            <Typography>
+              Container content (maxWidth: {props.maxWidth || 'lg'})
+            </Typography>
+          </Box>
         </Container>
       </DemoFrame>
 
@@ -65,8 +92,34 @@ import { Container } from '@mui/material';
         <Stack spacing={2} direction="column">
           
           <Stack spacing={2}>
-            <Container maxWidth="sm" sx={{ bgcolor: 'cfe8fc' }}>maxWidth="sm"</Container>
-            <Container disableGutters sx={{ bgcolor: 'cfe8fc' }}>disableGutters</Container>
+            <Container maxWidth="sm">
+              <Box
+                sx={{
+                  bgcolor: '#e3e9f8',
+                  border: '1px dashed',
+                  borderColor: 'primary.main',
+                  borderRadius: 1,
+                  py: 3,
+                  textAlign: 'center',
+                }}
+              >
+                <Typography>maxWidth=&quot;sm&quot;</Typography>
+              </Box>
+            </Container>
+            <Container disableGutters>
+              <Box
+                sx={{
+                  bgcolor: '#e3e9f8',
+                  border: '1px dashed',
+                  borderColor: 'primary.main',
+                  borderRadius: 1,
+                  py: 3,
+                  textAlign: 'center',
+                }}
+              >
+                <Typography>disableGutters</Typography>
+              </Box>
+            </Container>
           </Stack>
         </Stack>
       </DemoFrame>
