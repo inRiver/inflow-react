@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, Stack, Paper } from '@mui/material';
+import { useRef, useState } from 'react';
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, Stack, Paper, Box } from '@mui/material';
 import { DemoFrame } from '../DemoFrame';
 import { CodeBlock } from '../CodeBlock';
 import { PropsPlayground } from '../PropsPlayground';
@@ -11,6 +11,7 @@ export function DialogDemo() {
   "fullWidth": false
 });
   const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   const schema: PropSchema[] = [
   {
@@ -42,22 +43,25 @@ import { Dialog } from '@mui/material';
   return (
     <>
       <DemoFrame title="Dialog - Interactive">
-        <Button onClick={() => setOpen(true)}>Open Dialog</Button>
-        <Dialog
-          open={open}
-          onClose={() => setOpen(false)}
-          maxWidth={props.maxWidth}
-          fullWidth={!!props.fullWidth}
-        >
-          <DialogTitle>Dialog Title</DialogTitle>
-          <DialogContent>
-            <DialogContentText>Dialog content goes here.</DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setOpen(false)}>Cancel</Button>
-            <Button onClick={() => setOpen(false)}>Agree</Button>
-          </DialogActions>
-        </Dialog>
+        <Box ref={containerRef} sx={{ position: 'relative', minHeight: 60 }}>
+          <Button onClick={() => setOpen(true)}>Open Dialog</Button>
+          <Dialog
+            open={open}
+            onClose={() => setOpen(false)}
+            maxWidth={props.maxWidth}
+            fullWidth={!!props.fullWidth}
+            container={containerRef.current}
+          >
+            <DialogTitle>Dialog Title</DialogTitle>
+            <DialogContent>
+              <DialogContentText>Dialog content goes here.</DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setOpen(false)}>Cancel</Button>
+              <Button onClick={() => setOpen(false)}>Agree</Button>
+            </DialogActions>
+          </Dialog>
+        </Box>
       </DemoFrame>
 
       <PropsPlayground 
