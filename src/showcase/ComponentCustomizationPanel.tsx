@@ -9,6 +9,7 @@ interface CustomizationMeta {
   slotSelector?: string;
   stateClass?: string;
   stateSelector?: string;
+  sxControls?: SxControlName[];
   note?: string;
   supportsClasses?: boolean;
   supportsVariants?: boolean;
@@ -47,6 +48,68 @@ interface ComponentCustomizationPanelProps {
 
 type PreviewRule = Record<string, string | number>;
 type PreviewStyles = Record<string, PreviewRule>;
+type SxControlName = 'borderRadius' | 'backgroundColor' | 'textColor' | 'padding' | 'slotColor';
+
+const sxControlDefinitions: Record<SxControlName, CustomizationControl> = {
+  borderRadius: { name: 'borderRadius', label: 'Radius token', type: 'select', options: ['0', '1', '2', '3', '4'] },
+  backgroundColor: { name: 'backgroundColor', label: 'Background', type: 'color' },
+  textColor: { name: 'textColor', label: 'Text color', type: 'color' },
+  padding: { name: 'padding', label: 'Padding scale', type: 'select', options: ['0', '1', '2', '3', '4'] },
+  slotColor: { name: 'slotColor', label: 'Slot color', type: 'color' },
+};
+
+const sxControlsByComponent: Record<string, SxControlName[]> = {
+  button: ['borderRadius', 'backgroundColor', 'textColor', 'padding'],
+  textfield: ['borderRadius', 'backgroundColor', 'padding', 'slotColor'],
+  select: ['borderRadius', 'backgroundColor', 'padding', 'slotColor'],
+  checkbox: ['backgroundColor'],
+  radio: ['backgroundColor'],
+  switch: ['backgroundColor'],
+  slider: ['textColor'],
+  typography: ['textColor'],
+  chip: ['borderRadius', 'backgroundColor', 'textColor'],
+  badge: ['backgroundColor', 'textColor'],
+  avatar: ['backgroundColor', 'textColor'],
+  tooltip: ['borderRadius', 'backgroundColor', 'textColor'],
+  table: ['backgroundColor', 'textColor'],
+  card: ['borderRadius', 'backgroundColor', 'textColor', 'padding'],
+  list: ['backgroundColor', 'textColor', 'padding'],
+  accordion: ['borderRadius', 'backgroundColor', 'textColor', 'padding'],
+  alert: ['borderRadius', 'backgroundColor', 'textColor', 'padding'],
+  linearprogress: ['backgroundColor'],
+  circularprogress: ['textColor'],
+  snackbar: ['borderRadius', 'backgroundColor', 'textColor', 'padding'],
+  dialog: ['borderRadius', 'backgroundColor', 'textColor', 'padding'],
+  skeleton: ['borderRadius', 'backgroundColor'],
+  tabs: ['textColor'],
+  breadcrumbs: ['textColor'],
+  pagination: ['borderRadius', 'backgroundColor', 'textColor'],
+  stepper: ['textColor'],
+  menu: ['borderRadius', 'backgroundColor', 'textColor'],
+  paper: ['borderRadius', 'backgroundColor', 'padding'],
+  appbar: ['backgroundColor', 'textColor'],
+  drawer: ['backgroundColor', 'textColor'],
+  container: ['backgroundColor', 'padding'],
+  grid: ['backgroundColor', 'padding'],
+  stack: ['backgroundColor', 'padding'],
+  autocomplete: ['borderRadius', 'backgroundColor', 'padding', 'slotColor'],
+  rating: ['textColor'],
+  togglebutton: ['borderRadius', 'backgroundColor', 'textColor', 'padding'],
+  formcontrol: ['backgroundColor', 'padding'],
+  inputadornment: ['backgroundColor', 'textColor'],
+  divider: ['textColor'],
+  link: ['textColor'],
+  imagelist: ['borderRadius', 'backgroundColor'],
+  bottomnavigation: ['backgroundColor', 'textColor'],
+  speeddial: ['backgroundColor', 'textColor'],
+  fab: ['borderRadius', 'backgroundColor', 'textColor'],
+  datepicker: ['borderRadius', 'backgroundColor', 'padding', 'slotColor'],
+  timepicker: ['borderRadius', 'backgroundColor', 'padding', 'slotColor'],
+  radiogroup: ['textColor'],
+  checkboxgroup: ['textColor'],
+  box: ['borderRadius', 'backgroundColor', 'textColor', 'padding'],
+  typographyvariants: ['textColor'],
+};
 
 const metaOverrides: Record<string, Partial<CustomizationMeta>> = {
   textfield: {
@@ -134,7 +197,7 @@ const getMeta = (componentId: string): CustomizationMeta => {
     example: `<${importName} />`,
   };
 
-  return { ...base, ...metaOverrides[componentId] };
+  return { ...base, sxControls: sxControlsByComponent[componentId] ?? ['backgroundColor', 'textColor'], ...metaOverrides[componentId] };
 };
 
 const getThemeStyleKey = (meta: CustomizationMeta) =>
@@ -166,10 +229,10 @@ const resolveThemeToken = (theme: Theme, value: string) => {
 const toRootSelector = (meta: CustomizationMeta) => {
   const themeStyleKey = getThemeStyleKey(meta);
   if (!themeStyleKey) {
-    return '.ComponentCustomizationPreviewScope > .MuiPaper-root:first-of-type > *';
+    return '& > .MuiPaper-root:first-of-type > *';
   }
 
-  return `.ComponentCustomizationPreviewScope > .MuiPaper-root:first-of-type .${themeStyleKey}-root`;
+  return `& > .MuiPaper-root:first-of-type .${themeStyleKey}-root`;
 };
 
 const effectToRule = (effect: string): PreviewRule => {
@@ -214,6 +277,7 @@ export const getCustomizationPreviewStyles = (
   if (activeMethod === 'sx') {
     const borderRadius = getSelectedValue(activeValues, 'borderRadius');
     const backgroundColor = getSelectedValue(activeValues, 'backgroundColor');
+    const textColor = getSelectedValue(activeValues, 'textColor');
     const padding = getSelectedValue(activeValues, 'padding');
     const rule: PreviewRule = {};
 
@@ -228,6 +292,7 @@ export const getCustomizationPreviewStyles = (
 
     if (borderRadius !== undefined) rule.borderRadius = Number(borderRadius) * theme.shape.borderRadius;
     if (backgroundColor !== undefined) rule.backgroundColor = resolveThemeToken(theme, backgroundColor);
+    if (textColor !== undefined) rule.color = resolveThemeToken(theme, textColor);
     if (padding !== undefined) rule.padding = theme.spacing(Number(padding));
 
     if (Object.keys(rule).length > 0) {
@@ -238,7 +303,7 @@ export const getCustomizationPreviewStyles = (
     if (meta.slotSelector) {
       const slotColor = getSelectedValue(activeValues, 'slotColor');
       if (slotColor !== undefined) {
-        styles[`.ComponentCustomizationPreviewScope > .MuiPaper-root:first-of-type ${meta.slotSelector}`] = {
+        styles[`& > .MuiPaper-root:first-of-type ${meta.slotSelector}`] = {
           color: resolveThemeToken(theme, slotColor),
         };
       }
@@ -302,11 +367,13 @@ export const getCustomizationPreviewStyles = (
   if (activeMethod === 'theme') {
     const borderRadiusSel = getSelectedValue(activeValues, 'borderRadius');
     const backgroundColorSel = getSelectedValue(activeValues, 'backgroundColor');
+    const textColorSel = getSelectedValue(activeValues, 'textColor');
     const variantBorderWidthSel = getSelectedValue(activeValues, 'variantBorderWidth');
     const rule: PreviewRule = {};
 
     if (borderRadiusSel !== undefined) rule.borderRadius = Number(borderRadiusSel);
     if (backgroundColorSel !== undefined) rule.backgroundColor = resolveThemeToken(theme, backgroundColorSel);
+    if (textColorSel !== undefined) rule.color = resolveThemeToken(theme, textColorSel);
     if (variantBorderWidthSel !== undefined) rule.borderWidth = Number(variantBorderWidthSel);
 
     if (Object.keys(rule).length > 0) {
@@ -329,21 +396,19 @@ const getClassSelector = (meta: CustomizationMeta, componentName: string) =>
           : `.Product${componentName}`);
 
 export const getCustomizationMethods = (meta: CustomizationMeta, classMethodLabel: string): CustomizationMethod[] => {
-  const sxControls: CustomizationControl[] = [
-    { name: 'borderRadius', label: 'Radius token', type: 'select', options: ['0', '1', '2', '3', '4'] },
-    { name: 'backgroundColor', label: 'Background', type: 'color' },
-    { name: 'padding', label: 'Padding scale', type: 'select', options: ['0', '1', '2', '3', '4'] },
-  ];
-
-  if (meta.slotSelector) {
-    sxControls.push({ name: 'slotColor', label: 'Slot color', type: 'color' });
-  }
+  const sxControlNames = meta.sxControls ?? ['backgroundColor', 'textColor'];
+  const sxControls = sxControlNames
+    .filter((controlName) => controlName !== 'slotColor' || Boolean(meta.slotSelector))
+    .map((controlName) => sxControlDefinitions[controlName]);
 
   const themeStyleKey = getThemeStyleKey(meta);
   const themeControls: CustomizationControl[] = themeStyleKey
     ? [
         { name: 'borderRadius', label: 'Override radius', type: 'select', options: ['0', '5', '8', '12'] },
         { name: 'backgroundColor', label: 'Override background', type: 'select', options: ['transparent', 'var(--iv-navy-50, #f8fbff)', 'var(--iv-navy-100, #ebf1fc)'] },
+        ...(sxControlNames.includes('textColor')
+          ? [{ name: 'textColor', label: 'Override text color', type: 'select', options: ['text.primary', 'text.secondary', 'primary.main'] } satisfies CustomizationControl]
+          : []),
         ...(meta.supportsVariants && themeStyleKey === meta.themeKey
           ? [{ name: 'variantBorderWidth', label: 'Outlined variant border', type: 'select', options: ['1', '2', '3'] } satisfies CustomizationControl]
           : []),
