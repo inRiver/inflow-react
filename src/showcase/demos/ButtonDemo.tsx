@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Button, Stack } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 import { DemoFrame } from '../DemoFrame';
 import { CodeBlock } from '../CodeBlock';
 import { PropsPlayground } from '../PropsPlayground';
@@ -64,7 +65,7 @@ import { Button } from '@mui/material';
   return (
     <>
       <DemoFrame title="Button - Interactive">
-        <Button {...props}>Interactive Button</Button>
+        <Button {...props} startIcon={<AddIcon />}>Interactive Button</Button>
       </DemoFrame>
 
       <PropsPlayground 

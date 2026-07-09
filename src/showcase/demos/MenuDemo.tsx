@@ -31,7 +31,7 @@ export function MenuDemo() {
         
         <Paper sx={{ width: 200, maxWidth: '100%', borderRadius: `${inriverTokens.radius.xs}px` }}>
           <MenuList dense={props.dense}>
-            <MenuItem>Profile</MenuItem>
+            <MenuItem selected>Profile</MenuItem>
             <MenuItem>My account</MenuItem>
             <MenuItem>Logout</MenuItem>
           </MenuList>

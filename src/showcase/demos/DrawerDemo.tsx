@@ -77,7 +77,7 @@ import { Drawer } from '@mui/material';
           >
             <List>
               <ListItem disablePadding>
-                <ListItemButton>
+                <ListItemButton selected>
                   <ListItemText primary="Inbox" />
                 </ListItemButton>
               </ListItem>

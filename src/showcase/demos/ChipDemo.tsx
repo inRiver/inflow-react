@@ -64,7 +64,7 @@ import { Chip } from '@mui/material';
   return (
     <>
       <DemoFrame title="Chip - Interactive">
-        <Chip {...props} />
+        <Chip {...props} onDelete={() => {}} />
       </DemoFrame>
 
       <PropsPlayground 

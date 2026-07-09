@@ -58,7 +58,7 @@ import { Snackbar } from '@mui/material';
               <Button
                 size="small"
                 variant="text"
-                sx={{ color: '#0b2d6e', fontWeight: 700 }}
+                sx={{ fontWeight: 700 }}
                 onClick={() => setOpen(false)}
               >
                 UNDO
@@ -87,7 +87,7 @@ import { Snackbar } from '@mui/material';
                 <Button
                   size="small"
                   variant="text"
-                  sx={{ color: '#0b2d6e', fontWeight: 700 }}
+                  sx={{ fontWeight: 700 }}
                 >
                   UNDO
                 </Button>

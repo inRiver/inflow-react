@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Card, CardActions, CardContent, Button, Typography, Stack } from '@mui/material';
+import { Card, CardActions, CardContent, CardHeader, Button, Typography, Stack } from '@mui/material';
 import { DemoFrame } from '../DemoFrame';
 import { CodeBlock } from '../CodeBlock';
 import { PropsPlayground } from '../PropsPlayground';
@@ -33,8 +33,8 @@ import { Card } from '@mui/material';
       <DemoFrame title="Card - Interactive">
         
         <Card sx={{ minWidth: 275 }} {...props}>
+          <CardHeader title="Card Title" subheader="Card subtitle" />
           <CardContent>
-            <Typography variant="subtitle1" component="div">Card Title</Typography>
             <Typography variant="body2">Card content</Typography>
           </CardContent>
           <CardActions>
