@@ -28,9 +28,16 @@ interface PropsPlaygroundProps {
   values: Record<string, unknown>;
   onChange: (newValues: Record<string, unknown>) => void;
   title?: string;
+  sectionId?: string;
 }
 
-export const PropsPlayground: React.FC<PropsPlaygroundProps> = ({ schema, values, onChange, title = 'Props Playground' }) => {
+export const PropsPlayground: React.FC<PropsPlaygroundProps> = ({
+  schema,
+  values,
+  onChange,
+  title = 'Props Playground',
+  sectionId = 'props',
+}) => {
   const handleChange = (name: string, value: unknown) => {
     onChange({ ...values, [name]: value });
   };
@@ -39,27 +46,30 @@ export const PropsPlayground: React.FC<PropsPlaygroundProps> = ({ schema, values
 
   return (
     <Paper 
+      component="section"
+      id={sectionId}
       elevation={0}
-      sx={{ 
-        bgcolor: "#fff",
-        border: "1px solid var(--iv-border)",
-        borderRadius: "5px",
+      sx={(theme) => ({ 
+        bgcolor: 'background.paper',
+        border: `1px solid ${theme.palette.divider}`,
+        borderRadius: '5px',
         px: 4, 
         py: 3.5, 
-        my: 2 
-      }}
+        my: 2,
+        scrollMarginTop: 96,
+      })}
     >
       <Typography 
         align="center"
-        sx={{ 
-          textTransform: "uppercase",
-          letterSpacing: "1px",
+        sx={(theme) => ({ 
+          textTransform: 'uppercase',
+          letterSpacing: '1px',
           fontSize: 13,
           fontWeight: 600,
-          color: "var(--iv-fg-2)",
+          color: theme.palette.text.secondary,
           mb: 3,
           display: 'block'
-        }}
+        })}
       >
         {title}
       </Typography>
