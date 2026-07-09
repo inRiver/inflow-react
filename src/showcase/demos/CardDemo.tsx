@@ -34,7 +34,7 @@ import { Card } from '@mui/material';
         
         <Card sx={{ minWidth: 275 }} {...props}>
           <CardContent>
-            <Typography variant="h5" component="div">Card Title</Typography>
+            <Typography variant="subtitle1" component="div">Card Title</Typography>
             <Typography variant="body2">Card content</Typography>
           </CardContent>
           <CardActions>
