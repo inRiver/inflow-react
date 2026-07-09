@@ -17,7 +17,7 @@ import { CodeBlock } from '../showcase/CodeBlock';
 const installCode = `npm install @inriver/inflow@react19-mui6.3 @mui/material@\">=6.3.0 <6.4.0\" @emotion/react @emotion/styled react@^19 react-dom@^19`;
 
 const releaseTagCode = `# Release only after validating this checkpoint against consuming apps.
-# The package is private by default; remove "private": true only in an approved release branch.
+# The package is already publish-ready with "private": false.
 INFLOW_THEME_RELEASE_TAG=react19-mui6.3 npm publish --tag react19-mui6.3
 
 # Promote to latest only after teams have intentionally adopted and verified it.
@@ -127,7 +127,7 @@ npm link @inriver/inflow`;
 const npmLinkCleanupCode = `# When you're done developing:
 cd C:\\Development\\your-app
 npm unlink @inriver/inflow
-npm install  # Reinstalls from Azure Artifacts or git`;
+npm install  # Reinstalls from public npm or your normal lockfile source`;
 
 const publicExports = [
   'inflowTheme and defaultTheme',
@@ -366,8 +366,8 @@ export function GuidelinesPage() {
               </Alert>
               <Alert severity="warning" sx={{ mt: 1 }}>
                 <Typography variant="body2">
-                  <strong>Not for:</strong> Production deployments (use published package from Azure
-                  Artifacts instead).
+                  <strong>Not for:</strong> Production deployments (use the published package from
+                  public npm instead).
                 </Typography>
               </Alert>
             </Stack>

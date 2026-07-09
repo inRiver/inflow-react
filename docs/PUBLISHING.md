@@ -23,7 +23,7 @@ Complete these manual setup steps before attempting the first publish:
 
 Before the first public publish, confirm all of the following:
 
-- [ ] Flip `"private": true` to `"private": false` in `package.json`.
+- [ ] Confirm `package.json` declares `"private": false` so the package is publishable.
 - [ ] Confirm `package.json` still declares `"name": "@inriver/inflow"`.
 - [ ] Confirm the checkpoint-tag release model in [`docs/VERSIONING.md`](./VERSIONING.md) is understood.
 - [ ] Confirm the first release will publish to a checkpoint tag such as `react19-mui6.3`, **not** directly to `latest`.
@@ -55,8 +55,9 @@ Linked-package testing is useful for runtime validation, but still inspect the p
 
 For the first public release, use the normal checkpoint flow but start from an intentional initial version instead of assuming a patch bump from an already-published package.
 
+Confirm `package.json` is already set to the intended first-release version before publishing. The current planned first public release is `0.1.0`, so do **not** run `npm version patch` before the first publish. Only bump the version for the second and later releases. If the starting version needs to change before first publish, edit `package.json` directly or use `npm version <version> --allow-same-version` as appropriate.
+
 ```bash
-npm version 0.1.0  # or an appropriate starting version
 npm run build
 INFLOW_THEME_RELEASE_TAG=react19-mui6.3 npm publish --access public --tag react19-mui6.3
 ```

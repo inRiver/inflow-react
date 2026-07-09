@@ -2,6 +2,7 @@
   "name": "@inriver/inflow",
   "private": false,
   "version": "0.1.0",
+  "license": "UNLICENSED",
   "type": "module",
   "files": [
     "dist/index.js",

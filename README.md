@@ -164,19 +164,24 @@ npm install
 
 Do not commit `file:` paths or local-link-only dependency changes.
 
-### Stable internal consumption
+### Stable consumption from public npm
 
-Use Azure Artifacts for stable versions:
+Install the validated public npm checkpoint tag when an app wants the current approved patch for
+the React 19 / MUI 6.3 contract:
 
 ```bash
 npm install @inriver/inflow@react19-mui6.3
 ```
 
-or pin exactly:
+or pin an exact immutable version:
 
 ```bash
 npm install @inriver/inflow@0.1.0
 ```
+
+The source repository and CI can still live in Azure DevOps or other internal infrastructure, but
+consumer installation should center on the public npm package so external partners do not need
+Azure AD guest access.
 
 ### Publish a validated checkpoint
 
