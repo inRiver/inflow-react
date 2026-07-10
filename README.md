@@ -1,7 +1,7 @@
 # Inflow Design System
 
 Shared Inflow React/MUI design-system package and live showcase for product UIs.
-Published on public npm as `@inriver/inflow` for internal Inriver teams and authorized external partners.
+Published on public npm as `@richard-orilla_inriver/inflow` for internal Inriver teams and authorized external partners.
 
 > Note: This package was previously known internally as `inriver-react-theme`.
 
@@ -44,7 +44,7 @@ npm install @richard-orilla_inriver/inflow@react19-mui6.3
 ```
 
 When the package moves to the public npm registry, this section will be removed and the
-`@inriver/inflow` public-npm instructions below become the only supported install path - no
+`@richard-orilla_inriver/inflow` public-npm instructions below become the only supported install path - no
 GitHub access or `.npmrc` will be required at that point.
 
 ## What this repo owns
@@ -58,7 +58,7 @@ GitHub access or `.npmrc` will be required at that point.
 Consuming apps should import from the package root only:
 
 ```ts
-import { inflowTheme, ThemedButton, inflowTokens } from '@inriver/inflow';
+import { inflowTheme, ThemedButton, inflowTokens } from '@richard-orilla_inriver/inflow';
 ```
 
 Do not import showcase pages, demo components, or internal source paths from consuming apps. Those are documentation/demo code, not the stable package surface.
@@ -74,7 +74,7 @@ This repo avoids both by separating **immutable versions** from **moving compati
 
 ```mermaid
 flowchart LR
-  ThemeRepo["@inriver/inflow"] --> Exact["Exact versions\n0.1.0, 0.1.1"]
+  ThemeRepo["@richard-orilla_inriver/inflow"] --> Exact["Exact versions\n0.1.0, 0.1.1"]
   ThemeRepo --> Tags["Compatibility tags\nreact19-mui6.3"]
   ThemeRepo --> Local["Local npm link\nactive development"]
 
@@ -87,10 +87,10 @@ flowchart LR
 
 | Mechanism | Example | Purpose |
 | --- | --- | --- |
-| Exact package version | `@inriver/inflow@0.1.0` | Immutable artifact. Use when an app wants no movement. |
-| Compatibility checkpoint tag | `@inriver/inflow@react19-mui6.3` | Moving channel for the same React/MUI contract. Patch fixes can move here after validation. |
+| Exact package version | `@richard-orilla_inriver/inflow@0.1.0` | Immutable artifact. Use when an app wants no movement. |
+| Compatibility checkpoint tag | `@richard-orilla_inriver/inflow@react19-mui6.3` | Moving channel for the same React/MUI contract. Patch fixes can move here after validation. |
 | Source recovery tag | `theme/react19-mui6.3/v0.1.0` | Immutable Git anchor for audit, rollback, and security review. |
-| `latest` | `@inriver/inflow@latest` | Only promoted after teams intentionally adopt and verify a checkpoint. Never publish directly to it. |
+| `latest` | `@richard-orilla_inriver/inflow@latest` | Only promoted after teams intentionally adopt and verify a checkpoint. Never publish directly to it. |
 
 The publish guard in `scripts/guard-publish.cjs` enforces this: releases must use an approved checkpoint tag such as `react19-mui6.3`, and direct publishing to `latest` is blocked.
 
@@ -99,7 +99,7 @@ For production apps that want safe patches but not new checkpoints, prefer a pat
 ```json
 {
   "dependencies": {
-    "@inriver/inflow": "~0.1.0"
+    "@richard-orilla_inriver/inflow": "~0.1.0"
   }
 }
 ```
@@ -125,7 +125,7 @@ flowchart TB
 ```
 
 ```text
-@inriver/inflow/
+@richard-orilla_inriver/inflow/
 ├── src/
 │   ├── index.ts                  # Public package entry: theme + themed components only
 │   ├── theme/
@@ -190,7 +190,7 @@ npm link
 In the consuming app:
 
 ```bash
-npm link @inriver/inflow
+npm link @richard-orilla_inriver/inflow
 npm ls react
 ```
 
@@ -199,7 +199,7 @@ Restart the consuming app dev server after theme changes. If React hook errors a
 When finished:
 
 ```bash
-npm unlink @inriver/inflow
+npm unlink @richard-orilla_inriver/inflow
 npm install
 ```
 
@@ -211,13 +211,13 @@ Install the validated public npm checkpoint tag when an app wants the current ap
 the React 19 / MUI 6.3 contract:
 
 ```bash
-npm install @inriver/inflow@react19-mui6.3
+npm install @richard-orilla_inriver/inflow@react19-mui6.3
 ```
 
 or pin an exact immutable version:
 
 ```bash
-npm install @inriver/inflow@0.1.0
+npm install @richard-orilla_inriver/inflow@0.1.0
 ```
 
 The source repository and CI can still live in Azure DevOps or other internal infrastructure, but
@@ -235,7 +235,7 @@ INFLOW_THEME_RELEASE_TAG=react19-mui6.3 npm publish --tag react19-mui6.3
 Promote to `latest` only after adoption verification:
 
 ```bash
-npm dist-tag add @inriver/inflow@0.1.1 latest
+npm dist-tag add @richard-orilla_inriver/inflow@0.1.1 latest
 ```
 
 ## Usage in consuming apps
@@ -244,7 +244,7 @@ Wrap the app once at the root:
 
 ```tsx
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import { inflowTheme } from '@inriver/inflow';
+import { inflowTheme } from '@richard-orilla_inriver/inflow';
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
@@ -260,7 +260,7 @@ Then use regular MUI components under the theme. Use `Themed*` wrappers when a s
 
 ```tsx
 import { Stack } from '@mui/material';
-import { ThemedButton, ThemedChip, ThemedTextField } from '@inriver/inflow';
+import { ThemedButton, ThemedChip, ThemedTextField } from '@richard-orilla_inriver/inflow';
 
 export function ProductStatus() {
   return (
@@ -276,7 +276,7 @@ export function ProductStatus() {
 Dark-mode availability is controlled by the exported `INFLOW_DARK_MODE_ENABLED` flag from `src/theme/featureFlags.ts`. Consuming apps can check the live package value directly instead of relying on this README to stay current:
 
 ```ts
-import { INFLOW_DARK_MODE_ENABLED } from '@inriver/inflow';
+import { INFLOW_DARK_MODE_ENABLED } from '@richard-orilla_inriver/inflow';
 ```
 
 As of this writing, the flag is `false`, so the published package is currently light-mode only. Treat that as a snapshot, not a guarantee: the flag value in code is the authoritative current status.
@@ -307,6 +307,6 @@ The tight MUI range is deliberate: this checkpoint is validated for MUI 6.3. A n
 ## Documentation map
 
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) - how the theme codebase works.
-- [`docs/PUBLISHING.md`](docs/PUBLISHING.md) - first public npm publish checklist for `@inriver/inflow`.
+- [`docs/PUBLISHING.md`](docs/PUBLISHING.md) - first public npm publish checklist for `@richard-orilla_inriver/inflow`.
 - [`docs/VERSIONING.md`](docs/VERSIONING.md) - release channels, fragmentation control, and adoption guidance.
 - `/guidelines` in the showcase - live import, migration, and usage guidance. This replaces the old static migration guide.
