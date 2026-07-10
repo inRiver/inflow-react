@@ -163,22 +163,15 @@ Stop the server with `Ctrl+C` in the terminal.
 
 ---
 
-## For designers / non-developers
+## First time using a terminal or GitHub CLI?
 
-If the steps above feel unfamiliar, here's the same thing in plainer terms:
+A few notes if any of the tooling above is new to you - this applies to anyone setting this up for the first time, not just designers:
 
-1. **Install the three tools** (Node.js, Git, GitHub CLI) using the installer links in [Installing prerequisites by OS](#installing-prerequisites-by-os) above - just double-click through each installer like any other app, keeping the default options.
-2. **Ask for repo access.** Message whoever manages this repo and ask them to add your GitHub username as a collaborator.
-3. **Open a terminal.**
-   - Windows: search for "PowerShell" in the Start menu.
-   - macOS: open "Terminal" from Spotlight (`Cmd+Space`, type "Terminal").
-   - Linux: use your distro's terminal app.
-4. **Copy-paste the commands** from [GitHub access and authentication](#github-access-and-authentication) one block at a time, pressing Enter after each. When `gh auth login` opens a browser window, just click through the login/authorization prompts.
-5. **Create the `.npmrc` file.** If you're not comfortable with a code editor, Notepad (Windows), TextEdit (macOS, plain text mode), or any plain-text editor works - just make sure the file is named exactly `.npmrc` with no `.txt` extension, saved in the folder where you'll put the project.
-6. **Copy-paste the commands** from [Quick start](#quick-start) one block at a time.
-7. Once `npm run dev` prints a URL, open it in your browser - that's the showcase, running locally on your machine.
-
-If any step produces a red error message, copy the full text and share it with the dev team rather than trying variations - most failures at this stage come from a missed collaborator invite or a mistyped token.
+- **Opening a terminal:** Windows - search "PowerShell" in the Start menu. macOS - Spotlight (`Cmd+Space`) → "Terminal". Linux - your distro's terminal app.
+- **Installers** for Node.js, Git, and the GitHub CLI (linked in [Installing prerequisites by OS](#installing-prerequisites-by-os)) work like any other installer - accept the defaults unless you have a reason not to.
+- **Running the commands:** copy each code block from [GitHub access and authentication](#github-access-and-authentication) and [Quick start](#quick-start) into the terminal and press Enter, one block at a time. `gh auth login` opens a browser window for you to authorize - follow the prompts there.
+- **Creating `.npmrc`:** any plain-text editor works (Notepad, TextEdit in plain-text mode, VS Code). The important part is the filename is exactly `.npmrc` - not `.npmrc.txt` - saved in the project folder.
+- **Access requests and errors:** repo access has to come from whoever manages this repo - message them if you haven't been added as a collaborator yet. If a command errors out, paste the full output when asking for help; most first-run failures trace back to a missing collaborator invite or a stale token.
 
 ---
 
