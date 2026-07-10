@@ -1,10 +1,5 @@
 # Local Setup
 
-This guide gets the Inflow showcase running on your machine. It is written for two audiences:
-
-- **Developers** who already have a Node.js toolchain - the whole setup is `npm install` + `npm run dev`.
-- **Designers / non-developers** who may be starting from a blank machine - every prerequisite is spelled out step by step.
-
 Covers Windows, macOS, and Linux. If you just want to browse the showcase and don't care about the details, jump to [Quick start](#quick-start) and follow your OS's steps.
 
 > This package is currently in closed beta and hosted as a **private** package on GitHub Packages (see the "Beta status" section in the root [README.md](../README.md)). Local setup requires GitHub repo access and a personal access token in addition to Node.js - this is temporary until the package moves to public npm.
