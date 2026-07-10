@@ -7,6 +7,46 @@ Published on public npm as `@inriver/inflow` for internal Inriver teams and auth
 
 The goal of this repository is not to force every app onto the newest design work immediately. It gives teams a shared theme contract, versioned compatibility checkpoints, and a local development workflow so theme changes can be tested before they become a dependency for other apps.
 
+## Beta status: private package, testers need setup
+
+This package is currently in **closed beta** and published as a **private** package on
+**GitHub Packages**, not on public npm yet. The public-npm plan described later in this README
+is the target end state, but is not active yet. Until the package goes public, every tester
+needs the following before `npm install` will work:
+
+1. **GitHub collaborator access** to this repository (`richard-orilla_inriver/inflow-react`).
+   Ask the repo owner to add you as a collaborator - without this, npm will return a 404/401
+   even with a valid token.
+2. **A GitHub personal access token (PAT) with `read:packages` scope.** If you have the
+   [GitHub CLI](https://cli.github.com/) installed, the easiest path is:
+
+   ```bash
+   gh auth login
+   gh auth refresh -h github.com -s read:packages
+   gh auth setup-git
+   ```
+
+3. **A local `.npmrc`** (project-level or in your home directory) that points the `@richard-orilla_inriver`
+   scope at GitHub Packages and supplies the token:
+
+   ```ini
+   @richard-orilla_inriver:registry=https://npm.pkg.github.com
+   //npm.pkg.github.com/:_authToken=<your PAT>
+   ```
+
+   Do not commit this file. It is already covered by `.gitignore`.
+
+Once these three steps are done, install the beta package the same way as any other checkpoint
+release:
+
+```bash
+npm install @richard-orilla_inriver/inflow@react19-mui6.3
+```
+
+When the package moves to the public npm registry, this section will be removed and the
+`@inriver/inflow` public-npm instructions below become the only supported install path - no
+GitHub access or `.npmrc` will be required at that point.
+
 ## What this repo owns
 
 - **Canonical MUI theme** in `src/theme/inflow.ts`.
