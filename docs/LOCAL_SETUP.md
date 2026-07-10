@@ -13,11 +13,11 @@ Covers Windows, macOS, and Linux. If you just want to browse the showcase and do
 
 You need three things before `npm install` will work:
 
-1. **Node.js 20** (the version this repo's CI and tooling target; Node 18+ likely works, but 20 is what's verified).
+1. **Node.js.** This repo's tooling (Vite, ESLint) requires **Node 20.19+, 22.12+, or 24+**. Any current LTS release satisfies this - if you already have a recent Node install (including odd-numbered "Current" releases like Node 25), you're covered. No `.nvmrc` is committed; install whatever your OS's package manager offers as the latest LTS if you're starting fresh.
 2. **Git.**
 3. **GitHub access**: you must be added as a collaborator on `richard-orilla_inriver/inflow-react`, and you need a GitHub personal access token (PAT) with `read:packages` scope, because the `@richard-orilla_inriver/inflow` package lives on GitHub Packages, not public npm, during the beta.
 
-If you already have Node 20+, Git, and a GitHub PAT with `read:packages`, skip to [Quick start](#quick-start).
+If you already have Node 20.19+ (or 22.12+, or 24+), Git, and a GitHub PAT with `read:packages`, skip to [Quick start](#quick-start).
 
 ---
 
@@ -55,10 +55,10 @@ gh --version
 
 ```bash
 # Install Homebrew first if you don't have it: https://brew.sh
-brew install node@20 git gh
+brew install node git gh
 ```
 
-If `node@20` isn't the default after install, follow the `brew` output to link it, or use `brew link node@20 --force`.
+Homebrew installs the current stable Node release, which satisfies this repo's requirements.
 
 **Option B - manual installers:**
 
@@ -79,8 +79,8 @@ gh --version
 Package manager commands vary by distro. Debian/Ubuntu example:
 
 ```bash
-# Node.js 20 via NodeSource
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+# Node.js (current LTS) via NodeSource
+curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
 sudo apt-get install -y nodejs git
 
 # GitHub CLI
