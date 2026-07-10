@@ -165,7 +165,7 @@ Stop the server with `Ctrl+C` in the terminal.
 
 ## First time using a terminal or GitHub CLI?
 
-A few notes if any of the tooling above is new to you - this applies to anyone setting this up for the first time, not just designers:
+A few notes if any of the tooling above is new to you:
 
 - **Opening a terminal:** Windows - search "PowerShell" in the Start menu. macOS - Spotlight (`Cmd+Space`) → "Terminal". Linux - your distro's terminal app.
 - **Installers** for Node.js, Git, and the GitHub CLI (linked in [Installing prerequisites by OS](#installing-prerequisites-by-os)) work like any other installer - accept the defaults unless you have a reason not to.
