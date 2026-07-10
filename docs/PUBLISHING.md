@@ -1,6 +1,6 @@
 # First Public npm Publish Checklist
 
-This checklist is for the **first-ever** public npm publish of `@richard-orilla_inriver/inflow`.
+This checklist is for the **first-ever** public npm publish of `inriver-inflow`.
 
 Use it once to establish the public package correctly, then use [`docs/VERSIONING.md`](./VERSIONING.md) as the normal ongoing release guide.
 
@@ -14,17 +14,33 @@ Because the package is public, review the repository `LICENSE` and `README.md` w
 
 Complete these manual setup steps before attempting the first publish:
 
-- [ ] Create the `@inriver` npm Organization at npmjs.com using an npm account with org-creation rights.
-- [ ] Note that a live registry check during planning confirmed both `@inriver` and `@richard-orilla_inriver/inflow` were unclaimed on public npm at that time.
-- [ ] Add the appropriate team members to the `@inriver` org with publish access.
-- [ ] Run `npm login` locally, or configure CI credentials, using an account that can publish `@richard-orilla_inriver/inflow`.
+- [ ] Confirm the unscoped name `inriver-inflow` is unclaimed on public npm (a live registry check during planning confirmed this).
+- [ ] Run `npm login` locally, or configure CI credentials, using an account that can publish `inriver-inflow`. Note: npm may require a live 2FA challenge (OTP or WebAuthn) for interactive publishes - see the "CI/CD publishing" note below for a token-based alternative that bypasses this.
+
+## CI/CD publishing (recommended over interactive `npm publish`)
+
+Interactive publishing from a local machine can be blocked by npm's 2FA
+requirement, especially with hardware security keys (no OTP code exists to
+type into the CLI). The reliable path is a Granular Access Token with
+"Bypass 2FA" enabled, stored as a GitHub Actions secret:
+
+1. On npmjs.com: Profile → Access Tokens → Generate New Token → Granular
+   Access Token. Scope it to `inriver-inflow` (or broader if needed), grant
+   read/write, and enable **Bypass 2FA**.
+2. Store it as a repository secret named `NPM_TOKEN` (Settings → Secrets and
+   variables → Actions → New repository secret). Never paste this token into
+   chat, commits, or logs.
+3. Trigger `.github/workflows/publish-npm.yml` via `workflow_dispatch`,
+   supplying the checkpoint tag (e.g. `react19-mui6.3`) as input. The
+   workflow builds and publishes using the stored token - no local OTP/2FA
+   prompt involved.
 
 ## First-publish verification checklist
 
 Before the first public publish, confirm all of the following:
 
 - [ ] Confirm `package.json` declares `"private": false` so the package is publishable.
-- [ ] Confirm `package.json` still declares `"name": "@richard-orilla_inriver/inflow"`.
+- [ ] Confirm `package.json` still declares `"name": "inriver-inflow"`.
 - [ ] Confirm the checkpoint-tag release model in [`docs/VERSIONING.md`](./VERSIONING.md) is understood.
 - [ ] Confirm the first release will publish to a checkpoint tag such as `react19-mui6.3`, **not** directly to `latest`.
 - [ ] Confirm `scripts/guard-publish.cjs` is enforcing the required `INFLOW_THEME_RELEASE_TAG` environment variable.
@@ -39,13 +55,13 @@ npm run build
   - Use the existing `npm link` workflow from the README in a throwaway consuming app:
 
 ```bash
-# in @richard-orilla_inriver/inflow
+# in inriver-inflow
 npm install
 npm run build
 npm link
 
 # in the consuming app
-npm link @richard-orilla_inriver/inflow
+npm link inriver-inflow
 npm ls react
 ```
 
@@ -64,14 +80,13 @@ INFLOW_THEME_RELEASE_TAG=react19-mui6.3 npm publish --access public --tag react1
 
 Notes:
 
-- `--access public` is required for the **first publish** of a scoped package such as `@richard-orilla_inriver/inflow`.
-- Without `--access public`, npm treats scoped packages as restricted/private by default, which will fail unless the org has a paid private-plan setup.
+- `inriver-inflow` is an unscoped package name, so it's public by default; `--access public` (also set in `publishConfig`) is harmless but not strictly required the way it would be for a scoped `@org/name` package.
 - Do **not** publish directly to `latest`. The checkpoint tag is the release channel.
 
 After the package publish succeeds, create the immutable source Git tag that matches the existing release convention:
 
 ```bash
-git tag -a theme/react19-mui6.3/v0.1.0 -m "@richard-orilla_inriver/inflow 0.1.0 - React 19 / MUI 6.3"
+git tag -a theme/react19-mui6.3/v0.1.0 -m "inriver-inflow 0.1.0 - React 19 / MUI 6.3"
 git push origin theme/react19-mui6.3/v0.1.0
 ```
 
@@ -79,18 +94,18 @@ git push origin theme/react19-mui6.3/v0.1.0
 
 Immediately verify the published result:
 
-- [ ] Open `https://www.npmjs.com/package/@richard-orilla_inriver/inflow` and confirm the package page renders correctly.
+- [ ] Open `https://www.npmjs.com/package/inriver-inflow` and confirm the package page renders correctly.
 - [ ] Confirm the README, version, and published file list look correct.
 - [ ] In a fresh throwaway project, test install from the checkpoint tag:
 
 ```bash
-npm install @richard-orilla_inriver/inflow@react19-mui6.3
+npm install inriver-inflow@react19-mui6.3
 ```
 
 - [ ] Verify the expected exports work in a consumer:
 
 ```ts
-import { inflowTheme, ThemedButton } from '@richard-orilla_inriver/inflow';
+import { inflowTheme, ThemedButton } from 'inriver-inflow';
 ```
 
 - [ ] Promote to `latest` only after adoption verification, per [`docs/VERSIONING.md`](./VERSIONING.md).

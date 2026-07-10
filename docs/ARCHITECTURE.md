@@ -2,7 +2,7 @@
 
 This repository has two jobs:
 
-1. Build the importable `@richard-orilla_inriver/inflow` package.
+1. Build the importable `inriver-inflow` package.
 2. Host a live showcase so designers and developers can review the theme in context.
 
 Those two jobs share code, but they are intentionally not the same public API.
