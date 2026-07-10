@@ -306,6 +306,7 @@ The tight MUI range is deliberate: this checkpoint is validated for MUI 6.3. A n
 
 ## Documentation map
 
+- [`docs/LOCAL_SETUP.md`](docs/LOCAL_SETUP.md) - install prerequisites and run the showcase locally, covering Windows/macOS/Linux and both developers and non-developers.
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) - how the theme codebase works.
 - [`docs/PUBLISHING.md`](docs/PUBLISHING.md) - first public npm publish checklist for `@richard-orilla_inriver/inflow`.
 - [`docs/VERSIONING.md`](docs/VERSIONING.md) - release channels, fragmentation control, and adoption guidance.
