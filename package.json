@@ -1,9 +1,17 @@
 {
-  "name": "@inriver/inflow",
+  "name": "@richard-orilla_inriver/inflow",
   "private": false,
   "version": "0.1.0",
   "license": "UNLICENSED",
   "type": "module",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com",
+    "access": "restricted"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/richard-orilla_inriver/inflow-react.git"
+  },
   "files": [
     "dist/index.js",
     "dist/index.js.map",
