@@ -4,6 +4,11 @@ This checklist is for the **first-ever** public npm publish of `inriver-inflow`.
 
 Use it once to establish the public package correctly, then use [`docs/VERSIONING.md`](./VERSIONING.md) as the normal ongoing release guide.
 
+**Status: complete.** `inriver-inflow@0.1.0` published successfully on
+2026-07-10 (source tag `theme/react19-mui6.3/v0.1.0-npm`). The sections
+below are kept for the next release and for anyone who needs to understand
+what was actually required.
+
 ## Why this package is public
 
 This package is being made public so external Inriver partners can consume the shared Inflow theme package without requiring Azure AD guest access.
@@ -15,25 +20,52 @@ Because the package is public, review the repository `LICENSE` and `README.md` w
 Complete these manual setup steps before attempting the first publish:
 
 - [ ] Confirm the unscoped name `inriver-inflow` is unclaimed on public npm (a live registry check during planning confirmed this).
-- [ ] Run `npm login` locally, or configure CI credentials, using an account that can publish `inriver-inflow`. Note: npm may require a live 2FA challenge (OTP or WebAuthn) for interactive publishes - see the "CI/CD publishing" note below for a token-based alternative that bypasses this.
+- [ ] Run `npm login` locally using an account that can publish `inriver-inflow`.
 
-## CI/CD publishing (recommended over interactive `npm publish`)
+## Publishing on this GitHub Enterprise: known blockers and what actually works
 
-Interactive publishing from a local machine can be blocked by npm's 2FA
-requirement, especially with hardware security keys (no OTP code exists to
-type into the CLI). The reliable path is a Granular Access Token with
-"Bypass 2FA" enabled, stored as a GitHub Actions secret:
+This repository lives under a GitHub Enterprise Managed Users (EMU) account
+and org, which turned out to block several approaches that would normally be
+straightforward. In case any of this resurfaces on a future release:
 
-1. On npmjs.com: Profile → Access Tokens → Generate New Token → Granular
-   Access Token. Scope it to `inriver-inflow` (or broader if needed), grant
-   read/write, and enable **Bypass 2FA**.
-2. Store it as a repository secret named `NPM_TOKEN` (Settings → Secrets and
-   variables → Actions → New repository secret). Never paste this token into
-   chat, commits, or logs.
-3. Trigger `.github/workflows/publish-npm.yml` via `workflow_dispatch`,
-   supplying the checkpoint tag (e.g. `react19-mui6.3`) as input. The
-   workflow builds and publishes using the stored token - no local OTP/2FA
-   prompt involved.
+- **GitHub Actions hosted runners are disabled enterprise-wide.** Any
+  workflow using `runs-on: ubuntu-latest` (or similar Microsoft-hosted
+  runners) fails immediately with "GitHub Actions hosted runners are
+  disabled for this repository." There were 0 self-hosted runners
+  registered either. This ruled out CI/CD publishing (including npm
+  Trusted Publishing via OIDC, which requires Actions to run at all) for
+  this repo. If self-hosted runners get provisioned later, CI/CD publishing
+  and Trusted Publishing become viable again and are the better long-term
+  setup - ask a GitHub Enterprise admin.
+- **npm 2FA with a hardware security key has no OTP path through the CLI.**
+  If the npm account's 2FA is WebAuthn/security-key only (not an
+  authenticator app), `npm publish` fails with `EOTP` and there is no code
+  to type in - security keys require an interactive browser challenge the
+  CLI doesn't trigger in this npm version.
+- **Granular Access Tokens have their own per-token 2FA requirement,
+  independent of the account-wide 2FA mode.** Even after switching the
+  account's 2FA mode from `auth-and-writes` to `auth-only` (Profile →
+  Two-Factor Authentication), a token created with that per-token 2FA
+  requirement still enabled continued to trigger `EOTP` on publish. The fix
+  that worked: generate the Granular Access Token, then explicitly confirm
+  (or re-generate) it without its own 2FA requirement - this is a separate
+  toggle from the account-wide setting, easy to miss.
+- **What actually worked**: account 2FA mode set to `auth-only`, plus a
+  Granular Access Token generated with its per-token 2FA requirement
+  disabled, used directly on the local machine via a temporary `.npmrc`
+  (`//registry.npmjs.org/:_authToken=<token>`), deleted immediately after
+  the publish command completed. No GitHub Actions, no CI, no
+  Trusted Publishing - a fully local, manual `npm publish`.
+- **GitHub Packages billing limit** was hit before this pivot - private
+  packages on GitHub Packages count against the account's storage/billing
+  quota, which was already exhausted. Public npm has no such limit; this is
+  part of why the package moved off GitHub Packages entirely (see the
+  "unscoped `inriver-inflow`" rename in git history) rather than just
+  requesting a billing increase.
+- **Public repos are permanently disallowed** on this account and org (EMU
+  policy, confirmed via API on both the personal account and the
+  `inriver-copilots-enterprise` org) - this also means GitHub Pages is
+  never available here, independent of the npm publish question.
 
 ## First-publish verification checklist
 
@@ -83,11 +115,11 @@ Notes:
 - `inriver-inflow` is an unscoped package name, so it's public by default; `--access public` (also set in `publishConfig`) is harmless but not strictly required the way it would be for a scoped `@org/name` package.
 - Do **not** publish directly to `latest`. The checkpoint tag is the release channel.
 
-After the package publish succeeds, create the immutable source Git tag that matches the existing release convention:
+After the package publish succeeds, create the immutable source Git tag that matches the existing release convention (pick a tag name that doesn't collide with any prior release tag for the same version - e.g. append `-npm` if a same-version tag already exists from an earlier registry):
 
 ```bash
-git tag -a theme/react19-mui6.3/v0.1.0 -m "inriver-inflow 0.1.0 - React 19 / MUI 6.3"
-git push origin theme/react19-mui6.3/v0.1.0
+git tag -a theme/react19-mui6.3/v0.1.0-npm -m "inriver-inflow 0.1.0 - React 19 / MUI 6.3 (public npm)"
+git push origin theme/react19-mui6.3/v0.1.0-npm
 ```
 
 ## Post-publish verification
