@@ -1,5 +1,5 @@
 {
-  "name": "inriver-inflow",
+  "name": "@inriver/inflow-react",
   "version": "0.1.1",
   "description": "Shared Inflow React/MUI design-system: canonical theme, design tokens, and themed wrapper components for Inriver product UIs.",
   "keywords": [
@@ -15,7 +15,7 @@
     "url": "https://github.com/richard-orilla_inriver/inflow-react/issues"
   },
   "private": false,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "type": "module",
   "publishConfig": {
     "registry": "https://registry.npmjs.org",

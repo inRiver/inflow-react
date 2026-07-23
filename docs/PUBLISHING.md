@@ -1,10 +1,10 @@
 # First Public npm Publish Checklist
 
-This checklist is for the **first-ever** public npm publish of `inriver-inflow`.
+This checklist is for the **first-ever** public npm publish of `@inriver/inflow-react`.
 
 Use it once to establish the public package correctly, then use [`docs/VERSIONING.md`](./VERSIONING.md) as the normal ongoing release guide.
 
-**Status: complete.** `inriver-inflow@0.1.0` published successfully on
+**Status: complete.** `@inriver/inflow-react@0.1.0` published successfully on
 2026-07-10 (source tag `theme/react19-mui6.3/v0.1.0-npm`). The sections
 below are kept for the next release and for anyone who needs to understand
 what was actually required.
@@ -19,8 +19,8 @@ Because the package is public, review the repository `LICENSE` and `README.md` w
 
 Complete these manual setup steps before attempting the first publish:
 
-- [ ] Confirm the unscoped name `inriver-inflow` is unclaimed on public npm (a live registry check during planning confirmed this).
-- [ ] Run `npm login` locally using an account that can publish `inriver-inflow`.
+- [ ] Confirm the scoped name `@inriver/inflow-react` is unclaimed under the `@inriver` npm org (a live registry check during planning confirmed this).
+- [ ] Run `npm login` locally using an account that can publish `@inriver/inflow-react`.
 
 ## Publishing on this GitHub Enterprise: known blockers and what actually works
 
@@ -60,7 +60,7 @@ straightforward. In case any of this resurfaces on a future release:
   packages on GitHub Packages count against the account's storage/billing
   quota, which was already exhausted. Public npm has no such limit; this is
   part of why the package moved off GitHub Packages entirely (see the
-  "unscoped `inriver-inflow`" rename in git history) rather than just
+  "scoped `@inriver/inflow-react`" rename in git history) rather than just
   requesting a billing increase.
 - **Public repos are permanently disallowed** on this account and org (EMU
   policy, confirmed via API on both the personal account and the
@@ -72,7 +72,7 @@ straightforward. In case any of this resurfaces on a future release:
 Before the first public publish, confirm all of the following:
 
 - [ ] Confirm `package.json` declares `"private": false` so the package is publishable.
-- [ ] Confirm `package.json` still declares `"name": "inriver-inflow"`.
+- [ ] Confirm `package.json` still declares `"name": "@inriver/inflow-react"`.
 - [ ] Confirm the checkpoint-tag release model in [`docs/VERSIONING.md`](./VERSIONING.md) is understood.
 - [ ] Confirm the first release will publish to a checkpoint tag such as `react19-mui6.3`, **not** directly to `latest`.
 - [ ] Confirm `scripts/guard-publish.cjs` is enforcing the required `INFLOW_THEME_RELEASE_TAG` environment variable.
@@ -87,13 +87,13 @@ npm run build
   - Use the existing `npm link` workflow from the README in a throwaway consuming app:
 
 ```bash
-# in inriver-inflow
+# in @inriver/inflow-react
 npm install
 npm run build
 npm link
 
 # in the consuming app
-npm link inriver-inflow
+npm link @inriver/inflow-react
 npm ls react
 ```
 
@@ -112,13 +112,13 @@ INFLOW_THEME_RELEASE_TAG=react19-mui6.3 npm publish --access public --tag react1
 
 Notes:
 
-- `inriver-inflow` is an unscoped package name, so it's public by default; `--access public` (also set in `publishConfig`) is harmless but not strictly required the way it would be for a scoped `@org/name` package.
+- `@inriver/inflow-react` is a scoped package name, so it is private by default on npm; `--access public` (also set in `publishConfig`) is required to publish it as a public package.
 - Do **not** publish directly to `latest`. The checkpoint tag is the release channel.
 
 After the package publish succeeds, create the immutable source Git tag that matches the existing release convention (pick a tag name that doesn't collide with any prior release tag for the same version - e.g. append `-npm` if a same-version tag already exists from an earlier registry):
 
 ```bash
-git tag -a theme/react19-mui6.3/v0.1.0-npm -m "inriver-inflow 0.1.0 - React 19 / MUI 6.3 (public npm)"
+git tag -a theme/react19-mui6.3/v0.1.0-npm -m "@inriver/inflow-react 0.1.0 - React 19 / MUI 6.3 (public npm)"
 git push origin theme/react19-mui6.3/v0.1.0-npm
 ```
 
@@ -126,18 +126,18 @@ git push origin theme/react19-mui6.3/v0.1.0-npm
 
 Immediately verify the published result:
 
-- [ ] Open `https://www.npmjs.com/package/inriver-inflow` and confirm the package page renders correctly.
+- [ ] Open `https://www.npmjs.com/package/@inriver/inflow-react` and confirm the package page renders correctly.
 - [ ] Confirm the README, version, and published file list look correct.
 - [ ] In a fresh throwaway project, test install from the checkpoint tag:
 
 ```bash
-npm install inriver-inflow@react19-mui6.3
+npm install @inriver/inflow-react@react19-mui6.3
 ```
 
 - [ ] Verify the expected exports work in a consumer:
 
 ```ts
-import { inflowTheme, ThemedButton } from 'inriver-inflow';
+import { inflowTheme, ThemedButton } from '@inriver/inflow-react';
 ```
 
 - [ ] Promote to `latest` only after adoption verification, per [`docs/VERSIONING.md`](./VERSIONING.md).

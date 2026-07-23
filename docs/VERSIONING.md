@@ -24,11 +24,11 @@ flowchart TB
 
 | Concept | Example | Meaning |
 | --- | --- | --- |
-| Exact version | `inriver-inflow@0.1.0` | A frozen package artifact. Once published, it does not change. |
+| Exact version | `@inriver/inflow-react@0.1.0` | A frozen package artifact. Once published, it does not change. |
 | Patch range | `~0.1.0` | Accepts `0.1.x` fixes but blocks `0.2.0` and above. |
 | Compatibility tag | `react19-mui6.3` | A moving channel for the same React/MUI baseline. |
 | Source tag | `theme/react19-mui6.3/v0.1.0` | Immutable Git tag for the source that produced a package version. |
-| `latest` | `inriver-inflow@latest` | General default only after adoption verification. |
+| `latest` | `@inriver/inflow-react@latest` | General default only after adoption verification. |
 
 Published versions must be treated as immutable. If a release is wrong, publish a new patch version; do not try to replace the same version.
 
@@ -63,11 +63,11 @@ Checkpoint tags can move across patch versions, for example from `0.1.0` to `0.1
 
 | App need | Dependency choice |
 | --- | --- |
-| Complete freeze | `inriver-inflow@0.1.0` |
+| Complete freeze | `@inriver/inflow-react@0.1.0` |
 | Safe patch updates only | `~0.1.0` |
-| Follow validated React/MUI checkpoint | `inriver-inflow@react19-mui6.3` |
-| Evaluate upcoming baseline | `inriver-inflow@next` or a prerelease package |
-| Local theme iteration | `npm link inriver-inflow` |
+| Follow validated React/MUI checkpoint | `@inriver/inflow-react@react19-mui6.3` |
+| Evaluate upcoming baseline | `@inriver/inflow-react@next` or a prerelease package |
+| Local theme iteration | `npm link @inriver/inflow-react` |
 
 Avoid `^` for apps that must not pick up a new compatibility checkpoint automatically.
 
@@ -98,21 +98,21 @@ sequenceDiagram
   Feed-->>App: app updates only when it chooses
 ```
 
-Public npm is the primary consumer registry for `inriver-inflow`. Internal source control or CI can still live in Azure DevOps or other private infrastructure without changing the release-channel model.
+Public npm is the primary consumer registry for `@inriver/inflow-react`. Internal source control or CI can still live in Azure DevOps or other private infrastructure without changing the release-channel model.
 
 ```bash
 npm version patch
 npm run build
 INFLOW_THEME_RELEASE_TAG=react19-mui6.3 npm publish --tag react19-mui6.3
 
-git tag -a theme/react19-mui6.3/v0.1.1 -m "inriver-inflow 0.1.1 - React 19 / MUI 6.3"
+git tag -a theme/react19-mui6.3/v0.1.1 -m "@inriver/inflow-react 0.1.1 - React 19 / MUI 6.3"
 git push origin theme/react19-mui6.3/v0.1.1
 ```
 
 Promote only after teams agree the checkpoint is safe as the default:
 
 ```bash
-npm dist-tag add inriver-inflow@0.1.1 latest
+npm dist-tag add @inriver/inflow-react@0.1.1 latest
 ```
 
 ## Local development is not a release channel
@@ -120,13 +120,13 @@ npm dist-tag add inriver-inflow@0.1.1 latest
 Use `npm link` when a developer is actively changing the theme and testing it in another local app.
 
 ```bash
-# in inriver-inflow
+# in @inriver/inflow-react
 npm install
 npm run build
 npm link
 
 # in the consuming app
-npm link inriver-inflow
+npm link @inriver/inflow-react
 npm ls react
 ```
 

@@ -9,7 +9,7 @@ You need two things before `npm install` will work:
 1. **Node.js.** This repo's tooling (Vite, ESLint) requires **Node 20.19+, 22.12+, or 24+**. Any current LTS release satisfies this - if you already have a recent Node install (including odd-numbered "Current" releases like Node 25), you're covered. No `.nvmrc` is committed; install whatever your OS's package manager offers as the latest LTS if you're starting fresh.
 2. **Git.**
 
-`inriver-inflow` is a public npm package - no GitHub account, token, or `.npmrc` is needed to install it.
+`@inriver/inflow-react` is a public npm package - no GitHub account, token, or `.npmrc` is needed to install it.
 
 If you already have Node 20.19+ (or 22.12+, or 24+) and Git, skip to [Quick start](#quick-start).
 

@@ -1,8 +1,8 @@
-# inriver-inflow
+# @inriver/inflow-react
 
-[![npm version](https://img.shields.io/npm/v/inriver-inflow.svg)](https://www.npmjs.com/package/inriver-inflow)
-[![npm downloads](https://img.shields.io/npm/dm/inriver-inflow.svg)](https://www.npmjs.com/package/inriver-inflow)
-[![license](https://img.shields.io/npm/l/inriver-inflow.svg)](./LICENSE)
+[![npm version](https://img.shields.io/npm/v/@inriver/inflow-react.svg)](https://www.npmjs.com/package/@inriver/inflow-react)
+[![npm downloads](https://img.shields.io/npm/dm/@inriver/inflow-react.svg)](https://www.npmjs.com/package/@inriver/inflow-react)
+[![license](https://img.shields.io/npm/l/@inriver/inflow-react.svg)](./LICENSE)
 
 **Shared Inflow React/MUI design-system: canonical theme, design tokens, and themed wrapper components.**
 
@@ -13,14 +13,14 @@ Gives Inriver product teams one shared theme contract with versioned compatibili
 ## Installation
 
 ```sh
-npm install inriver-inflow
+npm install @inriver/inflow-react
 ```
 
 ## Usage
 
 ```tsx
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import { inflowTheme, ThemedButton } from 'inriver-inflow';
+import { inflowTheme, ThemedButton } from '@inriver/inflow-react';
 
 export function App() {
   return (
@@ -34,7 +34,7 @@ export function App() {
 
 Peer dependencies: `react` `^19.0.0`, `react-dom` `^19.0.0`, `@mui/material` `>=6.3.0 <6.4.0`, `@emotion/react` `^11.13.0`, `@emotion/styled` `^11.13.0`. You own the installed versions - this package only declares compatible ranges.
 
-Import from the package root only (`inriver-inflow`) - not showcase pages, demo components, or internal source paths. Those are documentation/demo code, not the stable package surface.
+Import from the package root only (`@inriver/inflow-react`) - not showcase pages, demo components, or internal source paths. Those are documentation/demo code, not the stable package surface.
 
 ## What's included
 
@@ -47,7 +47,7 @@ Import from the package root only (`inriver-inflow`) - not showcase pages, demo 
 
 | Resource | Link |
 | --- | --- |
-| Package on npm | [npmjs.com/package/inriver-inflow](https://www.npmjs.com/package/inriver-inflow) |
+| Package on npm | [npmjs.com/package/@inriver/inflow-react](https://www.npmjs.com/package/@inriver/inflow-react) |
 | Local setup (Windows/macOS/Linux) | [`docs/LOCAL_SETUP.md`](docs/LOCAL_SETUP.md) |
 | Architecture | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) |
 | Versioning & release model | [`docs/VERSIONING.md`](docs/VERSIONING.md) |
@@ -59,10 +59,10 @@ Import from the package root only (`inriver-inflow`) - not showcase pages, demo 
 
 | Mechanism | Example | Purpose |
 | --- | --- | --- |
-| Exact version | `inriver-inflow@0.1.0` | Immutable artifact, no movement. |
-| Compatibility checkpoint tag | `inriver-inflow@react19-mui6.3` | Moving channel for the same React/MUI contract; patch fixes land here after validation. |
+| Exact version | `@inriver/inflow-react@0.1.0` | Immutable artifact, no movement. |
+| Compatibility checkpoint tag | `@inriver/inflow-react@react19-mui6.3` | Moving channel for the same React/MUI contract; patch fixes land here after validation. |
 | Patch range | `~0.1.0` | Accepts `0.1.x` fixes, blocks `0.2.0`+. |
-| `latest` | `inriver-inflow@latest` | Only promoted after adoption verification - never published to directly. |
+| `latest` | `@inriver/inflow-react@latest` | Only promoted after adoption verification - never published to directly. |
 
 `scripts/guard-publish.cjs` enforces this at publish time. Full model: [`docs/VERSIONING.md`](docs/VERSIONING.md).
 
@@ -87,4 +87,4 @@ Full setup, prerequisites, and `npm link` workflow for local theme iteration: [`
 
 ## License
 
-`UNLICENSED` - proprietary, for Inriver and authorized partners. See [`LICENSE`](./LICENSE).
+`MIT`. See [`LICENSE`](./LICENSE).
