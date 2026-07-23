@@ -6,6 +6,8 @@
 
 **Shared Inflow React/MUI design-system: canonical theme, design tokens, and themed wrapper components.**
 
+> **Status: Alpha.** APIs may still change between minor versions. Early adopters and feedback are very welcome - please open a [GitHub issue](https://github.com/inriver-ux-team/inflow-react/issues) with bugs, rough edges, or requests.
+
 Gives Inriver product teams one shared theme contract with versioned compatibility checkpoints, so theme changes can be validated before other apps depend on them.
 
 > Previously known internally as `inriver-react-theme`.
@@ -53,7 +55,7 @@ Import from the package root only (`@inriver/inflow-react`) - not showcase pages
 | Versioning & release model | [`docs/VERSIONING.md`](docs/VERSIONING.md) |
 | Publishing checklist | [`docs/PUBLISHING.md`](docs/PUBLISHING.md) |
 | Live usage & migration guidance | `/guidelines` in the showcase |
-| Issues | [GitHub Issues](https://github.com/richard-orilla_inriver/inflow-react/issues) |
+| Issues | [GitHub Issues](https://github.com/inriver-ux-team/inflow-react/issues) |
 
 ## Versioning
 

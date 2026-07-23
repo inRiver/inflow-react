@@ -10,9 +10,9 @@
     "react",
     "theme"
   ],
-  "homepage": "https://github.com/richard-orilla_inriver/inflow-react#readme",
+  "homepage": "https://github.com/inriver-ux-team/inflow-react#readme",
   "bugs": {
-    "url": "https://github.com/richard-orilla_inriver/inflow-react/issues"
+    "url": "https://github.com/inriver-ux-team/inflow-react/issues"
   },
   "private": false,
   "license": "MIT",
@@ -23,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/richard-orilla_inriver/inflow-react.git"
+    "url": "git+https://github.com/inriver-ux-team/inflow-react.git"
   },
   "files": [
     "dist/index.js",

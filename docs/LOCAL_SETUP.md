@@ -91,7 +91,7 @@ git --version
 ## Quick start
 
 ```bash
-git clone https://github.com/richard-orilla_inriver/inflow-react.git
+git clone https://github.com/inriver-ux-team/inflow-react.git
 cd inflow-react
 npm install
 npm run dev
