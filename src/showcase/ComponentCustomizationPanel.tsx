@@ -1,5 +1,7 @@
-import { Card, CardContent, Chip, Grid, Stack, Typography } from '@mui/material';
+import { useState } from 'react';
+import { Card, CardContent, Chip, Collapse, Grid, IconButton, Stack, Typography } from '@mui/material';
 import type { Theme } from '@mui/material/styles';
+import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
 import { CodeBlock } from './CodeBlock';
 import { getComponentLabel } from './categories';
 
@@ -1057,6 +1059,7 @@ const buildThemeOverrideObject = (entries: SnippetEntry[]) => {
 };
 
 export function ComponentCustomizationPanel({ componentId }: ComponentCustomizationPanelProps) {
+  const [expanded, setExpanded] = useState(false);
   const label = getComponentLabel(componentId);
   const meta = getMeta(componentId);
   const componentName = meta.importName;
@@ -1181,36 +1184,66 @@ function Product${componentName}Wrapper() {
     <Card sx={{ mt: 4 }}>
       <CardContent>
         <Stack spacing={3}>
-          <Stack spacing={1}>
-            <Typography variant="overline" color="text.secondary">
-              Customization reference
-            </Typography>
-            <Typography variant="h5">Reference patterns for this {label}</Typography>
-            <Typography variant="body2" color="text.secondary">
-              Keep this section as copyable guidance: start with <code>sx</code> for one-off changes, use
-              scoped classes when external CSS must participate, move repeated styling into <code>styled()</code>,
-              and only use theme overrides or wrappers when the behavior should be shared across products.
-            </Typography>
-            {meta.note && (
-              <Typography variant="body2" color="text.secondary">
-                {meta.note}
+          <Stack
+            direction="row"
+            spacing={1}
+            alignItems="flex-start"
+            justifyContent="space-between"
+            onClick={() => setExpanded((prev) => !prev)}
+            sx={{ cursor: 'pointer' }}
+          >
+            <Stack spacing={1}>
+              <Typography variant="overline" color="text.secondary">
+                Customization reference
               </Typography>
-            )}
+              <Typography variant="h5">Reference patterns for this {label}</Typography>
+              <Typography variant="body2" color="text.secondary">
+                Keep this section as copyable guidance: start with <code>sx</code> for one-off changes, use
+                scoped classes when external CSS must participate, move repeated styling into <code>styled()</code>,
+                and only use theme overrides or wrappers when the behavior should be shared across products.
+              </Typography>
+              {meta.note && (
+                <Typography variant="body2" color="text.secondary">
+                  {meta.note}
+                </Typography>
+              )}
+            </Stack>
+            <IconButton
+              aria-label={expanded ? 'Collapse customization reference' : 'Expand customization reference'}
+              size="small"
+              onClick={(event) => {
+                event.stopPropagation();
+                setExpanded((prev) => !prev);
+              }}
+              sx={{
+                transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                transition: (theme) => theme.transitions.create('transform', {
+                  duration: theme.transitions.duration.shortest,
+                }),
+                flexShrink: 0,
+              }}
+            >
+              <ExpandMoreRoundedIcon />
+            </IconButton>
           </Stack>
 
-          <Grid container spacing={2}>
-            {['sx', classMethodLabel, 'styled()', 'GlobalStyles', themeStyleKey ?? 'wrapper fallback'].map((method) => (
-              <Grid item xs={12} sm={6} md={3} key={method}>
-                <Chip label={method} variant="outlined" sx={{ width: '100%' }} />
+          <Collapse in={expanded} timeout="auto" unmountOnExit>
+            <Stack spacing={3}>
+              <Grid container spacing={2}>
+                {['sx', classMethodLabel, 'styled()', 'GlobalStyles', themeStyleKey ?? 'wrapper fallback'].map((method) => (
+                  <Grid item xs={12} sm={6} md={3} key={method}>
+                    <Chip label={method} variant="outlined" sx={{ width: '100%' }} />
+                  </Grid>
+                ))}
               </Grid>
-            ))}
-          </Grid>
 
-          <CodeBlock code={sxCode} language="tsx" />
-          <CodeBlock code={classCode} language="tsx" />
-          <CodeBlock code={styledCode} language="tsx" />
-          <CodeBlock code={globalStylesCode} language="tsx" />
-          <CodeBlock code={themeCode} language="tsx" />
+              <CodeBlock code={sxCode} language="tsx" />
+              <CodeBlock code={classCode} language="tsx" />
+              <CodeBlock code={styledCode} language="tsx" />
+              <CodeBlock code={globalStylesCode} language="tsx" />
+              <CodeBlock code={themeCode} language="tsx" />
+            </Stack>
+          </Collapse>
         </Stack>
       </CardContent>
     </Card>
