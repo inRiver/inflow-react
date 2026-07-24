@@ -12,8 +12,10 @@ flowchart TB
   subgraph Library["Published package"]
     Entry["src/index.ts"]
     Theme["src/theme/*"]
+    Provider["src/providers/*"]
     Themed["src/components/themed/*"]
     Entry --> Theme
+    Entry --> Provider
     Entry --> Themed
   end
 
@@ -37,6 +39,7 @@ The public package entry is `src/index.ts`:
 ```ts
 export * from './theme';
 export * from './components/themed';
+export * from './providers';
 ```
 
 That means consumers get:
@@ -44,6 +47,7 @@ That means consumers get:
 - `inflowTheme`
 - `defaultTheme`
 - `inflowTokens`, `inflowCustomColors`, `inflowSpacing`
+- `InflowProvider`
 - `ThemedButton`, `ThemedChip`, `ThemedTextField`, `ThemedCard`, `ThemedDialog`, `ThemedTable`
 
 They should not import from `src/pages`, `src/showcase`, `src/app`, or individual source paths. The library build and declarations are limited by `tsconfig.lib.json` to the package boundary:
@@ -52,6 +56,7 @@ They should not import from `src/pages`, `src/showcase`, `src/app`, or individua
 src/index.ts
 src/theme/**/*
 src/components/themed/**/*
+src/providers/**/*
 ```
 
 ## Theme source of truth
@@ -65,9 +70,8 @@ flowchart LR
   Theme --> Typography["Typography"]
   Theme --> Shape["Shape + shadows"]
   Theme --> Overrides["MUI component overrides"]
-  Theme --> Baseline["CssBaseline variables"]
-
-  Theme --> Provider["ThemeProvider"]
+  Theme --> Provider["InflowProvider"]
+  Provider --> Baseline["Scoped baseline + --infl-* variables"]
   Provider --> Mui["Plain MUI components"]
   Provider --> Wrappers["Themed wrappers"]
 ```
@@ -77,9 +81,23 @@ flowchart LR
 - spacing and shape defaults;
 - elevation/shadow values;
 - MUI component `defaultProps` and `styleOverrides`;
-- CSS baseline variables used by themed surfaces.
+- scoped CSS variables used by themed surfaces.
 
-Most visual consistency should be solved here first. If a style can be expressed as a global MUI default or override, prefer the theme over repeating `sx` in individual product apps.
+Most visual consistency should be solved here first. If a style can be expressed as an MUI default or override, prefer the theme over repeating `sx` in individual product apps.
+
+## Microfrontend provider
+
+`InflowProvider` is the preferred consumer entry point. It creates the Inflow
+theme, applies `ScopedCssBaseline`, and places the `--infl-*` variables on a
+`data-inflow-root` container rather than the host document's `body` or `:root`.
+It also uses an Emotion cache with the `inflow` key by default. Independently
+deployed microfrontends sharing a page should supply distinct `cacheKey` values.
+For a Shadow DOM or iframe, consumers can pass an `emotionCache` configured for
+the target container.
+
+MUI portal components render outside the provider root by default. Theme values
+continue to flow through React context, but consumer-authored `var(--infl-*)`
+styles in dialog, menu, or tooltip content need a matching portal container.
 
 ## Token exports
 

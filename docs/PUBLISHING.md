@@ -140,7 +140,7 @@ npm install @inriver/inflow-react@react19-mui6.3
 - [ ] Verify the expected exports work in a consumer:
 
 ```ts
-import { inflowTheme, ThemedButton } from '@inriver/inflow-react';
+import { InflowProvider, ThemedButton } from '@inriver/inflow-react';
 ```
 
 - [ ] Promote to `latest` only after adoption verification, per [`docs/VERSIONING.md`](./VERSIONING.md).

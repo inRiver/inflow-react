@@ -21,18 +21,18 @@ npm install @inriver/inflow-react
 ## Usage
 
 ```tsx
-import { CssBaseline, ThemeProvider } from '@mui/material';
-import { inflowTheme, ThemedButton } from '@inriver/inflow-react';
+import { InflowProvider, ThemedButton } from '@inriver/inflow-react';
 
 export function App() {
   return (
-    <ThemeProvider theme={inflowTheme}>
-      <CssBaseline />
+    <InflowProvider>
       <ThemedButton variant="contained">Save</ThemedButton>
-    </ThemeProvider>
+    </InflowProvider>
   );
 }
 ```
+
+`InflowProvider` scopes the Inflow baseline and `--infl-*` CSS variables to its own root, so it does not modify the host page's `body` or `:root`. For independently deployed microfrontends on the same page, set a distinct `cacheKey`; pass an `emotionCache` only when integrating with a Shadow DOM or iframe. MUI portal components (such as dialogs and menus) render outside this root by default, so consumer-authored `var(--infl-*)` styles in portal content need a matching portal container.
 
 Peer dependencies: `react` `^19.0.0`, `react-dom` `^19.0.0`, `@mui/material` `>=6.3.0 <6.4.0`, `@emotion/react` `^11.13.0`, `@emotion/styled` `^11.13.0`. You own the installed versions - this package only declares compatible ranges.
 

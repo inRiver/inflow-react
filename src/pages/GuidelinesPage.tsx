@@ -69,15 +69,13 @@ export function LegacySafeTable(props: ThemedTableProps<LegacyRow>) {
   );
 }`;
 
-const providerCode = `import { CssBaseline, ThemeProvider } from '@mui/material';
-import { inflowTheme } from '@inriver/inflow-react';
+const providerCode = `import { InflowProvider } from '@inriver/inflow-react';
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
-    <ThemeProvider theme={inflowTheme}>
-      <CssBaseline />
+    <InflowProvider>
       {children}
-    </ThemeProvider>
+    </InflowProvider>
   );
 }`;
 
@@ -503,12 +501,12 @@ export function GuidelinesPage() {
         <Card>
           <CardContent>
             <Stack spacing={2}>
-              <Typography variant="h5">5. Wrap the app once at the root</Typography>
-              <Typography variant="body2" color="text.secondary">
-                Wrap the application root once with <code>ThemeProvider</code>, the exported
-                <code>inflowTheme</code>, and <code>CssBaseline</code> so regular MUI components
-                inherit the shared Inflow baseline everywhere.
-              </Typography>
+                <Typography variant="h5">5. Wrap the app once with InflowProvider</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Wrap the application root once with <code>InflowProvider</code> so regular MUI
+                  components inherit the shared Inflow theme without changing the host page&apos;s
+                  <code>body</code> or <code>:root</code>.
+                </Typography>
               <CodeBlock code={providerCode} language="tsx" />
             </Stack>
           </CardContent>
