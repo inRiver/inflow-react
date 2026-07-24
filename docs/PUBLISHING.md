@@ -7,10 +7,14 @@ Use it once to establish the public package correctly, then use [`docs/VERSIONIN
 **Status: complete.** `@inriver/inflow-react@0.1.0` published successfully on
 2026-07-10 (source tag `theme/react19-mui6.3/v0.1.0-npm`). The package was
 later renamed from the unscoped `inriver-inflow` to the scoped
-`@inriver/inflow-react` and relicensed to MIT; `0.1.2` (README + org rename,
-docs-only) is the current `latest` on npm as of 2026-07-23. The sections
-below are kept for the next release and for anyone who needs to understand
-what was actually required.
+`@inriver/inflow-react` and relicensed to MIT; `0.1.3` (InflowProvider +
+Themed component showcase updates, source tag
+`theme/react19-mui6.3/v0.1.3`) published on the `react19-mui6.3` checkpoint
+tag on 2026-07-24. `0.1.2` (README + org rename, docs-only) remains the
+current `latest` on npm as of 2026-07-24 - `0.1.3` has not been promoted to
+`latest` yet, pending adoption verification per `docs/VERSIONING.md`. The
+sections below are kept for the next release and for anyone who needs to
+understand what was actually required.
 
 ## Why this package is public
 
