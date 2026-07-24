@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Card, CardActions, CardContent, CardHeader, Button, Typography, Stack } from '@mui/material';
+import { Typography, Stack } from '@mui/material';
+import { ThemedButton, ThemedCard } from '../../components/themed';
 import { DemoFrame } from '../DemoFrame';
 import { CodeBlock } from '../CodeBlock';
 import { PropsPlayground } from '../PropsPlayground';
@@ -7,7 +8,8 @@ import type { PropSchema } from '../PropsPlayground';
 
 export function CardDemo() {
   const [props, setProps] = useState<Record<string, any>>({
-  "variant": "elevation"
+  "variant": "elevation",
+  "disableContentPadding": false
 });
 
   const schema: PropSchema[] = [
@@ -18,29 +20,39 @@ export function CardDemo() {
       "elevation",
       "outlined"
     ]
+  },
+  {
+    "name": "disableContentPadding",
+    "type": "boolean"
   }
 ];
 
   const codeExample = `
-import { Card } from '@mui/material';
+import { ThemedCard, ThemedButton } from '@inriver/inflow-react';
 
-<Card 
+// <InflowProvider> only needs to be declared once at your app root - see Guidelines
+<ThemedCard
   variant={props.variant}
-/>`;
+  disableContentPadding={props.disableContentPadding}
+  title="Project Title"
+  subheader="Created on Jan 1, 2026"
+  actions={<ThemedButton size="small">View Details</ThemedButton>}
+>
+  Main content goes here
+</ThemedCard>`;
 
   return (
     <>
       <DemoFrame title="Card - Interactive">
-        
-        <Card sx={{ minWidth: 275 }} {...props}>
-          <CardHeader title="Card Title" subheader="Card subtitle" />
-          <CardContent>
-            <Typography variant="body2">Card content</Typography>
-          </CardContent>
-          <CardActions>
-            <Button size="small">Learn More</Button>
-          </CardActions>
-        </Card>
+        <ThemedCard
+          sx={{ minWidth: 275 }}
+          {...props}
+          title="Card Title"
+          subheader="Card subtitle"
+          actions={<ThemedButton size="small">Learn More</ThemedButton>}
+        >
+          <Typography variant="body2">Card content</Typography>
+        </ThemedCard>
       </DemoFrame>
 
       <PropsPlayground 
@@ -55,15 +67,19 @@ import { Card } from '@mui/material';
         <Stack spacing={2} direction="column">
           
           <Stack direction="row" spacing={2}>
-            <Card sx={{ minWidth: 200 }}>
-              <CardContent><Typography>Elevation Card</Typography></CardContent>
-            </Card>
-            <Card sx={{ minWidth: 200 }} variant="outlined">
-              <CardContent><Typography>Outlined Card</Typography></CardContent>
-            </Card>
-            <Card sx={{ minWidth: 200, bgcolor: 'action.disabledBackground' }}>
-              <CardContent><Typography>Disabled-like Card</Typography></CardContent>
-            </Card>
+            <ThemedCard sx={{ minWidth: 200 }} title="Elevation Card">
+              <Typography>Default styling</Typography>
+            </ThemedCard>
+            <ThemedCard sx={{ minWidth: 200 }} variant="outlined" title="Outlined Card">
+              <Typography>Outlined variant</Typography>
+            </ThemedCard>
+            <ThemedCard
+              sx={{ minWidth: 200, bgcolor: 'action.disabledBackground' }}
+              title="Disabled-like Card"
+              actions={<ThemedButton size="small" disabled>Learn More</ThemedButton>}
+            >
+              <Typography>Disabled-like state</Typography>
+            </ThemedCard>
           </Stack>
         </Stack>
       </DemoFrame>

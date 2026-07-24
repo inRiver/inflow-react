@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, Stack, Paper, Box } from '@mui/material';
+import { DialogTitle, DialogContent, DialogContentText, DialogActions, Stack, Paper, Box } from '@mui/material';
+import { ThemedButton, ThemedDialog } from '../../components/themed';
 import { DemoFrame } from '../DemoFrame';
 import { CodeBlock } from '../CodeBlock';
 import { PropsPlayground } from '../PropsPlayground';
@@ -32,35 +33,46 @@ export function DialogDemo() {
 ];
 
   const codeExample = `
-import { Dialog } from '@mui/material';
+import { ThemedDialog, ThemedButton } from '@inriver/inflow-react';
 
-<Dialog 
-  open={true}
+// <InflowProvider> only needs to be declared once at your app root - see Guidelines
+<ThemedDialog
+  open={open}
+  onClose={() => setOpen(false)}
   maxWidth={props.maxWidth}
   fullWidth={props.fullWidth}
-/>`;
+  title="Dialog Title"
+  actions={
+    <>
+      <ThemedButton variant="text" onClick={() => setOpen(false)}>Cancel</ThemedButton>
+      <ThemedButton onClick={() => setOpen(false)}>Agree</ThemedButton>
+    </>
+  }
+>
+  Dialog content goes here.
+</ThemedDialog>`;
 
   return (
     <>
       <DemoFrame title="Dialog - Interactive">
         <Box ref={containerRef} sx={{ position: 'relative', minHeight: 60 }}>
-          <Button onClick={() => setOpen(true)}>Open Dialog</Button>
-          <Dialog
+          <ThemedButton onClick={() => setOpen(true)}>Open Dialog</ThemedButton>
+          <ThemedDialog
             open={open}
             onClose={() => setOpen(false)}
             maxWidth={props.maxWidth}
             fullWidth={!!props.fullWidth}
             container={containerRef.current}
+            title="Dialog Title"
+            actions={
+              <>
+                <ThemedButton variant="text" onClick={() => setOpen(false)}>Cancel</ThemedButton>
+                <ThemedButton onClick={() => setOpen(false)}>Agree</ThemedButton>
+              </>
+            }
           >
-            <DialogTitle>Dialog Title</DialogTitle>
-            <DialogContent>
-              <DialogContentText>Dialog content goes here.</DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={() => setOpen(false)}>Cancel</Button>
-              <Button onClick={() => setOpen(false)}>Agree</Button>
-            </DialogActions>
-          </Dialog>
+            Dialog content goes here.
+          </ThemedDialog>
         </Box>
       </DemoFrame>
 
@@ -91,8 +103,8 @@ import { Dialog } from '@mui/material';
               </DialogContentText>
             </DialogContent>
             <DialogActions>
-              <Button variant="text">Cancel</Button>
-              <Button variant="contained">Confirm</Button>
+              <ThemedButton variant="text">Cancel</ThemedButton>
+              <ThemedButton variant="contained">Confirm</ThemedButton>
             </DialogActions>
           </Paper>
         </Stack>

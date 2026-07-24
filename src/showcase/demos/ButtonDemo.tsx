@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Button, Stack } from '@mui/material';
+import { Stack } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import { ThemedButton } from '../../components/themed';
 import { DemoFrame } from '../DemoFrame';
 import { CodeBlock } from '../CodeBlock';
 import { PropsPlayground } from '../PropsPlayground';
@@ -52,9 +53,10 @@ export function ButtonDemo() {
 ];
 
   const codeExample = `
-import { Button } from '@mui/material';
+import { ThemedButton } from '@inriver/inflow-react';
 
-<Button 
+// <InflowProvider> only needs to be declared once at your app root - see Guidelines
+<ThemedButton 
   variant={props.variant}
   color={props.color}
   size={props.size}
@@ -65,7 +67,7 @@ import { Button } from '@mui/material';
   return (
     <>
       <DemoFrame title="Button - Interactive">
-        <Button {...props} startIcon={<AddIcon />}>Interactive Button</Button>
+        <ThemedButton {...props} startIcon={<AddIcon />}>Interactive Button</ThemedButton>
       </DemoFrame>
 
       <PropsPlayground 
@@ -80,11 +82,11 @@ import { Button } from '@mui/material';
         <Stack spacing={2} direction="column">
           
           <Stack direction="row" spacing={2}>
-            <Button variant="contained">Default</Button>
-            <Button variant="contained" disabled>Disabled</Button>
-            <Button variant="contained" color="error">Error</Button>
-            <Button variant="outlined">Outlined</Button>
-            <Button variant="text">Text</Button>
+            <ThemedButton variant="contained">Default</ThemedButton>
+            <ThemedButton variant="contained" disabled>Disabled</ThemedButton>
+            <ThemedButton variant="contained" color="error">Error</ThemedButton>
+            <ThemedButton variant="outlined">Outlined</ThemedButton>
+            <ThemedButton variant="text">Text</ThemedButton>
           </Stack>
         </Stack>
       </DemoFrame>

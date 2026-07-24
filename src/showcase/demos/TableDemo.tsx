@@ -1,14 +1,26 @@
 import { useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Stack } from '@mui/material';
+import { Stack } from '@mui/material';
+import { ThemedTable } from '../../components/themed';
 import { DemoFrame } from '../DemoFrame';
 import { CodeBlock } from '../CodeBlock';
 import { PropsPlayground } from '../PropsPlayground';
 import type { PropSchema } from '../PropsPlayground';
 
+const dessertColumns = [
+  { id: 'dessert', label: 'Dessert' },
+  { id: 'calories', label: 'Calories', align: 'right' as const },
+];
+
+const dessertData = [
+  { dessert: 'Frozen yoghurt', calories: 159 },
+  { dessert: 'Ice cream sandwich', calories: 237 },
+];
+
 export function TableDemo() {
   const [props, setProps] = useState<Record<string, any>>({
   "size": "medium",
-  "padding": "normal"
+  "padding": "normal",
+  "striped": false
 });
 
   const schema: PropSchema[] = [
@@ -28,37 +40,39 @@ export function TableDemo() {
       "checkbox",
       "none"
     ]
+  },
+  {
+    "name": "striped",
+    "type": "boolean"
   }
 ];
 
   const codeExample = `
-import { Table } from '@mui/material';
+import { ThemedTable } from '@inriver/inflow-react';
 
-<Table 
+// <InflowProvider> only needs to be declared once at your app root - see Guidelines
+const columns = [
+  { id: 'dessert', label: 'Dessert' },
+  { id: 'calories', label: 'Calories', align: 'right' },
+];
+
+const data = [
+  { dessert: 'Frozen yoghurt', calories: 159 },
+  { dessert: 'Ice cream sandwich', calories: 237 },
+];
+
+<ThemedTable
+  columns={columns}
+  data={data}
   size={props.size}
   padding={props.padding}
+  striped={props.striped}
 />`;
 
   return (
     <>
       <DemoFrame title="Table - Interactive">
-        
-        <TableContainer component={Paper}>
-          <Table {...props}>
-            <TableHead>
-              <TableRow>
-                <TableCell>Dessert</TableCell>
-                <TableCell align="right">Calories</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <TableRow>
-                <TableCell>Frozen yoghurt</TableCell>
-                <TableCell align="right">159</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <ThemedTable columns={dessertColumns} data={dessertData} {...props} />
       </DemoFrame>
 
       <PropsPlayground 
@@ -73,30 +87,9 @@ import { Table } from '@mui/material';
         <Stack spacing={2} direction="column">
           
           <Stack spacing={4}>
-            <TableContainer component={Paper}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Default</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  <TableRow><TableCell>Data</TableCell></TableRow>
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <TableContainer component={Paper}>
-              <Table size="small">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Dense</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  <TableRow><TableCell>Data</TableCell></TableRow>
-                </TableBody>
-              </Table>
-            </TableContainer>
+            <ThemedTable columns={dessertColumns} data={dessertData} />
+            <ThemedTable columns={dessertColumns} data={dessertData} size="small" />
+            <ThemedTable columns={dessertColumns} data={dessertData} striped />
           </Stack>
         </Stack>
       </DemoFrame>

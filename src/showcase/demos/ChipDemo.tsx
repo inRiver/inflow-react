@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Chip, Stack, Avatar } from '@mui/material';
+import { Stack, Avatar } from '@mui/material';
+import { ThemedChip } from '../../components/themed';
 import { DemoFrame } from '../DemoFrame';
 import { CodeBlock } from '../CodeBlock';
 import { PropsPlayground } from '../PropsPlayground';
@@ -51,9 +52,10 @@ export function ChipDemo() {
 ];
 
   const codeExample = `
-import { Chip } from '@mui/material';
+import { ThemedChip } from '@inriver/inflow-react';
 
-<Chip 
+// <InflowProvider> only needs to be declared once at your app root - see Guidelines
+<ThemedChip 
   variant={props.variant}
   color={props.color}
   size={props.size}
@@ -64,7 +66,7 @@ import { Chip } from '@mui/material';
   return (
     <>
       <DemoFrame title="Chip - Interactive">
-        <Chip {...props} onDelete={() => {}} />
+        <ThemedChip {...props} onDelete={() => {}} />
       </DemoFrame>
 
       <PropsPlayground 
@@ -79,13 +81,13 @@ import { Chip } from '@mui/material';
         <Stack spacing={2} direction="column">
           
           <Stack direction="row" spacing={2} alignItems="center">
-            <Chip label="Default" />
-            <Chip label="Outlined" variant="outlined" />
-            <Chip label="Disabled" disabled />
-            <Chip label="Clickable" onClick={() => {}} />
-            <Chip label="Deletable" onDelete={() => {}} />
-            <Chip label="Avatar" avatar={<Avatar>M</Avatar>} />
-            <Chip label="Error" color="error" />
+            <ThemedChip label="Default" />
+            <ThemedChip label="Outlined" variant="outlined" />
+            <ThemedChip label="Disabled" disabled />
+            <ThemedChip label="Clickable" onClick={() => {}} />
+            <ThemedChip label="Deletable" onDelete={() => {}} />
+            <ThemedChip label="Avatar" avatar={<Avatar>M</Avatar>} />
+            <ThemedChip label="Error" color="error" />
           </Stack>
         </Stack>
       </DemoFrame>
