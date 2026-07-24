@@ -40,6 +40,7 @@ export function LinearProgressDemo() {
   const codeExample = `
 import { LinearProgress } from '@mui/material';
 
+// <InflowProvider> only needs to be declared once at your app root - see Guidelines
 <LinearProgress 
   color={props.color}
   variant={props.variant}

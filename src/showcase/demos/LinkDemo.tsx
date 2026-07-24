@@ -27,6 +27,7 @@ export function LinkDemo() {
   const codeExample = `
 import { Link } from '@mui/material';
 
+// <InflowProvider> only needs to be declared once at your app root - see Guidelines
 <Link href="#" underline={props.underline} color={props.color}>
   Interactive link
 </Link>`;

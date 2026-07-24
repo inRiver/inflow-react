@@ -36,6 +36,7 @@ export function AlertDemo() {
   const codeExample = `
 import { Alert } from '@mui/material';
 
+// <InflowProvider> only needs to be declared once at your app root - see Guidelines
 <Alert 
   severity={props.severity}
   variant={props.variant}

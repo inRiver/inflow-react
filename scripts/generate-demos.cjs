@@ -22,6 +22,7 @@ export function ${component}Demo() {
   const codeExample = \`
 import { ${component} } from '@mui/material';
 
+// <InflowProvider> only needs to be declared once at your app root - see Guidelines
 <${component} ${config.codeProps(component)}\n/>\`;
 
   return (

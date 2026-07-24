@@ -40,6 +40,7 @@ export function AppBarDemo() {
   const codeExample = `
 import { AppBar } from '@mui/material';
 
+// <InflowProvider> only needs to be declared once at your app root - see Guidelines
 <AppBar 
   color={props.color}
   position={props.position}

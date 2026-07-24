@@ -28,6 +28,7 @@ export function SpeedDialDemo() {
   const codeExample = `
 import { SpeedDial, SpeedDialAction } from '@mui/material';
 
+// <InflowProvider> only needs to be declared once at your app root - see Guidelines
 <SpeedDial ariaLabel="Actions" icon={<Edit />} direction={props.direction}>
   {actions.map((action) => (
     <SpeedDialAction key={action.name} icon={action.icon} tooltipTitle={action.name} />

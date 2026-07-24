@@ -25,6 +25,7 @@ export function CheckboxGroupDemo() {
   const codeExample = `
 import { Checkbox, FormControlLabel, FormGroup } from '@mui/material';
 
+// <InflowProvider> only needs to be declared once at your app root - see Guidelines
 <FormGroup row={props.row}>
   <FormControlLabel
     disabled={props.disabled}

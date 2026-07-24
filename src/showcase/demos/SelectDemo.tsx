@@ -44,6 +44,7 @@ export function SelectDemo() {
   const codeExample = `
 import { Select } from '@mui/material';
 
+// <InflowProvider> only needs to be declared once at your app root - see Guidelines
 <Select 
   variant={props.variant}
   size={props.size}

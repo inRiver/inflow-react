@@ -40,6 +40,7 @@ export function AutocompleteDemo() {
   const codeExample = `
 import { Autocomplete, TextField } from '@mui/material';
 
+// <InflowProvider> only needs to be declared once at your app root - see Guidelines
 <Autocomplete
   options={topFilms}
   size={props.size}

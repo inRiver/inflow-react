@@ -26,6 +26,7 @@ export function AccordionDemo() {
   const codeExample = `
 import { Accordion } from '@mui/material';
 
+// <InflowProvider> only needs to be declared once at your app root - see Guidelines
 <Accordion 
   disabled={props.disabled}
   defaultExpanded={props.defaultExpanded}

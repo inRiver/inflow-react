@@ -29,6 +29,7 @@ export function StepperDemo() {
   const codeExample = `
 import { Stepper } from '@mui/material';
 
+// <InflowProvider> only needs to be declared once at your app root - see Guidelines
 <Stepper 
   activeStep={1}
   alternativeLabel={props.alternativeLabel}

@@ -36,6 +36,7 @@ export function FormControlDemo() {
   const codeExample = `
 import { FormControl, FormHelperText, FormLabel, TextField } from '@mui/material';
 
+// <InflowProvider> only needs to be declared once at your app root - see Guidelines
 <FormControl
   disabled={props.disabled}
   error={props.error}

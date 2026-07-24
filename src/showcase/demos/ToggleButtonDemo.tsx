@@ -38,6 +38,7 @@ export function ToggleButtonDemo() {
   const codeExample = `
 import { ToggleButton, ToggleButtonGroup } from '@mui/material';
 
+// <InflowProvider> only needs to be declared once at your app root - see Guidelines
 <ToggleButtonGroup
   value={formats}
   size={props.size}

@@ -48,6 +48,7 @@ export function SliderDemo() {
   const codeExample = `
 import { Slider } from '@mui/material';
 
+// <InflowProvider> only needs to be declared once at your app root - see Guidelines
 <Slider 
   color={props.color}
   size={props.size}

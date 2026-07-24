@@ -39,6 +39,7 @@ export function DrawerDemo() {
   const codeExample = `
 import { Drawer } from '@mui/material';
 
+// <InflowProvider> only needs to be declared once at your app root - see Guidelines
 <Drawer 
   anchor={props.anchor}
   variant={props.variant}

@@ -39,6 +39,7 @@ export function ImageListDemo() {
   const codeExample = `
 import { ImageList, ImageListItem } from '@mui/material';
 
+// <InflowProvider> only needs to be declared once at your app root - see Guidelines
 <ImageList variant={props.variant} cols={Number(props.cols)}>
   {itemData.map((item) => (
     <ImageListItem key={item.id}>

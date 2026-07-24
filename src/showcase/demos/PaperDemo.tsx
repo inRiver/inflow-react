@@ -35,6 +35,7 @@ export function PaperDemo() {
   const codeExample = `
 import { Paper } from '@mui/material';
 
+// <InflowProvider> only needs to be declared once at your app root - see Guidelines
 <Paper 
   elevation={props.elevation}
   variant={props.variant}
