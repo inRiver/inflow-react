@@ -1,12 +1,17 @@
 import { useState } from 'react';
-import { Typography, Stack } from '@mui/material';
+import { Card, CardActions, CardContent, CardHeader, Button, Typography, Stack } from '@mui/material';
 import { ThemedButton, ThemedCard } from '../../components/themed';
 import { DemoFrame } from '../DemoFrame';
 import { CodeBlock } from '../CodeBlock';
 import { PropsPlayground } from '../PropsPlayground';
 import type { PropSchema } from '../PropsPlayground';
+import { DemoVariantTabs, type DemoVariant } from '../DemoVariantTabs';
+import { getThemedComponentInfo } from '../themedComponentInfo';
+
+const themedInfo = getThemedComponentInfo('card');
 
 export function CardDemo() {
+  const [variant, setVariant] = useState<DemoVariant>('mui');
   const [props, setProps] = useState<Record<string, any>>({
   "variant": "elevation",
   "disableContentPadding": false
@@ -27,32 +32,66 @@ export function CardDemo() {
   }
 ];
 
-  const codeExample = `
+  const muiCodeExample = `
+import { Card, CardHeader, CardContent, CardActions, Button, Typography } from '@mui/material';
+
+// <InflowProvider> only needs to be declared once at your app root - see Guidelines
+<Card variant={props.variant} sx={{ minWidth: 275 }}>
+  <CardHeader title="Card Title" subheader="Card subtitle" />
+  <CardContent sx={props.disableContentPadding ? { p: 0 } : undefined}>
+    <Typography variant="body2">Card content</Typography>
+  </CardContent>
+  <CardActions>
+    <Button size="small">Learn More</Button>
+  </CardActions>
+</Card>`;
+
+  const themedCodeExample = `
 import { ThemedCard, ThemedButton } from '@inriver/inflow-react';
 
 // <InflowProvider> only needs to be declared once at your app root - see Guidelines
 <ThemedCard
   variant={props.variant}
   disableContentPadding={props.disableContentPadding}
-  title="Project Title"
-  subheader="Created on Jan 1, 2026"
-  actions={<ThemedButton size="small">View Details</ThemedButton>}
+  title="Card Title"
+  subheader="Card subtitle"
+  actions={<ThemedButton size="small">Learn More</ThemedButton>}
 >
-  Main content goes here
+  Card content
 </ThemedCard>`;
 
   return (
     <>
+      <DemoVariantTabs
+        value={variant}
+        onChange={setVariant}
+        muiLabel="MUI Card"
+        themedLabel="ThemedCard"
+        themedReason={themedInfo?.reason}
+      />
+
       <DemoFrame title="Card - Interactive">
-        <ThemedCard
-          sx={{ minWidth: 275 }}
-          {...props}
-          title="Card Title"
-          subheader="Card subtitle"
-          actions={<ThemedButton size="small">Learn More</ThemedButton>}
-        >
-          <Typography variant="body2">Card content</Typography>
-        </ThemedCard>
+        {variant === 'mui' ? (
+          <Card sx={{ minWidth: 275 }} variant={props.variant}>
+            <CardHeader title="Card Title" subheader="Card subtitle" />
+            <CardContent sx={props.disableContentPadding ? { p: 0 } : undefined}>
+              <Typography variant="body2">Card content</Typography>
+            </CardContent>
+            <CardActions>
+              <Button size="small">Learn More</Button>
+            </CardActions>
+          </Card>
+        ) : (
+          <ThemedCard
+            sx={{ minWidth: 275 }}
+            {...props}
+            title="Card Title"
+            subheader="Card subtitle"
+            actions={<ThemedButton size="small">Learn More</ThemedButton>}
+          >
+            <Typography variant="body2">Card content</Typography>
+          </ThemedCard>
+        )}
       </DemoFrame>
 
       <PropsPlayground 
@@ -61,25 +100,21 @@ import { ThemedCard, ThemedButton } from '@inriver/inflow-react';
         onChange={setProps}
       />
 
-      <CodeBlock code={codeExample} language="tsx" />
+      <CodeBlock code={variant === 'mui' ? muiCodeExample : themedCodeExample} language="tsx" />
 
       <DemoFrame title="All States">
         <Stack spacing={2} direction="column">
           
           <Stack direction="row" spacing={2}>
-            <ThemedCard sx={{ minWidth: 200 }} title="Elevation Card">
-              <Typography>Default styling</Typography>
-            </ThemedCard>
-            <ThemedCard sx={{ minWidth: 200 }} variant="outlined" title="Outlined Card">
-              <Typography>Outlined variant</Typography>
-            </ThemedCard>
-            <ThemedCard
-              sx={{ minWidth: 200, bgcolor: 'action.disabledBackground' }}
-              title="Disabled-like Card"
-              actions={<ThemedButton size="small" disabled>Learn More</ThemedButton>}
-            >
-              <Typography>Disabled-like state</Typography>
-            </ThemedCard>
+            <Card sx={{ minWidth: 200 }}>
+              <CardContent><Typography>Elevation Card</Typography></CardContent>
+            </Card>
+            <Card sx={{ minWidth: 200 }} variant="outlined">
+              <CardContent><Typography>Outlined Card</Typography></CardContent>
+            </Card>
+            <Card sx={{ minWidth: 200, bgcolor: 'action.disabledBackground' }}>
+              <CardContent><Typography>Disabled-like Card</Typography></CardContent>
+            </Card>
           </Stack>
         </Stack>
       </DemoFrame>

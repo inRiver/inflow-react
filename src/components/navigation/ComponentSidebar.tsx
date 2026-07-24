@@ -15,7 +15,8 @@ import {
   useMediaQuery,
   useTheme,
   TextField,
-  InputAdornment
+  InputAdornment,
+  Tooltip
 } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
@@ -23,6 +24,7 @@ import {
   getComponentLabel,
   normalizeComponentId,
 } from '../../showcase/categories';
+import { getThemedComponentInfo } from '../../showcase/themedComponentInfo';
 import { useComponentSearch } from '../../hooks/useComponentSearch';
 
 export interface ComponentSidebarProps {
@@ -232,6 +234,14 @@ export const ComponentSidebar: React.FC<ComponentSidebarProps> = ({
                 }}
               />
             </Box>
+            <Box sx={{ px: 2, pb: 1, display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 16, color: 'primary.main' }}>
+                palette
+              </Icon>
+              <Typography variant="caption" color="text.secondary">
+                Themed* wrapper available
+              </Typography>
+            </Box>
           </>
         )}
         <List>
@@ -274,6 +284,7 @@ export const ComponentSidebar: React.FC<ComponentSidebarProps> = ({
                     {visibleComponents.map((component) => {
                       const path = `/components/${component}`;
                       const isActive = activeComponentId === component;
+                      const themedInfo = getThemedComponentInfo(component);
 
                       return (
                         <ListItemButton
@@ -296,6 +307,24 @@ export const ComponentSidebar: React.FC<ComponentSidebarProps> = ({
                               fontWeight: isActive ? 'bold' : 'normal',
                             }}
                           />
+                          {themedInfo && (
+                            <Tooltip
+                              title={`${themedInfo.themedName} available - ${themedInfo.reason}`}
+                              placement="right"
+                            >
+                              <Icon
+                                baseClassName="material-icons-outlined"
+                                sx={{
+                                  ml: 1,
+                                  fontSize: 18,
+                                  flexShrink: 0,
+                                  color: isActive ? 'inherit' : 'primary.main',
+                                }}
+                              >
+                                palette
+                              </Icon>
+                            </Tooltip>
+                          )}
                         </ListItemButton>
                       );
                     })}

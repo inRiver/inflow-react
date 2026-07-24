@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import { CodeBlock } from '../showcase/CodeBlock';
 import { INFLOW_DARK_MODE_ENABLED } from '../theme';
+import { THEMED_COMPONENT_INFO } from '../showcase/themedComponentInfo';
 
 const installCode = `npm install @inriver/inflow-react@react19-mui6.3 @mui/material@\">=6.3.0 <6.4.0\" @emotion/react @emotion/styled react@^19 react-dom@^19`;
 
@@ -522,6 +523,43 @@ export function GuidelinesPage() {
                 styling decisions into reusable components that stay consistent across apps.
               </Typography>
               <CodeBlock code={componentCode} language="tsx" />
+            </Stack>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent>
+            <Stack spacing={2}>
+              <Typography variant="h5">6a. When to reach for a Themed wrapper vs. the standard component</Typography>
+              <Typography variant="body2" color="text.secondary">
+                Every MUI component already inherits Inflow&apos;s palette, typography, and component
+                overrides just by rendering inside <code>InflowProvider</code> - no wrapper required.
+                Only six components have a <code>Themed*</code> wrapper, and each one exists for a
+                specific reason - a forced token that must survive theme overrides, an ergonomic
+                default, or a structural API improvement over manual composition:
+              </Typography>
+              <List dense disablePadding>
+                {Object.values(THEMED_COMPONENT_INFO).map((info) => (
+                  <ListItem key={info.themedName} disableGutters alignItems="flex-start">
+                    <ListItemText
+                      primary={
+                        <Typography component="span" variant="subtitle2">
+                          {info.themedName}
+                        </Typography>
+                      }
+                      secondary={info.reason}
+                    />
+                  </ListItem>
+                ))}
+              </List>
+              <Typography variant="body2" color="text.secondary">
+                If a component isn&apos;t in this list, the standard MUI version is already the
+                right choice - it&apos;s fully themed via <code>InflowProvider</code>, and adding a
+                wrapper would only add maintenance cost without changing behavior. The showcase
+                sidebar marks components that do have a wrapper with a <code>palette</code> icon,
+                and each of those six component pages lets you toggle between the plain MUI and
+                Themed version to compare.
+              </Typography>
             </Stack>
           </CardContent>
         </Card>
