@@ -12,6 +12,7 @@
   "include": [
     "src/index.ts",
     "src/theme/**/*",
-    "src/components/themed/**/*"
+    "src/components/themed/**/*",
+    "src/providers/**/*"
   ]
 }

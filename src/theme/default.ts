@@ -14,15 +14,6 @@ export const createDefaultTheme = (requestedMode: InflowColorMode = 'light') => 
       mode,
       inflow: getInflowPalette(mode),
     },
-    components: {
-      MuiCssBaseline: {
-        styleOverrides: {
-          ':root': {
-            colorScheme: mode,
-          },
-        },
-      },
-    },
   });
 };
 

@@ -18,6 +18,7 @@ export default defineConfig({
         'react',
         'react-dom',
         'react/jsx-runtime',
+        '@emotion/cache',
         '@emotion/react',
         '@emotion/styled',
         '@mui/material',

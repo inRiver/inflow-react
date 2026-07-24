@@ -276,41 +276,6 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
     },
 
     components: {
-      MuiCssBaseline: {
-        styleOverrides: {
-          ':root': {
-            colorScheme: mode,
-          },
-          body: {
-            backgroundColor: T.appBackground,
-            color: T.onSurface,
-            '--infl-surface-container-lowest-color': T.surfaceLowest,
-            '--infl-surface-container-low-color': T.surfaceLow,
-            '--infl-surface-container-color': T.surfaceContainer,
-            '--infl-surface-container-high-color': T.surfaceContainerHigh,
-            '--infl-surface-container-highest-color': T.surfaceHighest,
-            '--infl-primary-color': T.navy700,
-            '--infl-primary-fixed-color': T.primaryFixed,
-            '--infl-secondary-fixed-color': T.secondaryFixed,
-            '--infl-tertiary-fixed-color': T.tertiaryFixed,
-            '--infl-on-surface-color': T.onSurface,
-            '--infl-on-surface-variant-color': T.onSurfaceVariant,
-            '--infl-inverse-surface-color': T.inverseSurface,
-            '--infl-inverse-on-surface-color': T.inverseOnSurface,
-            '--infl-outline-color': T.outline,
-            '--infl-outline-variant-color': T.outlineVariant,
-            '--infl-certainty-high-color': T.certaintyHigh,
-            '--infl-certainty-medium-color': T.certaintyMedium,
-            '--infl-highlight-green-color': T.highlightGreen,
-            '--infl-highlight-red-color': T.highlightRed,
-            '--infl-highlight-yellow-color': T.highlightYellow,
-            '--infl-row-hover-color': T.rowHover,
-            '--infl-row-selected-color': T.rowSelected,
-            '--infl-mandatory-row-color': T.mandatoryRow,
-          },
-        },
-      },
-
       MuiButton: {
         defaultProps: { disableElevation: true, variant: 'contained' },
         styleOverrides: {
