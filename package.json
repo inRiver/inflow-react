@@ -1,6 +1,6 @@
 {
   "name": "@inriver/inflow-react",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Shared Inflow React/MUI design-system: canonical theme, design tokens, and themed wrapper components for Inriver product UIs.",
   "keywords": [
     "inriver",
@@ -10,9 +10,9 @@
     "react",
     "theme"
   ],
-  "homepage": "https://github.com/inriver-ux-team/inflow-react#readme",
+  "homepage": "https://github.com/inRiver/inflow-react#readme",
   "bugs": {
-    "url": "https://github.com/inriver-ux-team/inflow-react/issues"
+    "url": "https://github.com/inRiver/inflow-react/issues"
   },
   "private": false,
   "license": "MIT",
@@ -23,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/inriver-ux-team/inflow-react.git"
+    "url": "git+https://github.com/inRiver/inflow-react.git"
   },
   "files": [
     "dist/index.js",
