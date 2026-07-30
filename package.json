@@ -55,8 +55,7 @@
     "test": "vitest",
     "test:run": "vitest --run",
     "prepublishOnly": "node scripts/guard-publish.cjs",
-    "preview": "vite preview",
-    "postinstall": "node -e \"require('fs').existsSync('scripts/postinstall-dedupe-sibling.mjs')&&import('./scripts/postinstall-dedupe-sibling.mjs').catch(()=>{})\""
+    "preview": "vite preview"
   },
   "peerDependencies": {
     "@emotion/react": "^11.13.0",
