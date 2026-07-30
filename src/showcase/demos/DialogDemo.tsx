@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, Stack, Paper, Box } from '@mui/material';
 import { ThemedButton, ThemedDialog } from '../../components/themed';
 import { DemoFrame } from '../DemoFrame';
@@ -17,7 +17,7 @@ export function DialogDemo() {
   "fullWidth": false
 });
   const [open, setOpen] = useState(false);
-  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [container, setContainer] = useState<HTMLDivElement | null>(null);
 
   const schema: PropSchema[] = [
   {
@@ -88,7 +88,7 @@ import { ThemedDialog, ThemedButton } from '@inriver/inflow-react';
       />
 
       <DemoFrame title="Dialog - Interactive">
-        <Box ref={containerRef} sx={{ position: 'relative', minHeight: 60 }}>
+        <Box ref={setContainer} sx={{ position: 'relative', minHeight: 60 }}>
           {variant === 'mui' ? (
             <>
               <Button onClick={() => setOpen(true)}>Open Dialog</Button>
@@ -97,7 +97,7 @@ import { ThemedDialog, ThemedButton } from '@inriver/inflow-react';
                 onClose={() => setOpen(false)}
                 maxWidth={props.maxWidth}
                 fullWidth={!!props.fullWidth}
-                container={containerRef.current}
+                container={container}
               >
                 <DialogTitle>Dialog Title</DialogTitle>
                 <DialogContent>
@@ -117,7 +117,7 @@ import { ThemedDialog, ThemedButton } from '@inriver/inflow-react';
                 onClose={() => setOpen(false)}
                 maxWidth={props.maxWidth}
                 fullWidth={!!props.fullWidth}
-                container={containerRef.current}
+                container={container}
                 title="Dialog Title"
                 actions={
                   <>

@@ -16,7 +16,7 @@ import { CodeBlock } from '../showcase/CodeBlock';
 import { INFLOW_DARK_MODE_ENABLED } from '../theme';
 import { THEMED_COMPONENT_INFO } from '../showcase/themedComponentInfo';
 
-const installCode = `npm install @inriver/inflow-react@react19-mui6.3 @mui/material@\">=6.3.0 <6.4.0\" @emotion/react @emotion/styled react@^19 react-dom@^19`;
+const installCode = `npm install @inriver/inflow-react@react19-mui6.3 @mui/material@">=6.3.0 <6.4.0" @emotion/react @emotion/styled react@^19 react-dom@^19`;
 
 const releaseTagCode = `# Release only after validating this checkpoint against consuming apps.
 # The package is already publish-ready with "private": false.

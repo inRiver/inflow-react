@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   Autocomplete,
   Box,
@@ -39,6 +39,14 @@ export function ComponentSearchDialog({ open, onClose }: ComponentSearchDialogPr
   const theme = useTheme();
   const navigate = useNavigate();
   const [inputValue, setInputValue] = useState('');
+  const [prevOpen, setPrevOpen] = useState(open);
+
+  if (open !== prevOpen) {
+    setPrevOpen(open);
+    if (!open) {
+      setInputValue('');
+    }
+  }
 
   const options = useMemo<SearchOption[]>(() => {
     return getAllComponents().map((componentId) => {
@@ -53,12 +61,6 @@ export function ComponentSearchDialog({ open, onClose }: ComponentSearchDialogPr
       };
     });
   }, []);
-
-  useEffect(() => {
-    if (!open) {
-      setInputValue('');
-    }
-  }, [open]);
 
   return (
     <Dialog
@@ -224,4 +226,5 @@ export function ComponentSearchDialog({ open, onClose }: ComponentSearchDialogPr
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const componentSearchCategories = Object.values(COMPONENT_CATEGORIES).length;

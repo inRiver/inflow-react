@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { Box, Tooltip, Button, Stack } from '@mui/material';
 import { DemoFrame } from '../DemoFrame';
 import { CodeBlock } from '../CodeBlock';
@@ -10,7 +10,7 @@ export function TooltipDemo() {
   "placement": "bottom",
   "arrow": false
 });
-  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [container, setContainer] = useState<HTMLDivElement | null>(null);
 
   const schema: PropSchema[] = [
   {
@@ -42,8 +42,8 @@ import { Tooltip } from '@mui/material';
   return (
     <>
       <DemoFrame title="Tooltip - Interactive">
-        <Box ref={containerRef} sx={{ position: 'relative', display: 'inline-block' }}>
-          <Tooltip {...props} title="Interactive tooltip" slotProps={{ popper: { container: containerRef.current } }}>
+        <Box ref={setContainer} sx={{ position: 'relative', display: 'inline-block' }}>
+          <Tooltip {...props} title="Interactive tooltip" slotProps={{ popper: { container } }}>
             <Button>Hover Me</Button>
           </Tooltip>
         </Box>

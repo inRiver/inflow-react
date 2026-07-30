@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { Drawer, List, ListItem, ListItemButton, ListItemText, Box, Stack } from '@mui/material';
 import { DemoFrame } from '../DemoFrame';
 import { CodeBlock } from '../CodeBlock';
@@ -10,7 +10,7 @@ export function DrawerDemo() {
   "anchor": "left",
   "variant": "permanent"
 });
-  const previewRef = useRef<HTMLDivElement | null>(null);
+  const [previewContainer, setPreviewContainer] = useState<HTMLDivElement | null>(null);
 
   const isHorizontalAnchor = props.anchor === 'top' || props.anchor === 'bottom';
 
@@ -50,12 +50,12 @@ import { Drawer } from '@mui/material';
     <>
       <DemoFrame title="Drawer - Interactive">
         
-        <Box ref={previewRef} sx={{ position: 'relative', height: 200, border: '1px solid grey', overflow: 'hidden' }}>
+        <Box ref={setPreviewContainer} sx={{ position: 'relative', height: 200, border: '1px solid grey', overflow: 'hidden' }}>
           <Drawer
             {...props}
             open
             hideBackdrop
-            ModalProps={{ container: previewRef.current, disableScrollLock: true, keepMounted: true }}
+            ModalProps={{ container: previewContainer, disableScrollLock: true, keepMounted: true }}
             sx={{
               position: 'absolute',
               inset: 0,

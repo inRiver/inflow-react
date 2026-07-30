@@ -125,12 +125,14 @@ export function ComponentPage() {
   const [activeSection, setActiveSection] = useState<string>('overview');
   const [visibleSectionIds, setVisibleSectionIds] = useState<string[]>(['overview', 'guidelines', 'accessibility']);
   const registryKey = componentName ? normalizeComponentId(componentName) : '';
+  const [prevRegistryKey, setPrevRegistryKey] = useState(registryKey);
 
-  useEffect(() => {
+  if (registryKey !== prevRegistryKey) {
+    setPrevRegistryKey(registryKey);
     setActiveCustomizationMethod('sx');
     setCustomizationValuesByMethod({});
     setActiveSection('overview');
-  }, [registryKey]);
+  }
 
   const registryEntry = registryKey ? demoRegistry[registryKey] : undefined;
   const DemoComponent = registryEntry?.component;

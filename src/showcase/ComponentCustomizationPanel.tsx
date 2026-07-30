@@ -703,6 +703,7 @@ const effectToRule = (effect: string): PreviewRule => {
   return { outline: effect.includes('2px') ? '2px solid currentColor' : '1px solid currentColor' };
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const getCustomizationPreviewStyles = (
   componentId: string,
   activeMethod: CustomizationMethodId,
@@ -863,6 +864,7 @@ const themeControlDefinitions: Record<SxControlName, CustomizationControl> = {
   },
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const getCustomizationMethods = (meta: CustomizationMeta, classMethodLabel: string): CustomizationMethod[] => {
   const sxControlNames = meta.sxControls ?? ['backgroundColor', 'textColor'];
   const sxControls = sxControlNames.map((controlName) =>
@@ -937,6 +939,7 @@ export const getCustomizationMethods = (meta: CustomizationMeta, classMethodLabe
   ];
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const getCustomizationMethodsForComponent = (componentId: string) => {
   const meta = getMeta(componentId);
   const classMethodLabel = meta.supportsClasses ? 'className/classes' : 'className';

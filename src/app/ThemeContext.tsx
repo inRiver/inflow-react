@@ -33,7 +33,6 @@ type ThemeContextType = {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-// eslint-disable-next-line react-refresh/only-export-components
 export { INFLOW_DARK_MODE_ENABLED as DARK_MODE_ENABLED };
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -84,8 +83,6 @@ export const CustomThemeProvider: React.FC<{ children: React.ReactNode }> = ({ c
     const handleChange = (event: MediaQueryListEvent) => {
       setSystemColorMode(event.matches ? 'dark' : 'light');
     };
-
-    setSystemColorMode(mediaQuery.matches ? 'dark' : 'light');
 
     if (typeof mediaQuery.addEventListener === 'function') {
       mediaQuery.addEventListener('change', handleChange);
