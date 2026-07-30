@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - run: npm run lint
+
+      - run: npm run test:run
+
+      - run: npm run build
+
+      - name: Pack and validate tarball contents
+        run: |
+          npm pack
+          TARBALL=$(ls inriver-inflow-react-*.tgz)
+          echo "Inspecting $TARBALL"
+          tar -tzf "$TARBALL"
+          MISSING=0
+          for f in package/dist/index.js package/dist/index.cjs package/dist/index.d.ts package/README.md package/LICENSE package/package.json; do
+            if ! tar -tzf "$TARBALL" | grep -qx "$f"; then
+              echo "::error::Missing expected file in tarball: $f"
+              MISSING=1
+            fi
+          done
+          if [ "$MISSING" -eq 1 ]; then
+            exit 1
+          fi
+          echo "Tarball contains all expected files."

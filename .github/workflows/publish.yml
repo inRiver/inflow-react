@@ -1,0 +1,47 @@
+name: Publish to npm
+
+on:
+  push:
+    tags:
+      - 'theme/*/v*'
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false
+
+      - name: Derive checkpoint tag and verify version
+        id: tagcheck
+        run: |
+          RAW_TAG="${GITHUB_REF#refs/tags/}"
+          echo "Source tag: $RAW_TAG"
+          CHECKPOINT="$(echo "$RAW_TAG" | cut -d '/' -f2)"
+          TAG_VERSION="$(echo "$RAW_TAG" | cut -d '/' -f3 | sed 's/^v//')"
+          PKG_VERSION="$(node -p "require('./package.json').version")"
+          echo "Checkpoint: $CHECKPOINT"
+          echo "Tag version: $TAG_VERSION, package.json version: $PKG_VERSION"
+          if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
+            echo "::error::Tag version ($TAG_VERSION) does not match package.json version ($PKG_VERSION)."
+            exit 1
+          fi
+          echo "checkpoint=$CHECKPOINT" >> "$GITHUB_OUTPUT"
+
+      - run: npm ci
+
+      - run: npm run build
+
+      - name: Publish
+        env:
+          INFLOW_THEME_RELEASE_TAG: ${{ steps.tagcheck.outputs.checkpoint }}
+        run: npm publish --tag "${{ steps.tagcheck.outputs.checkpoint }}" --access public --provenance
