@@ -21,6 +21,12 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           package-manager-cache: false
 
+      - name: Ensure npm supports Trusted Publishing (OIDC)
+        run: |
+          echo "Bundled npm: $(npm --version)"
+          npm install -g npm@latest
+          echo "Upgraded npm: $(npm --version)"
+
       - name: Derive checkpoint tag and verify version
         id: tagcheck
         run: |
