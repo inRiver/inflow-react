@@ -17,7 +17,7 @@ flowchart TB
   Apps --> Freeze["Exact version\nno movement"]
   Apps --> Patch["~ range\npatch-only movement"]
   Apps --> Channel["Checkpoint tag\nvalidated channel movement"]
-  Checkpoint -. "after adoption sign-off" .-> Latest["latest"]
+  Checkpoint --> Latest["latest\n(auto-promoted by CI)"]
 ```
 
 ## Core model
@@ -28,7 +28,7 @@ flowchart TB
 | Patch range | `~0.1.0` | Accepts `0.1.x` fixes but blocks `0.2.0` and above. |
 | Compatibility tag | `react19-mui6.3` | A moving channel for the same React/MUI baseline. |
 | Source tag | `theme/react19-mui6.3/v0.1.0` | Immutable Git tag for the source that produced a package version. |
-| `latest` | `@inriver/inflow-react@latest` | General default only after adoption verification. |
+| `latest` | `@inriver/inflow-react@latest` | Automatically promoted by CI immediately after every checkpoint-tag publish (see `.github/workflows/publish.yml`). Apps that want a validated, deliberately-adopted version should pin an exact version or a checkpoint tag instead of relying on `latest`. |
 
 Published versions must be treated as immutable. If a release is wrong, publish a new patch version; do not try to replace the same version.
 
@@ -78,23 +78,25 @@ Avoid `^` for apps that must not pick up a new compatibility checkpoint automati
 3. Test through `npm link` or `npm pack` in at least one consuming app.
 4. Update docs and examples if usage changed.
 5. Bump the package version.
-6. Build the package.
-7. Publish with an approved checkpoint tag.
-8. Add an immutable source tag.
-9. Promote to `latest` only after adoption verification.
+6. Push a `theme/<checkpoint>/vX.Y.Z` git tag (e.g. `theme/react19-mui6.3/v0.1.7`).
+7. CI (`.github/workflows/publish.yml`) takes it from there: lint, test, build, publish with the checkpoint tag via npm Trusted Publishing (OIDC, no stored tokens), then automatically promotes that same version to `latest`.
 
 ```mermaid
 sequenceDiagram
   participant Theme as Theme repo
   participant App as Consuming app
+  participant CI as GitHub Actions
   participant Feed as public npm registry
   participant Git as Git source tags
 
   Theme->>Theme: implement + build
   Theme->>App: test via npm link or npm pack
   App-->>Theme: validation feedback
-  Theme->>Feed: publish immutable version with checkpoint tag
-  Theme->>Git: create immutable source tag
+  Theme->>Git: push theme/<checkpoint>/vX.Y.Z tag
+  Git->>CI: triggers publish workflow
+  CI->>CI: lint + test + build
+  CI->>Feed: publish immutable version with checkpoint tag (OIDC)
+  CI->>Feed: promote same version to latest
   Feed-->>App: app updates only when it chooses
 ```
 
@@ -102,18 +104,12 @@ Public npm is the primary consumer registry for `@inriver/inflow-react`. Interna
 
 ```bash
 npm version patch
-npm run build
-INFLOW_THEME_RELEASE_TAG=react19-mui6.3 npm publish --tag react19-mui6.3
-
-git tag -a theme/react19-mui6.3/v0.1.1 -m "@inriver/inflow-react 0.1.1 - React 19 / MUI 6.3"
-git push origin theme/react19-mui6.3/v0.1.1
+git push origin master
+git tag -a theme/react19-mui6.3/v0.1.7 -m "@inriver/inflow-react 0.1.7 - React 19 / MUI 6.3"
+git push origin theme/react19-mui6.3/v0.1.7
 ```
 
-Promote only after teams agree the checkpoint is safe as the default:
-
-```bash
-npm dist-tag add @inriver/inflow-react@0.1.1 latest
-```
+Pushing that tag is the entire release step — CI lints, tests, builds, publishes under the checkpoint tag, and promotes to `latest` automatically. There is no separate manual `npm publish` or `npm dist-tag add` step for ordinary releases; run those manually only when recovering from a failed/partial CI run.
 
 ## Local development is not a release channel
 
@@ -147,5 +143,5 @@ Do not create long-lived bespoke theme branches for every app. That creates the 
 - One public package boundary: `src/index.ts`.
 - Immutable package versions for auditability.
 - Moving checkpoint tags for validated patch flow.
-- No direct publish to `latest`.
+- No direct `npm publish --tag latest` (`guard-publish.cjs` blocks it) - every release publishes under a checkpoint tag first. `latest` itself is then auto-promoted by CI to match the newest checkpoint publish immediately, with no adoption-verification gate. Apps that need a deliberately-adopted version should pin an exact version or a checkpoint tag rather than depending on `latest`.
 - No consuming app should depend on unversioned source files or showcase internals.

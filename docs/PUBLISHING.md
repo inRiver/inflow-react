@@ -147,8 +147,8 @@ npm install @inriver/inflow-react@react19-mui6.3
 import { InflowProvider, ThemedButton } from '@inriver/inflow-react';
 ```
 
-- [ ] Promote to `latest` only after adoption verification, per [`docs/VERSIONING.md`](./VERSIONING.md).
-- [ ] Never publish directly to `latest`.
+- [ ] `latest` is auto-promoted to this version by CI immediately after publish - confirm the "Promote to latest" step succeeded in the workflow run, per [`docs/VERSIONING.md`](./VERSIONING.md).
+- [ ] Never publish directly to `latest` (`npm publish --tag latest`) - releases always publish under a checkpoint tag first; only the automated post-publish step moves `latest`.
 
 ## Ongoing releases
 
