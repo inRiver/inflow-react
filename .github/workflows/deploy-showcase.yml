@@ -2,7 +2,8 @@ name: Deploy Showcase to GitHub Pages
 
 on:
   push:
-    branches: [master]
+    tags:
+      - 'theme/*/v*'
   workflow_dispatch:
 
 permissions:
@@ -18,7 +19,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout tag
+        uses: actions/checkout@v6
+        with:
+          # Checkout the exact tag that triggered the workflow so the
+          # showcase always reflects the released version, not the current
+          # state of the default branch.
+          ref: ${{ github.ref }}
 
       - uses: actions/setup-node@v7
         with:
@@ -32,8 +39,8 @@ jobs:
       - run: npm run test:run
 
       # Build only the showcase app; the library build is not part of the
-      # deployed site. VITE_BASE_URL must match the repository name so assets
-      # resolve under the GitHub Pages subpath.
+      # deployed site. The base path matches the repository name because
+      # GitHub Pages serves the site under /inflow-react/.
       - run: npx vite build --base /inflow-react/
         env:
           VITE_BASE_URL: /inflow-react/

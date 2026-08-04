@@ -143,14 +143,15 @@ The showcase should demonstrate how consumers should use the theme, but demos ca
 
 ### Deployed showcase
 
-The showcase is automatically deployed to **GitHub Pages** on every push to `master`:
+The showcase is automatically deployed to **GitHub Pages** whenever a `theme/*/v*` tag is pushed:
 
 - Live URL: `https://inriver.github.io/inflow-react/`
 - Workflow: `.github/workflows/deploy-showcase.yml`
-- Build command: `npm run build -- --base /inflow-react/`
+- Trigger: pushes to tags matching `theme/*/v*`
+- Build command: `npx vite build --base /inflow-react/`
 - Router: `createHashRouter` so deep links work on the static GitHub Pages host.
 
-Because GitHub Pages serves the repo under the `/inflow-react/` subpath, Vite's `base` is set to `/inflow-react/` during the deploy build. `public/404.html` handles hard refreshes on deep routes by redirecting to the hash-based route the SPA can render.
+Because GitHub Pages serves the repo under the `/inflow-react/` subpath, Vite's `base` is set to `/inflow-react/` during the deploy build. The workflow checks out the triggering tag, so the live showcase always reflects the latest released version rather than unreleased `master` changes. `public/404.html` handles hard refreshes on deep routes by redirecting to the hash-based route the SPA can render.
 
 ## Build flow
 
