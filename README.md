@@ -50,6 +50,7 @@ Import from the package root only (`@inriver/inflow-react`) - not showcase pages
 | Resource | Link |
 | --- | --- |
 | Package on npm | [npmjs.com/package/@inriver/inflow-react](https://www.npmjs.com/package/@inriver/inflow-react) |
+| Live showcase | [inriver.github.io/inflow-react](https://inriver.github.io/inflow-react/) |
 | Local setup (Windows/macOS/Linux) | [`docs/LOCAL_SETUP.md`](docs/LOCAL_SETUP.md) |
 | Architecture | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) |
 | Versioning & release model | [`docs/VERSIONING.md`](docs/VERSIONING.md) |
