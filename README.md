@@ -1,93 +1,141 @@
 # @inriver/inflow-react
 
-[![npm version](https://img.shields.io/npm/v/@inriver/inflow-react.svg)](https://www.npmjs.com/package/@inriver/inflow-react)
-[![npm downloads](https://img.shields.io/npm/dm/@inriver/inflow-react.svg)](https://www.npmjs.com/package/@inriver/inflow-react)
-[![license](https://img.shields.io/npm/l/@inriver/inflow-react.svg)](./LICENSE)
+Shared Inflow React and MUI theme, design tokens, and themed components for Inriver product UIs.
 
-**Shared Inflow React/MUI design-system: canonical theme, design tokens, and themed wrapper components.**
+[![npm version](https://img.shields.io/npm/v/@inriver/inflow-react.svg)](https://www.npmjs.com/package/@inriver/inflow-react) [![license](https://img.shields.io/npm/l/@inriver/inflow-react.svg)](./LICENSE) [![React 19](https://img.shields.io/badge/React-19-61dafb)](https://react.dev/) [![MUI 6.3](https://img.shields.io/badge/MUI-6.3-007fff)](https://mui.com/) [![status: alpha](https://img.shields.io/badge/status-alpha-orange)](https://github.com/inRiver/inflow-react/issues)
 
-> **Status: Alpha.** APIs may still change between minor versions. Early adopters and feedback are very welcome - please open a [GitHub issue](https://github.com/inRiver/inflow-react/issues) with bugs, rough edges, or requests.
+[Live showcase](https://inriver.github.io/inflow-react/) · [npm package](https://www.npmjs.com/package/@inriver/inflow-react)
 
-Gives Inriver product teams one shared theme contract with versioned compatibility checkpoints, so theme changes can be validated before other apps depend on them.
+> **Alpha:** APIs may change. Only light mode is currently enabled; dark mode is still feature-flagged off. Report bugs, rough edges, and requests through [GitHub Issues](https://github.com/inRiver/inflow-react/issues).
 
-> Previously known internally as `inriver-react-theme`.
+## Requirements and compatibility
+
+Install a compatible version of each peer dependency in the consuming application.
+
+| Peer dependency | Compatible version |
+| --- | --- |
+| `react` | `^19.0.0` |
+| `react-dom` | `^19.0.0` |
+| `@mui/material` | `>=6.3.0 <6.4.0` |
+| `@emotion/react` | `^11.13.0` |
+| `@emotion/styled` | `^11.13.0` |
+
+Import from the package root only:
+
+```ts
+import { InflowProvider, ThemedButton } from '@inriver/inflow-react';
+```
+
+Do not import showcase code, demo components, or internal source paths. The package ships TypeScript declarations and supports both ESM and CommonJS through its `exports` map.
+
+Compatibility is managed through checkpoint tags. The current checkpoint is `react19-mui6.3`. Use a checkpoint tag or an exact version when you need a known React and MUI contract. The `latest` tag is promoted automatically by CI and is never published to directly.
 
 ## Installation
 
 ```sh
-npm install @inriver/inflow-react
+npm install @inriver/inflow-react@react19-mui6.3
+npm install react@^19.0.0 react-dom@^19.0.0 @mui/material@">=6.3.0 <6.4.0" @emotion/react@^11.13.0 @emotion/styled@^11.13.0
 ```
 
-## Usage
+Use the checkpoint tag instead of `latest` so the installed package stays on the validated React 19 and MUI 6.3 compatibility channel.
+
+## Quick start
 
 ```tsx
 import { InflowProvider, ThemedButton } from '@inriver/inflow-react';
 
 export function App() {
   return (
-    <InflowProvider>
-      <ThemedButton variant="contained">Save</ThemedButton>
+    <InflowProvider mode="light">
+      <ThemedButton>Save</ThemedButton>
     </InflowProvider>
   );
 }
 ```
 
-`InflowProvider` scopes the Inflow baseline and `--infl-*` CSS variables to its own root, so it does not modify the host page's `body` or `:root`. For independently deployed microfrontends on the same page, set a distinct `cacheKey`; pass an `emotionCache` only when integrating with a Shadow DOM or iframe. MUI portal components (such as dialogs and menus) render outside this root by default, so consumer-authored `var(--infl-*)` styles in portal content need a matching portal container.
+## `InflowProvider` props
 
-Peer dependencies: `react` `^19.0.0`, `react-dom` `^19.0.0`, `@mui/material` `>=6.3.0 <6.4.0`, `@emotion/react` `^11.13.0`, `@emotion/styled` `^11.13.0`. You own the installed versions - this package only declares compatible ranges.
+`InflowProvider` applies `ScopedCssBaseline` and `--infl-*` CSS variables to a `data-inflow-root` container. It does not apply them to `body` or `:root`.
 
-Import from the package root only (`@inriver/inflow-react`) - not showcase pages, demo components, or internal source paths. Those are documentation/demo code, not the stable package surface.
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | Required | React content rendered inside the scoped Inflow root. |
+| `mode` | `InflowColorMode` | `'light'` | Color mode used to create the theme. Only light mode is currently enabled; dark mode is still feature-flagged off. |
+| `className` | `string` | `undefined` | Class name applied to the scoped Inflow root. |
+| `sx` | `SxProps<Theme>` | `undefined` | Additional styles for the scoped Inflow root. |
+| `cacheKey` | `string` | `'inflow'` | Key for the provider-created Emotion cache. Use a distinct key for independently deployed roots sharing a page. |
+| `emotionCache` | `EmotionCache` | `undefined` | Caller-owned Emotion cache, for example one targeting a Shadow DOM or iframe. When supplied, it overrides `cacheKey`. |
 
-## What's included
+## API overview
 
-- **Canonical MUI theme** - `src/theme/inflow.ts`
-- **Design tokens** - `src/theme/tokens.ts`, for custom surfaces that can't use MUI directly
-- **Themed wrapper components** - `ThemedButton`, `ThemedChip`, `ThemedDialog`, `ThemedTable`, `ThemedTextField`, `ThemedCard`
-- **Live showcase** - a Vite app in this repo for design review and examples; not part of the published package
+All public exports are available from `@inriver/inflow-react`.
+
+| Group | Exports |
+| --- | --- |
+| Provider | `InflowProvider`, `InflowProviderProps` |
+| Theme factories | `createInflowTheme`, `getInflowPalette`, `getInflowTokensForMode`, `createDefaultTheme` |
+| Theme instances | `inflowTheme`, `defaultTheme` |
+| Theme tokens | `inflowTokens`, `inflowCustomColors`, `inflowSpacing` |
+| Theme flags & types | `INFLOW_DARK_MODE_ENABLED`, `InflowColorMode` |
+| Components | `ThemedButton`, `ThemedTextField`, `ThemedCard`, `ThemedChip`, `ThemedDialog`, `ThemedTable`, plus their prop types and `Column` |
+
+The components are thin MUI wrappers. See the [live showcase](https://inriver.github.io/inflow-react/) for behavior and props.
+
+## Theming and tokens
+
+Use `inflowTokens` for custom surfaces that are not MUI components. Prefer the MUI theme for normal MUI components.
+
+```ts
+import { inflowTokens } from '@inriver/inflow-react';
+
+const customSurface = {
+  backgroundColor: inflowTokens.colors.surfaceLow,
+  borderRadius: inflowTokens.radius.md,
+};
+```
+
+Inside an `InflowProvider`, use the scoped CSS variables for CSS authored outside MUI:
+
+```css
+.custom-surface {
+  background: var(--infl-surface-container-low-color);
+  color: var(--infl-on-surface-color);
+  border-color: var(--infl-outline-variant-color);
+}
+```
+
+### Advanced integration
+
+- Use `createInflowTheme(mode)` when you need to construct the theme directly, or use `inflowTheme` for the default light theme.
+- For multiple roots or independently deployed microfrontends on one page, pass a distinct `cacheKey` to each provider.
+- For a Shadow DOM or iframe, pass an `emotionCache` configured for the target container. It overrides `cacheKey`.
+- MUI portal components render outside the provider root by default. Theme values still flow through React context, but consumer-authored `var(--infl-*)` styles in portal content need a matching portal container.
+
+## SSR and Next.js
+
+For SSR or Next.js, follow the [official MUI Next.js integration guide](https://mui.com/material-ui/integrations/nextjs/).
 
 ## Documentation
 
 | Resource | Link |
 | --- | --- |
-| Package on npm | [npmjs.com/package/@inriver/inflow-react](https://www.npmjs.com/package/@inriver/inflow-react) |
 | Live showcase | [inriver.github.io/inflow-react](https://inriver.github.io/inflow-react/) |
-| Local setup (Windows/macOS/Linux) | [`docs/LOCAL_SETUP.md`](docs/LOCAL_SETUP.md) |
+| npm package | [npmjs.com/package/@inriver/inflow-react](https://www.npmjs.com/package/@inriver/inflow-react) |
+| Local setup | [`docs/LOCAL_SETUP.md`](docs/LOCAL_SETUP.md) |
 | Architecture | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) |
-| Versioning & release model | [`docs/VERSIONING.md`](docs/VERSIONING.md) |
-| Publishing checklist | [`docs/PUBLISHING.md`](docs/PUBLISHING.md) |
-| Live usage & migration guidance | `/guidelines` in the showcase |
+| Versioning | [`docs/VERSIONING.md`](docs/VERSIONING.md) |
+| Publishing | [`docs/PUBLISHING.md`](docs/PUBLISHING.md) |
 | Issues | [GitHub Issues](https://github.com/inRiver/inflow-react/issues) |
-
-## Versioning
-
-| Mechanism | Example | Purpose |
-| --- | --- | --- |
-| Exact version | `@inriver/inflow-react@0.1.0` | Immutable artifact, no movement. |
-| Compatibility checkpoint tag | `@inriver/inflow-react@react19-mui6.3` | Moving channel for the same React/MUI contract; patch fixes land here after validation. |
-| Patch range | `~0.1.0` | Accepts `0.1.x` fixes, blocks `0.2.0`+. |
-| `latest` | `@inriver/inflow-react@latest` | Only promoted after adoption verification - never published to directly. |
-
-`scripts/guard-publish.cjs` enforces this at publish time. Full model: [`docs/VERSIONING.md`](docs/VERSIONING.md).
-
-## Local development
-
-```sh
-npm install
-npm run dev    # showcase at http://localhost:5173/
-npm run build  # builds the showcase app and the importable package
-```
-
-Full setup, prerequisites, and `npm link` workflow for local theme iteration: [`docs/LOCAL_SETUP.md`](docs/LOCAL_SETUP.md).
 
 ## Contributing
 
-1. Update `src/theme/inflow.ts` first for palette, typography, and MUI overrides.
-2. Update `src/theme/tokens.ts` only when custom/non-MUI surfaces need direct token access.
-3. Add to `src/components/themed/*` only when a repeated component pattern deserves a shared wrapper.
-4. Keep showcase examples aligned with real usage; showcase-only components are not package API.
-5. Run `npm run build` before publishing or handing off a change.
-6. Publish only through an approved checkpoint tag - never directly to `latest`.
+- Start theme changes in the canonical theme definition.
+- Add tokens only for custom or non-MUI surfaces that need direct values.
+- Add wrappers only for repeated patterns that need a shared contract.
+- Run `npm run build` before handing off a change.
+
+For the full architecture and package boundary, see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
 ## License
 
-`MIT`. See [`LICENSE`](./LICENSE).
+MIT. See [`LICENSE`](LICENSE).
