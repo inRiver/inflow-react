@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inflow Design System</title>
+    <script type="text/javascript">
+      // Single-page application redirect for GitHub Pages.
+      // When a user refreshes (or follows a deep link) on e.g. /inflow-react/components/button,
+      // GitHub Pages serves this 404.html. We compute the path relative to the base path,
+      // encode it as a URL fragment, and redirect to /inflow-react/ so the SPA can render
+      // the route via HashRouter's hash-based location.
+      (function () {
+        var base = '/inflow-react';
+        var location = window.location;
+        var fullPath = location.pathname + location.search + location.hash;
+        var relativePath = fullPath.startsWith(base)
+          ? fullPath.slice(base.length)
+          : fullPath;
+        var target = base + '/#' + encodeURIComponent(relativePath || '/');
+        location.replace(target);
+      })();
+    </script>
+  </head>
+  <body>
+    Redirecting to the Inflow Design System showcase...
+  </body>
+</html>

@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { createHashRouter, Navigate } from 'react-router-dom';
 import { RootLayout } from './RootLayout';
 import { LandingPage } from '../pages/LandingPage';
 import { ComponentsIndexPage } from '../pages/ComponentsIndexPage';
@@ -13,7 +13,7 @@ import TableScreen from '../pages/screens/TableScreen';
 import DialogScreen from '../pages/screens/DialogScreen';
 import EmptyStateScreen from '../pages/screens/EmptyStateScreen';
 
-export const router = createBrowserRouter(
+export const router = createHashRouter(
   [
     {
       path: '/',
@@ -41,7 +41,7 @@ export const router = createBrowserRouter(
     { path: '/screens/empty', element: <Navigate to="/examples/empty" replace /> },
     { path: '/screens/emptystate', element: <Navigate to="/examples/empty" replace /> },
   ],
-  // Match Vite's `base` config (e.g. '/inflow-react/' on GitHub Pages) so
-  // routes resolve under the deployed subpath instead of assuming domain root.
-  { basename: import.meta.env.BASE_URL.replace(/\/$/, '') || '/' },
+  // HashRouter puts the route in the URL fragment, so the SPA works from a
+  // static host (GitHub Pages) without server-side rewrite rules. The base
+  // path in Vite still controls where assets load from.
 );
