@@ -43,15 +43,17 @@ describe('ThemedStepper', () => {
   });
 
   it('shows the active step with an inner dot and underlined navy label', () => {
-    const { container } = renderStepper(2);
-    const activeLabel = container.querySelector('.MuiStepLabel-label.Mui-active');
-    const activeStep = activeLabel?.closest('.MuiStep-root');
+    const { container } = renderStepper(1);
+    const activeStepLabel = container.querySelector('.MuiStepLabel-label.Mui-active');
+    const activeLabelRoot = activeStepLabel?.closest('.MuiStepLabel-root, .MuiStepButton-root');
+    const activeStep = activeStepLabel?.closest('.MuiStep-root');
     const activeIcon = activeStep?.querySelector('.MuiStepIcon-root');
 
     expect(activeIcon).not.toBeNull();
     expect(activeIcon?.querySelector('span')).not.toBeNull();
-    expect(getComputedColor(activeLabel)).toBe(navy);
-    expect(activeLabel && getComputedStyle(activeLabel).textDecoration).toContain('underline');
+    expect(activeLabelRoot).toHaveClass('inflow-selected');
+    expect(getComputedColor(activeStepLabel)).toBe(navy);
+    expect(activeStepLabel && getComputedStyle(activeStepLabel).textDecoration).toContain('underline');
   });
 
   it('shows inactive steps with outlined grey circles and grey labels', () => {
@@ -131,5 +133,22 @@ describe('ThemedStepper', () => {
     (buttons[0] as HTMLElement).click();
     expect(handleStepClick).toHaveBeenCalledTimes(1);
     expect(handleStepClick).toHaveBeenCalledWith(0);
+  });
+
+  it('does not render buttons when onStepClick is present but disableStepClick is true', () => {
+    const handleStepClick = vi.fn();
+    const { container } = render(
+      <InflowProvider>
+        <ThemedStepper
+          steps={steps}
+          activeStep={0}
+          onStepClick={handleStepClick}
+          disableStepClick
+        />
+      </InflowProvider>,
+    );
+
+    expect(container.querySelectorAll('.MuiStepButton-root')).toHaveLength(0);
+    expect(container.querySelectorAll('.MuiStepLabel-root')).toHaveLength(steps.length);
   });
 });

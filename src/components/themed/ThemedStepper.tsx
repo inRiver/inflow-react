@@ -7,7 +7,7 @@ import {
   StepConnector,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import type { StepIconProps, StepperProps } from "@mui/material";
+import type { StepIconProps, StepperProps, Theme } from "@mui/material";
 
 export interface ThemedStep {
   /** Label shown beneath the step icon. */
@@ -25,6 +25,10 @@ export interface ThemedStepperProps extends Omit<StepperProps, "children"> {
   steps: ThemedStep[];
   /** Callback fired when a step label is clicked. Enables non-linear navigation. */
   onStepClick?: (index: number) => void;
+  /** Renders read-only labels even when onStepClick is supplied. */
+  disableStepClick?: boolean;
+  /** Step to highlight via underline. Defaults to activeStep. */
+  selectedStep?: number;
 }
 
 const StepIconRoot = styled("span")<{ ownerState: StepIconProps }>(
@@ -96,18 +100,20 @@ const ThemedStepConnector = styled(StepConnector)(({ theme }) => ({
     },
 }));
 
+const selectedLabelStyle = (theme: Theme) => ({
+  color: theme.palette.primary.main,
+  textDecoration: "underline" as const,
+});
+
 const ThemedStepLabel = styled(StepLabel)(({ theme }) => ({
   "& .MuiStepLabel-label": {
     color: theme.palette.text.secondary,
     fontWeight: theme.typography.fontWeightMedium,
-    "&.Mui-active": {
-      color: theme.palette.primary.main,
-      textDecoration: "underline",
-    },
     "&.Mui-completed": {
       color: theme.palette.primary.main,
     },
   },
+  "&.inflow-selected .MuiStepLabel-label": selectedLabelStyle(theme),
 }));
 
 const StyledStepButton = styled(StepButton)(({ theme }) => ({
@@ -115,13 +121,10 @@ const StyledStepButton = styled(StepButton)(({ theme }) => ({
     color: theme.palette.text.secondary,
     fontWeight: theme.typography.fontWeightMedium,
   },
-  "& .MuiStepLabel-label.Mui-active": {
-    color: theme.palette.primary.main,
-    textDecoration: "underline",
-  },
   "& .MuiStepLabel-label.Mui-completed": {
     color: theme.palette.primary.main,
   },
+  "&.inflow-selected .MuiStepLabel-label": selectedLabelStyle(theme),
   "&.Mui-focusVisible": {
     outline: `2px solid ${theme.palette.primary.main}`,
     outlineOffset: 2,
@@ -156,6 +159,8 @@ export const ThemedStepper = forwardRef<HTMLDivElement, ThemedStepperProps>(
     {
       steps,
       onStepClick,
+      disableStepClick,
+      selectedStep,
       alternativeLabel = true,
       connector = <ThemedStepConnector />,
       sx,
@@ -163,6 +168,10 @@ export const ThemedStepper = forwardRef<HTMLDivElement, ThemedStepperProps>(
     },
     ref,
   ) => {
+    const activeStep = props.activeStep ?? 0;
+    const selectedIndex = selectedStep ?? activeStep;
+    const clickable = Boolean(onStepClick) && !disableStepClick;
+
     return (
       <Stepper
         ref={ref}
@@ -172,15 +181,16 @@ export const ThemedStepper = forwardRef<HTMLDivElement, ThemedStepperProps>(
         {...props}
       >
         {steps.map((step, index) => {
-          const active = index === (props.activeStep ?? 0);
-          const completed = index < (props.activeStep ?? 0);
+          const active = index === activeStep;
+          const completed = index < activeStep;
+          const selected = index === selectedIndex;
 
           return (
             <Step key={index} completed={completed} disabled={step.disabled}>
-              {onStepClick ? (
+              {clickable ? (
                 <StyledStepButton
                   disableRipple
-                  onClick={() => onStepClick(index)}
+                  onClick={() => onStepClick?.(index)}
                   icon={
                     <ThemedStepIcon
                       icon={index + 1}
@@ -188,6 +198,7 @@ export const ThemedStepper = forwardRef<HTMLDivElement, ThemedStepperProps>(
                       completed={completed}
                     />
                   }
+                  className={selected ? "inflow-selected" : undefined}
                 >
                   {step.label}
                 </StyledStepButton>
@@ -197,6 +208,7 @@ export const ThemedStepper = forwardRef<HTMLDivElement, ThemedStepperProps>(
                   slotProps={{ stepIcon: { active } as StepIconProps }}
                   optional={step.optional}
                   error={step.error}
+                  className={selected ? "inflow-selected" : undefined}
                 >
                   {step.label}
                 </ThemedStepLabel>
