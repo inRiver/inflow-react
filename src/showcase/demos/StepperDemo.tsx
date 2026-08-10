@@ -113,8 +113,8 @@ const [activeStep, setActiveStep] = useState(${muiClickableActiveStep});
 
 <Stepper nonLinear activeStep={activeStep}>
   {steps.map((label, index) => (
-    <Step key={label}>
-      <StepButton onClick={() => setActiveStep(index)}>
+    <Step key={label} completed={index < activeStep}>
+      <StepButton disableRipple onClick={() => setActiveStep(index)}>
         {label}
       </StepButton>
     </Step>
@@ -218,8 +218,8 @@ const [activeStep, setActiveStep] = useState(${themedExternalActiveStep});
             <Box>Active step: {muiClickableActiveStep}</Box>
             <Stepper nonLinear activeStep={muiClickableActiveStep}>
               {CLICKABLE_STEPS.map((step) => String(step.label)).map((label, index) => (
-                <Step key={label}>
-                  <StepButton onClick={() => setMuiClickableActiveStep(index)}>
+                <Step key={label} completed={index < muiClickableActiveStep}>
+                  <StepButton disableRipple onClick={() => setMuiClickableActiveStep(index)}>
                     {label}
                   </StepButton>
                 </Step>
@@ -256,7 +256,7 @@ const [activeStep, setActiveStep] = useState(${themedExternalActiveStep});
                 </Step>
               ))}
             </Stepper>
-            <Stack direction="row" spacing={2}>
+            <Stack direction="row" spacing={2} justifyContent="center">
               <Button
                 variant="outlined"
                 disabled={themedExternalActiveStep === 0}
@@ -283,7 +283,7 @@ const [activeStep, setActiveStep] = useState(${themedExternalActiveStep});
               steps={CLICKABLE_STEPS}
               disableStepClick
             />
-            <Stack direction="row" spacing={2}>
+            <Stack direction="row" spacing={2} justifyContent="center">
               <Button
                 variant="outlined"
                 disabled={themedExternalSelectedStep === 0}
