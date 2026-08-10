@@ -27,8 +27,11 @@ export interface ThemedStepperProps extends Omit<StepperProps, "children"> {
   onStepClick?: (index: number) => void;
   /** Renders read-only labels even when onStepClick is supplied. */
   disableStepClick?: boolean;
-  /** Step to highlight via underline. Defaults to activeStep. */
-  selectedStep?: number;
+  /**
+   * Furthest step that has been completed. Steps before this index show a checkmark.
+   * Defaults to `activeStep`, which gives standard linear stepper behavior.
+   */
+  completedStep?: number;
 }
 
 interface ThemedStepIconProps extends StepIconProps {
@@ -174,10 +177,10 @@ const StyledStepButton = styled(StepButton)(({ theme }) => ({
  * dot, and inactive steps as outlined grey circles. Connector lines and label colors
  * reflect each step's state.
  *
- * `activeStep` controls the icon/connector state (furthest reached progress).
- * `selectedStep` controls which label is underlined and can differ from `activeStep`,
- * e.g., when reviewing a previous step. When omitted, `selectedStep` defaults to
- * `activeStep`.
+ * `activeStep` is the currently viewed step: it renders the ring + inner dot and is never
+ * underlined. `completedStep` is the furthest reached step: those steps keep their checkmarks
+ * and are underlined unless they are the active step. When `completedStep` is omitted, it
+ * defaults to `activeStep`, giving standard linear stepper behavior.
  *
  * @example
  * ```tsx
@@ -192,11 +195,11 @@ const StyledStepButton = styled(StepButton)(({ theme }) => ({
  *
  * <ThemedStepper activeStep={1} steps={steps} />
  * <ThemedStepper
- *   activeStep={furthestStep}
- *   selectedStep={selectedStep}
+ *   activeStep={currentStep}
+ *   completedStep={furthestStep}
  *   steps={steps}
  *   onStepClick={(index) => {
- *     setSelectedStep(index);
+ *     setCurrentStep(index);
  *     if (index > furthestStep) setFurthestStep(index);
  *   }}
  * />
@@ -208,7 +211,7 @@ export const ThemedStepper = forwardRef<HTMLDivElement, ThemedStepperProps>(
       steps,
       onStepClick,
       disableStepClick,
-      selectedStep,
+      completedStep,
       alternativeLabel = true,
       connector = <ThemedStepConnector />,
       sx,
@@ -217,7 +220,7 @@ export const ThemedStepper = forwardRef<HTMLDivElement, ThemedStepperProps>(
     ref,
   ) => {
     const activeStep = props.activeStep ?? 0;
-    const selectedIndex = selectedStep ?? activeStep;
+    const furthestCompletedStep = completedStep ?? activeStep;
     const clickable = Boolean(onStepClick) && !disableStepClick;
 
     return (
@@ -225,14 +228,15 @@ export const ThemedStepper = forwardRef<HTMLDivElement, ThemedStepperProps>(
         ref={ref}
         alternativeLabel={alternativeLabel}
         connector={connector}
+        activeStep={activeStep}
         sx={[...(Array.isArray(sx) ? sx : [sx])]}
         {...props}
       >
         {steps.map((step, index) => {
           const active = index === activeStep;
-          const completed = index < activeStep;
-          const selected = index === selectedIndex;
-          const isFuture = index > activeStep;
+          const completed = index <= furthestCompletedStep && index !== activeStep;
+          const isFuture = index > furthestCompletedStep;
+          const underline = completed;
 
           return (
             <Step key={index} completed={completed} disabled={step.disabled}>
@@ -248,17 +252,19 @@ export const ThemedStepper = forwardRef<HTMLDivElement, ThemedStepperProps>(
                       isFuture={isFuture}
                     />
                   }
-                  className={selected ? "inflow-selected" : undefined}
+                  className={underline ? "inflow-selected" : undefined}
                 >
                   {step.label}
                 </StyledStepButton>
               ) : (
                 <ThemedStepLabel
                   slots={{ stepIcon: ThemedStepIcon }}
-                  slotProps={{ stepIcon: { active, isFuture } as ThemedStepIconProps }}
+                  slotProps={{
+                    stepIcon: { active, completed, isFuture } as ThemedStepIconProps,
+                  }}
                   optional={step.optional}
                   error={step.error}
-                  className={selected ? "inflow-selected" : undefined}
+                  className={underline ? "inflow-selected" : undefined}
                 >
                   {step.label}
                 </ThemedStepLabel>

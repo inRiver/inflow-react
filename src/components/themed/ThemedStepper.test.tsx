@@ -9,10 +9,10 @@ const navy = 'rgb(11, 45, 110)';
 const grey = 'rgb(66, 70, 85)';
 const connectorGrey = 'rgb(194, 198, 216)';
 
-function renderStepper(activeStep = 1) {
+function renderStepper(activeStep = 1, completedStep?: number) {
   return render(
     <InflowProvider>
-      <ThemedStepper steps={steps} activeStep={activeStep} />
+      <ThemedStepper steps={steps} activeStep={activeStep} completedStep={completedStep} />
     </InflowProvider>,
   );
 }
@@ -31,37 +31,75 @@ describe('ThemedStepper', () => {
   });
 
   it('shows completed steps with a checkmark, solid navy circle, and navy label', () => {
-    const { container } = renderStepper(2);
-    const completedStep = container.querySelector('.MuiStep-root.Mui-completed');
-    const completedIcon = completedStep?.querySelector('.MuiStepIcon-root');
-    const completedLabel = completedStep?.querySelector('.MuiStepLabel-label');
+    const { container } = renderStepper(1, 2);
+    const completedLabels = Array.from(
+      container.querySelectorAll('.MuiStep-root.Mui-completed .MuiStepLabel-label'),
+    );
 
-    expect(completedIcon).not.toBeNull();
-    expect(completedIcon?.querySelector('polyline')).not.toBeNull();
-    const completedInner = completedIcon?.querySelector('span');
-    expect(getComputedStyle(completedInner as Element).backgroundColor).toBe(navy);
-    expect(getComputedColor(completedLabel)).toBe(navy);
+    expect(completedLabels.length).toBe(2);
+    completedLabels.forEach((completedLabel) => {
+      const completedStep = completedLabel.closest('.MuiStep-root');
+      const completedIcon = completedStep?.querySelector('.MuiStepIcon-root');
+
+      expect(completedIcon).not.toBeNull();
+      const completedInner = completedIcon?.querySelector('span');
+      expect(getComputedStyle(completedInner as Element).backgroundColor).toBe(navy);
+      expect(getComputedColor(completedLabel)).toBe(navy);
+    });
   });
 
-  it('shows the active step with an inner dot and underlined navy label', () => {
-    const { container } = renderStepper(1);
+  it('shows the active step with a ring + inner dot and a non-underlined label', () => {
+    const { container } = renderStepper(1, 2);
     const activeStepLabel = container.querySelector('.MuiStepLabel-label.Mui-active');
     const activeLabelRoot = activeStepLabel?.closest('.MuiStepLabel-root, .MuiStepButton-root');
     const activeStep = activeStepLabel?.closest('.MuiStep-root');
     const activeIcon = activeStep?.querySelector('.MuiStepIcon-root');
 
+    expect(activeStepLabel).toHaveTextContent('Options');
     expect(activeIcon).not.toBeNull();
     expect(activeIcon?.querySelector('span')).not.toBeNull();
-    expect(activeLabelRoot).toHaveClass('inflow-selected');
-    expect(getComputedColor(activeStepLabel)).toBe(navy);
-    expect(activeStepLabel && getComputedStyle(activeStepLabel).textDecoration).toContain('underline');
+    expect(activeLabelRoot).not.toHaveClass('inflow-selected');
+    expect(activeStepLabel && getComputedStyle(activeStepLabel).textDecoration).not.toContain('underline');
+  });
+
+  it('underlines all completed steps when activeStep equals completedStep', () => {
+    const { container } = renderStepper(2, 2);
+    const completedLabels = Array.from(
+      container.querySelectorAll('.MuiStep-root.Mui-completed .MuiStepLabel-label'),
+    );
+
+    expect(completedLabels.length).toBe(2);
+    completedLabels.forEach((label) => {
+      expect(getComputedStyle(label).textDecoration).toContain('underline');
+      const root = label.closest('.MuiStepLabel-root, .MuiStepButton-root');
+      expect(root).toHaveClass('inflow-selected');
+    });
+  });
+
+  it('marks the previously active step as completed when stepping back', () => {
+    const { container } = renderStepper(1, 2);
+
+    const labels = Array.from(container.querySelectorAll('.MuiStepLabel-label'));
+    const testLabel = labels.find((l) => l.textContent?.trim() === 'Test');
+
+    expect(testLabel?.classList.contains('Mui-completed')).toBe(true);
+    expect(testLabel && getComputedStyle(testLabel).textDecoration).toContain('underline');
   });
 
   it('shows inactive steps with outlined grey circles and grey labels', () => {
-    const { container } = renderStepper(1);
-    const inactiveLabels = container.querySelectorAll('.MuiStepLabel-label:not(.Mui-active):not(.Mui-completed)');
+    const { container } = renderStepper(1, 1);
+    const root = container.querySelector('.MuiStepper-root');
+    const activeLabel = container.querySelector('.MuiStepLabel-label.Mui-active');
+    const completedLabels = container.querySelectorAll('.MuiStepLabel-label.Mui-completed');
+    const allLabels = root?.querySelectorAll('.MuiStepLabel-label');
 
-    expect(inactiveLabels).toHaveLength(2);
+    expect(allLabels?.length).toBe(4);
+    expect(completedLabels.length).toBe(1);
+    const inactiveLabels = Array.from(allLabels ?? []).filter(
+      (label) => label !== activeLabel && !Array.from(completedLabels).includes(label as Element),
+    );
+
+    expect(inactiveLabels.length).toBe(2);
     inactiveLabels.forEach((label) => {
       const step = label.closest('.MuiStep-root');
       const icon = step?.querySelector('.MuiStepIcon-root');
@@ -73,7 +111,7 @@ describe('ThemedStepper', () => {
   });
 
   it('colors connector lines according to their step state', () => {
-    const { container } = renderStepper(2);
+    const { container } = renderStepper(2, 2);
     const connectors = container.querySelectorAll('.MuiStepConnector-root');
     const lines = container.querySelectorAll('.MuiStepConnector-line');
 
@@ -87,10 +125,10 @@ describe('ThemedStepper', () => {
     expect(getComputedStyle(lines[2]).borderTopColor).toBe(connectorGrey);
   });
 
-  it('updates step state when activeStep changes', () => {
+  it('updates step state when activeStep and completedStep change', () => {
     const { container, rerender } = render(
       <InflowProvider>
-        <ThemedStepper steps={steps} activeStep={1} />
+        <ThemedStepper steps={steps} activeStep={1} completedStep={1} />
       </InflowProvider>,
     );
 
@@ -99,7 +137,7 @@ describe('ThemedStepper', () => {
 
     rerender(
       <InflowProvider>
-        <ThemedStepper steps={steps} activeStep={3} />
+        <ThemedStepper steps={steps} activeStep={3} completedStep={3} />
       </InflowProvider>,
     );
 
@@ -111,7 +149,7 @@ describe('ThemedStepper', () => {
     const ref = createRef<HTMLDivElement>();
     const { container } = render(
       <InflowProvider>
-        <ThemedStepper ref={ref} steps={steps} activeStep={0} />
+        <ThemedStepper ref={ref} steps={steps} activeStep={0} completedStep={0} />
       </InflowProvider>,
     );
 
@@ -123,7 +161,7 @@ describe('ThemedStepper', () => {
     const handleStepClick = vi.fn();
     const { container } = render(
       <InflowProvider>
-        <ThemedStepper steps={steps} activeStep={0} onStepClick={handleStepClick} />
+        <ThemedStepper steps={steps} activeStep={0} completedStep={0} onStepClick={handleStepClick} />
       </InflowProvider>,
     );
 
@@ -136,6 +174,28 @@ describe('ThemedStepper', () => {
     expect(handleStepClick).toHaveBeenCalledWith(0);
   });
 
+  it('underlines completed steps except the active step', () => {
+    const { container } = render(
+      <InflowProvider>
+        <ThemedStepper steps={steps} activeStep={1} completedStep={2} />
+      </InflowProvider>,
+    );
+
+    const labels = Array.from(container.querySelectorAll('.MuiStepLabel-label'));
+
+    const configureLabel = labels.find((l) => l.textContent === 'Configure');
+    expect(configureLabel?.classList.contains('Mui-completed')).toBe(true);
+    expect(configureLabel && getComputedStyle(configureLabel).textDecoration).toContain('underline');
+
+    const optionsLabel = labels.find((l) => l.textContent === 'Options');
+    expect(optionsLabel?.classList.contains('Mui-active')).toBe(true);
+    expect(optionsLabel && getComputedStyle(optionsLabel).textDecoration).not.toContain('underline');
+
+    const testLabel = labels.find((l) => l.textContent?.trim() === 'Test');
+    expect(testLabel?.classList.contains('Mui-completed')).toBe(true);
+    expect(testLabel && getComputedStyle(testLabel).textDecoration).toContain('underline');
+  });
+
   it('does not render buttons when onStepClick is present but disableStepClick is true', () => {
     const handleStepClick = vi.fn();
     const { container } = render(
@@ -143,6 +203,7 @@ describe('ThemedStepper', () => {
         <ThemedStepper
           steps={steps}
           activeStep={0}
+          completedStep={0}
           onStepClick={handleStepClick}
           disableStepClick
         />
