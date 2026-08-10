@@ -63,8 +63,6 @@ const StepIconRoot = styled("span")<{ ownerState: ThemedStepIconProps }>(
       : ownerState.active
         ? theme.palette.primary.main
         : theme.palette.text.secondary,
-    opacity: ownerState.isFuture ? 0.5 : 1,
-    transition: theme.transitions.create("opacity"),
   }),
 );
 
@@ -83,6 +81,8 @@ const InnerCircle = styled("span")<{ ownerState: ThemedStepIconProps }>(
     border: ownerState.completed
       ? "none"
       : `2px solid ${theme.palette.text.secondary}`,
+    opacity: ownerState.isFuture ? 0.5 : 1,
+    transition: theme.transitions.create("opacity"),
   }),
 );
 

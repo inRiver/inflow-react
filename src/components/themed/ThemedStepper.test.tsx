@@ -104,10 +104,13 @@ describe('ThemedStepper', () => {
     inactiveLabels.forEach((label) => {
       const step = label.closest('.MuiStep-root');
       const icon = step?.querySelector('.MuiStepIcon-root');
+      const innerCircle = icon?.querySelector('span');
 
       expect(icon).not.toBeNull();
       expect(getComputedColor(icon)).toBe(grey);
       expect(getComputedColor(label)).toBe(grey);
+      expect(getComputedStyle(icon as Element).opacity).toBe('1');
+      expect(getComputedStyle(innerCircle as Element).opacity).toBe('0.5');
     });
   });
 
