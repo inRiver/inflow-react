@@ -4,3 +4,4 @@ export * from './ThemedCard';
 export * from './ThemedChip';
 export * from './ThemedDialog';
 export * from './ThemedTable';
+export * from './ThemedStepper';

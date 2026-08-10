@@ -7,14 +7,12 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Step,
-  StepLabel,
-  Stepper,
   TextField,
   Typography,
 } from '@mui/material';
+import { ThemedStepper } from '../../components/themed';
 
-const steps = ['Personal Info', 'Address', 'Confirmation'];
+const steps = ['Personal Info', 'Address', 'Confirmation'].map((label) => ({ label }));
 
 export default function DialogScreen() {
   const [open, setOpen] = useState(false);
@@ -123,13 +121,7 @@ export default function DialogScreen() {
         <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
           <DialogTitle>Multi-Step Form</DialogTitle>
           <DialogContent sx={{ pt: 3 }}>
-            <Stepper activeStep={activeStep} sx={{ mb: 3 }}>
-              {steps.map((label) => (
-                <Step key={label}>
-                  <StepLabel>{label}</StepLabel>
-                </Step>
-              ))}
-            </Stepper>
+            <ThemedStepper activeStep={activeStep} steps={steps} sx={{ mb: 3 }} />
 
             {renderStepContent()}
           </DialogContent>

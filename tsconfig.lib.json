@@ -14,5 +14,9 @@
     "src/theme/**/*",
     "src/components/themed/**/*",
     "src/providers/**/*"
+  ],
+  "exclude": [
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx"
   ]
 }

@@ -195,7 +195,7 @@ export const demoRegistry: Record<string, DemoRegistryEntry> = {
   tabs: createEntry(demos.TabsDemo),
   breadcrumbs: createEntry(demos.BreadcrumbsDemo),
   pagination: createEntry(demos.PaginationDemo),
-  stepper: createEntry(demos.StepperDemo),
+  stepper: createEntry(demos.StepperDemo, { maturityStatus: 'Ready' }),
   menu: createEntry(demos.MenuDemo),
   paper: createEntry(demos.PaperDemo),
   appbar: createEntry(demos.AppBarDemo),

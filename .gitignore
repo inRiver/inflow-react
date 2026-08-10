@@ -39,3 +39,4 @@ qa-review/
 /VERIFICATION_REPORT*.txt
 /*_VERIFICATION_REPORT.txt
 graphify-out/
+tmp/

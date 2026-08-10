@@ -39,6 +39,11 @@ export const THEMED_COMPONENT_INFO: Record<string, ThemedComponentInfo> = {
     reason:
       'Adds built-in title/actions slots and consistent close-button behavior instead of manual DialogTitle/DialogContent/DialogActions composition.',
   },
+  stepper: {
+    themedName: 'ThemedStepper',
+    reason:
+      'Encapsulates the Inflow stepper design (icons, connector, label underline) in a single steps array API so products do not hand-roll Step/StepLabel composition.',
+  },
   table: {
     themedName: 'ThemedTable',
     reason: 'Replaces manual TableHead/TableBody children with a simple columns/data model.',
