@@ -209,4 +209,48 @@ describe('ThemedStepper', () => {
     expect(container.querySelectorAll('.MuiStepButton-root')).toHaveLength(0);
     expect(container.querySelectorAll('.MuiStepLabel-root')).toHaveLength(steps.length);
   });
+
+  it('normalizes layout geometry so steps are exactly 24px wide regardless of hit area', () => {
+    const handleStepClick = vi.fn();
+    const { container } = render(
+      <InflowProvider>
+        <ThemedStepper steps={steps} activeStep={0} onStepClick={handleStepClick} />
+      </InflowProvider>,
+    );
+
+    const stepRoots = container.querySelectorAll('.MuiStep-root');
+    expect(stepRoots.length).toBe(steps.length);
+
+    stepRoots.forEach((stepRoot) => {
+      const style = getComputedStyle(stepRoot);
+      expect(style.flex).toContain('0 0 24px');
+      expect(style.minWidth).toBe('0px');
+    });
+
+    const labelRoots = container.querySelectorAll('.MuiStepLabel-root');
+    expect(labelRoots.length).toBe(steps.length);
+    labelRoots.forEach((labelRoot) => {
+      const style = getComputedStyle(labelRoot);
+      expect(style.width).toBe('24px');
+      expect(style.minWidth).toBe('24px');
+      expect(style.maxWidth).toBe('24px');
+      expect(style.boxSizing).toBe('border-box');
+    });
+
+    const labelContainers = container.querySelectorAll('.MuiStepLabel-labelContainer');
+    expect(labelContainers.length).toBe(steps.length);
+    labelContainers.forEach((labelContainer) => {
+      const style = getComputedStyle(labelContainer);
+      expect(style.width).toBe('max-content');
+      expect(style.whiteSpace).toBe('nowrap');
+    });
+
+    const icons = container.querySelectorAll('.MuiStepIcon-root');
+    expect(icons.length).toBe(steps.length);
+    icons.forEach((icon) => {
+      const style = getComputedStyle(icon);
+      expect(style.position).toBe('relative');
+      expect(style.zIndex).toBe('2');
+    });
+  });
 });

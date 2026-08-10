@@ -45,6 +45,8 @@ const INNER_CIRCLE_SIZE = 15;
 
 const StepIconRoot = styled("span")<{ ownerState: ThemedStepIconProps }>(
   ({ theme, ownerState }) => ({
+    position: "relative",
+    zIndex: 2,
     width: ICON_SIZE,
     height: ICON_SIZE,
     borderRadius: "50%",
@@ -135,6 +137,16 @@ const HiddenStepConnector = styled(StepConnector)({
   },
 });
 
+const ThemedStepConnector = styled(StepConnector)(({ theme }) => ({
+  "& .MuiStepConnector-line": {
+    borderColor: theme.palette.inflow.outlineVariant,
+    borderTopWidth: 2,
+  },
+  "&.Mui-active .MuiStepConnector-line, &.Mui-completed .MuiStepConnector-line": {
+    borderColor: theme.palette.primary.main,
+  },
+}));
+
 function buildConnectorGradient(
   steps: ThemedStep[],
   activeStep: number,
@@ -148,7 +160,7 @@ function buildConnectorGradient(
     const startPct = (i / (steps.length - 1)) * 100;
     const endPct = ((i + 1) / (steps.length - 1)) * 100;
     const color =
-      i <= furthestReached
+      i < furthestReached
         ? theme.palette.primary.main
         : theme.palette.inflow.outlineVariant;
     segments.push(`${color} ${startPct}%`, `${color} ${endPct}%`);
@@ -248,7 +260,11 @@ export const ThemedStepper = forwardRef<HTMLDivElement, ThemedStepperProps>(
       completedStep,
       theme,
     );
-    const resolvedConnector = connector ?? <HiddenStepConnector />;
+    const hasCustomConnector = connector !== undefined && connector !== null;
+    const useOverlayConnector = alternativeLabel && !hasCustomConnector;
+    const resolvedConnector = connector ?? (
+      alternativeLabel ? <HiddenStepConnector /> : <ThemedStepConnector />
+    );
 
     return (
       <Stepper
@@ -258,51 +274,70 @@ export const ThemedStepper = forwardRef<HTMLDivElement, ThemedStepperProps>(
         activeStep={activeStep}
         sx={[
           {
-            position: "relative",
-            justifyContent: "space-between",
-            "&::before": {
-              content: '""',
-              position: "absolute",
-              top: "11px",
-              left: "12px",
-              right: "12px",
-              height: "2px",
-              zIndex: 0,
-              pointerEvents: "none",
-              borderRadius: "1px",
-              background: connectorGradient,
-            },
-            "& .MuiStep-root": {
-              flex: "0 0 auto",
-              zIndex: 1,
-              padding: 0,
-              display: "flex",
-              justifyContent: "center",
-            },
-            "& .MuiStep-root:first-of-type": {
-              justifyContent: "flex-start",
-              "& .MuiStepLabel-root, & .MuiStepButton-root": {
-                alignItems: "flex-start",
-              },
-              "& .MuiStepLabel-labelContainer, & .MuiStepButton-labelContainer": {
-                textAlign: "left",
-              },
-              "& .MuiStepLabel-label, & .MuiStepButton-label": {
-                textAlign: "left",
-              },
-            },
-            "& .MuiStep-root:last-of-type": {
-              justifyContent: "flex-end",
-              "& .MuiStepLabel-root, & .MuiStepButton-root": {
-                alignItems: "flex-end",
-              },
-              "& .MuiStepLabel-labelContainer, & .MuiStepButton-labelContainer": {
-                textAlign: "right",
-              },
-              "& .MuiStepLabel-label, & .MuiStepButton-label": {
-                textAlign: "right",
-              },
-            },
+            ...(alternativeLabel
+              ? {
+                  position: "relative",
+                  justifyContent: "space-between",
+                  ...(useOverlayConnector
+                    ? {
+                        "&::before": {
+                          content: '""',
+                          position: "absolute",
+                          top: "11px",
+                          left: "12px",
+                          right: "12px",
+                          height: "2px",
+                          zIndex: 0,
+                          pointerEvents: "none",
+                          borderRadius: "1px",
+                          background: connectorGradient,
+                        },
+                      }
+                    : {}),
+                  "& .MuiStep-root": {
+                    flex: `0 0 ${ICON_SIZE}px`,
+                    minWidth: 0,
+                    zIndex: 1,
+                    padding: 0,
+                    display: "flex",
+                    justifyContent: "center",
+                  },
+                  "& .MuiStepLabel-root": {
+                    width: ICON_SIZE,
+                    minWidth: ICON_SIZE,
+                    maxWidth: ICON_SIZE,
+                    boxSizing: "border-box",
+                  },
+                  "& .MuiStepLabel-labelContainer": {
+                    width: "max-content",
+                    whiteSpace: "nowrap",
+                  },
+                  "& .MuiStep-root:first-of-type": {
+                    justifyContent: "flex-start",
+                    "& .MuiStepLabel-root": {
+                      alignItems: "flex-start",
+                    },
+                    "& .MuiStepLabel-labelContainer": {
+                      textAlign: "left",
+                    },
+                    "& .MuiStepLabel-label": {
+                      textAlign: "left",
+                    },
+                  },
+                  "& .MuiStep-root:last-of-type": {
+                    justifyContent: "flex-end",
+                    "& .MuiStepLabel-root": {
+                      alignItems: "flex-end",
+                    },
+                    "& .MuiStepLabel-labelContainer": {
+                      textAlign: "right",
+                    },
+                    "& .MuiStepLabel-label": {
+                      textAlign: "right",
+                    },
+                  },
+                }
+              : {}),
           },
           ...(Array.isArray(sx) ? sx : [sx]),
         ]}
