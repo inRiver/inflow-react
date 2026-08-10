@@ -38,7 +38,8 @@ describe('ThemedStepper', () => {
 
     expect(completedIcon).not.toBeNull();
     expect(completedIcon?.querySelector('polyline')).not.toBeNull();
-    expect(getComputedStyle(completedIcon as Element).backgroundColor).toBe(navy);
+    const completedInner = completedIcon?.querySelector('span');
+    expect(getComputedStyle(completedInner as Element).backgroundColor).toBe(navy);
     expect(getComputedColor(completedLabel)).toBe(navy);
   });
 

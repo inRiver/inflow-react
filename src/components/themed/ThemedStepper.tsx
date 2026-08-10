@@ -31,28 +31,56 @@ export interface ThemedStepperProps extends Omit<StepperProps, "children"> {
   selectedStep?: number;
 }
 
-const StepIconRoot = styled("span")<{ ownerState: StepIconProps }>(
+interface ThemedStepIconProps extends StepIconProps {
+  /** True when this step is ahead of the furthest reached step. */
+  isFuture?: boolean;
+}
+
+const ICON_SIZE = 24;
+const INNER_CIRCLE_SIZE = 15;
+
+const StepIconRoot = styled("span")<{ ownerState: ThemedStepIconProps }>(
   ({ theme, ownerState }) => ({
-    width: 24,
-    height: 24,
+    width: ICON_SIZE,
+    height: ICON_SIZE,
     borderRadius: "50%",
     display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",
     boxSizing: "border-box",
-    border: `2px solid ${ownerState.completed || ownerState.active ? theme.palette.primary.main : theme.palette.text.secondary}`,
+    border: `2px solid ${ownerState.active ? theme.palette.primary.main : "transparent"}`,
+    backgroundColor: "transparent",
+    color: ownerState.completed
+      ? theme.palette.common.white
+      : ownerState.active
+        ? theme.palette.primary.main
+        : theme.palette.text.secondary,
+    opacity: ownerState.isFuture ? 0.5 : 1,
+    transition: theme.transitions.create("opacity"),
+  }),
+);
+
+const InnerCircle = styled("span")<{ ownerState: ThemedStepIconProps }>(
+  ({ theme, ownerState }) => ({
+    width: INNER_CIRCLE_SIZE,
+    height: INNER_CIRCLE_SIZE,
+    borderRadius: "50%",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    boxSizing: "border-box",
     backgroundColor: ownerState.completed
       ? theme.palette.primary.main
       : "transparent",
-    color: ownerState.completed
-      ? theme.palette.common.white
-      : theme.palette.text.secondary,
+    border: ownerState.completed
+      ? "none"
+      : `2px solid ${theme.palette.text.secondary}`,
   }),
 );
 
 const InnerDot = styled("span")(({ theme }) => ({
-  width: 15,
-  height: 15,
+  width: 13,
+  height: 13,
   borderRadius: "50%",
   backgroundColor: theme.palette.primary.main,
 }));
@@ -60,8 +88,8 @@ const InnerDot = styled("span")(({ theme }) => ({
 function StepIconCheckmark() {
   return (
     <svg
-      width="14"
-      height="14"
+      width="10"
+      height="10"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -75,7 +103,7 @@ function StepIconCheckmark() {
   );
 }
 
-function ThemedStepIcon(props: StepIconProps) {
+function ThemedStepIcon(props: ThemedStepIconProps) {
   const { active, completed, className } = props;
 
   return (
@@ -84,7 +112,13 @@ function ThemedStepIcon(props: StepIconProps) {
       className={`MuiStepIcon-root${className ? ` ${className}` : ""}`}
       aria-label={completed ? "Completed" : active ? "Current" : "Incomplete"}
     >
-      {completed ? <StepIconCheckmark /> : active ? <InnerDot /> : <span />}
+      {active ? (
+        <InnerDot />
+      ) : (
+        <InnerCircle ownerState={props}>
+          {completed ? <StepIconCheckmark /> : null}
+        </InnerCircle>
+      )}
     </StepIconRoot>
   );
 }
@@ -198,6 +232,7 @@ export const ThemedStepper = forwardRef<HTMLDivElement, ThemedStepperProps>(
           const active = index === activeStep;
           const completed = index < activeStep;
           const selected = index === selectedIndex;
+          const isFuture = index > activeStep;
 
           return (
             <Step key={index} completed={completed} disabled={step.disabled}>
@@ -210,6 +245,7 @@ export const ThemedStepper = forwardRef<HTMLDivElement, ThemedStepperProps>(
                       icon={index + 1}
                       active={active}
                       completed={completed}
+                      isFuture={isFuture}
                     />
                   }
                   className={selected ? "inflow-selected" : undefined}
@@ -219,7 +255,7 @@ export const ThemedStepper = forwardRef<HTMLDivElement, ThemedStepperProps>(
               ) : (
                 <ThemedStepLabel
                   slots={{ stepIcon: ThemedStepIcon }}
-                  slotProps={{ stepIcon: { active } as StepIconProps }}
+                  slotProps={{ stepIcon: { active, isFuture } as ThemedStepIconProps }}
                   optional={step.optional}
                   error={step.error}
                   className={selected ? "inflow-selected" : undefined}
