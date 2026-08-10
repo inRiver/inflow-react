@@ -32,8 +32,13 @@ export function StepperDemo() {
   const [props, setProps] = useState<Record<string, any>>({
     activeStep: 1,
   });
+  // State for clickable demos. `*ActiveStep` is the furthest reached step (icons/connectors).
+  // `*SelectedStep` is the currently viewed step (underlined label); it can lag behind when
+  // the user goes back to review a previous step.
   const [themedClickableActiveStep, setThemedClickableActiveStep] = useState(1);
   const [themedClickableSelectedStep, setThemedClickableSelectedStep] = useState(1);
+
+  // State for externally-controlled (non-clickable) demos.
   const [themedExternalActiveStep, setThemedExternalActiveStep] = useState(1);
   const [themedExternalSelectedStep, setThemedExternalSelectedStep] = useState(1);
   const [muiClickableActiveStep, setMuiClickableActiveStep] = useState(1);
@@ -89,8 +94,8 @@ const steps = [
   { label: 'Run Import' },
 ];
 
-const [furthestStep, setFurthestStep] = useState(1);
-const [selectedStep, setSelectedStep] = useState(1);
+const [furthestStep, setFurthestStep] = useState(1); // furthest reached step (icons/connectors)
+const [selectedStep, setSelectedStep] = useState(1); // currently viewed step (underlined label)
 
 <ThemedStepper
   nonLinear
@@ -98,8 +103,8 @@ const [selectedStep, setSelectedStep] = useState(1);
   selectedStep={selectedStep}
   steps={steps}
   onStepClick={(index) => {
-    setSelectedStep(index);
-    if (index > furthestStep) setFurthestStep(index);
+    setSelectedStep(index);            // always move the underline
+    if (index > furthestStep) setFurthestStep(index); // advance progress only when moving forward
   }}
 />`;
 
@@ -113,6 +118,7 @@ const [activeStep, setActiveStep] = useState(${muiClickableActiveStep});
 
 <Stepper nonLinear activeStep={activeStep}>
   {steps.map((label, index) => (
+    // mark previous steps as completed so the icon shows a checkmark
     <Step key={label} completed={index < activeStep}>
       <StepButton disableRipple onClick={() => setActiveStep(index)}>
         {label}
@@ -133,8 +139,8 @@ const steps = [
   { label: 'Run Import' },
 ];
 
-const [furthestStep, setFurthestStep] = useState(1);
-const [selectedStep, setSelectedStep] = useState(1);
+const [furthestStep, setFurthestStep] = useState(1); // furthest reached step (icons/connectors)
+const [selectedStep, setSelectedStep] = useState(1); // currently viewed step (underlined label)
 
 <Stack spacing={2}>
   <ThemedStepper
@@ -212,6 +218,30 @@ const [activeStep, setActiveStep] = useState(${themedExternalActiveStep});
         themedReason={themedInfo?.reason}
       />
 
+      <DemoFrame title="Stepper - Interactive">
+        <Box sx={{ width: '100%' }}>
+          {variant === 'mui' ? (
+            <Stepper activeStep={activeStep}>
+              {MUI_STEPS.map((label) => (
+                <Step key={label}>
+                  <StepLabel>{label}</StepLabel>
+                </Step>
+              ))}
+            </Stepper>
+          ) : (
+            <ThemedStepper activeStep={activeStep} steps={STEPS} />
+          )}
+        </Box>
+      </DemoFrame>
+
+      <PropsPlayground
+        schema={schema}
+        values={props}
+        onChange={setProps}
+      />
+
+      <CodeBlock code={variant === 'mui' ? muiCodeExample : themedCodeExample} language="tsx" />
+
       <DemoFrame title="Clickable Steps - onStepClick">
         {variant === 'mui' ? (
           <Stack spacing={2}>
@@ -235,15 +265,20 @@ const [activeStep, setActiveStep] = useState(${themedExternalActiveStep});
               selectedStep={themedClickableSelectedStep}
               steps={CLICKABLE_STEPS}
               onStepClick={(index) => {
-                setThemedClickableSelectedStep(index);
+                setThemedClickableSelectedStep(index); // move the underline immediately
                 if (index > themedClickableActiveStep) {
-                  setThemedClickableActiveStep(index);
+                  setThemedClickableActiveStep(index); // advance furthest reached step only when going forward
                 }
               }}
             />
           </Stack>
         )}
       </DemoFrame>
+
+      <CodeBlock
+        code={variant === 'mui' ? clickableMuiCodeExample : clickableThemedCodeExample}
+        language="tsx"
+      />
 
       <DemoFrame title="External Navigation - disableStepClick">
         {variant === 'mui' ? (
@@ -297,7 +332,7 @@ const [activeStep, setActiveStep] = useState(${themedExternalActiveStep});
                 onClick={() =>
                   setThemedExternalSelectedStep((s) => {
                     const next = s + 1;
-                    setThemedExternalActiveStep((f) => Math.max(f, next));
+                    setThemedExternalActiveStep((f) => Math.max(f, next)); // extend furthest reached step on Next
                     return next;
                   })
                 }
@@ -313,30 +348,6 @@ const [activeStep, setActiveStep] = useState(${themedExternalActiveStep});
         code={variant === 'mui' ? externalMuiCodeExample : externalThemedCodeExample}
         language="tsx"
       />
-
-      <DemoFrame title="Stepper - Interactive">
-        <Box sx={{ width: '100%' }}>
-          {variant === 'mui' ? (
-            <Stepper activeStep={activeStep}>
-              {MUI_STEPS.map((label) => (
-                <Step key={label}>
-                  <StepLabel>{label}</StepLabel>
-                </Step>
-              ))}
-            </Stepper>
-          ) : (
-            <ThemedStepper activeStep={activeStep} steps={STEPS} />
-          )}
-        </Box>
-      </DemoFrame>
-
-      <PropsPlayground
-        schema={schema}
-        values={props}
-        onChange={setProps}
-      />
-
-      <CodeBlock code={variant === 'mui' ? muiCodeExample : themedCodeExample} language="tsx" />
 
       <DemoFrame title="All States">
         <Stack spacing={4} direction="column">

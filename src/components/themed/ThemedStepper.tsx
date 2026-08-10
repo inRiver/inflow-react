@@ -140,6 +140,11 @@ const StyledStepButton = styled(StepButton)(({ theme }) => ({
  * dot, and inactive steps as outlined grey circles. Connector lines and label colors
  * reflect each step's state.
  *
+ * `activeStep` controls the icon/connector state (furthest reached progress).
+ * `selectedStep` controls which label is underlined and can differ from `activeStep`,
+ * e.g., when reviewing a previous step. When omitted, `selectedStep` defaults to
+ * `activeStep`.
+ *
  * @example
  * ```tsx
  * import { ThemedStepper } from '@/components/themed';
@@ -152,6 +157,15 @@ const StyledStepButton = styled(StepButton)(({ theme }) => ({
  * ];
  *
  * <ThemedStepper activeStep={1} steps={steps} />
+ * <ThemedStepper
+ *   activeStep={furthestStep}
+ *   selectedStep={selectedStep}
+ *   steps={steps}
+ *   onStepClick={(index) => {
+ *     setSelectedStep(index);
+ *     if (index > furthestStep) setFurthestStep(index);
+ *   }}
+ * />
  * ```
  */
 export const ThemedStepper = forwardRef<HTMLDivElement, ThemedStepperProps>(
