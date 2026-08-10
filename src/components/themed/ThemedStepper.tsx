@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type { StepIconProps, StepperProps, Theme } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 
 export interface ThemedStep {
   /** Label shown beneath the step icon. */
@@ -51,8 +52,10 @@ const StepIconRoot = styled("span")<{ ownerState: ThemedStepIconProps }>(
     alignItems: "center",
     justifyContent: "center",
     boxSizing: "border-box",
-    border: `2px solid ${ownerState.active ? theme.palette.primary.main : "transparent"}`,
-    backgroundColor: "transparent",
+    border: `2px solid ${ownerState.active || ownerState.completed ? theme.palette.primary.main : "transparent"}`,
+    backgroundColor: ownerState.completed
+      ? theme.palette.primary.main
+      : theme.palette.background.paper,
     color: ownerState.completed
       ? theme.palette.common.white
       : ownerState.active
@@ -126,16 +129,32 @@ function ThemedStepIcon(props: ThemedStepIconProps) {
   );
 }
 
-const ThemedStepConnector = styled(StepConnector)(({ theme }) => ({
-  "& .MuiStepConnector-line": {
-    borderColor: theme.palette.inflow.outlineVariant,
-    borderTopWidth: 2,
+const HiddenStepConnector = styled(StepConnector)({
+  "&&": {
+    display: "none",
   },
-  "&.Mui-active .MuiStepConnector-line, &.Mui-completed .MuiStepConnector-line":
-    {
-      borderColor: theme.palette.primary.main,
-    },
-}));
+});
+
+function buildConnectorGradient(
+  steps: ThemedStep[],
+  activeStep: number,
+  completedStep: number | undefined,
+  theme: Theme,
+) {
+  if (steps.length < 2) return "none";
+  const furthestReached = Math.max(activeStep, completedStep ?? activeStep);
+  const segments: string[] = [];
+  for (let i = 0; i < steps.length - 1; i++) {
+    const startPct = (i / (steps.length - 1)) * 100;
+    const endPct = ((i + 1) / (steps.length - 1)) * 100;
+    const color =
+      i <= furthestReached
+        ? theme.palette.primary.main
+        : theme.palette.inflow.outlineVariant;
+    segments.push(`${color} ${startPct}%`, `${color} ${endPct}%`);
+  }
+  return `linear-gradient(to right, ${segments.join(", ")})`;
+}
 
 const selectedLabelStyle = (theme: Theme) => ({
   color: theme.palette.primary.main,
@@ -213,23 +232,80 @@ export const ThemedStepper = forwardRef<HTMLDivElement, ThemedStepperProps>(
       disableStepClick,
       completedStep,
       alternativeLabel = true,
-      connector = <ThemedStepConnector />,
+      connector,
       sx,
       ...props
     },
     ref,
   ) => {
+    const theme = useTheme();
     const activeStep = props.activeStep ?? 0;
     const furthestCompletedStep = completedStep ?? activeStep;
     const clickable = Boolean(onStepClick) && !disableStepClick;
+    const connectorGradient = buildConnectorGradient(
+      steps,
+      activeStep,
+      completedStep,
+      theme,
+    );
+    const resolvedConnector = connector ?? <HiddenStepConnector />;
 
     return (
       <Stepper
         ref={ref}
         alternativeLabel={alternativeLabel}
-        connector={connector}
+        connector={resolvedConnector}
         activeStep={activeStep}
-        sx={[...(Array.isArray(sx) ? sx : [sx])]}
+        sx={[
+          {
+            position: "relative",
+            justifyContent: "space-between",
+            "&::before": {
+              content: '""',
+              position: "absolute",
+              top: "11px",
+              left: "12px",
+              right: "12px",
+              height: "2px",
+              zIndex: 0,
+              pointerEvents: "none",
+              borderRadius: "1px",
+              background: connectorGradient,
+            },
+            "& .MuiStep-root": {
+              flex: "0 0 auto",
+              zIndex: 1,
+              padding: 0,
+              display: "flex",
+              justifyContent: "center",
+            },
+            "& .MuiStep-root:first-of-type": {
+              justifyContent: "flex-start",
+              "& .MuiStepLabel-root, & .MuiStepButton-root": {
+                alignItems: "flex-start",
+              },
+              "& .MuiStepLabel-labelContainer, & .MuiStepButton-labelContainer": {
+                textAlign: "left",
+              },
+              "& .MuiStepLabel-label, & .MuiStepButton-label": {
+                textAlign: "left",
+              },
+            },
+            "& .MuiStep-root:last-of-type": {
+              justifyContent: "flex-end",
+              "& .MuiStepLabel-root, & .MuiStepButton-root": {
+                alignItems: "flex-end",
+              },
+              "& .MuiStepLabel-labelContainer, & .MuiStepButton-labelContainer": {
+                textAlign: "right",
+              },
+              "& .MuiStepLabel-label, & .MuiStepButton-label": {
+                textAlign: "right",
+              },
+            },
+          },
+          ...(Array.isArray(sx) ? sx : [sx]),
+        ]}
         {...props}
       >
         {steps.map((step, index) => {

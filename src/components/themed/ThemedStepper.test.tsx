@@ -7,7 +7,6 @@ import { ThemedStepper } from './ThemedStepper';
 const steps = ['Configure', 'Options', 'Test', 'Review'].map((label) => ({ label }));
 const navy = 'rgb(11, 45, 110)';
 const grey = 'rgb(66, 70, 85)';
-const connectorGrey = 'rgb(194, 198, 216)';
 
 function renderStepper(activeStep = 1, completedStep?: number) {
   return render(
@@ -48,7 +47,7 @@ describe('ThemedStepper', () => {
     });
   });
 
-  it('shows the active step with a ring + inner dot and a non-underlined label', () => {
+  it('shows the active step with a ring and inner dot and a non-underlined label', () => {
     const { container } = renderStepper(1, 2);
     const activeStepLabel = container.querySelector('.MuiStepLabel-label.Mui-active');
     const activeLabelRoot = activeStepLabel?.closest('.MuiStepLabel-root, .MuiStepButton-root');
@@ -57,7 +56,9 @@ describe('ThemedStepper', () => {
 
     expect(activeStepLabel).toHaveTextContent('Options');
     expect(activeIcon).not.toBeNull();
-    expect(activeIcon?.querySelector('span')).not.toBeNull();
+    const activeDot = activeIcon?.querySelector('span');
+    expect(activeDot).not.toBeNull();
+    expect(getComputedStyle(activeDot as Element).backgroundColor).toBe(navy);
     expect(activeLabelRoot).not.toHaveClass('inflow-selected');
     expect(activeStepLabel && getComputedStyle(activeStepLabel).textDecoration).not.toContain('underline');
   });
@@ -110,19 +111,14 @@ describe('ThemedStepper', () => {
     });
   });
 
-  it('colors connector lines according to their step state', () => {
+  it('renders a continuous connector line behind the icons', () => {
     const { container } = renderStepper(2, 2);
     const connectors = container.querySelectorAll('.MuiStepConnector-root');
-    const lines = container.querySelectorAll('.MuiStepConnector-line');
 
-    expect(lines).toHaveLength(steps.length - 1);
-    expect(connectors[0]).toHaveClass('Mui-completed');
-    expect(connectors[1]).toHaveClass('Mui-active');
-    expect(connectors[2]).not.toHaveClass('Mui-active');
-    expect(connectors[2]).not.toHaveClass('Mui-completed');
-    expect(getComputedStyle(lines[0]).borderTopColor).toBe(navy);
-    expect(getComputedStyle(lines[1]).borderTopColor).toBe(navy);
-    expect(getComputedStyle(lines[2]).borderTopColor).toBe(connectorGrey);
+    expect(connectors.length).toBe(steps.length - 1);
+    connectors.forEach((connector) => {
+      expect(getComputedStyle(connector).display).toBe('none');
+    });
   });
 
   it('updates step state when activeStep and completedStep change', () => {
