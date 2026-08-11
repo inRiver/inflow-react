@@ -1,7 +1,11 @@
-import { Container, Typography, Button, Stack, Card, CardActionArea, CardContent, Box, Grid, Divider } from '@mui/material';
+import { Container, Typography, Button, Stack, Card, CardActionArea, CardContent, Box, Grid, Divider, Chip } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { COMPONENT_CATEGORIES, EXAMPLE_PAGES, getAllComponents } from '../showcase/categories';
 import * as Icons from '@mui/icons-material';
+import pkg from '../../package.json';
+
+const muiVersion = (await import('@mui/material/package.json')).version;
+const reactVersion = (await import('react/package.json')).version;
 
 const categoryIcons = {
   Campaign: Icons.Campaign,
@@ -33,6 +37,12 @@ export function LandingPage() {
           <Typography variant="subtitle1" color="text.secondary">
             Explore all {totalComponents} Material UI components themed for Inflow
           </Typography>
+          <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ mt: 2, gap: 1 }}>
+            <Chip label={`@inriver/inflow-react v${pkg.version}`} size="small" color="primary" />
+            <Chip label={`React ${reactVersion}`} size="small" variant="outlined" />
+            <Chip label={`MUI ${muiVersion}`} size="small" variant="outlined" />
+            <Chip label="tag: react19-mui7.3" size="small" variant="outlined" />
+          </Stack>
         </Box>
 
         <Box sx={{ p: 3, border: 1, borderColor: 'divider', borderRadius: 2 }}>
