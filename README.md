@@ -28,16 +28,16 @@ import { InflowProvider, ThemedButton } from '@inriver/inflow-react';
 
 Do not import showcase code, demo components, or internal source paths. The package ships TypeScript declarations and supports both ESM and CommonJS through its `exports` map.
 
-Compatibility is managed through checkpoint tags. The current checkpoint is `react19-mui7`. Use a checkpoint tag or an exact version when you need a known React and MUI contract. The `latest` tag is promoted automatically by CI and is never published to directly.
+Compatibility is managed through checkpoint tags. The current checkpoint is `react19-mui7.3`. Use a checkpoint tag or an exact version when you need a known React and MUI contract. The `latest` tag is promoted automatically by CI and is never published to directly.
 
 ## Installation
 
 ```sh
-npm install @inriver/inflow-react@react19-mui7
+npm install @inriver/inflow-react@react19-mui7.3
 npm install react@^19.0.0 react-dom@^19.0.0 @mui/material@">=7.0.0 <8.0.0" @emotion/react@^11.13.0 @emotion/styled@^11.13.0
 ```
 
-Use the checkpoint tag instead of `latest` so the installed package stays on the validated React 19 and MUI 7 compatibility channel.
+Use the checkpoint tag instead of `latest` so the installed package stays on the validated React 19 and MUI 7.3 compatibility channel.
 
 ## Quick start
 
