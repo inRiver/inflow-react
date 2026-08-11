@@ -37,16 +37,16 @@ Published versions must be treated as immutable. If a release is wrong, publish 
 A checkpoint is the contract between the theme package and consuming apps. The current checkpoint is:
 
 ```text
-React 19 / MUI 6.3
-dist-tag: react19-mui6.3
-peer range: @mui/material >=6.3.0 <6.4.0
+React 19 / MUI 6.5
+dist-tag: react19-mui6.5
+peer range: @mui/material >=6.5.0 <6.6.0
 ```
 
 The MUI range is intentionally narrow. If MUI 6.4 changes component behavior, that should be validated as a new checkpoint instead of silently affecting existing apps.
 
 Examples of new checkpoints:
 
-- `react19-mui6.4`
+- `react19-mui6.5`
 - `react20-mui7`
 
 ## What changes each version segment means
