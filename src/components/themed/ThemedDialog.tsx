@@ -43,7 +43,7 @@ export interface ThemedDialogProps extends Omit<DialogProps, 'title'> {
 export const ThemedDialog = forwardRef<HTMLDivElement, ThemedDialogProps>(
   ({ title, actions, children, onClose, hideCloseButton = false, sx, ...props }, ref) => {
     return (
-      <Dialog
+        <Dialog
         ref={ref}
         onClose={onClose}
         PaperProps={{
@@ -55,10 +55,10 @@ export const ThemedDialog = forwardRef<HTMLDivElement, ThemedDialogProps>(
         {...props}
       >
         {title && (
-          <DialogTitle 
-            sx={{
+          <DialogTitle
+            sx={(theme: Theme) => ({
               backgroundColor: 'inflow.surfaceHighest',
-              padding: '24px',
+              padding: theme.spacing(3),
               fontSize: '1.5rem',
               fontWeight: 400,
               lineHeight: 1.334,
@@ -66,7 +66,7 @@ export const ThemedDialog = forwardRef<HTMLDivElement, ThemedDialogProps>(
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center'
-            }}
+            })}
           >
             {title}
             {!hideCloseButton && onClose && (
@@ -85,12 +85,12 @@ export const ThemedDialog = forwardRef<HTMLDivElement, ThemedDialogProps>(
           </DialogTitle>
         )}
         
-        <DialogContent sx={{ padding: '24px', paddingTop: '24px !important' }}>
+        <DialogContent sx={(theme: Theme) => ({ padding: theme.spacing(3), paddingTop: `${theme.spacing(3)} !important` })}>
           {children}
         </DialogContent>
-        
+
         {actions && (
-          <DialogActions sx={{ padding: '8px 24px 24px' }}>
+          <DialogActions sx={(theme: Theme) => ({ padding: theme.spacing(1, 3, 3) })}>
             {actions}
           </DialogActions>
         )}
