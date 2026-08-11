@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Grid2, Box, Paper, Stack } from '@mui/material';
+import { Grid, Box, Paper, Stack } from '@mui/material';
 import { DemoFrame } from '../DemoFrame';
 import { CodeBlock } from '../CodeBlock';
 import { PropsPlayground } from '../PropsPlayground';
@@ -39,12 +39,12 @@ import { Grid } from '@mui/material';
       <DemoFrame title="Grid - Interactive">
         
         <Box sx={{ flexGrow: 1 }}>
-          <Grid2 container spacing={props.spacing}>
-            <Grid2 size={8}><Paper sx={{p:2}}>xs=8</Paper></Grid2>
-            <Grid2 size={4}><Paper sx={{p:2}}>xs=4</Paper></Grid2>
-            <Grid2 size={4}><Paper sx={{p:2}}>xs=4</Paper></Grid2>
-            <Grid2 size={8}><Paper sx={{p:2}}>xs=8</Paper></Grid2>
-          </Grid2>
+          <Grid container spacing={props.spacing}>
+            <Grid size={8}><Paper sx={{p:2}}>xs=8</Paper></Grid>
+            <Grid size={4}><Paper sx={{p:2}}>xs=4</Paper></Grid>
+            <Grid size={4}><Paper sx={{p:2}}>xs=4</Paper></Grid>
+            <Grid size={8}><Paper sx={{p:2}}>xs=8</Paper></Grid>
+          </Grid>
         </Box>
       </DemoFrame>
 
@@ -60,10 +60,10 @@ import { Grid } from '@mui/material';
         <Stack spacing={2} direction="column">
           
           <Stack spacing={4}>
-             <Grid2 container spacing={2}>
-               <Grid2 size={6}><Paper sx={{p:2}}>Half</Paper></Grid2>
-               <Grid2 size={6}><Paper sx={{p:2}}>Half</Paper></Grid2>
-             </Grid2>
+             <Grid container spacing={2}>
+               <Grid size={6}><Paper sx={{p:2}}>Half</Paper></Grid>
+               <Grid size={6}><Paper sx={{p:2}}>Half</Paper></Grid>
+             </Grid>
           </Stack>
         </Stack>
       </DemoFrame>

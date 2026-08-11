@@ -19,7 +19,13 @@ export default function DashboardScreen() {
       </Typography>
       <Grid container spacing={3}>
         {KPIS.map((s) => (
-          <Grid item xs={12} sm={6} md={3} key={s.k}>
+          <Grid
+            key={s.k}
+            size={{
+              xs: 12,
+              sm: 6,
+              md: 3
+            }}>
             <Card variant="outlined">
               <CardContent>
                 <Typography variant="overline" color="text.secondary">{s.k}</Typography>
@@ -32,7 +38,7 @@ export default function DashboardScreen() {
             </Card>
           </Grid>
         ))}
-        <Grid item xs={12}>
+        <Grid size={12}>
           <DataTable />
         </Grid>
       </Grid>

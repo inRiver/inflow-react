@@ -235,7 +235,11 @@ export function ComponentPage() {
   return (
     <Container maxWidth="xl" sx={{ py: { xs: 3, md: 4 } }}>
       <Grid container spacing={{ xs: 3, lg: 4 }} alignItems="flex-start">
-        <Grid item xs={12} lg={9}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 9
+          }}>
           <Stack spacing={3.5}>
             <Box sx={{ mb: 0.5 }}>
               <ComponentBreadcrumb componentName={registryKey} />
@@ -407,7 +411,12 @@ export function ComponentPage() {
           </Stack>
         </Grid>
 
-        <Grid item xs={12} lg={3} sx={{ display: { xs: 'none', lg: 'block' } }}>
+        <Grid
+          sx={{ display: { xs: 'none', lg: 'block' } }}
+          size={{
+            xs: 12,
+            lg: 3
+          }}>
           <OnThisPageNav
             activeSection={activeSection}
             visibleSectionIds={visibleSectionIds}

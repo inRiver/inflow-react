@@ -66,7 +66,13 @@ export function LandingPage() {
           {Object.values(COMPONENT_CATEGORIES).map((category) => {
             const Icon = categoryIcons[category.icon as keyof typeof categoryIcons] || Icons.Category;
             return (
-              <Grid item xs={12} sm={6} md={4} key={category.id}>
+              <Grid
+                key={category.id}
+                size={{
+                  xs: 12,
+                  sm: 6,
+                  md: 4
+                }}>
                 <Card sx={{ height: '100%' }}>
                   <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, p: 3 }}>
                     <Icon color="primary" sx={{ fontSize: 40 }} />
@@ -99,7 +105,13 @@ export function LandingPage() {
             {EXAMPLE_PAGES.map((example) => {
               const Icon = exampleIcons[example.icon as keyof typeof exampleIcons] || Icons.ViewModule;
               return (
-                <Grid item xs={12} sm={6} md={4} key={example.id}>
+                <Grid
+                  key={example.id}
+                  size={{
+                    xs: 12,
+                    sm: 6,
+                    md: 4
+                  }}>
                   <Card>
                     <CardActionArea component={Link} to={`/examples/${example.id}`} sx={{ p: 2 }}>
                       <Stack direction="row" spacing={2} alignItems="center">

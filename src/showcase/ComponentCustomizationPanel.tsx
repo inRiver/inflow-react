@@ -609,7 +609,7 @@ const finalizePreviewTransitions = (styles: PreviewStyles, theme: Theme) => {
 const resolvePreviewValue = (method: 'sx' | 'theme', controlName: SxControlName, value: string, theme: Theme) => {
   switch (controlName) {
     case 'borderRadius':
-      return method === 'sx' ? Number(value) * theme.shape.borderRadius : Number(value);
+      return method === 'sx' ? Number(value) * Number(theme.shape.borderRadius) : Number(value);
     case 'padding':
       return theme.spacing(Number(value));
     case 'backgroundColor':
@@ -1287,7 +1287,13 @@ function Product${componentName}Wrapper() {
             <Stack spacing={3}>
               <Grid container spacing={2}>
                 {['sx', classMethodLabel, 'styled()', 'GlobalStyles', themeStyleKey ?? 'wrapper fallback'].map((method) => (
-                  <Grid item xs={12} sm={6} md={3} key={method}>
+                  <Grid
+                    key={method}
+                    size={{
+                      xs: 12,
+                      sm: 6,
+                      md: 3
+                    }}>
                     <Chip label={method} variant="outlined" sx={{ width: '100%' }} />
                   </Grid>
                 ))}

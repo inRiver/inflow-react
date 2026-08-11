@@ -32,7 +32,12 @@ export function ComponentsIndexPage() {
             const Icon = categoryIcons[category.icon as keyof typeof categoryIcons] || Icons.Category;
 
             return (
-              <Grid item xs={12} md={6} key={category.id}>
+              <Grid
+                key={category.id}
+                size={{
+                  xs: 12,
+                  md: 6
+                }}>
                 <Card sx={{ height: '100%' }}>
                   <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 3, p: 3 }}>
                     <Stack direction="row" spacing={2} alignItems="center">

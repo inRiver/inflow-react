@@ -12,37 +12,67 @@ export function TokensPage() {
           <Typography variant="h5" gutterBottom>Palette</Typography>
           <Grid container spacing={2}>
             {/* Primary colors */}
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: 6,
+                md: 3
+              }}>
               <Card sx={{ p: 2 }}>
                 <Box sx={{ width: '100%', height: 60, bgcolor: 'primary.main', borderRadius: 1, mb: 1 }} />
                 <Typography variant="caption">primary.main</Typography>
               </Card>
             </Grid>
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: 6,
+                md: 3
+              }}>
               <Card sx={{ p: 2 }}>
                 <Box sx={{ width: '100%', height: 60, bgcolor: 'secondary.main', borderRadius: 1, mb: 1 }} />
                 <Typography variant="caption">secondary.main</Typography>
               </Card>
             </Grid>
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: 6,
+                md: 3
+              }}>
               <Card sx={{ p: 2 }}>
                 <Box sx={{ width: '100%', height: 60, bgcolor: 'error.main', borderRadius: 1, mb: 1 }} />
                 <Typography variant="caption">error.main</Typography>
               </Card>
             </Grid>
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: 6,
+                md: 3
+              }}>
               <Card sx={{ p: 2 }}>
                 <Box sx={{ width: '100%', height: 60, bgcolor: 'warning.main', borderRadius: 1, mb: 1 }} />
                 <Typography variant="caption">warning.main</Typography>
               </Card>
             </Grid>
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: 6,
+                md: 3
+              }}>
               <Card sx={{ p: 2 }}>
                 <Box sx={{ width: '100%', height: 60, bgcolor: 'info.main', borderRadius: 1, mb: 1 }} />
                 <Typography variant="caption">info.main</Typography>
               </Card>
             </Grid>
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: 6,
+                md: 3
+              }}>
               <Card sx={{ p: 2 }}>
                 <Box sx={{ width: '100%', height: 60, bgcolor: 'success.main', borderRadius: 1, mb: 1 }} />
                 <Typography variant="caption">success.main</Typography>
@@ -58,7 +88,13 @@ export function TokensPage() {
             {Object.entries(inflowTokens.colors).map(([key, value]) => {
               if (typeof value === 'string') {
                 return (
-                  <Grid item xs={12} sm={4} md={2} key={key}>
+                  <Grid
+                    key={key}
+                    size={{
+                      xs: 12,
+                      sm: 4,
+                      md: 2
+                    }}>
                     <Card sx={{ p: 2 }}>
                       <Box sx={{ width: '100%', height: 40, bgcolor: value, borderRadius: 1, mb: 1, border: '1px solid #ccc' }} />
                       <Typography variant="caption" display="block">{key}</Typography>
@@ -103,7 +139,13 @@ export function TokensPage() {
           <Typography variant="h5" gutterBottom>Shadows</Typography>
           <Grid container spacing={2}>
             {[0, 1, 2, 4, 8, 16, 24].map(level => (
-              <Grid item xs={6} sm={4} md={3} key={level}>
+              <Grid
+                key={level}
+                size={{
+                  xs: 6,
+                  sm: 4,
+                  md: 3
+                }}>
                 <Paper elevation={level} sx={{ p: 3, textAlign: 'center' }}>
                   <Typography>Shadow {level}</Typography>
                 </Paper>
