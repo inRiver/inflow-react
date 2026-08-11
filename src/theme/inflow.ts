@@ -260,29 +260,29 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
       fontWeightRegular: 400,
       fontWeightMedium: 500,
       fontWeightBold: 700,
-      h1: { fontWeight: 300, fontSize: '6rem', lineHeight: 1.167, letterSpacing: '-1.5px' },
-      h2: { fontWeight: 300, fontSize: '3.75rem', lineHeight: 1.2, letterSpacing: '-0.5px' },
+      h1: { fontWeight: 300, fontSize: '6rem', lineHeight: 1.167, letterSpacing: '-0.09375rem' },
+      h2: { fontWeight: 300, fontSize: '3.75rem', lineHeight: 1.2, letterSpacing: '-0.03125rem' },
       h3: { fontWeight: 400, fontSize: '3rem', lineHeight: 1.167, letterSpacing: 0 },
-      h4: { fontWeight: 400, fontSize: '2.125rem', lineHeight: 1.235, letterSpacing: '0.25px' },
+      h4: { fontWeight: 400, fontSize: '2.125rem', lineHeight: 1.235, letterSpacing: '0.015625rem' },
       h5: { fontWeight: 400, fontSize: '1.5rem', lineHeight: 1.334, letterSpacing: 0 },
-      h6: { fontWeight: 700, fontSize: '1.375rem', lineHeight: '36px', letterSpacing: '0.15px' },
-      subtitle1: { fontWeight: 400, fontSize: '1rem', lineHeight: 1.5, letterSpacing: '0.15px' },
-      subtitle2: { fontWeight: 500, fontSize: '0.875rem', lineHeight: '20px', letterSpacing: '0.1px' },
-      body1: { fontWeight: 400, fontSize: '1rem', lineHeight: '24px', letterSpacing: '0.5px' },
-      body2: { fontWeight: 400, fontSize: '0.875rem', lineHeight: '20px', letterSpacing: '0.25px' },
-      button: { fontWeight: 500, fontSize: '0.875rem', lineHeight: '20px', letterSpacing: '0.1px', textTransform: 'capitalize' },
-      caption: { fontWeight: 400, fontSize: '0.75rem', lineHeight: '16px', letterSpacing: '0.4px' },
-      overline: { fontWeight: 400, fontSize: '0.75rem', lineHeight: 1, letterSpacing: '1px', textTransform: 'uppercase' },
+      h6: { fontWeight: 700, fontSize: '1.375rem', lineHeight: '2.25rem', letterSpacing: '0.009375rem' },
+      subtitle1: { fontWeight: 400, fontSize: '1rem', lineHeight: 1.5, letterSpacing: '0.009375rem' },
+      subtitle2: { fontWeight: 500, fontSize: '0.875rem', lineHeight: '1.25rem', letterSpacing: '0.00625rem' },
+      body1: { fontWeight: 400, fontSize: '1rem', lineHeight: '1.5rem', letterSpacing: '0.03125rem' },
+      body2: { fontWeight: 400, fontSize: '0.875rem', lineHeight: '1.25rem', letterSpacing: '0.015625rem' },
+      button: { fontWeight: 500, fontSize: '0.875rem', lineHeight: '1.25rem', letterSpacing: '0.00625rem', textTransform: 'capitalize' },
+      caption: { fontWeight: 400, fontSize: '0.75rem', lineHeight: '1rem', letterSpacing: '0.025rem' },
+      overline: { fontWeight: 400, fontSize: '0.75rem', lineHeight: 1, letterSpacing: '0.0625rem', textTransform: 'uppercase' },
     },
 
     components: {
       MuiButton: {
         defaultProps: { disableElevation: true, variant: 'contained' },
         styleOverrides: {
-          root: { borderRadius: T.radiusSm, fontWeight: 500, letterSpacing: '0.1px' },
-          sizeSmall: { height: 30, padding: '0 16px', fontSize: '0.8125rem' },
-          sizeMedium: { height: 40, padding: '0 24px', fontSize: '0.875rem' },
-          sizeLarge: { height: 40, padding: '0 24px', fontSize: '0.875rem' },
+          root: { borderRadius: T.radiusSm, fontWeight: 500, letterSpacing: '0.00625rem' },
+          sizeSmall: ({ theme }) => ({ height: 30, padding: theme.spacing(0, 2), fontSize: '0.8125rem' }),
+          sizeMedium: ({ theme }) => ({ height: 40, padding: theme.spacing(0, 3), fontSize: '0.875rem' }),
+          sizeLarge: ({ theme }) => ({ height: 40, padding: theme.spacing(0, 3), fontSize: '0.875rem' }),
           containedPrimary: {
             backgroundColor: T.navy700,
             color: mode === 'dark' ? T.navy900 : '#ffffff',
@@ -309,7 +309,7 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
           root: {
             textTransform: 'capitalize',
             fontWeight: 500,
-            letterSpacing: '0.1px',
+            letterSpacing: '0.00625rem',
             borderColor: T.outline,
             '&.Mui-selected': {
               backgroundColor: T.primaryTab,
@@ -486,18 +486,31 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
       MuiDialog: { styleOverrides: { paper: { borderRadius: T.radiusXl } } },
       MuiDialogTitle: {
         styleOverrides: {
-          root: {
+          root: ({ theme }) => ({
             backgroundColor: T.surfaceHighest,
-            padding: 24,
+            padding: theme.spacing(3),
             fontSize: '1.5rem',
             fontWeight: 400,
             lineHeight: 1.334,
             letterSpacing: 0,
-          },
+          }),
         },
       },
-      MuiDialogContent: { styleOverrides: { root: { padding: '24px', paddingTop: '24px !important' } } },
-      MuiDialogActions: { styleOverrides: { root: { padding: '8px 24px 24px' } } },
+      MuiDialogContent: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            padding: theme.spacing(3),
+            paddingTop: `${theme.spacing(3)} !important`,
+          }),
+        },
+      },
+      MuiDialogActions: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            padding: theme.spacing(1, 3, 3),
+          }),
+        },
+      },
       MuiMenu: { styleOverrides: { paper: { borderRadius: T.radiusXs } } },
       MuiAutocomplete: {
         styleOverrides: {
@@ -567,10 +580,10 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
                 : {
                     fontWeight: 500,
                     fontSize: '0.6875rem',
-                    lineHeight: '16px',
+                    lineHeight: '1rem',
                     minWidth: 16,
                     height: 16,
-                    padding: '0 4px',
+                    padding: theme.spacing(0, 0.5),
                     borderRadius: 8,
                   }),
             };
@@ -585,7 +598,7 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
           root: {
             borderRadius: T.radiusFull,
             fontWeight: 500,
-            letterSpacing: '0.1px',
+            letterSpacing: '0.00625rem',
             maxWidth: '100%',
             '&.MuiChip-sizeSmall': {
               height: 24,
@@ -596,18 +609,18 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
               fontSize: '0.875rem',
             },
             '&.MuiChip-sizeSmall > .MuiChip-label': {
-              paddingLeft: 8,
-              paddingRight: 8,
+              paddingLeft: '0.5rem',
+              paddingRight: '0.5rem',
             },
             '&.MuiChip-sizeMedium > .MuiChip-label': {
-              paddingLeft: 12,
-              paddingRight: 12,
+              paddingLeft: '0.75rem',
+              paddingRight: '0.75rem',
             },
             '&.MuiChip-sizeSmall > .MuiChip-icon, &.MuiChip-sizeSmall > .MuiChip-deleteIcon': {
-              fontSize: 14,
+              fontSize: '0.875rem',
             },
             '&.MuiChip-sizeMedium > .MuiChip-icon, &.MuiChip-sizeMedium > .MuiChip-deleteIcon': {
-              fontSize: 18,
+              fontSize: '1.125rem',
             },
           },
           outlined: { borderColor: T.outlineVariant, color: T.onSurfaceVariant, backgroundColor: T.surfaceLowest },
@@ -630,13 +643,13 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
             color: T.white,
             fontSize: '1.25rem',
             fontWeight: 400,
-            letterSpacing: '0.14px',
+            letterSpacing: '0.00875rem',
           }),
         },
       },
       MuiTableCell: {
         styleOverrides: {
-          root: { borderColor: T.outlineVariant, fontSize: '0.875rem', letterSpacing: '0.25px' },
+          root: { borderColor: T.outlineVariant, fontSize: '0.875rem', letterSpacing: '0.015625rem' },
           head: { fontWeight: 600, color: T.onSurface },
         },
       },
@@ -658,7 +671,7 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
           root: {
             textTransform: 'none',
             fontWeight: 500,
-            letterSpacing: '0.1px',
+            letterSpacing: '0.00625rem',
             color: T.onSurfaceVariant,
             '&.Mui-selected': { color: T.navy700 },
           },
@@ -705,23 +718,23 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
       },
       MuiSnackbarContent: {
         styleOverrides: {
-          root: {
+          root: ({ theme }) => ({
             backgroundColor: mode === 'dark' ? T.surfaceHighest : '#c9dcff',
             color: T.onSurface,
             borderRadius: T.radiusMd,
             boxShadow: 'none',
             minHeight: 48,
-            padding: '12px 16px',
+            padding: theme.spacing(1.5, 2),
             fontSize: '0.875rem',
             fontWeight: 400,
-            lineHeight: '20px',
-            letterSpacing: '0.25px',
+            lineHeight: '1.25rem',
+            letterSpacing: '0.015625rem',
             '& .MuiSnackbarContent-message': {
               padding: 0,
             },
             '& .MuiSnackbarContent-action': {
               marginRight: 0,
-              paddingLeft: 16,
+              paddingLeft: theme.spacing(2),
             },
             '& .MuiButton-root': {
               color: T.navy700,
@@ -731,7 +744,7 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
             '& .MuiIconButton-root': {
               color: T.onSurface,
             },
-          },
+          }),
         },
       },
       MuiLinearProgress: { styleOverrides: { root: { borderRadius: T.radiusFull } } },
