@@ -104,7 +104,7 @@ const ThemedTableBase = <T extends TableRowData = TableRowData>(
                     sx={(theme: Theme) => ({
                       borderColor: theme.palette.inflow.outlineVariant,
                       fontSize: '0.875rem',
-                      letterSpacing: '0.25px',
+                      letterSpacing: '0.015625rem',
                     })}
                   >
                     {column.render ? column.render(row) : String(row[column.id] ?? '')}

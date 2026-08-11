@@ -35,7 +35,7 @@ export const ThemedButton = forwardRef<HTMLButtonElement, ThemedButtonProps>(
       ? (theme: Theme) => ({
           borderRadius: `${theme.shape.borderRadius}px`,
           fontWeight: theme.typography.fontWeightMedium,
-          letterSpacing: '0.1px',
+          letterSpacing: '0.00625rem',
           ...(props.variant === 'contained' && (props.color === 'primary' || !props.color) && {
             backgroundColor: theme.palette.primary.main,
             color: theme.palette.primary.contrastText,

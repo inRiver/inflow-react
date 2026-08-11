@@ -31,7 +31,7 @@ export const ThemedChip = forwardRef<HTMLDivElement, ThemedChipProps>(
       ? (theme: Theme) => ({
           borderRadius: '9999px',
           fontWeight: theme.typography.fontWeightMedium,
-          letterSpacing: '0.1px',
+          letterSpacing: '0.00625rem',
           ...(props.variant === 'outlined' && {
             borderColor: theme.palette.inflow.outlineVariant,
             color: props.color === 'primary'
