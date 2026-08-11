@@ -80,11 +80,12 @@ interface SxCustomizationControl extends CustomizationControl {
 
 interface ComponentCustomizationPanelProps {
   componentId: string;
+  excludedControls?: SxControlName[];
 }
 
 type PreviewRule = Record<string, string | number>;
 type PreviewStyles = Record<string, PreviewRule>;
-type SxControlName =
+export type SxControlName =
   | 'borderRadius'
   | 'backgroundColor'
   | 'textColor'
@@ -92,7 +93,8 @@ type SxControlName =
   | 'secondaryTextColor'
   | 'iconColor'
   | 'borderColor'
-  | 'labelColor';
+  | 'labelColor'
+  | 'connectorLengthReduction';
 
 const sxControlDefinitions: Record<SxControlName, SxCustomizationControl> = {
   borderRadius: {
@@ -154,6 +156,14 @@ const sxControlDefinitions: Record<SxControlName, SxCustomizationControl> = {
     cssProperty: 'color',
     targetSlot: 'label',
   },
+  connectorLengthReduction: {
+    name: 'connectorLengthReduction',
+    label: 'Connector length reduction',
+    type: 'select',
+    options: ['0px', '8px', '12px', '20px'],
+    cssProperty: '--ThemedStepper-connector-reduction',
+    targetSlot: 'root',
+  },
 };
 
 const sxControlsByComponent: Record<string, SxControlName[]> = {
@@ -182,7 +192,7 @@ const sxControlsByComponent: Record<string, SxControlName[]> = {
   tabs: ['textColor', 'secondaryTextColor', 'backgroundColor'],
   breadcrumbs: ['textColor', 'secondaryTextColor'],
   pagination: ['borderRadius', 'backgroundColor', 'textColor', 'secondaryTextColor'],
-  stepper: ['textColor', 'iconColor', 'borderColor'],
+  stepper: ['connectorLengthReduction', 'textColor', 'iconColor', 'borderColor'],
   menu: ['borderRadius', 'backgroundColor', 'textColor', 'secondaryTextColor'],
   paper: ['borderRadius', 'backgroundColor', 'padding', 'borderColor'],
   appbar: ['backgroundColor', 'textColor', 'iconColor'],
@@ -383,10 +393,14 @@ const metaOverrides: Record<string, Partial<CustomizationMeta>> = {
     controlLabelOverrides: { secondaryTextColor: 'Active page color' },
   },
   stepper: {
+    previewRootSelector: '& .StepperCustomizationPreview .MuiStepper-root',
     textSlotSelector: '.MuiStepLabel-label',
     iconSlotSelector: '.MuiStepIcon-root',
-    controlSelectorOverrides: { borderColor: '.MuiStepConnector-line' },
+    controlSelectorOverrides: {
+      borderColor: '.MuiStepConnector-line',
+    },
     controlLabelOverrides: { borderColor: 'Connector color' },
+    themeSnippetExcludeControls: ['connectorLengthReduction'],
   },
   menu: {
     importName: 'MenuList',
@@ -536,7 +550,7 @@ const resolveThemeToken = (theme: Theme, value: string) => {
   return tokens[value] ?? value;
 };
 
-const previewContainerSelector = '& > .MuiPaper-root:first-of-type';
+const previewContainerSelector = '& > .MuiPaper-root:nth-child(1 of .MuiPaper-root)';
 
 const composeSelectors = (baseSelector: string, selector: string): string[] =>
   selector
@@ -547,6 +561,10 @@ const composeSelectors = (baseSelector: string, selector: string): string[] =>
 
 const toRootSelector = (meta: CustomizationMeta) => {
   if (meta.previewRootSelector) {
+    if (meta.previewRootSelector.startsWith('&')) {
+      return meta.previewRootSelector;
+    }
+
     // previewRootSelector marks a component whose real customizable class
     // differs from the themeStyleKey-derived guess below (e.g. MenuList
     // renders `.MuiList-root`, not `.MuiMenuList-root`). It still only needs
@@ -862,6 +880,12 @@ const themeControlDefinitions: Record<SxControlName, CustomizationControl> = {
     type: 'select',
     options: ['text.secondary', 'text.primary', 'primary.main'],
   },
+  connectorLengthReduction: {
+    name: 'connectorLengthReduction',
+    label: 'Override connector length reduction',
+    type: 'select',
+    options: ['0px', '8px', '12px', '20px'],
+  },
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -957,6 +981,7 @@ const sxSnippetValues: Record<SxControlName, string> = {
   iconColor: `'primary.main'`,
   borderColor: `'divider'`,
   labelColor: `'text.secondary'`,
+  connectorLengthReduction: `'20px'`,
 };
 
 const themeSnippetValues: Record<SxControlName, string> = {
@@ -968,6 +993,7 @@ const themeSnippetValues: Record<SxControlName, string> = {
   iconColor: 'theme.palette.primary.main',
   borderColor: 'theme.palette.divider',
   labelColor: 'theme.palette.text.secondary',
+  connectorLengthReduction: `'20px'`,
 };
 
 const getSnippetSelector = (controlName: SxControlName, meta: CustomizationMeta) => {
@@ -1025,21 +1051,41 @@ const getSnippetEntries = (
   return selectedEntries.length > 0 ? selectedEntries : entries.slice(0, 3);
 };
 
+const groupSnippetEntries = (entries: SnippetEntry[]) =>
+  entries.reduce<Map<string, SnippetEntry[]>>((groups, entry) => {
+    if (!entry.selector) {
+      return groups;
+    }
+
+    groups.set(entry.selector, [...(groups.get(entry.selector) ?? []), entry]);
+    return groups;
+  }, new Map());
+
+const formatSnippetProperty = (property: string) => property.startsWith('--') ? `'${property}'` : property;
+
 const formatSnippetObject = (entries: SnippetEntry[]) => {
   const rootEntries = entries.filter((entry) => !entry.selector);
   const nestedEntries = entries.filter((entry) => entry.selector);
+  const nestedGroups = groupSnippetEntries(nestedEntries);
   const lines = [
-    ...rootEntries.map((entry) => `    ${entry.property}: ${entry.value},`),
-    ...nestedEntries.map(
-      (entry) => `    '${entry.selector?.includes('&') ? entry.selector : `& ${entry.selector}`}': {\n      ${entry.property}: ${entry.value},\n    },`,
+    ...rootEntries.map((entry) => `    ${formatSnippetProperty(entry.property)}: ${entry.value},`),
+    ...Array.from(nestedGroups.entries()).map(
+      ([selector, selectorEntries]) =>
+        `    '${selector.includes('&') ? selector : `& ${selector}`}': {\n${selectorEntries
+          .map((entry) => `      ${formatSnippetProperty(entry.property)}: ${entry.value},`)
+          .join('\n')}\n    },`,
     ),
   ];
 
   return lines.join('\n');
 };
 
-const buildSxCodeSnippet = (componentName: string, meta: CustomizationMeta) => {
-  const snippetEntries = getSnippetEntries(meta, sxSnippetValues);
+const buildSxCodeSnippet = (
+  componentName: string,
+  meta: CustomizationMeta,
+  excludedControls?: SxControlName[],
+) => {
+  const snippetEntries = getSnippetEntries(meta, sxSnippetValues, excludedControls);
   const sxObject = formatSnippetObject(snippetEntries);
 
   return `import { ${componentName} } from '@mui/material';
@@ -1050,18 +1096,21 @@ ${meta.example.replace('/>', `\n  sx={{\n${sxObject}\n  }}\n/>`)}`;
 const buildThemeOverrideObject = (entries: SnippetEntry[]) => {
   const rootEntries = entries.filter((entry) => !entry.selector);
   const nestedEntries = entries.filter((entry) => entry.selector);
+  const nestedGroups = groupSnippetEntries(nestedEntries);
   const lines = [
-    ...rootEntries.map((entry) => `            ${entry.property}: ${entry.value},`),
-    ...nestedEntries.map(
-      (entry) =>
-        `            '${entry.selector?.includes('&') ? entry.selector : `& ${entry.selector}`}': {\n              ${entry.property}: ${entry.value},\n            },`,
+    ...rootEntries.map((entry) => `            ${formatSnippetProperty(entry.property)}: ${entry.value},`),
+    ...Array.from(nestedGroups.entries()).map(
+      ([selector, selectorEntries]) =>
+        `            '${selector.includes('&') ? selector : `& ${selector}`}': {\n${selectorEntries
+          .map((entry) => `              ${formatSnippetProperty(entry.property)}: ${entry.value},`)
+          .join('\n')}\n            },`,
     ),
   ];
 
   return lines.join('\n');
 };
 
-export function ComponentCustomizationPanel({ componentId }: ComponentCustomizationPanelProps) {
+export function ComponentCustomizationPanel({ componentId, excludedControls }: ComponentCustomizationPanelProps) {
   const [expanded, setExpanded] = useState(false);
   const label = getComponentLabel(componentId);
   const meta = getMeta(componentId);
@@ -1069,8 +1118,12 @@ export function ComponentCustomizationPanel({ componentId }: ComponentCustomizat
   const themeKey = meta.themeKey;
   const themeStyleKey = getThemeStyleKey(meta);
   const wrapperImports = componentName === 'Box' ? 'Box' : `Box, ${componentName}`;
-  const sxCode = buildSxCodeSnippet(componentName, meta);
-  const themeSnippetEntries = getSnippetEntries(meta, themeSnippetValues, meta.themeSnippetExcludeControls);
+  const sxCode = buildSxCodeSnippet(componentName, meta, excludedControls);
+  const themeSnippetEntries = getSnippetEntries(
+    meta,
+    themeSnippetValues,
+    [...(meta.themeSnippetExcludeControls ?? []), ...(excludedControls ?? [])],
+  );
   const themeOverrideObject = buildThemeOverrideObject(themeSnippetEntries);
   const classProps = meta.supportsClasses
     ? ` className="Product${componentName}" classes={{ root: 'Product${componentName}Root' }}`

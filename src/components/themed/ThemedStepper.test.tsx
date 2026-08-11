@@ -256,4 +256,20 @@ describe('ThemedStepper', () => {
       expect(style.zIndex).toBe('2');
     });
   });
+
+  it('accepts connector length reduction through sx', () => {
+    const { container } = render(
+      <InflowProvider>
+        <ThemedStepper
+          steps={steps}
+          activeStep={1}
+          sx={{ '--ThemedStepper-connector-reduction': '20px' }}
+        />
+      </InflowProvider>,
+    );
+
+    const stepper = container.querySelector('.MuiStepper-root');
+    expect(stepper).not.toBeNull();
+    expect(getComputedStyle(stepper as Element).getPropertyValue('--ThemedStepper-connector-reduction')).toBe('20px');
+  });
 });

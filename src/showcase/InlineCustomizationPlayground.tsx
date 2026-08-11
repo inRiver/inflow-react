@@ -18,11 +18,16 @@ import {
   getCustomizationMethodsForComponent,
   type CustomizationMethodId,
   type CustomizationValuesByMethod,
+  type SxControlName,
 } from './ComponentCustomizationPanel';
 import { getComponentLabel } from './categories';
 import { useCustomizationPlayground } from './CustomizationPlaygroundContext';
 
-export function InlineCustomizationPlayground() {
+interface InlineCustomizationPlaygroundProps {
+  excludedControls?: SxControlName[];
+}
+
+export function InlineCustomizationPlayground({ excludedControls = [] }: InlineCustomizationPlaygroundProps) {
   const customization = useCustomizationPlayground();
 
   if (!customization) {
@@ -33,6 +38,9 @@ export function InlineCustomizationPlayground() {
   const label = getComponentLabel(componentId);
   const methods = getCustomizationMethodsForComponent(componentId);
   const activeMethodConfig = methods.find((method) => method.id === activeMethod) ?? methods[0];
+  const visibleControls = activeMethodConfig.controls.filter(
+    (control) => !excludedControls.includes(control.name as SxControlName),
+  );
   const activeValues = valuesByMethod[activeMethod] ?? {};
 
   const handleMethodChange = (_event: SyntheticEvent, method: CustomizationMethodId) => {
@@ -99,7 +107,7 @@ export function InlineCustomizationPlayground() {
           justifyContent: 'center',
         }}
       >
-        {activeMethodConfig.controls.map((control) => {
+        {visibleControls.map((control) => {
           const displayLabel = control.label ?? control.name;
           const rawValue = activeValues[control.name];
           // Select-type controls with no chosen value yet must still resolve to a real
@@ -181,7 +189,7 @@ export function InlineCustomizationPlayground() {
         })}
       </Box>
 
-      <ComponentCustomizationPanel componentId={componentId} />
+      <ComponentCustomizationPanel componentId={componentId} excludedControls={excludedControls} />
     </Stack>
   );
 }

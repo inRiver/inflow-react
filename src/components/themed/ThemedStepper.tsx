@@ -159,11 +159,20 @@ function buildConnectorGradient(
   for (let i = 0; i < steps.length - 1; i++) {
     const startPct = (i / (steps.length - 1)) * 100;
     const endPct = ((i + 1) / (steps.length - 1)) * 100;
+    const visibleStart = `calc(${startPct}% + ${ICON_SIZE / 2}px + var(--ThemedStepper-connector-reduction, 0px) / 2)`;
+    const visibleEnd = `calc(${endPct}% - ${ICON_SIZE / 2}px - var(--ThemedStepper-connector-reduction, 0px) / 2)`;
     const color =
       i < furthestReached
         ? theme.palette.primary.main
         : theme.palette.inflow.outlineVariant;
-    segments.push(`${color} ${startPct}%`, `${color} ${endPct}%`);
+    segments.push(
+      `transparent ${startPct}%`,
+      `transparent ${visibleStart}`,
+      `${color} ${visibleStart}`,
+      `${color} ${visibleEnd}`,
+      `transparent ${visibleEnd}`,
+      `transparent ${endPct}%`,
+    );
   }
   return `linear-gradient(to right, ${segments.join(", ")})`;
 }
@@ -278,6 +287,7 @@ export const ThemedStepper = forwardRef<HTMLDivElement, ThemedStepperProps>(
               ? {
                   position: "relative",
                   justifyContent: "space-between",
+                  "--ThemedStepper-connector-reduction": "0px",
                   ...(useOverlayConnector
                     ? {
                         "&::before": {

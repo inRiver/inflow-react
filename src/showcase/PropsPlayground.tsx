@@ -13,6 +13,7 @@ import {
   Box,
 } from '@mui/material';
 import { InlineCustomizationPlayground } from './InlineCustomizationPlayground';
+import type { SxControlName } from './ComponentCustomizationPanel';
 
 export type PropType = 'text' | 'select' | 'boolean';
 
@@ -29,6 +30,7 @@ interface PropsPlaygroundProps {
   onChange: (newValues: Record<string, unknown>) => void;
   title?: string;
   sectionId?: string;
+  excludedCustomizationControls?: SxControlName[];
 }
 
 export const PropsPlayground: React.FC<PropsPlaygroundProps> = ({
@@ -37,6 +39,7 @@ export const PropsPlayground: React.FC<PropsPlaygroundProps> = ({
   onChange,
   title = 'Props Playground',
   sectionId = 'props',
+  excludedCustomizationControls,
 }) => {
   const handleChange = (name: string, value: unknown) => {
     onChange({ ...values, [name]: value });
@@ -143,7 +146,7 @@ export const PropsPlayground: React.FC<PropsPlaygroundProps> = ({
         })}
       </Box>
       )}
-      <InlineCustomizationPlayground />
+      <InlineCustomizationPlayground excludedControls={excludedCustomizationControls} />
     </Paper>
   );
 };

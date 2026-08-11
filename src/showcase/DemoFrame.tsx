@@ -6,6 +6,7 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 interface DemoFrameProps {
   children: ReactNode;
   title?: string;
+  className?: string;
 }
 
 interface DemoFrameState {
@@ -31,10 +32,11 @@ export class DemoFrame extends Component<DemoFrameProps, DemoFrameState> {
   };
 
   render() {
-    const { children, title } = this.props;
+    const { children, title, className } = this.props;
 
     return (
       <Paper 
+        className={className}
         elevation={0}
         sx={(theme) => ({ 
           borderRadius: '5px',

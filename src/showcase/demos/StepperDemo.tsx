@@ -221,7 +221,7 @@ const [activeStep, setActiveStep] = useState(1);
         themedReason={themedInfo?.reason}
       />
 
-      <DemoFrame title="Stepper - Interactive">
+      <DemoFrame title="Stepper - Interactive" className="StepperCustomizationPreview">
         <Box sx={{ width: '100%' }}>
           {variant === 'mui' ? (
             <Stepper activeStep={activeStep}>
@@ -241,6 +241,7 @@ const [activeStep, setActiveStep] = useState(1);
         schema={schema}
         values={props}
         onChange={setProps}
+        excludedCustomizationControls={variant === 'mui' ? ['connectorLengthReduction'] : undefined}
       />
 
       <CodeBlock code={variant === 'mui' ? muiCodeExample : themedCodeExample} language="tsx" />
