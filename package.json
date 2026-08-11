@@ -60,7 +60,7 @@
   "peerDependencies": {
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
-    "@mui/material": ">=6.5.0 <6.6.0",
+    "@mui/material": ">=7.0.0 <8.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
@@ -68,8 +68,8 @@
     "@emotion/react": "^11.13.5",
     "@emotion/styled": "^11.13.5",
     "@eslint/js": "^10.0.1",
-    "@mui/icons-material": "^6.5.0",
-    "@mui/material": "^6.5.0",
+    "@mui/icons-material": "^7.3.11",
+    "@mui/material": "^7.3.11",
     "@playwright/test": "^1.62.1",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
