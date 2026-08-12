@@ -294,7 +294,10 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
             borderColor: T.outlineVariant,
             '&:hover': { borderColor: T.navy700, backgroundColor: T.rowSelected },
           },
-          textPrimary: { color: T.navy700 },
+          textPrimary: {
+            color: T.navy700,
+            '&:hover': { backgroundColor: T.rowSelected },
+          },
         },
       },
       MuiIconButton: {

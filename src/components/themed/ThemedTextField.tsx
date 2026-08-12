@@ -7,10 +7,17 @@ export type ThemedTextFieldProps = TextFieldProps;
 
 /**
  * ThemedTextField
- * 
+ *
  * A pre-rendered, themed text field component that follows the Inflow design system.
  * It extends the standard MUI TextField and applies specific Inflow design tokens
  * for border colors, focus states, and error states.
+ *
+ * @deprecated Redundant with the theme: `createInflowTheme`'s `MuiTextField`
+ * default props (`variant: 'outlined'`, `size: 'small'`) and `MuiOutlinedInput`/
+ * `MuiFilledInput` overrides already apply these Inflow tokens to a stock MUI
+ * `TextField` once wrapped in `InflowProvider`. Use `TextField` from
+ * `@mui/material` directly. Kept for backward compatibility; will be removed in
+ * the next major version.
  *
  * @example
  * ```tsx
@@ -18,7 +25,7 @@ export type ThemedTextFieldProps = TextFieldProps;
  *
  * // Standard usage
  * <ThemedTextField label="Username" placeholder="Enter username" />
- * 
+ *
  * // Error state
  * <ThemedTextField label="Password" error helperText="Incorrect password" />
  * ```
@@ -33,7 +40,7 @@ export const ThemedTextField = forwardRef<HTMLDivElement, ThemedTextFieldProps>(
         sx={[
           (theme: Theme) => ({
             '& .MuiOutlinedInput-root': {
-              borderRadius: `${theme.shape.borderRadius}px`,
+              borderRadius: '4px',
               '& .MuiOutlinedInput-notchedOutline': {
                 borderColor: theme.palette.inflow.outline,
               },

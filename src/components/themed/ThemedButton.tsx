@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import { Button, alpha } from '@mui/material';
+import { Button } from '@mui/material';
 import type { ButtonProps } from '@mui/material';
 import type { Theme } from '@mui/material/styles';
 
@@ -13,10 +13,16 @@ export interface ThemedButtonProps extends ButtonProps {
 
 /**
  * ThemedButton
- * 
+ *
  * A pre-rendered, themed button component that follows the Inflow design system.
  * It extends the standard MUI Button and applies specific Inflow design tokens
  * for colors, border radius, and hover states.
+ *
+ * @deprecated Redundant with the theme: `createInflowTheme`'s `MuiButton`
+ * `defaultProps`/`styleOverrides` already apply these Inflow tokens to a stock
+ * MUI `Button` once wrapped in `InflowProvider`. Use `Button` from
+ * `@mui/material` directly. Kept for backward compatibility; will be removed in
+ * the next major version.
  *
  * @example
  * ```tsx
@@ -24,7 +30,7 @@ export interface ThemedButtonProps extends ButtonProps {
  *
  * // Standard usage
  * <ThemedButton variant="contained">Save</ThemedButton>
- * 
+ *
  * // Outlined usage
  * <ThemedButton variant="outlined">Cancel</ThemedButton>
  * ```
@@ -48,13 +54,13 @@ export const ThemedButton = forwardRef<HTMLButtonElement, ThemedButtonProps>(
             borderColor: theme.palette.inflow.outlineVariant,
             '&:hover': {
               borderColor: theme.palette.primary.main,
-              backgroundColor: alpha(theme.palette.primary.main, 0.08),
+              backgroundColor: theme.palette.inflow.rowSelected,
             },
           }),
           ...(props.variant === 'text' && (props.color === 'primary' || !props.color) && {
             color: theme.palette.primary.main,
             '&:hover': {
-              backgroundColor: alpha(theme.palette.primary.main, 0.08),
+              backgroundColor: theme.palette.inflow.rowSelected,
             },
           }),
         })
