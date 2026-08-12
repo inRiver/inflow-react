@@ -54,10 +54,8 @@ const StepIconRoot = styled("span")<{ ownerState: ThemedStepIconProps }>(
     alignItems: "center",
     justifyContent: "center",
     boxSizing: "border-box",
-    border: `2px solid ${ownerState.active || ownerState.completed ? theme.palette.primary.main : "transparent"}`,
-    backgroundColor: ownerState.completed
-      ? theme.palette.primary.main
-      : theme.palette.background.paper,
+    border: `2px solid ${ownerState.active ? theme.palette.primary.main : "transparent"}`,
+    backgroundColor: "transparent",
     color: ownerState.completed
       ? theme.palette.common.white
       : ownerState.active
@@ -80,8 +78,7 @@ const InnerCircle = styled("span")<{ ownerState: ThemedStepIconProps }>(
       : "transparent",
     border: ownerState.completed
       ? "none"
-      : `2px solid ${theme.palette.text.secondary}`,
-    opacity: ownerState.isFuture ? 0.5 : 1,
+      : `2px solid ${theme.palette.text.secondary}`,    opacity: ownerState.isFuture ? 0.5 : 1,
     transition: theme.transitions.create("opacity"),
   }),
 );
