@@ -11,6 +11,7 @@
   },
   "include": [
     "src/index.ts",
+    "src/ag-grid/**/*",
     "src/theme/**/*",
     "src/components/themed/**/*",
     "src/providers/**/*"

@@ -32,6 +32,7 @@
     "dist/index.cjs.map",
     "dist/index.d.ts",
     "dist/index.d.ts.map",
+    "dist/ag-grid",
     "dist/components",
     "dist/providers",
     "dist/theme"
@@ -44,6 +45,11 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
+    },
+    "./ag-grid": {
+      "types": "./dist/ag-grid/index.d.ts",
+      "import": "./dist/ag-grid/index.js",
+      "require": "./dist/ag-grid/index.cjs"
     },
     "./package.json": "./package.json"
   },
@@ -67,6 +73,7 @@
   "devDependencies": {
     "@emotion/react": "^11.13.5",
     "@emotion/styled": "^11.13.5",
+    "ag-grid-community": "^35.2.1",
     "@eslint/js": "^10.0.1",
     "@mui/icons-material": "^9.3.1",
     "@mui/material": "^9.3.1",

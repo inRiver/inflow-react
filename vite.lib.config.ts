@@ -6,10 +6,14 @@ export default defineConfig({
   plugins: [react()],
   build: {
     lib: {
-      entry: resolve(import.meta.dirname, 'src/index.ts'),
+      entry: {
+        index: resolve(import.meta.dirname, 'src/index.ts'),
+        'ag-grid/index': resolve(import.meta.dirname, 'src/ag-grid/index.ts'),
+      },
       name: 'Inflow',
       formats: ['es', 'cjs'],
-      fileName: (format) => (format === 'es' ? 'index.js' : 'index.cjs'),
+      fileName: (format, entryName) =>
+        entryName === 'index' ? (format === 'es' ? 'index.js' : 'index.cjs') : `${entryName}.${format === 'es' ? 'js' : 'cjs'}`,
     },
     sourcemap: true,
     emptyOutDir: false,
@@ -24,6 +28,9 @@ export default defineConfig({
         '@mui/material',
         '@mui/material/styles',
         '@mui/icons-material',
+        'ag-grid-community',
+        'ag-grid-enterprise',
+        'ag-grid-react',
       ],
     },
   },
