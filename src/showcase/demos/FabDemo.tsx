@@ -52,7 +52,7 @@ import { Fab } from '@mui/material';
 
       <DemoFrame title="All States">
         <Stack spacing={2} direction="column">
-          <Stack direction="row" spacing={2} flexWrap="wrap">
+          <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap' }}>
             <Fab color="primary"><Add /></Fab>
             <Fab color="secondary"><Edit /></Fab>
             <Fab variant="extended" color="primary">

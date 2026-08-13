@@ -43,17 +43,18 @@ export interface ThemedDialogProps extends Omit<DialogProps, 'title'> {
 export const ThemedDialog = forwardRef<HTMLDivElement, ThemedDialogProps>(
   ({ title, actions, children, onClose, hideCloseButton = false, sx, ...props }, ref) => {
     return (
-        <Dialog
+      <Dialog
         ref={ref}
         onClose={onClose}
-        PaperProps={{
-          sx: (theme: Theme) => ({
-            borderRadius: `${Number(theme.shape.borderRadius) * 5.6}px`,
-          }),
-        }}
         sx={[...(Array.isArray(sx) ? sx : [sx])]}
         {...props}
-      >
+        slotProps={{
+          paper: {
+            sx: (theme: Theme) => ({
+              borderRadius: `${Number(theme.shape.borderRadius) * 5.6}px`,
+            }),
+          }
+        }}>
         {title && (
           <DialogTitle
             sx={(theme: Theme) => ({
@@ -84,7 +85,7 @@ export const ThemedDialog = forwardRef<HTMLDivElement, ThemedDialogProps>(
             )}
           </DialogTitle>
         )}
-        
+
         <DialogContent sx={(theme: Theme) => ({ padding: theme.spacing(3), paddingTop: `${theme.spacing(3)} !important` })}>
           {children}
         </DialogContent>

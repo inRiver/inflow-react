@@ -43,8 +43,10 @@ import { TextField } from '@mui/material';
           label="Alarm"
           size={props.size}
           disabled={props.disabled}
-          InputLabelProps={{ shrink: true }}
           defaultValue="07:30"
+          slotProps={{
+            inputLabel: { shrink: true }
+          }}
         />
       </DemoFrame>
 
@@ -54,10 +56,16 @@ import { TextField } from '@mui/material';
 
       <DemoFrame title="All States">
         <Stack spacing={2} direction="column">
-          <Stack direction="row" spacing={2} flexWrap="wrap">
-            <TextField type="time" label="Alarm" InputLabelProps={{ shrink: true }} defaultValue="07:30" />
-            <TextField type="time" label="Meeting" InputLabelProps={{ shrink: true }} defaultValue="14:00" />
-            <TextField type="time" label="Disabled" InputLabelProps={{ shrink: true }} disabled defaultValue="09:00" />
+          <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap' }}>
+            <TextField type="time" label="Alarm" defaultValue="07:30" slotProps={{
+              inputLabel: { shrink: true }
+            }} />
+            <TextField type="time" label="Meeting" defaultValue="14:00" slotProps={{
+              inputLabel: { shrink: true }
+            }} />
+            <TextField type="time" label="Disabled" disabled defaultValue="09:00" slotProps={{
+              inputLabel: { shrink: true }
+            }} />
           </Stack>
         </Stack>
       </DemoFrame>

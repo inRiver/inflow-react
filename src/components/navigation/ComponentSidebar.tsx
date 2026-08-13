@@ -153,7 +153,9 @@ export const ComponentSidebar: React.FC<ComponentSidebarProps> = ({
               >
                 <Icon baseClassName="material-icons-outlined">home</Icon>
               </ListItemIcon>
-              <ListItemText primary="Overview" primaryTypographyProps={{ fontWeight: 'bold' }} />
+              <ListItemText primary="Overview" slotProps={{
+                primary: { sx: { fontWeight: 'bold' } }
+              }} />
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
@@ -173,7 +175,9 @@ export const ComponentSidebar: React.FC<ComponentSidebarProps> = ({
               >
                 <Icon baseClassName="material-icons-outlined">integration_instructions</Icon>
               </ListItemIcon>
-              <ListItemText primary="Import Guidelines" primaryTypographyProps={{ fontWeight: 'bold' }} />
+              <ListItemText primary="Import Guidelines" slotProps={{
+                primary: { sx: { fontWeight: 'bold' } }
+              }} />
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
@@ -193,7 +197,9 @@ export const ComponentSidebar: React.FC<ComponentSidebarProps> = ({
               >
                 <Icon baseClassName="material-icons-outlined">palette</Icon>
               </ListItemIcon>
-              <ListItemText primary="Design Tokens" primaryTypographyProps={{ fontWeight: 'bold' }} />
+              <ListItemText primary="Design Tokens" slotProps={{
+                primary: { sx: { fontWeight: 'bold' } }
+              }} />
             </ListItemButton>
           </ListItem>
           <Divider sx={{ my: 1 }} />
@@ -225,12 +231,14 @@ export const ComponentSidebar: React.FC<ComponentSidebarProps> = ({
                     },
                   },
                 }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                       <Icon baseClassName="material-icons-outlined">search</Icon>
-                    </InputAdornment>
-                  ),
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                         <Icon baseClassName="material-icons-outlined">search</Icon>
+                      </InputAdornment>
+                    ),
+                  }
                 }}
               />
             </Box>
@@ -274,7 +282,9 @@ export const ComponentSidebar: React.FC<ComponentSidebarProps> = ({
                     </ListItemIcon>
                     <ListItemText
                       primary={category.label}
-                      primaryTypographyProps={{ fontWeight: 'bold', fontSize: '1.05rem' }}
+                      slotProps={{
+                        primary: { sx: { fontWeight: 'bold', fontSize: '1.05rem' } }
+                      }}
                     />
                     <Icon baseClassName="material-icons-outlined">{expanded.has(category.id) ? 'expand_less' : 'expand_more'}</Icon>
                   </ListItemButton>
@@ -303,8 +313,10 @@ export const ComponentSidebar: React.FC<ComponentSidebarProps> = ({
                         >
                           <ListItemText
                             primary={getComponentLabel(component)}
-                            primaryTypographyProps={{
-                              fontWeight: isActive ? 'bold' : 'normal',
+                            slotProps={{
+                              primary: {
+                                sx: { fontWeight: isActive ? 'bold' : 'normal' },
+                              }
                             }}
                           />
                           {themedInfo && (
@@ -335,18 +347,22 @@ export const ComponentSidebar: React.FC<ComponentSidebarProps> = ({
           })}
           {searchQuery && filteredComponents.length === 0 && open && (
             <ListItem>
-              <ListItemText 
-                primary="No results found" 
+              <ListItemText
+                primary="No results found"
                 secondary={`No components match "${searchQuery}"`}
-                primaryTypographyProps={{ 
-                  color: 'text.secondary',
-                  fontStyle: 'italic',
-                  textAlign: 'center',
-                }} 
-                secondaryTypographyProps={{
-                  textAlign: 'center',
-                }}
-              />
+                slotProps={{
+                  primary: {
+                    color: 'text.secondary',
+                    sx: {
+                      fontStyle: 'italic',
+                      textAlign: 'center',
+                    },
+                  },
+
+                  secondary: {
+                    sx: { textAlign: 'center' },
+                  }
+                }} />
             </ListItem>
           )}
         </List>

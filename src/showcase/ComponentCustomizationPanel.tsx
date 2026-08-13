@@ -1243,10 +1243,8 @@ function Product${componentName}Wrapper() {
           <Stack
             direction="row"
             spacing={1}
-            alignItems="flex-start"
-            justifyContent="space-between"
             onClick={() => setExpanded((prev) => !prev)}
-            sx={{ cursor: 'pointer' }}
+            sx={{ alignItems: 'flex-start', justifyContent: 'space-between', cursor: 'pointer' }}
           >
             <Stack spacing={1}>
               <Typography variant="overline" color="text.secondary">

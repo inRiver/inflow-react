@@ -31,7 +31,7 @@ import { SpeedDial, SpeedDialAction } from '@mui/material';
 // <InflowProvider> only needs to be declared once at your app root - see Guidelines
 <SpeedDial ariaLabel="Actions" icon={<Edit />} direction={props.direction}>
   {actions.map((action) => (
-    <SpeedDialAction key={action.name} icon={action.icon} tooltipTitle={action.name} />
+    <SpeedDialAction key={action.name} icon={action.icon} slotProps={{ tooltip: { title: action.name } }} />
   ))}
 </SpeedDial>`;
 
@@ -47,7 +47,7 @@ import { SpeedDial, SpeedDialAction } from '@mui/material';
             icon={<Edit />}
           >
             {actions.map((action) => (
-              <SpeedDialAction key={action.name} icon={action.icon} tooltipTitle={action.name} />
+              <SpeedDialAction key={action.name} icon={action.icon} slotProps={{ tooltip: { title: action.name } }} />
             ))}
           </SpeedDial>
         </Box>
@@ -59,18 +59,18 @@ import { SpeedDial, SpeedDialAction } from '@mui/material';
 
       <DemoFrame title="All States">
         <Stack spacing={2} direction="column">
-          <Stack direction="row" spacing={2} flexWrap="wrap">
+          <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap' }}>
             <Box sx={{ position: 'relative', width: 220, height: 220 }}>
               <SpeedDial ariaLabel="Up actions" direction="up" open sx={{ position: 'absolute', bottom: 16, right: 16 }} icon={<Edit />}>
                 {actions.map((action) => (
-                  <SpeedDialAction key={`up-${action.name}`} icon={action.icon} tooltipTitle={action.name} />
+                  <SpeedDialAction key={`up-${action.name}`} icon={action.icon} slotProps={{ tooltip: { title: action.name } }} />
                 ))}
               </SpeedDial>
             </Box>
             <Box sx={{ position: 'relative', width: 220, height: 220 }}>
               <SpeedDial ariaLabel="Left actions" direction="left" open sx={{ position: 'absolute', bottom: 16, right: 16 }} icon={<Edit />}>
                 {actions.map((action) => (
-                  <SpeedDialAction key={`left-${action.name}`} icon={action.icon} tooltipTitle={action.name} />
+                  <SpeedDialAction key={`left-${action.name}`} icon={action.icon} slotProps={{ tooltip: { title: action.name } }} />
                 ))}
               </SpeedDial>
             </Box>

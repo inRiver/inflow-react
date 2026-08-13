@@ -134,33 +134,35 @@ export function InlineCustomizationPlayground({ excludedControls = [] }: InlineC
                   placeholder="e.g. #0b2d6e"
                   value={currentValue}
                   onChange={(event) => handleValueChange(control.name, event.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Box
-                          component="input"
-                          type="color"
-                          aria-label={`${displayLabel} color picker`}
-                          value={swatchValue}
-                          onChange={(event) => handleValueChange(control.name, (event.target as HTMLInputElement).value)}
-                          sx={{
-                            width: 22,
-                            height: 22,
-                            p: 0,
-                            border: 'none',
-                            borderRadius: '4px',
-                            cursor: 'pointer',
-                            bgcolor: 'transparent',
-                            '&::-webkit-color-swatch-wrapper': { p: 0 },
-                            '&::-webkit-color-swatch': {
-                              border: '1px solid',
-                              borderColor: 'divider',
+                  slotProps={{
+                    input: {
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Box
+                            component="input"
+                            type="color"
+                            aria-label={`${displayLabel} color picker`}
+                            value={swatchValue}
+                            onChange={(event) => handleValueChange(control.name, (event.target as HTMLInputElement).value)}
+                            sx={{
+                              width: 22,
+                              height: 22,
+                              p: 0,
+                              border: 'none',
                               borderRadius: '4px',
-                            },
-                          }}
-                        />
-                      </InputAdornment>
-                    ),
+                              cursor: 'pointer',
+                              bgcolor: 'transparent',
+                              '&::-webkit-color-swatch-wrapper': { p: 0 },
+                              '&::-webkit-color-swatch': {
+                                border: '1px solid',
+                                borderColor: 'divider',
+                                borderRadius: '4px',
+                              },
+                            }}
+                          />
+                        </InputAdornment>
+                      ),
+                    }
                   }}
                 />
               </Box>

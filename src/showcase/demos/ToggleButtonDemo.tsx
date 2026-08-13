@@ -77,7 +77,7 @@ import { ToggleButton, ToggleButtonGroup } from '@mui/material';
 
       <DemoFrame title="All States">
         <Stack spacing={2} direction="column">
-          <Stack direction="row" spacing={2} flexWrap="wrap">
+          <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap' }}>
             <ToggleButtonGroup value={['bold']}>
               <ToggleButton value="bold">
                 <FormatBold />

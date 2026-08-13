@@ -118,7 +118,7 @@ export const PreRenderedPage: React.FC = () => {
   return (
     <Box sx={{ p: 4, maxWidth: 1200, margin: '0 auto' }}>
       <Typography variant="h4" gutterBottom>Pre-Rendered Themed Components</Typography>
-      <Typography variant="body1" color="text.secondary" paragraph>
+      <Typography variant="body1" color="text.secondary" component="p" sx={{ mb: 2 }}>
         Production-ready components utilizing Inflow design tokens that can be easily copy-pasted into projects.
       </Typography>
 
@@ -128,7 +128,7 @@ export const PreRenderedPage: React.FC = () => {
         {componentsList.map((comp) => (
           <Box key={comp.name}>
             <Typography variant="h5" gutterBottom>{comp.name}</Typography>
-            <Typography variant="body2" color="text.secondary" paragraph>{comp.description}</Typography>
+            <Typography variant="body2" color="text.secondary" component="p" sx={{ mb: 2 }}>{comp.description}</Typography>
             
             <Paper variant="outlined" sx={{ p: 3, mb: 2, backgroundColor: '#f9f9fa' }}>
               {comp.component}
@@ -161,7 +161,7 @@ export const PreRenderedPage: React.FC = () => {
         {/* ThemedDialog needs special handling for open/close state */}
          <Box>
            <Typography variant="h5" gutterBottom>ThemedDialog</Typography>
-           <Typography variant="body2" color="text.secondary" paragraph>
+           <Typography variant="body2" color="text.secondary" component="p" sx={{ mb: 2 }}>
              A dialog component with Inflow tokens.
            </Typography>
           

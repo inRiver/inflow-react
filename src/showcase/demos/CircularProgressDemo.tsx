@@ -63,12 +63,12 @@ import { CircularProgress } from '@mui/material';
       <DemoFrame title="All States">
         <Stack spacing={2} direction="column">
           
-          <Stack direction="row" spacing={4} alignItems="center">
+          <Stack direction="row" spacing={4} sx={{ alignItems: 'center' }}>
             <CircularProgress />
             <CircularProgress variant="determinate" value={75} />
             <CircularProgress color="secondary" />
             <CircularProgress color="error" />
-            <Stack spacing={0.75} alignItems="center">
+            <Stack spacing={0.75} sx={{ alignItems: 'center' }}>
               <CircularProgress size={20} />
               <Typography variant="caption" color="text.secondary">
                 size=20

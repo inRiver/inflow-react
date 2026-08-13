@@ -68,16 +68,18 @@ export function ComponentSearchDialog({ open, onClose }: ComponentSearchDialogPr
       onClose={onClose}
       fullWidth
       maxWidth="sm"
-      PaperProps={{
-        sx: {
-          mt: { xs: 4, sm: 10 },
-          borderRadius: 4,
-          overflow: 'hidden',
-          backgroundImage: 'none',
-          bgcolor: theme.palette.background.paper,
-          border: `1px solid ${alpha(theme.palette.primary.main, 0.12)}`,
-          boxShadow: `0 24px 80px ${alpha(theme.palette.common.black, 0.22)}`,
-        },
+      slotProps={{
+        paper: {
+          sx: {
+            mt: { xs: 4, sm: 10 },
+            borderRadius: 4,
+            overflow: 'hidden',
+            backgroundImage: 'none',
+            bgcolor: theme.palette.background.paper,
+            border: `1px solid ${alpha(theme.palette.primary.main, 0.12)}`,
+            boxShadow: `0 24px 80px ${alpha(theme.palette.common.black, 0.22)}`,
+          },
+        }
       }}
     >
       <DialogContent sx={{ p: 0 }}>
@@ -130,13 +132,16 @@ export function ComponentSearchDialog({ open, onClose }: ComponentSearchDialogPr
                 {...params}
                 autoFocus
                 placeholder="Search components, categories, or slugs"
-                InputProps={{
-                  ...params.InputProps,
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Icon baseClassName="material-icons-outlined">search</Icon>
-                    </InputAdornment>
-                  ),
+                slotProps={{
+                  ...params.slotProps,
+                  input: {
+                    ...params.slotProps.input,
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Icon baseClassName="material-icons-outlined">search</Icon>
+                      </InputAdornment>
+                    ),
+                  }
                 }}
               />
             )}
@@ -214,8 +219,7 @@ export function ComponentSearchDialog({ open, onClose }: ComponentSearchDialogPr
           <Stack
             direction={{ xs: 'column', sm: 'row' }}
             spacing={1}
-            justifyContent="space-between"
-            sx={{ mt: 2, color: 'text.secondary' }}
+            sx={{ mt: 2, color: 'text.secondary', justifyContent: 'space-between' }}
           >
             <Typography variant="caption">Press ↑ ↓ to browse and Enter to open.</Typography>
             <Typography variant="caption">Esc closes search</Typography>

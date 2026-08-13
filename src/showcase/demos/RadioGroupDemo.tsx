@@ -54,7 +54,7 @@ import { FormControlLabel, Radio, RadioGroup } from '@mui/material';
 
       <DemoFrame title="All States">
         <Stack spacing={2} direction="column">
-          <Stack direction="row" spacing={4} flexWrap="wrap">
+          <Stack direction="row" spacing={4} sx={{ flexWrap: 'wrap' }}>
             <FormControl>
               <FormLabel>Gender</FormLabel>
               <RadioGroup value={value} onChange={(event) => setValue(event.target.value)}>

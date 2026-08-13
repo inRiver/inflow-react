@@ -2,7 +2,7 @@
 
 Shared Inflow React and MUI theme, design tokens, and themed components for Inriver product UIs.
 
-[![npm version](https://img.shields.io/npm/v/@inriver/inflow-react.svg)](https://www.npmjs.com/package/@inriver/inflow-react) [![license](https://img.shields.io/npm/l/@inriver/inflow-react.svg)](./LICENSE) [![React 19](https://img.shields.io/badge/React-19-61dafb)](https://react.dev/) [![MUI 7](https://img.shields.io/badge/MUI-7-007fff)](https://mui.com/) [![status: alpha](https://img.shields.io/badge/status-alpha-orange)](https://github.com/inRiver/inflow-react/issues)
+[![npm version](https://img.shields.io/npm/v/@inriver/inflow-react.svg)](https://www.npmjs.com/package/@inriver/inflow-react) [![license](https://img.shields.io/npm/l/@inriver/inflow-react.svg)](./LICENSE) [![React 19](https://img.shields.io/badge/React-19-61dafb)](https://react.dev/) [![MUI 9](https://img.shields.io/badge/MUI-9-007fff)](https://mui.com/) [![status: alpha](https://img.shields.io/badge/status-alpha-orange)](https://github.com/inRiver/inflow-react/issues)
 
 [Live showcase](https://inriver.github.io/inflow-react/) · [npm package](https://www.npmjs.com/package/@inriver/inflow-react)
 
@@ -16,7 +16,7 @@ Install a compatible version of each peer dependency in the consuming applicatio
 | --- | --- |
 | `react` | `^19.0.0` |
 | `react-dom` | `^19.0.0` |
-| `@mui/material` | `>=7.0.0 <8.0.0` |
+| `@mui/material` | `>=9.0.0 <10.0.0` |
 | `@emotion/react` | `^11.13.0` |
 | `@emotion/styled` | `^11.13.0` |
 
@@ -28,16 +28,16 @@ import { InflowProvider, ThemedButton } from '@inriver/inflow-react';
 
 Do not import showcase code, demo components, or internal source paths. The package ships TypeScript declarations and supports both ESM and CommonJS through its `exports` map.
 
-Compatibility is managed through checkpoint tags. The current checkpoint is `react19-mui7.3`. Use a checkpoint tag or an exact version when you need a known React and MUI contract. The `latest` tag is promoted automatically by CI and is never published to directly.
+Compatibility is managed through checkpoint tags. The current checkpoint is `react19-mui9.3` (React 19 / MUI 9.3). The previous checkpoint, `react19-mui7.3`, remains available for apps still on MUI 7. Use a checkpoint tag or an exact version when you need a known React and MUI contract. The `latest` tag is promoted automatically by CI and is never published to directly.
 
 ## Installation
 
 ```sh
-npm install @inriver/inflow-react@react19-mui7.3
-npm install react@^19.0.0 react-dom@^19.0.0 @mui/material@">=7.0.0 <8.0.0" @emotion/react@^11.13.0 @emotion/styled@^11.13.0
+npm install @inriver/inflow-react@react19-mui9.3
+npm install react@^19.0.0 react-dom@^19.0.0 @mui/material@">=9.0.0 <10.0.0" @emotion/react@^11.13.0 @emotion/styled@^11.13.0
 ```
 
-Use the checkpoint tag instead of `latest` so the installed package stays on the validated React 19 and MUI 7.3 compatibility channel.
+Use the checkpoint tag instead of `latest` so the installed package stays on the validated React 19 and MUI 9 compatibility channel. If you are still on MUI 7, use the `react19-mui7.3` checkpoint tag instead.
 
 ## Quick start
 

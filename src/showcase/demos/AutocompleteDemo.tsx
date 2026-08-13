@@ -82,7 +82,7 @@ import { Autocomplete, TextField } from '@mui/material';
 
       <DemoFrame title="All States">
         <Stack spacing={2} direction="column">
-          <Stack direction="row" spacing={2} flexWrap="wrap">
+          <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap' }}>
             <Box sx={{ width: 240 }}>
               <Autocomplete
                 options={topFilms}

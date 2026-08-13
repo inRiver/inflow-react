@@ -279,25 +279,40 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
       MuiButton: {
         defaultProps: { disableElevation: true, variant: 'contained' },
         styleOverrides: {
-          root: { borderRadius: T.radiusSm, fontWeight: 500, letterSpacing: '0.00625rem' },
+          root: {
+            borderRadius: T.radiusSm,
+            fontWeight: 500,
+            letterSpacing: '0.00625rem',
+            variants: [
+              {
+                props: { variant: 'contained', color: 'primary' },
+                style: {
+                  backgroundColor: T.navy700,
+                  color: mode === 'dark' ? T.navy900 : '#ffffff',
+                  '&:hover': { backgroundColor: T.navyDark },
+                },
+              },
+              {
+                props: { variant: 'outlined', color: 'primary' },
+                style: {
+                  color: T.navy700,
+                  borderColor: T.outlineVariant,
+                  '&:hover': { borderColor: T.navy700, backgroundColor: T.rowSelected },
+                },
+              },
+              {
+                props: { variant: 'text', color: 'primary' },
+                style: {
+                  color: T.navy700,
+                  '&:hover': { backgroundColor: T.rowSelected },
+                },
+              },
+            ],
+          },
           sizeSmall: ({ theme }) => ({ height: 30, padding: theme.spacing(0, 2), fontSize: '0.8125rem' }),
           sizeMedium: ({ theme }) => ({ height: 40, padding: theme.spacing(0, 3), fontSize: '0.875rem' }),
           sizeLarge: ({ theme }) => ({ height: 40, padding: theme.spacing(0, 3), fontSize: '0.875rem' }),
-          containedPrimary: {
-            backgroundColor: T.navy700,
-            color: mode === 'dark' ? T.navy900 : '#ffffff',
-            '&:hover': { backgroundColor: T.navyDark },
-          },
           outlined: { borderColor: T.outlineVariant },
-          outlinedPrimary: {
-            color: T.navy700,
-            borderColor: T.outlineVariant,
-            '&:hover': { borderColor: T.navy700, backgroundColor: T.rowSelected },
-          },
-          textPrimary: {
-            color: T.navy700,
-            '&:hover': { backgroundColor: T.rowSelected },
-          },
         },
       },
       MuiIconButton: {
@@ -625,18 +640,26 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
             '&.MuiChip-sizeMedium > .MuiChip-icon, &.MuiChip-sizeMedium > .MuiChip-deleteIcon': {
               fontSize: '1.125rem',
             },
+            variants: [
+              {
+                props: { variant: 'outlined', color: 'primary' },
+                style: {
+                  borderColor: T.outlineVariant,
+                  color: T.navy700,
+                  backgroundColor: T.surfaceLowest,
+                  '&:hover': { borderColor: T.navy400, backgroundColor: T.rowHover },
+                },
+              },
+              {
+                props: { variant: 'filled', color: 'primary' },
+                style: {
+                  backgroundColor: T.primaryTab,
+                  color: mode === 'dark' ? T.navy700 : T.navy700,
+                },
+              },
+            ],
           },
           outlined: { borderColor: T.outlineVariant, color: T.onSurfaceVariant, backgroundColor: T.surfaceLowest },
-          outlinedPrimary: {
-            borderColor: T.outlineVariant,
-            color: T.navy700,
-            backgroundColor: T.surfaceLowest,
-            '&:hover': { borderColor: T.navy400, backgroundColor: T.rowHover },
-          },
-          filledPrimary: {
-            backgroundColor: T.primaryTab,
-            color: mode === 'dark' ? T.navy700 : T.navy700,
-          },
         },
       },
       MuiAvatar: {
@@ -713,10 +736,38 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
 
       MuiAlert: {
         styleOverrides: {
-          standardError: { backgroundColor: mode === 'dark' ? T.diffRemovedBg : '#fdeded', color: mode === 'dark' ? T.diffRemovedText : '#5f2120' },
-          standardWarning: { backgroundColor: mode === 'dark' ? T.highlightYellow : '#fff4e5', color: mode === 'dark' ? T.onSurface : '#663c00' },
-          standardInfo: { backgroundColor: mode === 'dark' ? T.rowSelected : '#e5f6fd', color: mode === 'dark' ? T.onSurface : '#014361' },
-          standardSuccess: { backgroundColor: mode === 'dark' ? T.diffAddedBg : '#edf7ed', color: mode === 'dark' ? T.diffAddedText : '#1e4620' },
+          root: {
+            variants: [
+              {
+                props: { variant: 'standard', color: 'error' },
+                style: {
+                  backgroundColor: mode === 'dark' ? T.diffRemovedBg : '#fdeded',
+                  color: mode === 'dark' ? T.diffRemovedText : '#5f2120',
+                },
+              },
+              {
+                props: { variant: 'standard', color: 'warning' },
+                style: {
+                  backgroundColor: mode === 'dark' ? T.highlightYellow : '#fff4e5',
+                  color: mode === 'dark' ? T.onSurface : '#663c00',
+                },
+              },
+              {
+                props: { variant: 'standard', color: 'info' },
+                style: {
+                  backgroundColor: mode === 'dark' ? T.rowSelected : '#e5f6fd',
+                  color: mode === 'dark' ? T.onSurface : '#014361',
+                },
+              },
+              {
+                props: { variant: 'standard', color: 'success' },
+                style: {
+                  backgroundColor: mode === 'dark' ? T.diffAddedBg : '#edf7ed',
+                  color: mode === 'dark' ? T.diffAddedText : '#1e4620',
+                },
+              },
+            ],
+          },
         },
       },
       MuiSnackbarContent: {

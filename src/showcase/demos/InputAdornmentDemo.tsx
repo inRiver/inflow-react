@@ -39,17 +39,19 @@ import { InputAdornment, TextField } from '@mui/material';
   return (
     <>
       <DemoFrame title="Input Adornment - Interactive">
-        <Stack direction="row" spacing={2} flexWrap="wrap">
+        <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap' }}>
           <TextField
             label="Username"
             variant={props.variant}
             disabled={props.disabled}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <AccountCircle />
-                </InputAdornment>
-              ),
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <AccountCircle />
+                  </InputAdornment>
+                ),
+              }
             }}
           />
           <TextField
@@ -57,15 +59,17 @@ import { InputAdornment, TextField } from '@mui/material';
             type="password"
             variant={props.variant}
             disabled={props.disabled}
-            InputLabelProps={{ shrink: true }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <Visibility />
-                </InputAdornment>
-              ),
-            }}
-          />
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <Visibility />
+                  </InputAdornment>
+                ),
+              },
+
+              inputLabel: { shrink: true }
+            }} />
         </Stack>
       </DemoFrame>
 
@@ -75,38 +79,44 @@ import { InputAdornment, TextField } from '@mui/material';
 
       <DemoFrame title="All States">
         <Stack spacing={2} direction="column">
-          <Stack direction="row" spacing={2} flexWrap="wrap">
+          <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap' }}>
             <TextField
               label="Username"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <AccountCircle />
-                  </InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <AccountCircle />
+                    </InputAdornment>
+                  ),
+                }
               }}
             />
             <TextField
               label="Password"
               type="password"
-              InputLabelProps={{ shrink: true }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <Visibility />
-                  </InputAdornment>
-                ),
-              }}
-            />
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Visibility />
+                    </InputAdornment>
+                  ),
+                },
+
+                inputLabel: { shrink: true }
+              }} />
             <TextField
               disabled
               label="Disabled"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <AccountCircle />
-                  </InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <AccountCircle />
+                    </InputAdornment>
+                  ),
+                }
               }}
             />
           </Stack>

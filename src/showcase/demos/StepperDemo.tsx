@@ -295,7 +295,7 @@ const [activeStep, setActiveStep] = useState(1);
                 </Step>
               ))}
             </Stepper>
-            <Stack direction="row" spacing={2} justifyContent="center">
+            <Stack direction="row" spacing={2} sx={{ justifyContent: 'center' }}>
               <Button
                 variant="outlined"
                 disabled={themedExternalActiveStep === 0}
@@ -322,7 +322,7 @@ const [activeStep, setActiveStep] = useState(1);
               steps={CLICKABLE_STEPS}
               disableStepClick
             />
-            <Stack direction="row" spacing={2} justifyContent="center">
+            <Stack direction="row" spacing={2} sx={{ justifyContent: 'center' }}>
               <Button
                 variant="outlined"
                 disabled={themedExternalActiveStep === 0}

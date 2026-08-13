@@ -97,7 +97,7 @@ export function TokensPage() {
                     }}>
                     <Card sx={{ p: 2 }}>
                       <Box sx={{ width: '100%', height: 40, bgcolor: value, borderRadius: 1, mb: 1, border: '1px solid #ccc' }} />
-                      <Typography variant="caption" display="block">{key}</Typography>
+                      <Typography variant="caption" sx={{ display: 'block' }}>{key}</Typography>
                       <Typography variant="caption" color="text.secondary">{value}</Typography>
                     </Card>
                   </Grid>

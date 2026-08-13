@@ -62,7 +62,7 @@ import { Checkbox, FormControlLabel, FormGroup } from '@mui/material';
 
       <DemoFrame title="All States">
         <Stack spacing={2} direction="column">
-          <Stack direction="row" spacing={2} flexWrap="wrap">
+          <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap' }}>
             <FormGroup>
               <FormControlLabel control={<Checkbox defaultChecked />} label="React" />
               <FormControlLabel control={<Checkbox />} label="Vue" />

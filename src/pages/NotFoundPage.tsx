@@ -5,7 +5,7 @@ import * as Icons from '@mui/icons-material';
 export function NotFoundPage() {
   return (
     <Container maxWidth="sm" sx={{ py: 8, textAlign: 'center' }}>
-      <Stack spacing={4} alignItems="center">
+      <Stack spacing={4} sx={{ alignItems: 'center' }}>
         <Icons.SearchOff sx={{ fontSize: 80, color: 'text.secondary' }} />
         <Box>
           <Typography variant="h3" gutterBottom>

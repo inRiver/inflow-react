@@ -37,7 +37,7 @@ export function LandingPage() {
           <Typography variant="subtitle1" color="text.secondary">
             Explore all {totalComponents} Material UI components themed for Inflow
           </Typography>
-          <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ mt: 2, gap: 1 }}>
+          <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', mt: 2, gap: 1 }}>
             <Chip label={`@inriver/inflow-react v${pkg.version}`} size="small" color="primary" />
             <Chip label={`React ${reactVersion}`} size="small" variant="outlined" />
             <Chip label={`MUI ${muiVersion}`} size="small" variant="outlined" />
@@ -49,8 +49,10 @@ export function LandingPage() {
           <Stack
             direction={{ xs: 'column', md: 'row' }}
             spacing={3}
-            alignItems={{ xs: 'flex-start', md: 'center' }}
-            justifyContent="space-between"
+            sx={{
+              alignItems: { xs: 'flex-start', md: 'center' },
+              justifyContent: 'space-between',
+            }}
           >
             <Box>
               <Typography variant="h5" gutterBottom>
@@ -89,10 +91,10 @@ export function LandingPage() {
                     <Typography variant="h6" component="div">
                       {category.label}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" textAlign="center">
+                    <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center' }}>
                       {category.components.length} Components
                     </Typography>
-                    <Typography variant="caption" color="text.secondary" textAlign="center" sx={{ fontStyle: 'italic' }}>
+                    <Typography variant="caption" color="text.secondary" sx={{ textAlign: 'center', fontStyle: 'italic' }}>
                       Browse in sidebar or open the full index
                     </Typography>
                   </CardContent>
@@ -124,7 +126,7 @@ export function LandingPage() {
                   }}>
                   <Card>
                     <CardActionArea component={Link} to={`/examples/${example.id}`} sx={{ p: 2 }}>
-                      <Stack direction="row" spacing={2} alignItems="center">
+                      <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
                         <Icon color="primary" />
                         <Box>
                           <Typography variant="subtitle1">{example.label}</Typography>
@@ -147,9 +149,11 @@ export function LandingPage() {
           <Stack
             direction={{ xs: 'column', sm: 'row' }}
             spacing={2}
-            alignItems={{ xs: 'flex-start', sm: 'center' }}
-            justifyContent="space-between"
-            sx={{ mb: 2 }}
+            sx={{
+              alignItems: { xs: 'flex-start', sm: 'center' },
+              justifyContent: 'space-between',
+              mb: 2,
+            }}
           >
             <Box>
               <Typography variant="h5" gutterBottom>

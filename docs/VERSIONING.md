@@ -37,17 +37,26 @@ Published versions must be treated as immutable. If a release is wrong, publish 
 A checkpoint is the contract between the theme package and consuming apps. The current checkpoint is:
 
 ```text
+React 19 / MUI 9.3
+dist-tag: react19-mui9.3
+peer range: @mui/material >=9.0.0 <10.0.0
+```
+
+Previous checkpoint (still available for apps on MUI 7):
+
+```text
 React 19 / MUI 7.3
 dist-tag: react19-mui7.3
 peer range: @mui/material >=7.0.0 <8.0.0
 ```
 
-The MUI range is intentionally narrow. If MUI 6.4 changes component behavior, that should be validated as a new checkpoint instead of silently affecting existing apps.
+The MUI range is intentionally narrow. If a MUI minor or major changes component behavior, that should be validated as a new checkpoint instead of silently affecting existing apps.
 
-Examples of new checkpoints:
+Examples of checkpoints:
 
-- `react19-mui7.3`
-- `react20-mui7`
+- `react19-mui7.3` (previous, MUI 7)
+- `react19-mui9.3` (current, MUI 9.3)
+- `react20-mui9.3` (future example)
 
 ## What changes each version segment means
 
@@ -65,7 +74,7 @@ Checkpoint tags can move across patch versions, for example from `0.1.0` to `0.1
 | --- | --- |
 | Complete freeze | `@inriver/inflow-react@0.1.0` |
 | Safe patch updates only | `~0.1.0` |
-| Follow validated React/MUI checkpoint | `@inriver/inflow-react@react19-mui6.3` |
+| Follow validated React/MUI checkpoint | `@inriver/inflow-react@react19-mui9.3` (current) or `@inriver/inflow-react@react19-mui7.3` (MUI 7) |
 | Evaluate upcoming baseline | `@inriver/inflow-react@next` or a prerelease package |
 | Local theme iteration | `npm link @inriver/inflow-react` |
 

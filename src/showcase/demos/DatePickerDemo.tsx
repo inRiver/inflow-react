@@ -43,8 +43,10 @@ import { TextField } from '@mui/material';
           label="Birthday"
           size={props.size}
           disabled={props.disabled}
-          InputLabelProps={{ shrink: true }}
           defaultValue="2024-01-01"
+          slotProps={{
+            inputLabel: { shrink: true }
+          }}
         />
       </DemoFrame>
 
@@ -54,10 +56,16 @@ import { TextField } from '@mui/material';
 
       <DemoFrame title="All States">
         <Stack spacing={2} direction="column">
-          <Stack direction="row" spacing={2} flexWrap="wrap">
-            <TextField type="date" label="Birthday" InputLabelProps={{ shrink: true }} defaultValue="2024-01-01" />
-            <TextField type="date" label="Anniversary" InputLabelProps={{ shrink: true }} defaultValue="2024-08-15" />
-            <TextField type="date" label="Disabled" InputLabelProps={{ shrink: true }} disabled />
+          <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap' }}>
+            <TextField type="date" label="Birthday" defaultValue="2024-01-01" slotProps={{
+              inputLabel: { shrink: true }
+            }} />
+            <TextField type="date" label="Anniversary" defaultValue="2024-08-15" slotProps={{
+              inputLabel: { shrink: true }
+            }} />
+            <TextField type="date" label="Disabled" disabled slotProps={{
+              inputLabel: { shrink: true }
+            }} />
           </Stack>
         </Stack>
       </DemoFrame>

@@ -67,7 +67,7 @@ function OnThisPageNav({ activeSection, visibleSectionIds, onNavigate }: OnThisP
       }}
     >
       <Stack spacing={1.5}>
-        <Stack direction="row" spacing={1} alignItems="center">
+        <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
           <PushPinRoundedIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
           <Typography variant="overline" color="text.secondary" sx={{ letterSpacing: '0.12em' }}>
             On this page
@@ -106,7 +106,7 @@ function OnThisPageNav({ activeSection, visibleSectionIds, onNavigate }: OnThisP
                   },
                 }}
               >
-                <Typography variant="body2" fontWeight={isActive ? 700 : 500}>
+                <Typography variant="body2" sx={{ fontWeight: isActive ? 700 : 500 }}>
                   {section.label}
                 </Typography>
               </Box>
@@ -209,7 +209,7 @@ export function ComponentPage() {
   if (!DemoComponent || !docMeta) {
     return (
       <Container sx={{ py: 4 }}>
-        <Stack spacing={3} alignItems="center" sx={{ textAlign: 'center', py: 4 }}>
+        <Stack spacing={3} sx={{ alignItems: 'center', textAlign: 'center', py: 4 }}>
           <Icons.SearchOff sx={{ fontSize: 60, color: 'text.secondary' }} />
           <Box>
             <Typography variant="h4" sx={{ mb: 1 }}>
@@ -234,7 +234,7 @@ export function ComponentPage() {
 
   return (
     <Container maxWidth="xl" sx={{ py: { xs: 3, md: 4 } }}>
-      <Grid container spacing={{ xs: 3, lg: 4 }} alignItems="flex-start">
+      <Grid container spacing={{ xs: 3, lg: 4 }} sx={{ alignItems: 'flex-start' }}>
         <Grid
           size={{
             xs: 12,
@@ -262,11 +262,13 @@ export function ComponentPage() {
                     <Stack
                       direction={{ xs: 'column', sm: 'row' }}
                       spacing={1.5}
-                      justifyContent="space-between"
-                      alignItems={{ xs: 'flex-start', sm: 'flex-start' }}
+                      sx={{
+                        justifyContent: 'space-between',
+                        alignItems: { xs: 'flex-start', sm: 'flex-start' },
+                      }}
                     >
                       <Stack spacing={1}>
-                        <Stack direction="row" spacing={1.25} alignItems="center" flexWrap="wrap">
+                        <Stack direction="row" spacing={1.25} sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
                           <Typography variant="h3">{componentLabel}</Typography>
                           <Chip
                             label={maturityStatus}

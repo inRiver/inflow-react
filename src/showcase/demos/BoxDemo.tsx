@@ -22,7 +22,7 @@ export function BoxDemo() {
 import { Box, Typography } from '@mui/material';
 
 // <InflowProvider> only needs to be declared once at your app root - see Guidelines
-<Box display={props.display} sx={{ bgcolor: 'primary.main', color: 'white', p: 2, borderRadius: 1 }}>
+<Box sx={{ display: props.display, bgcolor: 'primary.main', color: 'white', p: 2, borderRadius: 1 }}>
   <Typography>Box with theme colors</Typography>
 </Box>`;
 
@@ -30,8 +30,8 @@ import { Box, Typography } from '@mui/material';
     <>
       <DemoFrame title="Box - Interactive">
         <Box
-          display={props.display}
           sx={{
+            display: props.display,
             bgcolor: 'primary.main',
             color: 'white',
             p: 2,

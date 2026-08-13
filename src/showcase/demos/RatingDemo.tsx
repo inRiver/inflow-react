@@ -63,7 +63,7 @@ import { Rating } from '@mui/material';
 
       <DemoFrame title="All States">
         <Stack spacing={2} direction="column">
-          <Stack direction="row" spacing={2} flexWrap="wrap">
+          <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap' }}>
             <Rating value={value} onChange={(_event, newValue) => setValue(newValue)} />
             <Rating value={4} readOnly />
             <Rating value={3} disabled />

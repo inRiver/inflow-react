@@ -49,7 +49,7 @@ import { BottomNavigation, BottomNavigationAction } from '@mui/material';
 
       <DemoFrame title="All States">
         <Stack spacing={2} direction="column">
-          <Stack direction="row" spacing={2} flexWrap="wrap">
+          <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap' }}>
             <Box sx={{ width: 320 }}>
               <BottomNavigation value={0} showLabels>
                 <BottomNavigationAction label="Home" icon={<Home />} />

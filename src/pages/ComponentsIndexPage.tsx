@@ -40,7 +40,7 @@ export function ComponentsIndexPage() {
                 }}>
                 <Card sx={{ height: '100%' }}>
                   <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 3, p: 3 }}>
-                    <Stack direction="row" spacing={2} alignItems="center">
+                    <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
                       <Icon color="primary" sx={{ fontSize: 32 }} />
                       <Box>
                         <Typography variant="h6">{category.label}</Typography>

@@ -109,7 +109,7 @@ import { ThemedChip } from '@inriver/inflow-react';
       <DemoFrame title="All States">
         <Stack spacing={2} direction="column">
           
-          <Stack direction="row" spacing={2} alignItems="center">
+          <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
             <Chip label="Default" />
             <Chip label="Outlined" variant="outlined" />
             <Chip label="Disabled" disabled />

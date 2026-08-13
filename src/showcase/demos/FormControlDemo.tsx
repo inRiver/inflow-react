@@ -82,7 +82,7 @@ import { FormControl, FormHelperText, FormLabel, TextField } from '@mui/material
 
       <DemoFrame title="All States">
         <Stack spacing={2} direction="column">
-          <Stack direction="row" spacing={2} flexWrap="wrap">
+          <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap' }}>
             <FormControl sx={{ width: 280 }}>
               <FormLabel>Email</FormLabel>
               <TextField variant="outlined" placeholder="user@example.com" />

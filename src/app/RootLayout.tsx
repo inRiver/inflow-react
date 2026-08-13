@@ -134,7 +134,7 @@ export function RootLayout() {
                 <span className="material-icons-outlined">search</span>
               </IconButton>
             ) : (
-              <Stack direction="row" spacing={1.25} alignItems="center">
+              <Stack direction="row" spacing={1.25} sx={{ alignItems: 'center' }}>
                 <ButtonBase
                   onClick={() => setSearchDialogOpen(true)}
                   sx={{
@@ -155,7 +155,7 @@ export function RootLayout() {
                     },
                   }}
                 >
-                  <Stack direction="row" spacing={1.25} alignItems="center">
+                  <Stack direction="row" spacing={1.25} sx={{ alignItems: 'center' }}>
                     <span className="material-icons-outlined" aria-hidden="true">
                       search
                     </span>
