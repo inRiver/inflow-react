@@ -70,14 +70,15 @@ export function App() {
 
 All public exports are available from `@inriver/inflow-react`.
 
-| Group | Exports |
-| --- | --- |
-| Provider | `InflowProvider`, `InflowProviderProps` |
-| Theme factories | `createInflowTheme`, `getInflowPalette`, `getInflowTokensForMode`, `createDefaultTheme` |
-| Theme instances | `inflowTheme`, `defaultTheme` |
-| Theme tokens | `inflowTokens`, `inflowCustomColors`, `inflowSpacing` |
-| Theme flags & types | `INFLOW_DARK_MODE_ENABLED`, `InflowColorMode` |
-| Components | `ThemedButton`, `ThemedTextField`, `ThemedCard`, `ThemedChip`, `ThemedDialog`, `ThemedTable`, plus their prop types and `Column` |
+| Group | Exports | Import path |
+| --- | --- | --- |
+| Provider | `InflowProvider`, `InflowProviderProps` | `@inriver/inflow-react` |
+| Theme factories | `createInflowTheme`, `getInflowPalette`, `getInflowTokensForMode`, `createDefaultTheme` | `@inriver/inflow-react` |
+| Theme instances | `inflowTheme`, `defaultTheme` | `@inriver/inflow-react` |
+| Theme tokens | `inflowTokens`, `inflowCustomColors`, `inflowSpacing` | `@inriver/inflow-react` |
+| Theme flags & types | `INFLOW_DARK_MODE_ENABLED`, `InflowColorMode` | `@inriver/inflow-react` |
+| Components | `ThemedButton`, `ThemedTextField`, `ThemedCard`, `ThemedChip`, `ThemedDialog`, `ThemedTable`, plus their prop types and `Column` | `@inriver/inflow-react` |
+| AG Grid theme params | `inflowGridThemeParams`, `InflowGridThemeParams` | `@inriver/inflow-react/ag-grid` |
 
 The components are thin MUI wrappers. See the [live showcase](https://inriver.github.io/inflow-react/) for behavior and props.
 
@@ -93,6 +94,28 @@ const customSurface = {
   borderRadius: inflowTokens.radius.md,
 };
 ```
+
+## AG Grid theme
+
+Use `@inriver/inflow-react/ag-grid` to theme AG Grid v33+ with `themeQuartz.withParams`. The export is a dependency-free parameter object, so the AG Grid packages remain the consumer&apos;s dependency.
+
+```tsx
+import { themeQuartz } from 'ag-grid-community'; // or 'ag-grid-enterprise'
+import { AgGridReact } from 'ag-grid-react';
+import { inflowGridThemeParams } from '@inriver/inflow-react/ag-grid';
+
+const theme = themeQuartz.withParams(inflowGridThemeParams);
+
+export function ProductsGrid({ rows, columns }) {
+  return (
+    <div style={{ width: '100%', height: 400 }}>
+      <AgGridReact theme={theme} rowData={rows} columnDefs={columns} />
+    </div>
+  );
+}
+```
+
+Override density per grid by spreading the params: `themeQuartz.withParams({ ...inflowGridThemeParams, headerHeight: 36, rowHeight: 35 })`.
 
 Inside an `InflowProvider`, use the scoped CSS variables for CSS authored outside MUI:
 

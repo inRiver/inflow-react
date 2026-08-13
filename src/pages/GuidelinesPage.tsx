@@ -103,6 +103,20 @@ export const CompactStatusChip = styled(ThemedChip)(({ theme }) => ({
   fontSize: theme.typography.caption.fontSize,
 }));`;
 
+const agGridThemeCode = `import { themeQuartz } from 'ag-grid-community'; // or 'ag-grid-enterprise'
+import { AgGridReact } from 'ag-grid-react';
+import { inflowGridThemeParams } from '@inriver/inflow-react/ag-grid';
+
+const theme = themeQuartz.withParams(inflowGridThemeParams);
+
+export function ProductsGrid({ rows, columns }) {
+  return (
+    <div style={{ width: '100%', height: 400 }}>
+      <AgGridReact theme={theme} rowData={rows} columnDefs={columns} />
+    </div>
+  );
+}`;
+
 const tokenCode = `import { Box } from '@mui/material';
 import { inflowTokens } from '@inriver/inflow-react';
 
@@ -135,6 +149,7 @@ const publicExports = [
   'inflowTheme and defaultTheme',
   'inflowTokens, inflowCustomColors, and inflowSpacing',
   'ThemedButton, ThemedChip, ThemedTextField, ThemedCard, ThemedDialog, and ThemedTable',
+  'inflowGridThemeParams (via @inriver/inflow-react/ag-grid)',
 ];
 
 const releaseTerms = [
@@ -178,8 +193,8 @@ const architectureItems = [
   },
   {
     label: 'Package boundary',
-    path: 'src/index.ts',
-    description: 'The only import surface consumers should use. Showcase pages and demos are documentation, not package API.',
+    path: 'src/index.ts + ./ag-grid subpath',
+    description: 'The only import surfaces consumers should use. Showcase pages and demos are documentation, not package API.',
   },
 ];
 
@@ -580,7 +595,28 @@ export function GuidelinesPage() {
         <Card>
           <CardContent>
             <Stack spacing={2}>
-              <Typography variant="h5">8. Use tokens sparingly for custom surfaces</Typography>
+              <Typography variant="h5">8. Use the AG Grid theme params</Typography>
+              <Typography variant="body2" color="text.secondary">
+                The <code>@inriver/inflow-react/ag-grid</code> subpath exports{' '}
+                <code>inflowGridThemeParams</code>, a dependency-free parameter object for AG Grid
+                Theming API (v33+). Apply it with <code>themeQuartz.withParams</code>. This is not a
+                component or provider, and AG Grid packages are the consumer&apos;s dependency,
+                either <code>ag-grid-community</code> or <code>ag-grid-enterprise</code>.
+              </Typography>
+              <CodeBlock code={agGridThemeCode} language="tsx" />
+              <Typography variant="body2" color="text.secondary">
+                Override density per grid by spreading the params into a new <code>withParams</code>{' '}
+                call, for example{' '}
+                <code>themeQuartz.withParams(&#123; ...inflowGridThemeParams, headerHeight: 36, rowHeight: 35 &#125;)</code>.
+              </Typography>
+            </Stack>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent>
+            <Stack spacing={2}>
+              <Typography variant="h5">9. Use tokens sparingly for custom surfaces</Typography>
               <Typography variant="body2" color="text.secondary">
                 Prefer the MUI theme first. Reach for tokens when building custom surfaces that are
                 not MUI components or when a value needs to be shared outside <code>sx</code>.

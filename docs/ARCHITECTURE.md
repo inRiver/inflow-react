@@ -34,12 +34,16 @@ flowchart TB
 
 ## Package boundary
 
-The public package entry is `src/index.ts`:
+The public package entry is `src/index.ts`, plus the additional `./ag-grid` subpath:
 
 ```ts
+// src/index.ts
 export * from './theme';
 export * from './components/themed';
 export * from './providers';
+
+// src/ag-grid/index.ts
+export { inflowGridThemeParams } from '@inriver/inflow-react/ag-grid';
 ```
 
 That means consumers get:
@@ -49,6 +53,7 @@ That means consumers get:
 - `inflowTokens`, `inflowCustomColors`, `inflowSpacing`
 - `InflowProvider`
 - `ThemedButton`, `ThemedChip`, `ThemedTextField`, `ThemedCard`, `ThemedDialog`, `ThemedTable`
+- `inflowGridThemeParams` from `@inriver/inflow-react/ag-grid`
 
 They should not import from `src/pages`, `src/showcase`, `src/app`, or individual source paths. The library build and declarations are limited by `tsconfig.lib.json` to the package boundary:
 
@@ -57,6 +62,7 @@ src/index.ts
 src/theme/**/*
 src/components/themed/**/*
 src/providers/**/*
+src/ag-grid/**/*
 ```
 
 ## Theme source of truth
