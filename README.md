@@ -20,7 +20,7 @@ Install a compatible version of each peer dependency in the consuming applicatio
 | `@emotion/react` | `^11.13.0` |
 | `@emotion/styled` | `^11.13.0` |
 
-Import from the package root only:
+Import most APIs from the package root; import AG Grid theme parameters from the `@inriver/inflow-react/ag-grid` subpath:
 
 ```ts
 import { InflowProvider, ThemedButton } from '@inriver/inflow-react';
@@ -68,7 +68,7 @@ export function App() {
 
 ## API overview
 
-All public exports are available from `@inriver/inflow-react`.
+Most public exports are available from `@inriver/inflow-react`; AG Grid theme parameters are available from `@inriver/inflow-react/ag-grid`.
 
 | Group | Exports | Import path |
 | --- | --- | --- |

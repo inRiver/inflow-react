@@ -43,7 +43,9 @@ export * from './components/themed';
 export * from './providers';
 
 // src/ag-grid/index.ts
-export { inflowGridThemeParams } from '@inriver/inflow-react/ag-grid';
+export const inflowGridThemeParams = {
+  // AG Grid theme parameter values
+};
 ```
 
 That means consumers get:

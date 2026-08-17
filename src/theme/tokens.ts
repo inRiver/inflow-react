@@ -73,7 +73,14 @@ export const inflowTokens = {
   },
   
   spacing: inflowSpacing,
-  
+
+  grid: {
+    fontSize: '0.875rem',
+    headerHeight: 48,
+    rowHeight: 52,
+    cellWidgetSpacing: 12,
+  },
+
   shadows: {
     e1: '0 1px 3px 1px rgba(0,0,0,0.15), 0 1px 2px 0 rgba(0,0,0,0.30)',
     e2: '0 2px 6px 2px rgba(0,0,0,0.15), 0 1px 2px 0 rgba(0,0,0,0.30)',

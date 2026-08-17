@@ -1,4 +1,4 @@
-import { getInflowTokensForMode } from '../theme/inflow';
+import { lightTokens } from '../theme/inflow-tokens';
 import { inflowTokens } from '../theme/tokens';
 
 /**
@@ -21,9 +21,6 @@ export interface InflowGridThemeParams {
   readonly selectedRowBackgroundColor: string;
   readonly rangeSelectionBorderColor: string;
   readonly rangeSelectionBackgroundColor: string;
-  readonly rangeSelectionBackgroundColor2: string;
-  readonly rangeSelectionBackgroundColor3: string;
-  readonly rangeSelectionBackgroundColor4: string;
 
   /** AG Grid border parameters. */
   readonly inputFocusBorder: string;
@@ -49,8 +46,6 @@ export interface InflowGridThemeParams {
   readonly wrapperBorderRadius: number;
 }
 
-const lightTokens = getInflowTokensForMode('light');
-
 export const inflowGridThemeParams = {
   accentColor: lightTokens.navy700,
   backgroundColor: lightTokens.white,
@@ -64,9 +59,6 @@ export const inflowGridThemeParams = {
   selectedRowBackgroundColor: lightTokens.primaryFixed,
   rangeSelectionBorderColor: lightTokens.navy700,
   rangeSelectionBackgroundColor: lightTokens.primaryFixed,
-  rangeSelectionBackgroundColor2: lightTokens.primaryFixed,
-  rangeSelectionBackgroundColor3: lightTokens.primaryFixed,
-  rangeSelectionBackgroundColor4: lightTokens.primaryFixed,
   inputFocusBorder: `1px solid ${lightTokens.navy700}`,
   rowBorder: `1px solid ${lightTokens.outlineVariant}`,
   checkboxCheckedBackgroundColor: lightTokens.navy700,
@@ -78,10 +70,10 @@ export const inflowGridThemeParams = {
   checkboxIndeterminateBorderColor: lightTokens.navy700,
   checkboxIndeterminateShapeColor: lightTokens.white,
   fontFamily: inflowTokens.typography.fontFamily,
-  fontSize: '0.875rem',
-  headerHeight: 48,
-  rowHeight: 52,
-  cellHorizontalPadding: 16,
-  cellWidgetSpacing: 12,
+  fontSize: inflowTokens.grid.fontSize,
+  headerHeight: inflowTokens.grid.headerHeight,
+  rowHeight: inflowTokens.grid.rowHeight,
+  cellHorizontalPadding: inflowTokens.spacing.s,
+  cellWidgetSpacing: inflowTokens.grid.cellWidgetSpacing,
   wrapperBorderRadius: inflowTokens.radius.xs,
 } as const satisfies InflowGridThemeParams;

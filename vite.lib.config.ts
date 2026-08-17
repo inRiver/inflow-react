@@ -18,6 +18,10 @@ export default defineConfig({
     sourcemap: true,
     emptyOutDir: false,
     rollupOptions: {
+      output: [
+        { format: 'es', chunkFileNames: '[name].js' },
+        { format: 'cjs', chunkFileNames: '[name].cjs' },
+      ],
       external: [
         'react',
         'react-dom',

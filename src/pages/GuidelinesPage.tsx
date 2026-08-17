@@ -311,8 +311,9 @@ export function GuidelinesPage() {
               <Typography variant="h5">How the repo is structured</Typography>
               <Typography variant="body2" color="text.secondary">
                 The showcase and the library live together, but only the package boundary is stable
-                API. Apps should import from <code>@inriver/inflow-react</code>, not from source files,
-                showcase pages, or demo components.
+                API. Apps should import from <code>@inriver/inflow-react</code> or the{' '}
+                <code>@inriver/inflow-react/ag-grid</code> subpath, not from source files, showcase
+                pages, or demo components.
               </Typography>
               <List dense disablePadding>
                 {architectureItems.map((item) => (
