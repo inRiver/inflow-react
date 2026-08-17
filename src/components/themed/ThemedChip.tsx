@@ -1,11 +1,20 @@
 import { forwardRef } from 'react';
-import { Chip } from '@mui/material';
+import { Chip, Icon } from '@mui/material';
 import type { ChipProps } from '@mui/material';
 import type { Theme } from '@mui/material/styles';
 
-export interface ThemedChipProps extends ChipProps {
+export type ThemedChipVariant = ChipProps['variant'] | 'filled-primary' | 'outlined-primary';
+export type ThemedChipSize = ChipProps['size'] | 'sm' | 'md' | 'lg';
+
+export interface ThemedChipProps extends Omit<ChipProps, 'size' | 'variant'> {
   /** If true, applies specific inflow colors regardless of global overrides */
   inflowVariant?: boolean;
+  /** MUI variants plus the Inflow primary variants used by the design system. */
+  variant?: ThemedChipVariant;
+  /** MUI sizes plus the Inflow design-system size aliases. */
+  size?: ThemedChipSize;
+  /** Material Symbols glyph rendered before the label. */
+  leadingIcon?: string;
 }
 
 /**
@@ -26,19 +35,60 @@ export interface ThemedChipProps extends ChipProps {
  * ```
  */
 export const ThemedChip = forwardRef<HTMLDivElement, ThemedChipProps>(
-  ({ inflowVariant = true, sx, ...props }, ref) => {
+  ({
+    inflowVariant = true,
+    sx,
+    variant: requestedVariant,
+    color: requestedColor,
+    size: requestedSize = 'medium',
+    leadingIcon,
+    ...props
+  }, ref) => {
+    const isPrimaryVariant = requestedVariant === 'filled-primary' || requestedVariant === 'outlined-primary';
+    const variant = requestedVariant === 'filled-primary'
+      ? 'filled'
+      : requestedVariant === 'outlined-primary'
+        ? 'outlined'
+        : requestedVariant;
+    const color = isPrimaryVariant ? 'primary' : requestedColor;
+    const size = requestedSize === 'sm'
+      ? 'small'
+      : requestedSize === 'md' || requestedSize === 'lg'
+        ? 'medium'
+        : requestedSize;
+    const iconSize = requestedSize === 'sm' || requestedSize === 'small'
+      ? 14
+      : requestedSize === 'lg'
+        ? 20
+        : 18;
+    const sizeStyles = requestedSize === 'lg'
+      ? {
+          '&&.MuiChip-sizeMedium': {
+            height: 40,
+            paddingLeft: 20,
+            paddingRight: 20,
+            fontSize: '1rem',
+            gap: 10,
+          },
+          '&& .MuiChip-label': { paddingLeft: 0, paddingRight: 0 },
+          '&& .MuiChip-icon': { marginLeft: 0, marginRight: 0, color: 'inherit' },
+        }
+      : undefined;
     const customStyles = inflowVariant
       ? (theme: Theme) => ({
           borderRadius: '9999px',
           fontWeight: theme.typography.fontWeightMedium,
           letterSpacing: '0.00625rem',
-          ...(props.variant === 'outlined' && {
-            borderColor: theme.palette.inflow.outlineVariant,
-            color: props.color === 'primary'
+          ...(variant === 'outlined' && {
+            backgroundColor: requestedVariant === 'outlined-primary' ? 'transparent' : undefined,
+            borderColor: requestedVariant === 'outlined-primary'
+              ? theme.palette.primary.main
+              : theme.palette.inflow.outlineVariant,
+            color: color === 'primary'
               ? theme.palette.primary.main
               : theme.palette.text.secondary,
           }),
-          ...(props.variant !== 'outlined' && props.color === 'primary' && {
+          ...(variant !== 'outlined' && color === 'primary' && {
             backgroundColor: theme.palette.inflow.primaryTab,
             color: theme.palette.primary.main,
             '& .MuiChip-deleteIcon': {
@@ -50,7 +100,7 @@ export const ThemedChip = forwardRef<HTMLDivElement, ThemedChipProps>(
               },
             },
           }),
-          ...(props.variant !== 'outlined' && props.color === 'error' && {
+          ...(variant !== 'outlined' && color === 'error' && {
             backgroundColor: theme.palette.inflow.diffRemovedBg,
             color: theme.palette.inflow.diffRemovedText,
             '& .MuiChip-deleteIcon': {
@@ -61,7 +111,7 @@ export const ThemedChip = forwardRef<HTMLDivElement, ThemedChipProps>(
               },
             },
           }),
-          ...(props.variant !== 'outlined' && props.color === 'success' && {
+          ...(variant !== 'outlined' && color === 'success' && {
             backgroundColor: theme.palette.inflow.diffAddedBg,
             color: theme.palette.inflow.diffAddedText,
           }),
@@ -69,14 +119,26 @@ export const ThemedChip = forwardRef<HTMLDivElement, ThemedChipProps>(
       : undefined;
 
     return (
-      <Chip
-        ref={ref}
-        sx={[
-          customStyles,
-          ...(Array.isArray(sx) ? sx : [sx])
-        ]}
-        {...props}
-      />
+        <Chip
+          ref={ref}
+          variant={variant}
+          color={color}
+          size={size}
+          icon={leadingIcon ? (
+            <Icon
+              baseClassName="material-icons-outlined"
+              sx={{ fontSize: `${iconSize}px !important`, ml: '6px' }}
+            >
+              {leadingIcon}
+            </Icon>
+          ) : undefined}
+          sx={[
+            customStyles,
+            sizeStyles,
+            ...(Array.isArray(sx) ? sx : [sx]),
+          ]}
+          {...props}
+        />
     );
   }
 );
