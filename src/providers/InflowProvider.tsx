@@ -49,6 +49,7 @@ const createInflowVariables = (theme: Theme) => ({
   '--infl-row-hover-color': theme.palette.inflow.rowHover,
   '--infl-row-selected-color': theme.palette.inflow.rowSelected,
   '--infl-mandatory-row-color': theme.palette.inflow.mandatoryRow,
+  '--infl-toast-info-bg-color': theme.palette.inflow.toastInfoBg,
 });
 
 /**

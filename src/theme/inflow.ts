@@ -40,6 +40,7 @@ interface InflowPalette {
   highlightRed: string;
   highlightYellow: string;
   mandatoryRow: string;
+  toastInfoBg: string;
 }
 
 declare module '@mui/material/styles' {
@@ -103,6 +104,7 @@ export const getInflowPalette = (mode: InflowColorMode): InflowPalette => {
     highlightRed: T.highlightRed,
     highlightYellow: T.highlightYellow,
     mandatoryRow: T.mandatoryRow,
+    toastInfoBg: T.toastInfoBg,
   };
 };
 
@@ -671,7 +673,7 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
       MuiSnackbarContent: {
         styleOverrides: {
           root: ({ theme }) => ({
-            backgroundColor: mode === 'dark' ? T.surfaceHighest : '#c9dcff',
+            backgroundColor: mode === 'dark' ? T.surfaceHighest : T.mandatoryRow,
             color: T.onSurface,
             borderRadius: T.radiusMd,
             boxShadow: 'none',

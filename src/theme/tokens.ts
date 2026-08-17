@@ -6,13 +6,13 @@ export const inflowCustomColors = {
   background: '#EBF1FC',
   buttonHover: '#91C2FD',
   certaintyHigh: '#2C9B4B',
-  certaintyMedium: '#FBC02D',
+  certaintyMedium: '#ff9800',
   dialogHeader: '#E3E9F8',
   highlightGreen: '#D6EFDD',
   highlightRed: '#F4D9D9',
-  highlightYellow: '#FAEDD1',
+  highlightYellow: '#fff2cc',
   primaryTab: '#C3DEFE',
-  rowMandatory: '#C9DCFF',
+  rowMandatory: '#e6f1ff',
   search: '#EBF1FC',
 } as const;
 
@@ -56,6 +56,7 @@ export const inflowTokens = {
     rowHover: '#f1f6fe',
     rowSelected: 'rgba(11,45,110,0.08)',
     rowSelectedHover: 'rgba(11,45,110,0.14)',
+    toastInfoBg: '#c9dcff',
     
     diffRemovedBg: '#f4d9d9',
     diffRemovedText: '#5f2120',
