@@ -35,10 +35,14 @@ const rowData: RowData[] = [
   { sku: 'SKU-008', name: 'Cable Organizer', category: 'Accessories', price: 15.0, status: 'Active' },
 ];
 
-const usageCode = `import { themeQuartz } from 'ag-grid-community';
+const usageCode = `import { ModuleRegistry, AllCommunityModule, themeQuartz } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import { inflowGridThemeParams } from '@inriver/inflow-react/ag-grid';
 
+// Register AG Grid modules once, at app startup.
+ModuleRegistry.registerModules([AllCommunityModule]);
+
+// Build the AG Grid theme from the Inflow params.
 const theme = themeQuartz.withParams(inflowGridThemeParams);
 
 export function ProductsGrid({ rows, columns }) {

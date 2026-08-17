@@ -100,10 +100,14 @@ const customSurface = {
 Use `@inriver/inflow-react/ag-grid` to theme AG Grid v33+ with `themeQuartz.withParams`. The export is a dependency-free parameter object, so the AG Grid packages remain the consumer&apos;s dependency.
 
 ```tsx
-import { themeQuartz } from 'ag-grid-community'; // or 'ag-grid-enterprise'
+import { ModuleRegistry, AllCommunityModule, themeQuartz } from 'ag-grid-community'; // or 'ag-grid-enterprise'
 import { AgGridReact } from 'ag-grid-react';
 import { inflowGridThemeParams } from '@inriver/inflow-react/ag-grid';
 
+// Register AG Grid modules once, at app startup.
+ModuleRegistry.registerModules([AllCommunityModule]);
+
+// Build the AG Grid theme from the Inflow params.
 const theme = themeQuartz.withParams(inflowGridThemeParams);
 
 export function ProductsGrid({ rows, columns }) {
