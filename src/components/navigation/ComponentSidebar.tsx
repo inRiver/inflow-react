@@ -208,6 +208,33 @@ export const ComponentSidebar: React.FC<ComponentSidebarProps> = ({
         {open && (
           <>
             <Typography variant="h6" sx={{ px: 2, pb: 1, fontWeight: 'bold', color: 'primary.main' }}>
+              Theme publishers
+            </Typography>
+            <List disablePadding>
+              <ListItem disablePadding>
+                <ListItemButton
+                  onClick={() => handleNavigate('/publishers/ag-grid')}
+                  selected={location.pathname === '/publishers/ag-grid'}
+                  sx={{
+                    px: 2.5,
+                  }}
+                >
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: 2,
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Icon baseClassName="material-icons-outlined">grid_on</Icon>
+                  </ListItemIcon>
+                  <ListItemText primary="AG Grid" slotProps={{
+                    primary: { sx: { fontWeight: 'bold' } }
+                  }} />
+                </ListItemButton>
+              </ListItem>
+            </List>
+            <Typography variant="h6" sx={{ px: 2, pb: 1, fontWeight: 'bold', color: 'primary.main' }}>
               Components
             </Typography>
             <Box sx={{ px: 2, pb: 2 }}>

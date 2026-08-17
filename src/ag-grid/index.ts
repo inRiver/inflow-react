@@ -12,7 +12,7 @@ export interface InflowGridThemeParams {
   readonly accentColor: string;
   readonly backgroundColor: string;
   readonly foregroundColor: string;
-  readonly dataColor: string;
+  readonly cellTextColor: string;
   readonly oddRowBackgroundColor: string;
   readonly headerBackgroundColor: string;
   readonly headerTextColor: string;
@@ -50,7 +50,7 @@ export const inflowGridThemeParams = {
   accentColor: lightTokens.navy700,
   backgroundColor: lightTokens.white,
   foregroundColor: lightTokens.onSurface,
-  dataColor: lightTokens.onSurfaceVariant,
+  cellTextColor: lightTokens.onSurfaceVariant,
   oddRowBackgroundColor: lightTokens.white,
   headerBackgroundColor: lightTokens.surfaceHighest,
   headerTextColor: lightTokens.onSurface,

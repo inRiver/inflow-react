@@ -12,6 +12,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import { Link } from 'react-router-dom';
 import { CodeBlock } from '../showcase/CodeBlock';
 import { INFLOW_DARK_MODE_ENABLED } from '../theme';
 import { THEMED_COMPONENT_INFO } from '../showcase/themedComponentInfo';
@@ -102,20 +103,6 @@ export const CompactStatusChip = styled(ThemedChip)(({ theme }) => ({
   height: 24,
   fontSize: theme.typography.caption.fontSize,
 }));`;
-
-const agGridThemeCode = `import { themeQuartz } from 'ag-grid-community'; // or 'ag-grid-enterprise'
-import { AgGridReact } from 'ag-grid-react';
-import { inflowGridThemeParams } from '@inriver/inflow-react/ag-grid';
-
-const theme = themeQuartz.withParams(inflowGridThemeParams);
-
-export function ProductsGrid({ rows, columns }) {
-  return (
-    <div style={{ width: '100%', height: 400 }}>
-      <AgGridReact theme={theme} rowData={rows} columnDefs={columns} />
-    </div>
-  );
-}`;
 
 const tokenCode = `import { Box } from '@mui/material';
 import { inflowTokens } from '@inriver/inflow-react';
@@ -600,15 +587,9 @@ export function GuidelinesPage() {
               <Typography variant="body2" color="text.secondary">
                 The <code>@inriver/inflow-react/ag-grid</code> subpath exports{' '}
                 <code>inflowGridThemeParams</code>, a dependency-free parameter object for AG Grid
-                Theming API (v33+). Apply it with <code>themeQuartz.withParams</code>. This is not a
-                component or provider, and AG Grid packages are the consumer&apos;s dependency,
-                either <code>ag-grid-community</code> or <code>ag-grid-enterprise</code>.
-              </Typography>
-              <CodeBlock code={agGridThemeCode} language="tsx" />
-              <Typography variant="body2" color="text.secondary">
-                Override density per grid by spreading the params into a new <code>withParams</code>{' '}
-                call, for example{' '}
-                <code>themeQuartz.withParams(&#123; ...inflowGridThemeParams, headerHeight: 36, rowHeight: 35 &#125;)</code>.
+                Theming API (v33+). Apply it with <code>themeQuartz.withParams</code>. See the{' '}
+                <Link to="/publishers/ag-grid">AG Grid showcase</Link> for a live demo and usage
+                snippet.
               </Typography>
             </Stack>
           </CardContent>

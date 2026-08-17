@@ -5,6 +5,7 @@ import { ComponentsIndexPage } from '../pages/ComponentsIndexPage';
 import { TokensPage } from '../pages/TokensPage';
 import { ComponentPage } from '../pages/ComponentPage';
 import { PreRenderedPage } from '../pages/PreRenderedPage';
+import { PublishersAgGridPage } from '../pages/PublishersAgGridPage';
 import { GuidelinesPage } from '../pages/GuidelinesPage';
 import { NotFoundPage } from '../pages/NotFoundPage';
 import LoginScreen from '../pages/screens/LoginScreen';
@@ -23,6 +24,7 @@ export const router = createHashRouter(
           { path: 'components', element: <ComponentsIndexPage /> },
           { path: 'guidelines', element: <GuidelinesPage /> },
           { path: 'tokens', element: <TokensPage /> },
+          { path: 'publishers/ag-grid', element: <PublishersAgGridPage /> },
           { path: 'pre-rendered', element: <PreRenderedPage /> },
           { path: 'components/:componentName', element: <ComponentPage /> },
         { path: 'examples/dashboard', element: <DashboardScreen /> },

@@ -8,7 +8,7 @@ const expectedParamKeys = [
   'accentColor',
   'backgroundColor',
   'foregroundColor',
-  'dataColor',
+  'cellTextColor',
   'oddRowBackgroundColor',
   'headerBackgroundColor',
   'headerTextColor',
@@ -41,7 +41,7 @@ describe('inflowGridThemeParams', () => {
     expect(inflowGridThemeParams.accentColor).toBe(lightTokens.navy700);
     expect(inflowGridThemeParams.backgroundColor).toBe(lightTokens.white);
     expect(inflowGridThemeParams.foregroundColor).toBe(lightTokens.onSurface);
-    expect(inflowGridThemeParams.dataColor).toBe(lightTokens.onSurfaceVariant);
+    expect(inflowGridThemeParams.cellTextColor).toBe(lightTokens.onSurfaceVariant);
     expect(inflowGridThemeParams.oddRowBackgroundColor).toBe(lightTokens.white);
     expect(inflowGridThemeParams.headerBackgroundColor).toBe(lightTokens.surfaceHighest);
     expect(inflowGridThemeParams.headerTextColor).toBe(lightTokens.onSurface);
