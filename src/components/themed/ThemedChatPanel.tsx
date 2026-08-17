@@ -1,0 +1,386 @@
+import {
+  Box,
+  Icon,
+  IconButton,
+  ListItemIcon,
+  Menu,
+  MenuItem,
+  Typography,
+} from '@mui/material';
+import { forwardRef, useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
+import { inflowTokens } from '../../theme';
+import { ThemedButton } from './ThemedButton';
+import { ThemedChip } from './ThemedChip';
+
+export type ThemedChatMessageRole = 'assistant' | 'user';
+
+export interface ThemedChatMessageDef {
+  id: string;
+  role: ThemedChatMessageRole;
+  content: ReactNode;
+  /** Suggestion chips below assistant message. */
+  chips?: string[];
+  /** Action buttons below assistant message. */
+  actions?: string[];
+}
+
+export interface ThemedChatPanelProps {
+  /** Currently selected assistant name shown in the header pill. */
+  title?: string;
+  /** Options in the assistant-switcher dropdown. */
+  dropdownOptions?: string[];
+  onSelectOption?: (name: string) => void;
+  messages?: ThemedChatMessageDef[];
+  onClose?: () => void;
+  onExpand?: () => void;
+  onMore?: () => void;
+  attachedFile?: string;
+  onRemoveAttachment?: () => void;
+  onSend?: () => void;
+  inputPlaceholder?: string;
+  inputHint?: string;
+  credits?: { used: number; total: number };
+  charCount?: number;
+  charLimit?: number;
+}
+
+const DEFAULT_OPTIONS = [
+  'Query Assistant',
+  'Content Onboarding Assistant',
+  'Expression Assistant',
+  'Project Assistant',
+  'Enrich Assistant',
+];
+
+const iconButtonSx = {
+  width: 32,
+  height: 32,
+  borderRadius: 1,
+  color: 'text.secondary',
+  '&:hover': { backgroundColor: 'action.hover' },
+} as const;
+
+/**
+ * The AI assistant conversation content intended for composition inside a
+ * `ThemedRightPanel`. The panel host owns layout and Escape behavior; this
+ * component owns its chat header controls, including close.
+ */
+export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
+  function ThemedChatPanel(
+    {
+      title = 'Query Assistant',
+      dropdownOptions = DEFAULT_OPTIONS,
+      onSelectOption,
+      messages = [],
+      onClose,
+      onExpand,
+      onMore,
+      attachedFile,
+      onRemoveAttachment,
+      onSend,
+      inputPlaceholder = 'How can I help?',
+      inputHint = 'Type / to switch assistants',
+      credits,
+      charCount = 0,
+      charLimit = 2000,
+    },
+    ref,
+  ) {
+    const scrollRef = useRef<HTMLDivElement>(null);
+    const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+    const [selected, setSelected] = useState(title);
+    const [prevTitle, setPrevTitle] = useState(title);
+
+    if (prevTitle !== title) {
+      setPrevTitle(title);
+      setSelected(title);
+    }
+
+    useEffect(() => {
+      if (scrollRef.current) {
+        scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      }
+    }, [messages]);
+
+    const handleSelect = useCallback((option: string) => {
+      setSelected(option);
+      setAnchorEl(null);
+      onSelectOption?.(option);
+    }, [onSelectOption]);
+
+    return (
+      <Box
+        ref={ref}
+        data-testid="themed-chat-panel"
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          minHeight: 0,
+          bgcolor: 'background.paper',
+          overflow: 'hidden',
+        }}
+      >
+        <Box
+          component="header"
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 2,
+            p: (theme) => theme.spacing(1.5, 2),
+            flexShrink: 0,
+          }}
+        >
+          <ThemedButton
+            size="small"
+            endIcon={<Icon baseClassName="material-icons-outlined" sx={{ fontSize: 18 }}>arrow_drop_down</Icon>}
+            onClick={(event) => setAnchorEl(event.currentTarget)}
+            sx={{
+              height: 24,
+              borderRadius: inflowTokens.radius.full,
+              border: 1,
+              borderColor: 'divider',
+              color: 'primary.main',
+              fontSize: 13,
+              fontWeight: 400,
+              px: 1.5,
+              py: 0,
+              minWidth: 0,
+              maxWidth: 220,
+              bgcolor: 'background.paper',
+              textTransform: 'none',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              '&:hover': { bgcolor: 'action.hover' },
+            }}
+          >
+            {selected}
+          </ThemedButton>
+
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={() => setAnchorEl(null)}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+            transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+            slotProps={{
+              paper: {
+                sx: {
+                  minWidth: 248,
+                  border: 1,
+                  borderColor: 'divider',
+                  borderRadius: 1,
+                  boxShadow: 3,
+                  mt: 0.5,
+                },
+              },
+            }}
+          >
+            {dropdownOptions.map((option) => (
+              <MenuItem
+                key={option}
+                selected={option === selected}
+                onClick={() => handleSelect(option)}
+                sx={{ fontSize: 16, py: 1.5, px: 2, gap: 1.5 }}
+              >
+                <ListItemIcon sx={{ minWidth: 20 }}>
+                  <Icon
+                    baseClassName="material-icons-outlined"
+                    sx={{
+                      fontSize: 20,
+                      color: 'primary.main',
+                      visibility: option === selected ? 'visible' : 'hidden',
+                    }}
+                  >
+                    check
+                  </Icon>
+                </ListItemIcon>
+                {option}
+              </MenuItem>
+            ))}
+          </Menu>
+
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, flexShrink: 0 }}>
+            {onExpand && (
+              <IconButton aria-label="Expand chat panel" size="small" onClick={onExpand} sx={iconButtonSx}>
+                <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 22 }}>view_sidebar</Icon>
+              </IconButton>
+            )}
+            {onMore && (
+              <IconButton aria-label="More chat options" size="small" onClick={onMore} sx={iconButtonSx}>
+                <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 22 }}>more_vert</Icon>
+              </IconButton>
+            )}
+            {onClose && (
+              <IconButton aria-label="Close chat panel" size="small" onClick={onClose} sx={iconButtonSx}>
+                <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 22 }}>close</Icon>
+              </IconButton>
+            )}
+          </Box>
+        </Box>
+
+        <Box
+          ref={scrollRef}
+          data-testid="chat-message-thread"
+          sx={{
+            flex: '1 1 auto',
+            minHeight: 0,
+            overflowY: 'auto',
+            p: (theme) => theme.spacing(1, 2, 2),
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
+          }}
+        >
+          {messages.map((message) => (
+            <ChatMessage key={message.id} message={message} />
+          ))}
+        </Box>
+
+        {attachedFile && (
+          <Box sx={{ flexShrink: 0, px: 2, pb: 1 }}>
+            <ThemedChip
+              label={attachedFile}
+              onDelete={onRemoveAttachment}
+              size="sm"
+              variant="filled-primary"
+            />
+          </Box>
+        )}
+
+        <Box component="footer" sx={{ flexShrink: 0, p: (theme) => theme.spacing(1, 2, 1.5) }}>
+          <Box
+            sx={{
+              bgcolor: 'inflow.navy100',
+              borderRadius: (theme) => theme.shape.borderRadius,
+              p: (theme) => theme.spacing(1, 0.5, 1, 1.5),
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+              minHeight: 56,
+            }}
+          >
+            <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24, color: 'text.secondary', flexShrink: 0 }}>
+              add
+            </Icon>
+            <Box sx={{ flex: '1 1 auto', minWidth: 0 }}>
+              <Typography variant="body1" color="text.primary" sx={{ lineHeight: 1.5, letterSpacing: '0.15px' }}>
+                {inputPlaceholder}
+              </Typography>
+              {inputHint && (
+                <Typography variant="caption" color="text.secondary" sx={{ lineHeight: '16px', letterSpacing: '0.4px' }}>
+                  {inputHint}
+                </Typography>
+              )}
+            </Box>
+            <IconButton aria-label="Send message" onClick={onSend} sx={{ color: 'text.secondary', width: 48, height: 48 }}>
+              <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24 }}>send</Icon>
+            </IconButton>
+          </Box>
+
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pt: 0.5 }}>
+            {credits ? (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                <Typography variant="caption" color="text.disabled">
+                  Credits {credits.used}/{credits.total}
+                </Typography>
+                <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 16, color: 'text.disabled' }}>info</Icon>
+              </Box>
+            ) : <span />}
+            <Typography variant="caption" color="primary" sx={{ letterSpacing: '0.4px' }}>
+              {charCount} / {charLimit}
+            </Typography>
+          </Box>
+
+          <Typography
+            variant="caption"
+            color="text.disabled"
+            sx={{ display: 'block', textAlign: 'center', fontSize: '0.6875rem', fontWeight: 500, letterSpacing: '0.5px', mt: 0.25 }}
+          >
+            AI can make mistakes. Check important info.
+          </Typography>
+        </Box>
+      </Box>
+    );
+  },
+);
+
+ThemedChatPanel.displayName = 'ThemedChatPanel';
+
+function ChatMessage({ message }: { message: ThemedChatMessageDef }) {
+  const [selectedChips, setSelectedChips] = useState<Set<string>>(new Set());
+  const isAssistant = message.role === 'assistant';
+
+  const toggleChip = (chip: string) => {
+    setSelectedChips((previous) => {
+      const next = new Set(previous);
+      if (next.has(chip)) next.delete(chip);
+      else next.add(chip);
+      return next;
+    });
+  };
+
+  if (!isAssistant) {
+    return (
+      <Box data-chat-role="user" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25 }}>
+          <Typography variant="caption" sx={{ fontSize: 12, fontWeight: 500, lineHeight: '20px', letterSpacing: '0.14px', color: 'text.secondary' }}>
+            Me
+          </Typography>
+          <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24, color: 'info.main' }}>person</Icon>
+        </Box>
+        <Box
+          data-testid="chat-user-bubble"
+          sx={{
+            bgcolor: 'inflow.navy100',
+            borderRadius: 2,
+            p: 1.25,
+            maxWidth: '75%',
+          }}
+        >
+          <Typography variant="body2" color="text.primary" sx={{ lineHeight: '20px', letterSpacing: '0.17px' }}>
+            {message.content}
+          </Typography>
+        </Box>
+      </Box>
+    );
+  }
+
+  return (
+    <Box data-chat-role="assistant" sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25 }}>
+        <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24, color: 'info.main', flexShrink: 0 }}>smart_toy</Icon>
+        <Typography variant="caption" sx={{ fontSize: 12, fontWeight: 500, lineHeight: '20px', letterSpacing: '0.14px', color: 'text.secondary' }}>
+          Assistant
+        </Typography>
+      </Box>
+      <Typography variant="body2" color="text.primary" sx={{ lineHeight: '20px', letterSpacing: '0.17px' }}>
+        {message.content}
+      </Typography>
+      {message.chips && message.chips.length > 0 && (
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+          {message.chips.map((chip) => (
+            <ThemedChip
+              key={chip}
+              label={chip}
+              variant={selectedChips.has(chip) ? 'filled-primary' : 'outlined-primary'}
+              size="sm"
+              onClick={() => toggleChip(chip)}
+            />
+          ))}
+        </Box>
+      )}
+      {message.actions && message.actions.length > 0 && (
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+          {message.actions.map((action) => (
+            <ThemedButton key={action} variant="outlined" size="small" sx={{ height: 32 }}>
+              {action}
+            </ThemedButton>
+          ))}
+        </Box>
+      )}
+    </Box>
+  );
+}
