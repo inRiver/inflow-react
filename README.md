@@ -77,7 +77,7 @@ Most public exports are available from `@inriver/inflow-react`; AG Grid theme pa
 | Theme instances | `inflowTheme`, `defaultTheme` | `@inriver/inflow-react` |
 | Theme tokens | `inflowTokens`, `inflowCustomColors`, `inflowSpacing` | `@inriver/inflow-react` |
 | Theme flags & types | `INFLOW_DARK_MODE_ENABLED`, `InflowColorMode` | `@inriver/inflow-react` |
-| Components | `ThemedButton`, `ThemedTextField`, `ThemedCard`, `ThemedChip`, `ThemedDialog`, `ThemedTable`, plus their prop types and `Column` | `@inriver/inflow-react` |
+| Components | `ThemedAccordion`, `ThemedAlert`, `ThemedAppNav` (+ `ThemedAppNavPlaceholder`), `ThemedAvatar` (+ `ThemedAvatarGroup`), `ThemedBadge`, `ThemedBreadcrumbs`, `ThemedButton`, `ThemedCard`, `ThemedChatPanel`, `ThemedChip`, `ThemedDetailPanel` (+ `ThemedDetailPanelSection`), `ThemedDialog`, `ThemedMenu`, `ThemedPageHeader`, `ThemedRightPanel`, `ThemedStepper`, `ThemedTable`, `ThemedTabs` (+ `ThemedTabPanel`), `ThemedTextField`, `ThemedToast`, plus their prop types and `Column` | `@inriver/inflow-react` |
 | AG Grid theme params | `inflowGridThemeParams`, `InflowGridThemeParams` | `@inriver/inflow-react/ag-grid` |
 
 The components are thin MUI wrappers. See the [live showcase](https://inriver.github.io/inflow-react/) for behavior and props.
