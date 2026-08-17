@@ -20,7 +20,7 @@ export function ChipDemo() {
   "label": "Chip"
 });
 
-  const schema: PropSchema[] = [
+  const muiSchema: PropSchema[] = [
   {
     "name": "variant",
     "type": "select",
@@ -55,6 +55,45 @@ export function ChipDemo() {
     "type": "boolean"
   }
 ];
+
+  const themedSchema: PropSchema[] = [
+    {
+      "name": "variant",
+      "type": "select",
+      "options": [
+        "filled",
+        "outlined",
+        "filled-primary",
+        "outlined-primary"
+      ]
+    },
+    {
+      "name": "color",
+      "type": "select",
+      "options": [
+        "default",
+        "primary",
+        "secondary",
+        "error",
+        "info",
+        "success",
+        "warning"
+      ]
+    },
+    {
+      "name": "size",
+      "type": "select",
+      "options": [
+        "sm",
+        "md",
+        "lg"
+      ]
+    },
+    {
+      "name": "disabled",
+      "type": "boolean"
+    }
+  ];
 
   const muiCodeExample = `
 import { Chip } from '@mui/material';
@@ -99,27 +138,46 @@ import { ThemedChip } from '@inriver/inflow-react';
       </DemoFrame>
 
       <PropsPlayground 
-        schema={schema}
+        schema={variant === 'mui' ? muiSchema : themedSchema}
         values={props}
         onChange={setProps}
       />
 
       <CodeBlock code={variant === 'mui' ? muiCodeExample : themedCodeExample} language="tsx" />
 
-      <DemoFrame title="All States">
-        <Stack spacing={2} direction="column">
-          
-          <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
-            <Chip label="Default" />
-            <Chip label="Outlined" variant="outlined" />
-            <Chip label="Disabled" disabled />
-            <Chip label="Clickable" onClick={() => {}} />
-            <Chip label="Deletable" onDelete={() => {}} />
-            <Chip label="Avatar" avatar={<Avatar>M</Avatar>} />
-            <Chip label="Error" color="error" />
+      {variant === 'mui' ? (
+        <DemoFrame title="All States">
+          <Stack spacing={2} direction="column">
+            <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
+              <Chip label="Default" />
+              <Chip label="Outlined" variant="outlined" />
+              <Chip label="Disabled" disabled />
+              <Chip label="Clickable" onClick={() => {}} />
+              <Chip label="Deletable" onDelete={() => {}} />
+              <Chip label="Avatar" avatar={<Avatar>M</Avatar>} />
+              <Chip label="Error" color="error" />
+            </Stack>
           </Stack>
-        </Stack>
-      </DemoFrame>
+        </DemoFrame>
+      ) : (
+        <DemoFrame title="ThemedChip Variants and Sizes">
+          <Stack spacing={2}>
+            {(['filled', 'outlined', 'filled-primary', 'outlined-primary'] as const).map((chipVariant) => (
+              <Stack key={chipVariant} direction="row" spacing={2} sx={{ alignItems: 'center' }}>
+                {(['sm', 'md', 'lg'] as const).map((size) => (
+                  <ThemedChip
+                    key={size}
+                    label={`${chipVariant} ${size}`}
+                    variant={chipVariant}
+                    size={size}
+                    leadingIcon="add"
+                  />
+                ))}
+              </Stack>
+            ))}
+          </Stack>
+        </DemoFrame>
+      )}
     </>
   );
 }
