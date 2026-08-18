@@ -230,7 +230,6 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
 
     const sendDisabled = isRunning || isSendDisabled || (inputValue.trim() === '' && !attachedFile && !attachments?.length);
     const displayedAttachments = attachments ?? (attachedFile ? [{ id: 'legacy-attachment', name: attachedFile }] : []);
-    const isUploading = displayedAttachments.some((attachment) => attachment.status === 'pending' || attachment.status === 'uploading');
 
     return (
       <Box
@@ -386,7 +385,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
             ))}
           </Box>
         )}
-        {isUploading && uploadProgress !== undefined && (
+        {uploadProgress !== undefined && (
           <Box sx={{ flexShrink: 0, px: 2, pb: 0.5 }}>
             <LinearProgress variant="determinate" value={Math.min(uploadProgress, 100)} sx={{ borderRadius: 999 }} />
             {uploadProgressLabel && <Typography variant="caption" color="text.secondary">{uploadProgressLabel}</Typography>}
