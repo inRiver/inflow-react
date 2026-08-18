@@ -42,6 +42,8 @@ export interface ThemedChatPanelProps {
   inputValue?: string;
   onInputChange?: (value: string) => void;
   onSendMessage?: (text: string) => void;
+  isStreaming?: boolean;
+  onStop?: () => void;
   inputPlaceholder?: string;
   inputHint?: string;
   creditsLabel?: ((used: number, total: number) => ReactNode) | string;
@@ -52,6 +54,7 @@ export interface ThemedChatPanelProps {
   moreAriaLabel?: string;
   closeAriaLabel?: string;
   sendAriaLabel?: string;
+  stopAriaLabel?: string;
   credits?: { used: number; total: number };
   charCount?: number;
   charLimit?: number;
@@ -77,6 +80,7 @@ const DEFAULT_STRINGS = {
   moreAriaLabel: 'More chat options',
   closeAriaLabel: 'Close chat panel',
   sendAriaLabel: 'Send message',
+  stopAriaLabel: 'Stop generating',
 } as const;
 
 const iconButtonSx = {
@@ -108,6 +112,8 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
       inputValue = '',
       onInputChange,
       onSendMessage,
+      isStreaming = false,
+      onStop,
       inputPlaceholder = DEFAULT_STRINGS.inputPlaceholder,
       inputHint = DEFAULT_STRINGS.inputHint,
       creditsLabel = DEFAULT_STRINGS.creditsLabel,
@@ -118,6 +124,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
       moreAriaLabel = DEFAULT_STRINGS.moreAriaLabel,
       closeAriaLabel = DEFAULT_STRINGS.closeAriaLabel,
       sendAriaLabel = DEFAULT_STRINGS.sendAriaLabel,
+      stopAriaLabel = DEFAULT_STRINGS.stopAriaLabel,
       credits,
       charCount = 0,
       charLimit = 2000,
@@ -334,9 +341,15 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
                 </Typography>
               )}
             </Box>
-            <IconButton aria-label={sendAriaLabel} onClick={handleSend} disabled={sendDisabled} sx={{ color: 'text.secondary', width: 48, height: 48 }}>
-              <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24 }}>send</Icon>
-            </IconButton>
+            {isStreaming && onStop ? (
+              <IconButton aria-label={stopAriaLabel} onClick={onStop} sx={{ color: 'text.secondary', width: 48, height: 48 }}>
+                <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24 }}>stop</Icon>
+              </IconButton>
+            ) : (
+              <IconButton aria-label={sendAriaLabel} onClick={handleSend} disabled={sendDisabled} sx={{ color: 'text.secondary', width: 48, height: 48 }}>
+                <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24 }}>send</Icon>
+              </IconButton>
+            )}
           </Box>
 
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pt: 0.5 }}>

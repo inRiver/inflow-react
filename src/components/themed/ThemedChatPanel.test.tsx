@@ -158,6 +158,41 @@ describe('ThemedChatPanel', () => {
     expect(onSendMessage).toHaveBeenCalledWith('send by keyboard');
   });
 
+  it('uses a Stop control while streaming when onStop is supplied', async () => {
+    const onStop = vi.fn();
+    renderChatPanel({ isStreaming: true, onStop, stopAriaLabel: 'Stop response' });
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Stop response' }));
+
+    expect(onStop).toHaveBeenCalledOnce();
+    expect(screen.queryByRole('button', { name: 'Send message' })).not.toBeInTheDocument();
+  });
+
+  it('restores Send when streaming stops without wiring onStop to it', async () => {
+    const onStop = vi.fn();
+    const { rerender } = renderChatPanel({ inputValue: 'continue', isStreaming: true, onStop });
+
+    expect(await screen.findByRole('button', { name: 'Stop generating' })).toBeInTheDocument();
+
+    rerender(
+      <ThemedRightPanel open onClose={vi.fn()} aria-label="Assistant panel" resizable={false}>
+        <ThemedChatPanel messages={messages} onClose={vi.fn()} inputValue="continue" isStreaming={false} onStop={onStop} />
+      </ThemedRightPanel>,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Send message' }));
+
+    expect(screen.queryByRole('button', { name: 'Stop generating' })).not.toBeInTheDocument();
+    expect(onStop).not.toHaveBeenCalled();
+  });
+
+  it('keeps Send available when streaming has no onStop callback', async () => {
+    renderChatPanel({ isStreaming: true });
+
+    expect(await screen.findByRole('button', { name: 'Send message' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Stop generating' })).not.toBeInTheDocument();
+  });
+
   it('scrolls the thread to its bottom when messages change', async () => {
     const { rerender } = renderChatPanel({ messages: messages.slice(0, 1) });
     const thread = await screen.findByTestId('chat-message-thread');
