@@ -158,6 +158,40 @@ describe('ThemedChatPanel', () => {
     expect(onSendMessage).toHaveBeenCalledWith('send by keyboard');
   });
 
+  it('supports host-rendered message threads without applying DS message chrome', async () => {
+    renderChatPanel({
+      renderMessageThread: () => <div data-testid="host-thread">Event, errors, and retry controls</div>,
+      isTyping: true,
+    });
+
+    expect(await screen.findByTestId('host-thread')).toHaveTextContent('Event, errors, and retry controls');
+    expect(screen.queryByText('How can I help?')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('default-typing-indicator')).not.toBeInTheDocument();
+  });
+
+  it('enforces character limits and supports multiline composer input', async () => {
+    const onSendMessage = vi.fn();
+    renderChatPanel({ inputValue: 'first line', charLimit: 10, multiline: true, onSendMessage });
+
+    const input = await screen.findByRole('textbox', { name: 'How can I help?' });
+    expect(input).toHaveAttribute('maxlength', '10');
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(onSendMessage).not.toHaveBeenCalled();
+    fireEvent.keyDown(input, { key: 'Enter', ctrlKey: true });
+    expect(onSendMessage).toHaveBeenCalledWith('first line');
+  });
+
+  it('blocks sends while the host reports a non-streaming request or message limit', async () => {
+    const onSendMessage = vi.fn();
+    renderChatPanel({ inputValue: 'blocked', isRunning: true, isSendDisabled: true, isInputDisabled: true, onSendMessage });
+
+    const input = await screen.findByRole('textbox', { name: 'How can I help?' });
+    expect(input).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Send message' })).toBeDisabled();
+    fireEvent.click(screen.getByRole('button', { name: 'Send message' }));
+    expect(onSendMessage).not.toHaveBeenCalled();
+  });
+
   it('uses a Stop control while streaming when onStop is supplied', async () => {
     const onStop = vi.fn();
     renderChatPanel({ isStreaming: true, onStop, stopAriaLabel: 'Stop response' });

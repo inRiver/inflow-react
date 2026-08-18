@@ -59,6 +59,8 @@ export interface ThemedChatPanelProps {
   isTyping?: boolean;
   renderTypingIndicator?: () => ReactNode;
   renderToolMessage?: (message: ThemedChatMessageDef) => ReactNode;
+  /** App-owned thread renderer for message types that are outside the DS message model. */
+  renderMessageThread?: () => ReactNode;
   inputPlaceholder?: string;
   inputHint?: string;
   creditsLabel?: ((used: number, total: number) => ReactNode) | string;
@@ -73,6 +75,12 @@ export interface ThemedChatPanelProps {
   credits?: { used: number; total: number };
   charCount?: number;
   charLimit?: number;
+  /** Keeps the composer presentational while allowing the host to mirror request state. */
+  isRunning?: boolean;
+  isInputDisabled?: boolean;
+  isSendDisabled?: boolean;
+  multiline?: boolean;
+  maxRows?: number;
 }
 
 const DEFAULT_OPTIONS = [
@@ -135,6 +143,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
       isTyping = false,
       renderTypingIndicator,
       renderToolMessage,
+      renderMessageThread,
       inputPlaceholder = DEFAULT_STRINGS.inputPlaceholder,
       inputHint = DEFAULT_STRINGS.inputHint,
       creditsLabel = DEFAULT_STRINGS.creditsLabel,
@@ -149,6 +158,11 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
       credits,
       charCount = 0,
       charLimit = 2000,
+      isRunning = false,
+      isInputDisabled = false,
+      isSendDisabled = false,
+      multiline = false,
+      maxRows = 4,
     },
     ref,
   ) {
@@ -167,7 +181,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
       if (scrollRef.current) {
         scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
       }
-    }, [messages]);
+    }, [messages, renderMessageThread]);
 
     const handleSelect = useCallback((option: string) => {
       setSelected(option);
@@ -176,20 +190,21 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
     }, [onSelectOption]);
 
     const handleSend = () => {
-      if (inputValue.trim() === '' && !attachedFile) return;
+      if ((inputValue.trim() === '' && !attachedFile && !attachments?.length) || isRunning || isSendDisabled) return;
 
       onSendMessage?.(inputValue);
       onSend?.();
     };
 
-    const handleInputKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    const handleInputKeyDown = (event: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       if (event.key !== 'Enter') return;
+      if (multiline && !event.ctrlKey && !event.metaKey) return;
 
       event.preventDefault();
       handleSend();
     };
 
-    const sendDisabled = inputValue.trim() === '' && !attachedFile && !attachments?.length;
+    const sendDisabled = isRunning || isSendDisabled || (inputValue.trim() === '' && !attachedFile && !attachments?.length);
     const displayedAttachments = attachments ?? (attachedFile ? [{ id: 'legacy-attachment', name: attachedFile }] : []);
 
     return (
@@ -318,14 +333,14 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
             gap: 2,
           }}
         >
-          {messages.map((message) => {
+          {renderMessageThread ? renderMessageThread() : messages.map((message) => {
             if (message.kind === 'tool') {
               return renderToolMessage ? <Box key={message.id}>{renderToolMessage(message)}</Box> : null;
             }
 
             return <ChatMessage key={message.id} message={message} userLabel={userLabel} assistantLabel={assistantLabel} />;
           })}
-          {isTyping && (renderTypingIndicator ? renderTypingIndicator() : (
+          {!renderMessageThread && isTyping && (renderTypingIndicator ? renderTypingIndicator() : (
             <Box data-testid="default-typing-indicator" sx={{ display: 'flex', gap: 0.5, color: 'text.secondary' }}>
               {[0, 1, 2].map((dot) => <Box key={dot} sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: 'currentColor' }} />)}
             </Box>
@@ -368,7 +383,10 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
                 onChange={(event) => onInputChange?.(event.target.value)}
                 onKeyDown={handleInputKeyDown}
                 placeholder={inputPlaceholder}
-                inputProps={{ 'aria-label': inputPlaceholder }}
+                disabled={isInputDisabled}
+                multiline={multiline}
+                maxRows={multiline ? maxRows : undefined}
+                inputProps={{ 'aria-label': inputPlaceholder, maxLength: charLimit }}
                 sx={{ color: 'text.primary', fontSize: '1rem', lineHeight: 1.5, letterSpacing: '0.15px', width: '100%' }}
               />
               {inputHint && (
