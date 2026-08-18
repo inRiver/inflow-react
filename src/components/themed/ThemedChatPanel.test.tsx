@@ -180,10 +180,12 @@ describe('ThemedChatPanel', () => {
     expect(input).toHaveAttribute('maxlength', '10');
     fireEvent.keyDown(input, { key: 'Enter' });
     expect(onSendMessage).toHaveBeenCalledWith('first line');
+    // Legacy parity (useSubmitOnEnter): only Ctrl/Meta+Enter insert a newline; Shift+Enter submits.
     fireEvent.keyDown(input, { key: 'Enter', ctrlKey: true });
     fireEvent.keyDown(input, { key: 'Enter', metaKey: true });
-    fireEvent.keyDown(input, { key: 'Enter', shiftKey: true });
     expect(onSendMessage).toHaveBeenCalledOnce();
+    fireEvent.keyDown(input, { key: 'Enter', shiftKey: true });
+    expect(onSendMessage).toHaveBeenCalledTimes(2);
   });
 
   it('blocks sends while the host reports a non-streaming request or message limit', async () => {

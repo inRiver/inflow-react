@@ -222,7 +222,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
 
     const handleInputKeyDown = (event: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       if (event.key !== 'Enter') return;
-      if (multiline && (event.ctrlKey || event.metaKey || event.shiftKey)) return;
+      if (multiline && (event.ctrlKey || event.metaKey)) return;
 
       event.preventDefault();
       handleSend();
