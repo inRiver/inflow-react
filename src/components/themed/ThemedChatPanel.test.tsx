@@ -1,4 +1,4 @@
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { renderWithInflow } from '../../test/renderWithInflow';
 import { ThemedChatPanel, type ThemedChatMessageDef } from './ThemedChatPanel';
@@ -65,6 +65,62 @@ describe('ThemedChatPanel', () => {
     expect(screen.getByRole('button', { name: 'Expand chat panel' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'More chat options' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Send message' })).toBeInTheDocument();
+  });
+
+  it('renders its default strings unchanged', async () => {
+    renderChatPanel({ onExpand: vi.fn(), onMore: vi.fn(), credits: { used: 8, total: 10 } });
+
+    expect(await screen.findByText('Query Assistant')).toBeInTheDocument();
+    const disclaimer = screen.getByText('AI can make mistakes. Check important info.');
+    const footer = disclaimer.closest('footer') as HTMLElement;
+    expect(within(footer).getByText('How can I help?')).toBeInTheDocument();
+    expect(within(footer).getByText('Type / to switch assistants')).toBeInTheDocument();
+    expect(within(footer).getByText('Credits 8/10')).toBeInTheDocument();
+    expect(disclaimer).toBeInTheDocument();
+    expect(screen.getByText('Assistant')).toBeInTheDocument();
+    expect(screen.getByText('Me')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Expand chat panel' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'More chat options' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Close chat panel' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Send message' })).toBeInTheDocument();
+  });
+
+  it('overrides chat strings and accessible labels through props', async () => {
+    renderChatPanel({
+      onExpand: vi.fn(),
+      onMore: vi.fn(),
+      credits: { used: 8, total: 10 },
+      creditsLabel: (used, total) => `Balance ${used} of ${total}`,
+      aiDisclaimer: 'Custom disclaimer',
+      userLabel: 'You',
+      assistantLabel: 'Bot',
+      expandAriaLabel: 'Open full chat',
+      moreAriaLabel: 'Open chat menu',
+      closeAriaLabel: 'Dismiss chat',
+      sendAriaLabel: 'Submit prompt',
+      inputPlaceholder: 'Ask the catalog',
+      inputHint: 'Press Enter to submit',
+    });
+
+    expect(await screen.findByText('Bot')).toBeInTheDocument();
+    expect(screen.getByText('You')).toBeInTheDocument();
+    expect(screen.getByText('Balance 8 of 10')).toBeInTheDocument();
+    expect(screen.getByText('Custom disclaimer')).toBeInTheDocument();
+    expect(screen.getByText('Ask the catalog')).toBeInTheDocument();
+    expect(screen.getByText('Press Enter to submit')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Open full chat' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Open chat menu' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Dismiss chat' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Submit prompt' })).toBeInTheDocument();
+    expect(screen.queryByText('AI can make mistakes. Check important info.')).not.toBeInTheDocument();
+    expect(screen.queryByText('Assistant')).not.toBeInTheDocument();
+    expect(screen.queryByText('Me')).not.toBeInTheDocument();
+  });
+
+  it('uses a string credits label with the usage counts', async () => {
+    renderChatPanel({ credits: { used: 8, total: 10 }, creditsLabel: 'Balance' });
+
+    expect(await screen.findByText('Balance 8/10')).toBeInTheDocument();
   });
 
   it('removes an attached file and renders usage metadata', async () => {

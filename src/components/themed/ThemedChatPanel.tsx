@@ -39,6 +39,14 @@ export interface ThemedChatPanelProps {
   onSend?: () => void;
   inputPlaceholder?: string;
   inputHint?: string;
+  creditsLabel?: ((used: number, total: number) => ReactNode) | string;
+  aiDisclaimer?: ReactNode;
+  userLabel?: string;
+  assistantLabel?: string;
+  expandAriaLabel?: string;
+  moreAriaLabel?: string;
+  closeAriaLabel?: string;
+  sendAriaLabel?: string;
   credits?: { used: number; total: number };
   charCount?: number;
   charLimit?: number;
@@ -51,6 +59,20 @@ const DEFAULT_OPTIONS = [
   'Project Assistant',
   'Enrich Assistant',
 ];
+
+const DEFAULT_STRINGS = {
+  title: 'Query Assistant',
+  inputPlaceholder: 'How can I help?',
+  inputHint: 'Type / to switch assistants',
+  creditsLabel: 'Credits',
+  aiDisclaimer: 'AI can make mistakes. Check important info.',
+  userLabel: 'Me',
+  assistantLabel: 'Assistant',
+  expandAriaLabel: 'Expand chat panel',
+  moreAriaLabel: 'More chat options',
+  closeAriaLabel: 'Close chat panel',
+  sendAriaLabel: 'Send message',
+} as const;
 
 const iconButtonSx = {
   width: 32,
@@ -68,7 +90,7 @@ const iconButtonSx = {
 export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
   function ThemedChatPanel(
     {
-      title = 'Query Assistant',
+      title = DEFAULT_STRINGS.title,
       dropdownOptions = DEFAULT_OPTIONS,
       onSelectOption,
       messages = [],
@@ -78,8 +100,16 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
       attachedFile,
       onRemoveAttachment,
       onSend,
-      inputPlaceholder = 'How can I help?',
-      inputHint = 'Type / to switch assistants',
+      inputPlaceholder = DEFAULT_STRINGS.inputPlaceholder,
+      inputHint = DEFAULT_STRINGS.inputHint,
+      creditsLabel = DEFAULT_STRINGS.creditsLabel,
+      aiDisclaimer = DEFAULT_STRINGS.aiDisclaimer,
+      userLabel = DEFAULT_STRINGS.userLabel,
+      assistantLabel = DEFAULT_STRINGS.assistantLabel,
+      expandAriaLabel = DEFAULT_STRINGS.expandAriaLabel,
+      moreAriaLabel = DEFAULT_STRINGS.moreAriaLabel,
+      closeAriaLabel = DEFAULT_STRINGS.closeAriaLabel,
+      sendAriaLabel = DEFAULT_STRINGS.sendAriaLabel,
       credits,
       charCount = 0,
       charLimit = 2000,
@@ -204,17 +234,17 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, flexShrink: 0 }}>
             {onExpand && (
-              <IconButton aria-label="Expand chat panel" size="small" onClick={onExpand} sx={iconButtonSx}>
+              <IconButton aria-label={expandAriaLabel} size="small" onClick={onExpand} sx={iconButtonSx}>
                 <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 22 }}>view_sidebar</Icon>
               </IconButton>
             )}
             {onMore && (
-              <IconButton aria-label="More chat options" size="small" onClick={onMore} sx={iconButtonSx}>
+              <IconButton aria-label={moreAriaLabel} size="small" onClick={onMore} sx={iconButtonSx}>
                 <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 22 }}>more_vert</Icon>
               </IconButton>
             )}
             {onClose && (
-              <IconButton aria-label="Close chat panel" size="small" onClick={onClose} sx={iconButtonSx}>
+              <IconButton aria-label={closeAriaLabel} size="small" onClick={onClose} sx={iconButtonSx}>
                 <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 22 }}>close</Icon>
               </IconButton>
             )}
@@ -235,7 +265,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
           }}
         >
           {messages.map((message) => (
-            <ChatMessage key={message.id} message={message} />
+            <ChatMessage key={message.id} message={message} userLabel={userLabel} assistantLabel={assistantLabel} />
           ))}
         </Box>
 
@@ -275,7 +305,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
                 </Typography>
               )}
             </Box>
-            <IconButton aria-label="Send message" onClick={onSend} sx={{ color: 'text.secondary', width: 48, height: 48 }}>
+            <IconButton aria-label={sendAriaLabel} onClick={onSend} sx={{ color: 'text.secondary', width: 48, height: 48 }}>
               <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24 }}>send</Icon>
             </IconButton>
           </Box>
@@ -284,7 +314,9 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
             {credits ? (
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                 <Typography variant="caption" color="text.disabled">
-                  Credits {credits.used}/{credits.total}
+                  {typeof creditsLabel === 'function'
+                    ? creditsLabel(credits.used, credits.total)
+                    : `${creditsLabel} ${credits.used}/${credits.total}`}
                 </Typography>
                 <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 16, color: 'text.disabled' }}>info</Icon>
               </Box>
@@ -299,7 +331,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
             color="text.disabled"
             sx={{ display: 'block', textAlign: 'center', fontSize: '0.6875rem', fontWeight: 500, letterSpacing: '0.5px', mt: 0.25 }}
           >
-            AI can make mistakes. Check important info.
+            {aiDisclaimer}
           </Typography>
         </Box>
       </Box>
@@ -309,7 +341,15 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
 
 ThemedChatPanel.displayName = 'ThemedChatPanel';
 
-function ChatMessage({ message }: { message: ThemedChatMessageDef }) {
+function ChatMessage({
+  message,
+  userLabel,
+  assistantLabel,
+}: {
+  message: ThemedChatMessageDef;
+  userLabel: string;
+  assistantLabel: string;
+}) {
   const [selectedChips, setSelectedChips] = useState<Set<string>>(new Set());
   const isAssistant = message.role === 'assistant';
 
@@ -327,7 +367,7 @@ function ChatMessage({ message }: { message: ThemedChatMessageDef }) {
       <Box data-chat-role="user" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25 }}>
           <Typography variant="caption" sx={{ fontSize: 12, fontWeight: 500, lineHeight: '20px', letterSpacing: '0.14px', color: 'text.secondary' }}>
-            Me
+            {userLabel}
           </Typography>
           <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24, color: 'info.main' }}>person</Icon>
         </Box>
@@ -353,7 +393,7 @@ function ChatMessage({ message }: { message: ThemedChatMessageDef }) {
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25 }}>
         <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24, color: 'info.main', flexShrink: 0 }}>smart_toy</Icon>
         <Typography variant="caption" sx={{ fontSize: 12, fontWeight: 500, lineHeight: '20px', letterSpacing: '0.14px', color: 'text.secondary' }}>
-          Assistant
+          {assistantLabel}
         </Typography>
       </Box>
       <Typography variant="body2" color="text.primary" sx={{ lineHeight: '20px', letterSpacing: '0.17px' }}>
