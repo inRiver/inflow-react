@@ -73,7 +73,7 @@ describe('ThemedChatPanel', () => {
     expect(await screen.findByText('Query Assistant')).toBeInTheDocument();
     const disclaimer = screen.getByText('AI can make mistakes. Check important info.');
     const footer = disclaimer.closest('footer') as HTMLElement;
-    expect(within(footer).getByText('How can I help?')).toBeInTheDocument();
+    expect(within(footer).getByPlaceholderText('How can I help?')).toBeInTheDocument();
     expect(within(footer).getByText('Type / to switch assistants')).toBeInTheDocument();
     expect(within(footer).getByText('Credits 8/10')).toBeInTheDocument();
     expect(disclaimer).toBeInTheDocument();
@@ -106,7 +106,7 @@ describe('ThemedChatPanel', () => {
     expect(screen.getByText('You')).toBeInTheDocument();
     expect(screen.getByText('Balance 8 of 10')).toBeInTheDocument();
     expect(screen.getByText('Custom disclaimer')).toBeInTheDocument();
-    expect(screen.getByText('Ask the catalog')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Ask the catalog')).toBeInTheDocument();
     expect(screen.getByText('Press Enter to submit')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Open full chat' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Open chat menu' })).toBeInTheDocument();
@@ -133,6 +133,29 @@ describe('ThemedChatPanel', () => {
     expect(onRemoveAttachment).toHaveBeenCalledOnce();
     expect(screen.getByText('Credits 8/10')).toBeInTheDocument();
     expect(screen.getByText('120 / 2000')).toBeInTheDocument();
+  });
+
+  it('uses a controlled composer and sends its exact text', async () => {
+    const onInputChange = vi.fn();
+    const onSendMessage = vi.fn();
+    renderChatPanel({ inputValue: 'hello', onInputChange, onSendMessage });
+
+    const input = await screen.findByRole('textbox', { name: 'How can I help?' });
+    fireEvent.change(input, { target: { value: 'hello world' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Send message' }));
+
+    expect(input).toHaveValue('hello');
+    expect(onInputChange).toHaveBeenCalledWith('hello world');
+    expect(onSendMessage).toHaveBeenCalledWith('hello');
+  });
+
+  it('sends the current controlled text when Enter is pressed', async () => {
+    const onSendMessage = vi.fn();
+    renderChatPanel({ inputValue: 'send by keyboard', onSendMessage });
+
+    fireEvent.keyDown(await screen.findByRole('textbox', { name: 'How can I help?' }), { key: 'Enter' });
+
+    expect(onSendMessage).toHaveBeenCalledWith('send by keyboard');
   });
 
   it('scrolls the thread to its bottom when messages change', async () => {

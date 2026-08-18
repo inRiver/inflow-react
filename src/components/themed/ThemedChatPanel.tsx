@@ -2,12 +2,13 @@ import {
   Box,
   Icon,
   IconButton,
+  InputBase,
   ListItemIcon,
   Menu,
   MenuItem,
   Typography,
 } from '@mui/material';
-import { forwardRef, useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
+import { forwardRef, useCallback, useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
 import { inflowTokens } from '../../theme';
 import { ThemedButton } from './ThemedButton';
 import { ThemedChip } from './ThemedChip';
@@ -36,7 +37,11 @@ export interface ThemedChatPanelProps {
   onMore?: () => void;
   attachedFile?: string;
   onRemoveAttachment?: () => void;
+  /** @deprecated Use onSendMessage to receive the composed text. */
   onSend?: () => void;
+  inputValue?: string;
+  onInputChange?: (value: string) => void;
+  onSendMessage?: (text: string) => void;
   inputPlaceholder?: string;
   inputHint?: string;
   creditsLabel?: ((used: number, total: number) => ReactNode) | string;
@@ -100,6 +105,9 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
       attachedFile,
       onRemoveAttachment,
       onSend,
+      inputValue = '',
+      onInputChange,
+      onSendMessage,
       inputPlaceholder = DEFAULT_STRINGS.inputPlaceholder,
       inputHint = DEFAULT_STRINGS.inputHint,
       creditsLabel = DEFAULT_STRINGS.creditsLabel,
@@ -137,6 +145,22 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
       setAnchorEl(null);
       onSelectOption?.(option);
     }, [onSelectOption]);
+
+    const handleSend = () => {
+      if (inputValue.trim() === '' && !attachedFile) return;
+
+      onSendMessage?.(inputValue);
+      onSend?.();
+    };
+
+    const handleInputKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+      if (event.key !== 'Enter') return;
+
+      event.preventDefault();
+      handleSend();
+    };
+
+    const sendDisabled = inputValue.trim() === '' && !attachedFile;
 
     return (
       <Box
@@ -296,16 +320,21 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
               add
             </Icon>
             <Box sx={{ flex: '1 1 auto', minWidth: 0 }}>
-              <Typography variant="body1" color="text.primary" sx={{ lineHeight: 1.5, letterSpacing: '0.15px' }}>
-                {inputPlaceholder}
-              </Typography>
+              <InputBase
+                value={inputValue}
+                onChange={(event) => onInputChange?.(event.target.value)}
+                onKeyDown={handleInputKeyDown}
+                placeholder={inputPlaceholder}
+                inputProps={{ 'aria-label': inputPlaceholder }}
+                sx={{ color: 'text.primary', fontSize: '1rem', lineHeight: 1.5, letterSpacing: '0.15px', width: '100%' }}
+              />
               {inputHint && (
                 <Typography variant="caption" color="text.secondary" sx={{ lineHeight: '16px', letterSpacing: '0.4px' }}>
                   {inputHint}
                 </Typography>
               )}
             </Box>
-            <IconButton aria-label={sendAriaLabel} onClick={onSend} sx={{ color: 'text.secondary', width: 48, height: 48 }}>
+            <IconButton aria-label={sendAriaLabel} onClick={handleSend} disabled={sendDisabled} sx={{ color: 'text.secondary', width: 48, height: 48 }}>
               <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24 }}>send</Icon>
             </IconButton>
           </Box>
