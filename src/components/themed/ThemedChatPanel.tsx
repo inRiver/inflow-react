@@ -19,6 +19,8 @@ export interface ThemedChatMessageDef {
   id: string;
   role: ThemedChatMessageRole;
   content: ReactNode;
+  /** App-owned classification; tool detection remains outside the DS. */
+  kind?: 'text' | 'tool';
   /** Suggestion chips below assistant message. */
   chips?: string[];
   /** Action buttons below assistant message. */
@@ -46,6 +48,7 @@ export interface ThemedChatPanelProps {
   onStop?: () => void;
   isTyping?: boolean;
   renderTypingIndicator?: () => ReactNode;
+  renderToolMessage?: (message: ThemedChatMessageDef) => ReactNode;
   inputPlaceholder?: string;
   inputHint?: string;
   creditsLabel?: ((used: number, total: number) => ReactNode) | string;
@@ -118,6 +121,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
       onStop,
       isTyping = false,
       renderTypingIndicator,
+      renderToolMessage,
       inputPlaceholder = DEFAULT_STRINGS.inputPlaceholder,
       inputHint = DEFAULT_STRINGS.inputHint,
       creditsLabel = DEFAULT_STRINGS.creditsLabel,
@@ -299,9 +303,13 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
             gap: 2,
           }}
         >
-          {messages.map((message) => (
-            <ChatMessage key={message.id} message={message} userLabel={userLabel} assistantLabel={assistantLabel} />
-          ))}
+          {messages.map((message) => {
+            if (message.kind === 'tool') {
+              return renderToolMessage ? <Box key={message.id}>{renderToolMessage(message)}</Box> : null;
+            }
+
+            return <ChatMessage key={message.id} message={message} userLabel={userLabel} assistantLabel={assistantLabel} />;
+          })}
           {isTyping && (renderTypingIndicator ? renderTypingIndicator() : (
             <Box data-testid="default-typing-indicator" sx={{ display: 'flex', gap: 0.5, color: 'text.secondary' }}>
               {[0, 1, 2].map((dot) => <Box key={dot} sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: 'currentColor' }} />)}

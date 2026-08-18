@@ -201,6 +201,22 @@ describe('ThemedChatPanel', () => {
     expect(screen.getByTestId('default-typing-indicator')).toBeInTheDocument();
   });
 
+  it('renders tool messages through the tool slot without changing text messages', async () => {
+    renderChatPanel({
+      messages: [...messages, { id: 'tool-1', role: 'assistant', content: null, kind: 'tool' }],
+      renderToolMessage: (message) => <div data-testid={`tool-${message.id}`}>Tool output</div>,
+    });
+
+    expect(await screen.findByTestId('tool-tool-1')).toBeInTheDocument();
+    expect(screen.getByText('How can I help?')).toBeInTheDocument();
+  });
+
+  it('skips tool messages when no tool slot is provided', async () => {
+    renderChatPanel({ messages: [...messages, { id: 'tool-1', role: 'assistant', content: 'hidden', kind: 'tool' }] });
+
+    expect(screen.queryByText('hidden')).not.toBeInTheDocument();
+  });
+
   it('scrolls the thread to its bottom when messages change', async () => {
     const { rerender } = renderChatPanel({ messages: messages.slice(0, 1) });
     const thread = await screen.findByTestId('chat-message-thread');
