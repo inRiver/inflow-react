@@ -44,6 +44,8 @@ export interface ThemedChatPanelProps {
   onSendMessage?: (text: string) => void;
   isStreaming?: boolean;
   onStop?: () => void;
+  isTyping?: boolean;
+  renderTypingIndicator?: () => ReactNode;
   inputPlaceholder?: string;
   inputHint?: string;
   creditsLabel?: ((used: number, total: number) => ReactNode) | string;
@@ -114,6 +116,8 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
       onSendMessage,
       isStreaming = false,
       onStop,
+      isTyping = false,
+      renderTypingIndicator,
       inputPlaceholder = DEFAULT_STRINGS.inputPlaceholder,
       inputHint = DEFAULT_STRINGS.inputHint,
       creditsLabel = DEFAULT_STRINGS.creditsLabel,
@@ -297,6 +301,11 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
         >
           {messages.map((message) => (
             <ChatMessage key={message.id} message={message} userLabel={userLabel} assistantLabel={assistantLabel} />
+          ))}
+          {isTyping && (renderTypingIndicator ? renderTypingIndicator() : (
+            <Box data-testid="default-typing-indicator" sx={{ display: 'flex', gap: 0.5, color: 'text.secondary' }}>
+              {[0, 1, 2].map((dot) => <Box key={dot} sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: 'currentColor' }} />)}
+            </Box>
           ))}
         </Box>
 

@@ -193,6 +193,14 @@ describe('ThemedChatPanel', () => {
     expect(screen.queryByRole('button', { name: 'Stop generating' })).not.toBeInTheDocument();
   });
 
+  it('renders a custom typing indicator or the default indicator', async () => {
+    const { rerender } = renderChatPanel({ isTyping: true, renderTypingIndicator: () => <div data-testid="my-typing" /> });
+    expect(await screen.findByTestId('my-typing')).toBeInTheDocument();
+
+    rerender(<ThemedRightPanel open onClose={vi.fn()} aria-label="Assistant panel" resizable={false}><ThemedChatPanel messages={messages} isTyping /></ThemedRightPanel>);
+    expect(screen.getByTestId('default-typing-indicator')).toBeInTheDocument();
+  });
+
   it('scrolls the thread to its bottom when messages change', async () => {
     const { rerender } = renderChatPanel({ messages: messages.slice(0, 1) });
     const thread = await screen.findByTestId('chat-message-thread');
