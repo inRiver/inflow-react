@@ -98,6 +98,8 @@ describe('ThemedChatPanel', () => {
       moreAriaLabel: 'Open chat menu',
       closeAriaLabel: 'Dismiss chat',
       sendAriaLabel: 'Submit prompt',
+      attachAriaLabel: 'Add documents',
+      showAttach: true,
       inputPlaceholder: 'Ask the catalog',
       inputHint: 'Press Enter to submit',
     });
@@ -111,7 +113,8 @@ describe('ThemedChatPanel', () => {
     expect(screen.getByRole('button', { name: 'Open full chat' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Open chat menu' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Dismiss chat' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Submit prompt' })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Submit prompt' })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Add documents' })).toBeInTheDocument();
     expect(screen.queryByText('AI can make mistakes. Check important info.')).not.toBeInTheDocument();
     expect(screen.queryByText('Assistant')).not.toBeInTheDocument();
     expect(screen.queryByText('Me')).not.toBeInTheDocument();
@@ -169,16 +172,18 @@ describe('ThemedChatPanel', () => {
     expect(screen.queryByTestId('default-typing-indicator')).not.toBeInTheDocument();
   });
 
-  it('enforces character limits and supports multiline composer input', async () => {
+  it('enforces character limits and submits plain Enter in a multiline composer', async () => {
     const onSendMessage = vi.fn();
     renderChatPanel({ inputValue: 'first line', charLimit: 10, multiline: true, onSendMessage });
 
     const input = await screen.findByRole('textbox', { name: 'How can I help?' });
     expect(input).toHaveAttribute('maxlength', '10');
     fireEvent.keyDown(input, { key: 'Enter' });
-    expect(onSendMessage).not.toHaveBeenCalled();
-    fireEvent.keyDown(input, { key: 'Enter', ctrlKey: true });
     expect(onSendMessage).toHaveBeenCalledWith('first line');
+    fireEvent.keyDown(input, { key: 'Enter', ctrlKey: true });
+    fireEvent.keyDown(input, { key: 'Enter', metaKey: true });
+    fireEvent.keyDown(input, { key: 'Enter', shiftKey: true });
+    expect(onSendMessage).toHaveBeenCalledOnce();
   });
 
   it('blocks sends while the host reports a non-streaming request or message limit', async () => {
@@ -259,6 +264,32 @@ describe('ThemedChatPanel', () => {
     expect(onAttachFile).toHaveBeenCalledWith(expect.arrayContaining([expect.any(File), expect.any(File)]));
   });
 
+  it('hides the native attach picker when requested and presents host-owned tools', async () => {
+    const onToolSelect = vi.fn();
+    renderChatPanel({
+      showAttach: false,
+      tools: [{ id: 'report_issue', label: 'Report an issue' }, { id: 'file_upload', label: 'Add files', disabled: true, disabledLabel: 'Not available' }],
+      onToolSelect,
+    });
+
+    expect(screen.queryByTestId('chat-file-input')).not.toBeInTheDocument();
+    fireEvent.click(await screen.findByRole('button', { name: 'Attach files' }));
+    expect(screen.getByRole('menuitem', { name: 'Add files' })).toHaveAttribute('aria-disabled', 'true');
+    fireEvent.click(await screen.findByRole('menuitem', { name: 'Report an issue' }));
+    expect(onToolSelect).toHaveBeenCalledWith('report_issue');
+  });
+
+  it('renders attachment and aggregate upload progress from host props', async () => {
+    renderChatPanel({
+      attachments: [{ id: 'upload-a', name: 'a.csv', status: 'uploading', progress: 40 }],
+      uploadProgress: 55,
+      uploadProgressLabel: 'Uploading... 55%',
+    });
+
+    expect(await screen.findByText('Uploading... 55%')).toBeInTheDocument();
+    expect(screen.getAllByRole('progressbar')).toHaveLength(2);
+  });
+
   it('renders attachments and removes them by id', async () => {
     const onRemoveAttachment = vi.fn();
     renderChatPanel({ attachments: [{ id: 'a', name: 'f.csv', status: 'done' }], onRemoveAttachment });
@@ -281,5 +312,22 @@ describe('ThemedChatPanel', () => {
     );
 
     expect(setScrollTop).toHaveBeenCalledWith(640);
+  });
+
+  it('does not scroll solely because the host thread renderer identity changes', async () => {
+    const { rerender } = renderChatPanel({ renderMessageThread: () => <div>Host thread</div> });
+    const thread = await screen.findByTestId('chat-message-thread');
+    const setScrollTop = vi.fn();
+    Object.defineProperty(thread, 'scrollHeight', { configurable: true, value: 640 });
+    Object.defineProperty(thread, 'scrollTop', { configurable: true, get: () => 0, set: setScrollTop });
+    setScrollTop.mockClear();
+
+    rerender(
+      <ThemedRightPanel open onClose={vi.fn()} aria-label="Assistant panel" resizable={false}>
+        <ThemedChatPanel messages={messages} renderMessageThread={() => <div>Host thread</div>} />
+      </ThemedRightPanel>,
+    );
+
+    expect(setScrollTop).not.toHaveBeenCalled();
   });
 });

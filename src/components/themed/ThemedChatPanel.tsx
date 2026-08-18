@@ -4,6 +4,7 @@ import {
   IconButton,
   InputBase,
   ListItemIcon,
+  LinearProgress,
   Menu,
   MenuItem,
   Typography,
@@ -34,6 +35,13 @@ export interface ThemedChatMessageDef {
   actions?: string[];
 }
 
+export interface ThemedChatTool {
+  id: string;
+  label: ReactNode;
+  disabled?: boolean;
+  disabledLabel?: string;
+}
+
 export interface ThemedChatPanelProps {
   /** Currently selected assistant name shown in the header pill. */
   title?: string;
@@ -49,6 +57,14 @@ export interface ThemedChatPanelProps {
   onAttachFile?: (files: File[]) => void;
   onRemoveAttachment?: (id?: string) => void;
   renderAttachment?: (attachment: ThemedChatAttachment) => ReactNode;
+  /** Defaults to whether an attachment callback is supplied for existing consumers. */
+  showAttach?: boolean;
+  attachAriaLabel?: string;
+  tools?: ThemedChatTool[];
+  onToolSelect?: (toolId: string) => void;
+  /** Aggregate host-owned upload progress, paired with attachment status/progress. */
+  uploadProgress?: number;
+  uploadProgressLabel?: ReactNode;
   /** @deprecated Use onSendMessage to receive the composed text. */
   onSend?: () => void;
   inputValue?: string;
@@ -104,6 +120,7 @@ const DEFAULT_STRINGS = {
   closeAriaLabel: 'Close chat panel',
   sendAriaLabel: 'Send message',
   stopAriaLabel: 'Stop generating',
+  attachAriaLabel: 'Attach files',
 } as const;
 
 const iconButtonSx = {
@@ -134,6 +151,12 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
       onAttachFile,
       onRemoveAttachment,
       renderAttachment,
+      showAttach = Boolean(onAttachFile),
+      attachAriaLabel = DEFAULT_STRINGS.attachAriaLabel,
+      tools,
+      onToolSelect,
+      uploadProgress,
+      uploadProgressLabel,
       onSend,
       inputValue = '',
       onInputChange,
@@ -169,6 +192,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
     const scrollRef = useRef<HTMLDivElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+    const [toolsAnchorEl, setToolsAnchorEl] = useState<HTMLElement | null>(null);
     const [selected, setSelected] = useState(title);
     const [prevTitle, setPrevTitle] = useState(title);
 
@@ -181,7 +205,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
       if (scrollRef.current) {
         scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
       }
-    }, [messages, renderMessageThread]);
+    }, [messages.length, isStreaming, isTyping]);
 
     const handleSelect = useCallback((option: string) => {
       setSelected(option);
@@ -198,7 +222,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
 
     const handleInputKeyDown = (event: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       if (event.key !== 'Enter') return;
-      if (multiline && !event.ctrlKey && !event.metaKey) return;
+      if (multiline && (event.ctrlKey || event.metaKey || event.shiftKey)) return;
 
       event.preventDefault();
       handleSend();
@@ -206,6 +230,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
 
     const sendDisabled = isRunning || isSendDisabled || (inputValue.trim() === '' && !attachedFile && !attachments?.length);
     const displayedAttachments = attachments ?? (attachedFile ? [{ id: 'legacy-attachment', name: attachedFile }] : []);
+    const isUploading = displayedAttachments.some((attachment) => attachment.status === 'pending' || attachment.status === 'uploading');
 
     return (
       <Box
@@ -352,8 +377,19 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
             {displayedAttachments.map((attachment) => renderAttachment ? (
               <Box key={attachment.id}>{renderAttachment(attachment)}</Box>
             ) : (
-              <ThemedChip key={attachment.id} label={attachment.name} onDelete={() => onRemoveAttachment?.(attachment.id)} size="sm" variant="filled-primary" />
+              <Box key={attachment.id} sx={{ display: 'inline-flex', flexDirection: 'column', minWidth: 160, mr: 1, mb: 0.5 }}>
+                <ThemedChip label={attachment.name} onDelete={() => onRemoveAttachment?.(attachment.id)} size="sm" variant="filled-primary" />
+                {(attachment.status === 'pending' || attachment.status === 'uploading') && (
+                  <LinearProgress variant="determinate" value={Math.min(attachment.progress ?? 0, 100)} sx={{ mt: 0.5, borderRadius: 999 }} />
+                )}
+              </Box>
             ))}
+          </Box>
+        )}
+        {isUploading && uploadProgress !== undefined && (
+          <Box sx={{ flexShrink: 0, px: 2, pb: 0.5 }}>
+            <LinearProgress variant="determinate" value={Math.min(uploadProgress, 100)} sx={{ borderRadius: 999 }} />
+            {uploadProgressLabel && <Typography variant="caption" color="text.secondary">{uploadProgressLabel}</Typography>}
           </Box>
         )}
 
@@ -369,14 +405,35 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
               minHeight: 56,
             }}
           >
-            <input ref={fileInputRef} data-testid="chat-file-input" type="file" hidden multiple onChange={(event) => {
-              const files = event.target.files;
-              if (files) onAttachFile?.(Array.from(files));
-              event.target.value = '';
-            }} />
-            <IconButton aria-label="Attach files" onClick={() => fileInputRef.current?.click()} sx={{ color: 'text.secondary', width: 32, height: 32 }}>
-              <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24 }}>add</Icon>
-            </IconButton>
+            {showAttach && (
+              <>
+                <input ref={fileInputRef} data-testid="chat-file-input" type="file" hidden multiple onChange={(event) => {
+                  const files = event.target.files;
+                  if (files) onAttachFile?.(Array.from(files));
+                  event.target.value = '';
+                }} />
+                <IconButton aria-label={attachAriaLabel} onClick={() => fileInputRef.current?.click()} sx={{ color: 'text.secondary', width: 32, height: 32 }}>
+                  <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24 }}>add</Icon>
+                </IconButton>
+              </>
+            )}
+            {tools?.length ? (
+              <>
+                <IconButton aria-label={attachAriaLabel} onClick={(event) => setToolsAnchorEl(event.currentTarget)} sx={{ color: 'text.secondary', width: 32, height: 32 }}>
+                  <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24 }}>add</Icon>
+                </IconButton>
+                <Menu anchorEl={toolsAnchorEl} open={Boolean(toolsAnchorEl)} onClose={() => setToolsAnchorEl(null)}>
+                  {tools.map((tool) => (
+                    <MenuItem key={tool.id} disabled={tool.disabled} title={tool.disabled ? tool.disabledLabel : undefined} onClick={() => {
+                      setToolsAnchorEl(null);
+                      onToolSelect?.(tool.id);
+                    }}>
+                      {tool.label}
+                    </MenuItem>
+                  ))}
+                </Menu>
+              </>
+            ) : null}
             <Box sx={{ flex: '1 1 auto', minWidth: 0 }}>
               <InputBase
                 value={inputValue}
