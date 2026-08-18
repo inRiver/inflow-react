@@ -172,6 +172,30 @@ describe('ThemedChatPanel', () => {
     expect(screen.queryByTestId('default-typing-indicator')).not.toBeInTheDocument();
   });
 
+  it('exposes DS tool and typing slot delegates to a host-rendered thread', async () => {
+    const renderToolMessage = vi.fn((message: ThemedChatMessageDef) => <div data-testid="host-tool-output">{message.content}</div>);
+    const renderTypingIndicator = vi.fn(() => <div data-testid="host-typing-output">Working</div>);
+
+    renderChatPanel({
+      isTyping: true,
+      renderToolMessage,
+      renderTypingIndicator,
+      renderMessageThread: ({ renderToolMessage: renderTool, renderTypingIndicator: renderTyping }) => (
+        <>
+          {renderTool({ id: 'host-tool', role: 'assistant', kind: 'tool', content: 'Tool output' })}
+          {renderTyping()}
+        </>
+      ),
+    });
+
+    const toolOutput = await screen.findByTestId('host-tool-output');
+    expect(toolOutput).toHaveTextContent('Tool output');
+    expect(toolOutput.closest('[data-chat-message-kind="tool"]')).toBeInTheDocument();
+    expect(screen.getByTestId('host-typing-output')).toHaveTextContent('Working');
+    expect(renderToolMessage).toHaveBeenCalledOnce();
+    expect(renderTypingIndicator).toHaveBeenCalledOnce();
+  });
+
   it('enforces character limits and submits plain Enter in a multiline composer', async () => {
     const onSendMessage = vi.fn();
     renderChatPanel({ inputValue: 'first line', charLimit: 10, multiline: true, onSendMessage });

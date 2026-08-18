@@ -35,6 +35,13 @@ export interface ThemedChatMessageDef {
   actions?: string[];
 }
 
+export interface ThemedChatThreadRenderContext {
+  /** Invokes the panel's configured tool-message slot with DS-owned wrapping. */
+  renderToolMessage: (message: ThemedChatMessageDef) => ReactNode;
+  /** Invokes the panel's configured or default typing indicator when typing is active. */
+  renderTypingIndicator: () => ReactNode;
+}
+
 export interface ThemedChatTool {
   id: string;
   label: ReactNode;
@@ -76,7 +83,7 @@ export interface ThemedChatPanelProps {
   renderTypingIndicator?: () => ReactNode;
   renderToolMessage?: (message: ThemedChatMessageDef) => ReactNode;
   /** App-owned thread renderer for message types that are outside the DS message model. */
-  renderMessageThread?: () => ReactNode;
+  renderMessageThread?: (context: ThemedChatThreadRenderContext) => ReactNode;
   inputPlaceholder?: string;
   inputHint?: string;
   creditsLabel?: ((used: number, total: number) => ReactNode) | string;
@@ -230,6 +237,19 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
 
     const sendDisabled = isRunning || isSendDisabled || (inputValue.trim() === '' && !attachedFile && !attachments?.length);
     const displayedAttachments = attachments ?? (attachedFile ? [{ id: 'legacy-attachment', name: attachedFile }] : []);
+    const renderToolMessageSlot = (message: ThemedChatMessageDef) => {
+      if (!renderToolMessage) return null;
+      return <Box key={message.id} data-chat-message-kind="tool">{renderToolMessage(message)}</Box>;
+    };
+    const renderTypingIndicatorSlot = () => {
+      if (!isTyping) return null;
+      if (renderTypingIndicator) return renderTypingIndicator();
+      return (
+        <Box data-testid="default-typing-indicator" sx={{ display: 'flex', gap: 0.5, color: 'text.secondary' }}>
+          {[0, 1, 2].map((dot) => <Box key={dot} sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: 'currentColor' }} />)}
+        </Box>
+      );
+    };
 
     return (
       <Box
@@ -357,18 +377,17 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
             gap: 2,
           }}
         >
-          {renderMessageThread ? renderMessageThread() : messages.map((message) => {
+          {renderMessageThread ? renderMessageThread({
+            renderToolMessage: renderToolMessageSlot,
+            renderTypingIndicator: renderTypingIndicatorSlot,
+          }) : messages.map((message) => {
             if (message.kind === 'tool') {
-              return renderToolMessage ? <Box key={message.id}>{renderToolMessage(message)}</Box> : null;
+              return renderToolMessageSlot(message);
             }
 
             return <ChatMessage key={message.id} message={message} userLabel={userLabel} assistantLabel={assistantLabel} />;
           })}
-          {!renderMessageThread && isTyping && (renderTypingIndicator ? renderTypingIndicator() : (
-            <Box data-testid="default-typing-indicator" sx={{ display: 'flex', gap: 0.5, color: 'text.secondary' }}>
-              {[0, 1, 2].map((dot) => <Box key={dot} sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: 'currentColor' }} />)}
-            </Box>
-          ))}
+          {!renderMessageThread && renderTypingIndicatorSlot()}
         </Box>
 
         {displayedAttachments.length > 0 && (
