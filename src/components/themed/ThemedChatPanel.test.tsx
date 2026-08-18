@@ -217,6 +217,22 @@ describe('ThemedChatPanel', () => {
     expect(screen.queryByText('hidden')).not.toBeInTheDocument();
   });
 
+  it('passes selected files to the attach callback', async () => {
+    const onAttachFile = vi.fn();
+    renderChatPanel({ onAttachFile });
+    const input = await screen.findByTestId('chat-file-input');
+    fireEvent.change(input, { target: { files: [new File(['one'], 'one.csv'), new File(['two'], 'two.csv')] } });
+    expect(onAttachFile).toHaveBeenCalledWith(expect.arrayContaining([expect.any(File), expect.any(File)]));
+  });
+
+  it('renders attachments and removes them by id', async () => {
+    const onRemoveAttachment = vi.fn();
+    renderChatPanel({ attachments: [{ id: 'a', name: 'f.csv', status: 'done' }], onRemoveAttachment });
+    const chip = await screen.findByText('f.csv');
+    fireEvent.click(chip.closest('.MuiChip-root')?.querySelector('.MuiChip-deleteIcon') as Element);
+    expect(onRemoveAttachment).toHaveBeenCalledWith('a');
+  });
+
   it('scrolls the thread to its bottom when messages change', async () => {
     const { rerender } = renderChatPanel({ messages: messages.slice(0, 1) });
     const thread = await screen.findByTestId('chat-message-thread');

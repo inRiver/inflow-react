@@ -15,6 +15,13 @@ import { ThemedChip } from './ThemedChip';
 
 export type ThemedChatMessageRole = 'assistant' | 'user';
 
+export interface ThemedChatAttachment {
+  id: string;
+  name: string;
+  status?: 'pending' | 'uploading' | 'done' | 'error';
+  progress?: number;
+}
+
 export interface ThemedChatMessageDef {
   id: string;
   role: ThemedChatMessageRole;
@@ -38,7 +45,10 @@ export interface ThemedChatPanelProps {
   onExpand?: () => void;
   onMore?: () => void;
   attachedFile?: string;
-  onRemoveAttachment?: () => void;
+  attachments?: ThemedChatAttachment[];
+  onAttachFile?: (files: File[]) => void;
+  onRemoveAttachment?: (id?: string) => void;
+  renderAttachment?: (attachment: ThemedChatAttachment) => ReactNode;
   /** @deprecated Use onSendMessage to receive the composed text. */
   onSend?: () => void;
   inputValue?: string;
@@ -112,7 +122,10 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
       onExpand,
       onMore,
       attachedFile,
+      attachments,
+      onAttachFile,
       onRemoveAttachment,
+      renderAttachment,
       onSend,
       inputValue = '',
       onInputChange,
@@ -140,6 +153,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
     ref,
   ) {
     const scrollRef = useRef<HTMLDivElement>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
     const [selected, setSelected] = useState(title);
     const [prevTitle, setPrevTitle] = useState(title);
@@ -175,7 +189,8 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
       handleSend();
     };
 
-    const sendDisabled = inputValue.trim() === '' && !attachedFile;
+    const sendDisabled = inputValue.trim() === '' && !attachedFile && !attachments?.length;
+    const displayedAttachments = attachments ?? (attachedFile ? [{ id: 'legacy-attachment', name: attachedFile }] : []);
 
     return (
       <Box
@@ -317,14 +332,13 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
           ))}
         </Box>
 
-        {attachedFile && (
+        {displayedAttachments.length > 0 && (
           <Box sx={{ flexShrink: 0, px: 2, pb: 1 }}>
-            <ThemedChip
-              label={attachedFile}
-              onDelete={onRemoveAttachment}
-              size="sm"
-              variant="filled-primary"
-            />
+            {displayedAttachments.map((attachment) => renderAttachment ? (
+              <Box key={attachment.id}>{renderAttachment(attachment)}</Box>
+            ) : (
+              <ThemedChip key={attachment.id} label={attachment.name} onDelete={() => onRemoveAttachment?.(attachment.id)} size="sm" variant="filled-primary" />
+            ))}
           </Box>
         )}
 
@@ -340,9 +354,14 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
               minHeight: 56,
             }}
           >
-            <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24, color: 'text.secondary', flexShrink: 0 }}>
-              add
-            </Icon>
+            <input ref={fileInputRef} data-testid="chat-file-input" type="file" hidden multiple onChange={(event) => {
+              const files = event.target.files;
+              if (files) onAttachFile?.(Array.from(files));
+              event.target.value = '';
+            }} />
+            <IconButton aria-label="Attach files" onClick={() => fileInputRef.current?.click()} sx={{ color: 'text.secondary', width: 32, height: 32 }}>
+              <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24 }}>add</Icon>
+            </IconButton>
             <Box sx={{ flex: '1 1 auto', minWidth: 0 }}>
               <InputBase
                 value={inputValue}
