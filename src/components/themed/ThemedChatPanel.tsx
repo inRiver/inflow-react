@@ -96,8 +96,14 @@ export interface ThemedChatPanelProps {
   sendAriaLabel?: string;
   stopAriaLabel?: string;
   credits?: { used: number; total: number };
+  /** Visibility of the credits block. Defaults to whether `credits` is supplied. */
+  showCredits?: boolean;
   charCount?: number;
   charLimit?: number;
+  /** Visibility of the "count / limit" footer text. */
+  showCharCount?: boolean;
+  /** Visibility of the small hint line under the input (e.g. "Type / to switch assistants"). */
+  showInputHint?: boolean;
   /** Keeps the composer presentational while allowing the host to mirror request state. */
   isRunning?: boolean;
   isInputDisabled?: boolean;
@@ -186,8 +192,11 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
       sendAriaLabel = DEFAULT_STRINGS.sendAriaLabel,
       stopAriaLabel = DEFAULT_STRINGS.stopAriaLabel,
       credits,
+      showCredits = Boolean(credits),
       charCount = 0,
       charLimit = 2000,
+      showCharCount = true,
+      showInputHint = true,
       isRunning = false,
       isInputDisabled = false,
       isSendDisabled = false,
@@ -464,7 +473,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
                 inputProps={{ 'aria-label': inputPlaceholder, maxLength: charLimit }}
                 sx={{ color: 'text.primary', fontSize: '1rem', lineHeight: 1.5, letterSpacing: '0.15px', width: '100%' }}
               />
-              {inputHint && (
+              {showInputHint && inputHint && (
                 <Typography variant="caption" color="text.secondary" sx={{ lineHeight: '16px', letterSpacing: '0.4px' }}>
                   {inputHint}
                 </Typography>
@@ -482,7 +491,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
           </Box>
 
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pt: 0.5 }}>
-            {credits ? (
+            {showCredits && credits ? (
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                 <Typography variant="caption" color="text.disabled">
                   {typeof creditsLabel === 'function'
@@ -492,9 +501,11 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
                 <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 16, color: 'text.disabled' }}>info</Icon>
               </Box>
             ) : <span />}
-            <Typography variant="caption" color="primary" sx={{ letterSpacing: '0.4px' }}>
-              {charCount} / {charLimit}
-            </Typography>
+            {showCharCount && (
+              <Typography variant="caption" color="primary" sx={{ letterSpacing: '0.4px' }}>
+                {charCount} / {charLimit}
+              </Typography>
+            )}
           </Box>
 
           <Typography

@@ -356,4 +356,58 @@ describe('ThemedChatPanel', () => {
 
     expect(setScrollTop).not.toHaveBeenCalled();
   });
+
+  describe('composer metadata visibility', () => {
+    it('shows the credits block when credits are supplied and showCredits is not set', async () => {
+      renderChatPanel({ credits: { used: 8, total: 10 } });
+
+      expect(await screen.findByText('Credits 8/10')).toBeInTheDocument();
+    });
+
+    it('hides the credits block when showCredits is false, even if credits are supplied', async () => {
+      renderChatPanel({ credits: { used: 8, total: 10 }, showCredits: false });
+
+      await screen.findByTestId('themed-chat-panel');
+      expect(screen.queryByText('Credits 8/10')).not.toBeInTheDocument();
+    });
+
+    it('hides the credits block when no credits are supplied', async () => {
+      renderChatPanel();
+
+      await screen.findByTestId('themed-chat-panel');
+      expect(screen.queryByText(/Credits \d+\/\d+/)).not.toBeInTheDocument();
+    });
+
+    it('shows the character counter by default', async () => {
+      renderChatPanel({ charCount: 124, charLimit: 2000 });
+
+      expect(await screen.findByText('124 / 2000')).toBeInTheDocument();
+    });
+
+    it('hides the character counter when showCharCount is false', async () => {
+      renderChatPanel({ charCount: 124, charLimit: 2000, showCharCount: false });
+
+      await screen.findByTestId('themed-chat-panel');
+      expect(screen.queryByText('124 / 2000')).not.toBeInTheDocument();
+    });
+
+    it('extends the character limit via charLimit', async () => {
+      renderChatPanel({ charCount: 124, charLimit: 8000 });
+
+      expect(await screen.findByText('124 / 8000')).toBeInTheDocument();
+    });
+
+    it('shows the input hint by default', async () => {
+      renderChatPanel();
+
+      expect(await screen.findByText('Type / to switch assistants')).toBeInTheDocument();
+    });
+
+    it('hides the input hint when showInputHint is false', async () => {
+      renderChatPanel({ showInputHint: false });
+
+      await screen.findByTestId('themed-chat-panel');
+      expect(screen.queryByText('Type / to switch assistants')).not.toBeInTheDocument();
+    });
+  });
 });

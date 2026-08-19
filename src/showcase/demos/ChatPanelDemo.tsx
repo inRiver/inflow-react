@@ -34,6 +34,10 @@ const chatPanelSchema: PropSchema[] = [
   { name: 'attachmentVisible', type: 'boolean', label: 'Show attachment chip' },
   { name: 'isStreaming', type: 'boolean', label: 'Show streaming stop control' },
   { name: 'isTyping', type: 'boolean', label: 'Show typing indicator' },
+  { name: 'showCredits', type: 'boolean', label: 'Show credits' },
+  { name: 'showCharCount', type: 'boolean', label: 'Show character counter' },
+  { name: 'showInputHint', type: 'boolean', label: 'Show input hint' },
+  { name: 'charLimit', type: 'select', options: ['2000', '8000'], label: 'Character limit' },
 ];
 
 export function ChatPanelDemo() {
@@ -44,6 +48,10 @@ export function ChatPanelDemo() {
   const [inputValue, setInputValue] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const [showCredits, setShowCredits] = useState(true);
+  const [showCharCount, setShowCharCount] = useState(true);
+  const [showInputHint, setShowInputHint] = useState(true);
+  const [charLimit, setCharLimit] = useState(2000);
   const [attachments, setAttachments] = useState<ThemedChatAttachment[]>([{ id: 'spring-catalog', name: 'spring-catalog.csv', status: 'done' }]);
 
   return (
@@ -61,7 +69,7 @@ export function ChatPanelDemo() {
 
       <PropsPlayground
         schema={chatPanelSchema}
-        values={{ assistant, attachmentVisible, isStreaming, isTyping }}
+        values={{ assistant, attachmentVisible, isStreaming, isTyping, showCredits, showCharCount, showInputHint, charLimit: String(charLimit) }}
         onChange={(values) => {
           setAssistant(
             values.assistant === 'Content Onboarding Assistant' || values.assistant === 'Expression Assistant'
@@ -71,6 +79,10 @@ export function ChatPanelDemo() {
           setAttachmentVisible(values.attachmentVisible === true);
           setIsStreaming(values.isStreaming === true);
           setIsTyping(values.isTyping === true);
+          setShowCredits(values.showCredits === true);
+          setShowCharCount(values.showCharCount === true);
+          setShowInputHint(values.showInputHint === true);
+          setCharLimit(values.charLimit === '8000' ? 8000 : 2000);
         }}
       />
 
@@ -93,8 +105,11 @@ export function ChatPanelDemo() {
     onAttachFile={setFiles}
     onRemoveAttachment={removeAttachment}
     credits={{ used: 8, total: 10 }}
+    showCredits={showCredits}
     charCount={124}
-    charLimit={2000}
+    charLimit={charLimit}
+    showCharCount={showCharCount}
+    showInputHint={showInputHint}
     onClose={handleClose}
     onSelectOption={setAssistant}
   />
@@ -122,8 +137,11 @@ export function ChatPanelDemo() {
           renderToolMessage={(message) => <Typography variant="caption" color="text.secondary">Tool output: {message.id}</Typography>}
           attachments={attachmentVisible ? attachments : []}
           credits={{ used: 8, total: 10 }}
+          showCredits={showCredits}
           charCount={124}
-          charLimit={2000}
+          charLimit={charLimit}
+          showCharCount={showCharCount}
+          showInputHint={showInputHint}
           onClose={() => setOpen(false)}
           onExpand={() => setPanelWidth((current) => current === 'medium' ? 'wide' : 'medium')}
           onMore={() => undefined}
