@@ -2,6 +2,27 @@
 
 All notable changes to `@inriver/inflow-react` are documented here. This project follows [Semantic Versioning](https://semver.org/).
 
+## [3.4.0] - 2026-08-19
+
+### Added — ThemedChatPanel extended API
+- **Streaming:** `isStreaming` + `onStop` props swap the Send control for a Stop control while a response is generating.
+- **Typing indicator:** `isTyping` + `renderTypingIndicator` slot, with a default three-dot indicator.
+- **Tool-message slot:** `renderToolMessage` renders `kind: 'tool'` messages; `renderMessageThread` lets the host own the full thread while still invoking DS tool/typing slots via `ThemedChatThreadRenderContext`.
+- **Controlled composer:** `inputValue` / `onInputChange` / `onSendMessage`, `multiline` + `maxRows`, and `charLimit` enforcement. Plain Enter submits; in multiline mode Ctrl/Meta+Enter inserts a newline.
+- **Attachments & tools:** `attachments` with per-item `status`/`progress`, `onAttachFile`, `onRemoveAttachment`, `renderAttachment`, and a `tools` menu with `onToolSelect`. Aggregate `uploadProgress` + `uploadProgressLabel` render a determinate progress bar gated on the `uploadProgress` prop.
+- **Composer strings as props:** `inputPlaceholder`, `inputHint`, `creditsLabel` (string or `(used, total) => ReactNode`), `aiDisclaimer`, `userLabel`, `assistantLabel`, and all icon-button ARIA labels.
+- **Composer metadata visibility:** new `showCredits` (defaults to whether `credits` is supplied), `showCharCount`, and `showInputHint` toggles let hosts hide the `Credits n/m` block, the `count / limit` counter, and the input hint line without clearing the underlying values.
+
+### Changed
+- Themed wrapper components aligned with the current Inflow design specs.
+- `ChatPanelDemo` showcase exercises the extended `ThemedChatPanel` API.
+
+### Fixed
+- Composer keyboard parity: Shift+Enter submits (only Ctrl/Meta+Enter insert a newline in multiline mode), matching legacy `useSubmitOnEnter` behavior.
+
+### Tests
+- New `ThemedTable` and inflow-theme regression tests.
+
 ## [3.3.0] - 2026-08-17
 
 ### Added
