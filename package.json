@@ -1,6 +1,6 @@
 {
   "name": "@inriver/inflow-react",
-  "version": "3.4.0",
+  "version": "3.4.1",
   "description": "Shared Inflow React/MUI design-system: canonical theme, design tokens, and themed wrapper components for Inriver product UIs.",
   "keywords": [
     "inriver",
@@ -112,5 +112,10 @@
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0"
+  },
+  "overrides": {
+    "react-router": ">=7.18.2",
+    "postcss": ">=8.5.23",
+    "undici": ">=7.29.0"
   }
 }

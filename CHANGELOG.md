@@ -2,6 +2,11 @@
 
 All notable changes to `@inriver/inflow-react` are documented here. This project follows [Semantic Versioning](https://semver.org/).
 
+## [3.4.1] - 2026-08-19
+
+### Security
+- Pin patched floors for vulnerable transitive dev dependencies via `overrides`, resolving 10 open Dependabot alerts (2 high, 8 moderate): `react-router >= 7.18.2` (CSRF bypass, open redirect, constructor injection), `postcss >= 8.5.23` (sourceMappingURL path traversal / arbitrary `.map` disclosure), and `undici >= 7.29.0` (CRLF injection, cache-directive information disclosure, response desynchronization). These are build/test-tooling deps only — none ship in the published package. `npm audit` now reports 0 vulnerabilities and the floors are enforced on every install/CI run.
+
 ## [3.4.0] - 2026-08-19
 
 ### Added — ThemedChatPanel extended API
