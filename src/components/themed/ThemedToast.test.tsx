@@ -22,22 +22,24 @@ const severityTokens: Record<ThemedToastSeverity, string> = {
 
 describe('ThemedToast', () => {
   it.each([
-    ['error', 'alert'],
-    ['warning', 'alert'],
-    ['info', 'status'],
-    ['success', 'status'],
-  ] as const)('renders the %s severity with the %s role and mapped background', (severity, role) => {
+    ['error', 'alert', 'error_outline'],
+    ['warning', 'alert', 'warning_amber'],
+    ['info', 'status', 'info_outline'],
+    ['success', 'status', 'check_circle_outline'],
+  ] as const)('renders the %s severity with the %s role, background, and outlined icon', (severity, role, icon) => {
     renderWithInflow(<ThemedToast severity={severity} message={`${severity} message`} />);
 
     const toast = screen.getByRole(role);
     expect(toast).toHaveTextContent(`${severity} message`);
     expect(getComputedStyle(toast).backgroundColor).toBe(toRgb(severityTokens[severity]));
+    expect(screen.getByText(icon)).toHaveClass('material-icons-outlined');
   });
 
   it('renders a bold title', () => {
     renderWithInflow(<ThemedToast title="Important update" message="Details are available." />);
 
     expect(getComputedStyle(screen.getByText('Important update')).fontWeight).toBe('600');
+    expect(getComputedStyle(screen.getByText('Important update').parentElement as HTMLElement).whiteSpace).toBe('nowrap');
   });
 
   it('uses the design-system inline banner layout', () => {

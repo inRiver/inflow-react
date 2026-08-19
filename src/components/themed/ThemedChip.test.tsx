@@ -73,4 +73,10 @@ describe('ThemedChip', () => {
     const icon = screen.getByText('add');
     expect(icon).toHaveClass('material-icons-outlined');
   });
+
+  it('uses an outlined close icon for deletable chips', () => {
+    renderWithInflow(<ThemedChip label="Deletable" onDelete={() => undefined} />);
+
+    expect(screen.getByText('close')).toHaveClass('material-icons-outlined');
+  });
 });

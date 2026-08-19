@@ -53,7 +53,7 @@ export const ThemedRightPanel = forwardRef<HTMLDivElement, ThemedRightPanelProps
       width = 'medium',
       onClose,
       hasUnsavedChanges = false,
-      resizable = true,
+      resizable,
       topOffset = 56,
       children,
       'aria-label': ariaLabel = 'Right panel',
@@ -149,6 +149,7 @@ export const ThemedRightPanel = forwardRef<HTMLDivElement, ThemedRightPanelProps
     };
 
     const isOverlay = mode === 'overlay';
+    const canResize = resizable ?? variant !== 'modal';
     const panelSx = {
       position: 'fixed',
       top: isOverlay ? 0 : topOffset,
@@ -178,12 +179,13 @@ export const ThemedRightPanel = forwardRef<HTMLDivElement, ThemedRightPanelProps
           <Fade in={open} mountOnEnter unmountOnExit>
             <Box
               aria-hidden="true"
+              data-testid="right-panel-backdrop"
               onClick={requestClose}
               sx={{
                 position: 'fixed',
                 inset: 0,
                 zIndex: theme.zIndex.modal,
-                bgcolor: theme.palette.action.disabledBackground,
+                bgcolor: 'rgba(0, 0, 0, 0.5)',
               }}
             />
           </Fade>
@@ -198,7 +200,7 @@ export const ThemedRightPanel = forwardRef<HTMLDivElement, ThemedRightPanelProps
             tabIndex={-1}
             sx={panelSx}
           >
-            {resizable && (
+            {canResize && (
               <Box
                 aria-label="Resize panel"
                 data-testid="right-panel-resize-handle"
@@ -239,11 +241,11 @@ export const ThemedRightPanel = forwardRef<HTMLDivElement, ThemedRightPanelProps
           title="Discard changes?"
           actions={(
             <>
-              <ThemedButton variant="outlined" onClick={() => setDiscardOpen(false)}>
-                Keep Editing
-              </ThemedButton>
-              <ThemedButton variant="contained" onClick={() => { setDiscardOpen(false); onClose(); }}>
+              <ThemedButton variant="outlined" onClick={() => { setDiscardOpen(false); onClose(); }}>
                 Discard
+              </ThemedButton>
+              <ThemedButton variant="contained" onClick={() => setDiscardOpen(false)}>
+                Keep Editing
               </ThemedButton>
             </>
           )}

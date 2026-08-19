@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, FormControl, InputLabel, MenuItem, Select, Stack, Typography } from '@mui/material';
+import { Box, FormControl, Icon, IconButton, InputLabel, MenuItem, Select, Stack, Typography } from '@mui/material';
 import { ThemedButton } from '../../components/themed/ThemedButton';
 import {
   ThemedRightPanel,
@@ -53,8 +53,6 @@ export function RightPanelDemo() {
               bgcolor: 'background.default',
               border: 1,
               borderColor: 'divider',
-              mr: open && mode === 'push' ? 'var(--infl-right-panel-width)' : 0,
-              transition: (theme) => theme.transitions.create('margin-right'),
             }}
           >
             <Typography variant="body2">Host content shifts left in push mode. Overlay mode leaves it in place.</Typography>
@@ -93,8 +91,13 @@ export function RightPanelDemo() {
         aria-label="Right panel example"
         onClose={() => setOpen(false)}
       >
-        <Stack spacing={2} sx={{ height: '100%', overflow: 'auto', p: 3, pt: 6 }}>
+        <Box component="header" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 3, py: 2, borderBottom: 1, borderColor: 'divider' }}>
           <Typography variant="h6">Composed content</Typography>
+          <IconButton aria-label="Close panel" size="small" onClick={() => setOpen(false)}>
+            <Icon baseClassName="material-icons-outlined">close</Icon>
+          </IconButton>
+        </Box>
+        <Stack spacing={2} sx={{ flex: '1 1 auto', minHeight: 0, overflow: 'auto', p: 3 }}>
           <Typography variant="body2">Drag the left edge to resize this panel. Its children own the header, body, and footer layout.</Typography>
           {Array.from({ length: 16 }, (_, index) => (
             <Box key={index} sx={{ p: 2, border: 1, borderColor: 'divider', borderRadius: 1 }}>
@@ -103,6 +106,9 @@ export function RightPanelDemo() {
             </Box>
           ))}
         </Stack>
+        <Box component="footer" sx={{ display: 'flex', justifyContent: 'flex-end', px: 3, py: 2, borderTop: 1, borderColor: 'divider' }}>
+          <ThemedButton variant="outlined" onClick={() => setOpen(false)}>Cancel</ThemedButton>
+        </Box>
       </ThemedRightPanel>
     </>
   );

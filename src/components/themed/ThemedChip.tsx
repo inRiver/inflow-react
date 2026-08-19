@@ -42,6 +42,7 @@ export const ThemedChip = forwardRef<HTMLDivElement, ThemedChipProps>(
     color: requestedColor,
     size: requestedSize = 'medium',
     leadingIcon,
+    deleteIcon,
     ...props
   }, ref) => {
     const isPrimaryVariant = requestedVariant === 'filled-primary' || requestedVariant === 'outlined-primary';
@@ -132,6 +133,11 @@ export const ThemedChip = forwardRef<HTMLDivElement, ThemedChipProps>(
               {leadingIcon}
             </Icon>
           ) : undefined}
+          deleteIcon={deleteIcon ?? (
+            <Icon baseClassName="material-icons-outlined" sx={{ fontSize: `${iconSize}px !important` }}>
+              close
+            </Icon>
+          )}
           sx={[
             customStyles,
             sizeStyles,

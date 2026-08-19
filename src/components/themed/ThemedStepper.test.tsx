@@ -255,6 +255,24 @@ describe('ThemedStepper', () => {
       expect(style.position).toBe('relative');
       expect(style.zIndex).toBe('2');
     });
+
+    const activeDot = container.querySelector('.MuiStepIcon-root[aria-label="Current"] > span');
+    expect(getComputedStyle(activeDot as Element).width).toBe('12px');
+    expect(getComputedStyle(activeDot as Element).height).toBe('12px');
+
+    const futureCircle = container.querySelector('.MuiStepIcon-root[aria-label="Incomplete"] > span');
+    expect(getComputedStyle(futureCircle as Element).width).toBe('16px');
+    expect(getComputedStyle(futureCircle as Element).height).toBe('16px');
+
+    const iconContainers = container.querySelectorAll('.MuiStepLabel-iconContainer, .MuiStepButton-iconContainer');
+    iconContainers.forEach((iconContainer) => {
+      const style = getComputedStyle(iconContainer);
+      expect(style.width).toBe('24px');
+      expect(style.height).toBe('24px');
+      expect(style.display).toBe('flex');
+      expect(style.alignItems).toBe('center');
+      expect(style.justifyContent).toBe('center');
+    });
   });
 
   it('accepts connector length reduction through sx', () => {

@@ -30,7 +30,7 @@ export function BreadcrumbsDemo() {
     "maxItems": 8
   });
   const [themedProps, setThemedProps] = useState<Record<string, unknown>>({
-    separator: 'chevron',
+    separator: 'bar',
     maxItems: '3',
   });
 
@@ -55,7 +55,7 @@ export function BreadcrumbsDemo() {
   }
   ];
   const themedSchema: PropSchema[] = [
-    { name: 'separator', type: 'select', options: ['chevron', 'slash'] },
+    { name: 'separator', type: 'select', options: ['bar', 'chevron', 'slash'] },
     { name: 'maxItems', type: 'select', options: ['6', '3', '2'] },
   ];
 
@@ -76,12 +76,14 @@ const items = [
   { label: 'Accessories' },
 ];
 
-<ThemedBreadcrumbs items={items} separator="chevron" maxItems={3} />`;
+<ThemedBreadcrumbs items={items} separator="bar" maxItems={3} />`;
   const muiSeparator = typeof props.separator === 'string' ? props.separator : '/';
   const muiMaxItems = typeof props.maxItems === 'string' || typeof props.maxItems === 'number'
     ? Number(props.maxItems)
     : 8;
-  const themedSeparator = themedProps.separator === 'slash' ? 'slash' : 'chevron';
+  const themedSeparator = themedProps.separator === 'slash' || themedProps.separator === 'chevron'
+    ? themedProps.separator
+    : 'bar';
   const parsedThemedMaxItems = Number.parseInt(String(themedProps.maxItems), 10);
   const themedMaxItems = Number.isFinite(parsedThemedMaxItems) ? parsedThemedMaxItems : 3;
 
@@ -134,6 +136,7 @@ const items = [
 
           <DemoFrame title="Themed Breadcrumbs">
             <Stack spacing={2}>
+              <ThemedBreadcrumbs items={themedShortTrail} separator="bar" />
               <ThemedBreadcrumbs items={themedShortTrail} separator="chevron" />
               <ThemedBreadcrumbs items={themedShortTrail} separator="slash" />
               <ThemedBreadcrumbs items={themedLongTrail} maxItems={3} />

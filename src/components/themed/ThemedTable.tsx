@@ -62,6 +62,7 @@ const ThemedTableBase = <T extends TableRowData = TableRowData>(
           sx={(theme: Theme) => ({
             border: `1px solid ${theme.palette.inflow.outlineVariant}`,
             borderRadius: `${theme.shape.borderRadius}px`,
+            boxShadow: 'none',
           })}
         >
         <Table ref={ref} sx={[...(Array.isArray(sx) ? sx : [sx])]} {...props}>
@@ -75,7 +76,10 @@ const ThemedTableBase = <T extends TableRowData = TableRowData>(
                     fontWeight: 600,
                     color: theme.palette.text.primary,
                     borderColor: theme.palette.inflow.outlineVariant,
-                    backgroundColor: theme.palette.background.paper,
+                    backgroundColor: theme.palette.inflow.surfaceHighest,
+                    height: 48,
+                    boxSizing: 'border-box',
+                    padding: theme.spacing(0, 2),
                   })}
                 >
                   {column.label}
@@ -92,6 +96,7 @@ const ThemedTableBase = <T extends TableRowData = TableRowData>(
                   '&:hover': {
                     backgroundColor: theme.palette.inflow.rowHover,
                   },
+                  height: 52,
                   ...(striped && index % 2 === 1 && {
                     backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0, 0, 0, 0.02)',
                   }),
@@ -105,6 +110,9 @@ const ThemedTableBase = <T extends TableRowData = TableRowData>(
                       borderColor: theme.palette.inflow.outlineVariant,
                       fontSize: '0.875rem',
                       letterSpacing: '0.015625rem',
+                      color: theme.palette.text.secondary,
+                      boxSizing: 'border-box',
+                      padding: theme.spacing(0, 2),
                     })}
                   >
                     {column.render ? column.render(row) : String(row[column.id] ?? '')}

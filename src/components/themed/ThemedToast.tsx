@@ -14,10 +14,10 @@ export interface ThemedToastProps {
 }
 
 const iconNames: Record<ThemedToastSeverity, string> = {
-  error: 'error',
-  info: 'info',
-  success: 'check_circle',
-  warning: 'warning',
+  error: 'error_outline',
+  info: 'info_outline',
+  success: 'check_circle_outline',
+  warning: 'warning_amber',
 };
 
 /**
@@ -59,24 +59,38 @@ export const ThemedToast = forwardRef<HTMLDivElement, ThemedToastProps>(
         {iconNames[severity]}
       </Icon>
 
-      <span
-        style={{ flex: '1 1 auto', fontSize: '0.875rem', fontWeight: 400, lineHeight: '20px', letterSpacing: '0.25px' }}
+      <Box
+        component="span"
+        sx={{
+          flex: '1 1 auto',
+          minWidth: 0,
+          display: 'flex',
+          alignItems: 'baseline',
+          gap: 0.5,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          fontSize: '0.875rem',
+          fontWeight: 400,
+          lineHeight: '20px',
+          letterSpacing: '0.25px',
+        }}
       >
         {title && (
-          <span style={{ display: 'block', fontWeight: 600, lineHeight: '20px', marginBottom: 2 }}>
+          <Box component="span" sx={{ flexShrink: 0, fontWeight: 600, lineHeight: '20px' }}>
             {title}
-          </span>
+          </Box>
         )}
-        {message}
+        <Box component="span" sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          {message}
+        </Box>
         {action && (
-          <>
-            {' '}
+          <Box component="span" sx={{ flexShrink: 0 }}>
             <ThemedButton variant="text" size="small" onClick={action.onClick}>
               {action.label}
             </ThemedButton>
-          </>
+          </Box>
         )}
-      </span>
+      </Box>
 
       {onClose && (
         <IconButton

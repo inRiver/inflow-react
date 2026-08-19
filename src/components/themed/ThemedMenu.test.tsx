@@ -103,4 +103,13 @@ describe('ThemedMenu', () => {
 
     expect(getComputedStyle(screen.getByRole('menuitem', { name: /Edit profile/ })).minHeight).toBe('36px');
   });
+
+  it('uses the square, shadowless design-system menu surface', () => {
+    renderWithInflow(<MenuHarness />);
+
+    const paper = screen.getByRole('menu').closest<HTMLElement>('.MuiPaper-root');
+    expect(paper).not.toBeNull();
+    expect(getComputedStyle(paper as HTMLElement).borderRadius).toBe('0px');
+    expect(getComputedStyle(paper as HTMLElement).boxShadow).toBe('none');
+  });
 });

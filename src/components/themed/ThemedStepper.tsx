@@ -41,7 +41,7 @@ interface ThemedStepIconProps extends StepIconProps {
 }
 
 const ICON_SIZE = 24;
-const INNER_CIRCLE_SIZE = 15;
+const INNER_CIRCLE_SIZE = 16;
 
 const StepIconRoot = styled("span")<{ ownerState: ThemedStepIconProps }>(
   ({ theme, ownerState }) => ({
@@ -84,8 +84,8 @@ const InnerCircle = styled("span")<{ ownerState: ThemedStepIconProps }>(
 );
 
 const InnerDot = styled("span")(({ theme }) => ({
-  width: 13,
-  height: 13,
+  width: 12,
+  height: 12,
   borderRadius: "50%",
   backgroundColor: theme.palette.primary.main,
 }));
@@ -314,6 +314,15 @@ export const ThemedStepper = forwardRef<HTMLDivElement, ThemedStepperProps>(
                     minWidth: ICON_SIZE,
                     maxWidth: ICON_SIZE,
                     boxSizing: "border-box",
+                  },
+                  "& .MuiStepLabel-iconContainer, & .MuiStepButton-iconContainer": {
+                    width: ICON_SIZE,
+                    height: ICON_SIZE,
+                    padding: 0,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    lineHeight: 0,
                   },
                   "& .MuiStepLabel-labelContainer": {
                     width: "max-content",

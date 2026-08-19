@@ -11,14 +11,14 @@ export interface ThemedBreadcrumbItem {
 
 export interface ThemedBreadcrumbsProps {
   items: ThemedBreadcrumbItem[];
-  /** Separator style — chevron (default) or slash. */
-  separator?: 'chevron' | 'slash';
+  /** Separator style — vertical bar (default), chevron, or slash. */
+  separator?: 'bar' | 'chevron' | 'slash';
   /** Max items before collapsing to ellipsis. */
   maxItems?: number;
 }
 
 export const ThemedBreadcrumbs = forwardRef<HTMLElement, ThemedBreadcrumbsProps>(
-  ({ items, separator = 'chevron', maxItems }, ref) => {
+  ({ items, separator = 'bar', maxItems }, ref) => {
     const [expanded, setExpanded] = useState(false);
     const breadcrumbSeparator =
       separator === 'chevron' ? (
@@ -39,7 +39,7 @@ export const ThemedBreadcrumbs = forwardRef<HTMLElement, ThemedBreadcrumbsProps>
             lineHeight: 1,
           })}
         >
-          /
+          {separator === 'bar' ? '|' : '/'}
         </Typography>
       );
     const visibleItems =

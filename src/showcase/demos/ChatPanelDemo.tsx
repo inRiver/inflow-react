@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Stack, Typography } from '@mui/material';
 import { ThemedButton } from '../../components/themed/ThemedButton';
 import { ThemedChatPanel, type ThemedChatAttachment, type ThemedChatMessageDef } from '../../components/themed/ThemedChatPanel';
-import { ThemedRightPanel } from '../../components/themed/ThemedRightPanel';
+import { ThemedRightPanel, type ThemedRightPanelWidth } from '../../components/themed/ThemedRightPanel';
 import { CodeBlock } from '../CodeBlock';
 import { DemoFrame } from '../DemoFrame';
 import { PropsPlayground, type PropSchema } from '../PropsPlayground';
@@ -38,6 +38,7 @@ const chatPanelSchema: PropSchema[] = [
 
 export function ChatPanelDemo() {
   const [open, setOpen] = useState(false);
+  const [panelWidth, setPanelWidth] = useState<ThemedRightPanelWidth>('medium');
   const [assistant, setAssistant] = useState('Query Assistant');
   const [attachmentVisible, setAttachmentVisible] = useState(true);
   const [inputValue, setInputValue] = useState('');
@@ -102,7 +103,7 @@ export function ChatPanelDemo() {
 
       <ThemedRightPanel
         open={open}
-        width="medium"
+        width={panelWidth}
         variant="assistant"
         aria-label="AI assistant chat panel"
         onClose={() => setOpen(false)}
@@ -124,7 +125,7 @@ export function ChatPanelDemo() {
           charCount={124}
           charLimit={2000}
           onClose={() => setOpen(false)}
-          onExpand={() => undefined}
+          onExpand={() => setPanelWidth((current) => current === 'medium' ? 'wide' : 'medium')}
           onMore={() => undefined}
           onSelectOption={setAssistant}
           onAttachFile={(files) => setAttachments((current) => [...current, ...files.map((file) => ({ id: `${file.name}-${file.lastModified}`, name: file.name, status: 'pending' as const }))])}

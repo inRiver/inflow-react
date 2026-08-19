@@ -53,7 +53,7 @@ export const ThemedButton = forwardRef<HTMLButtonElement, ThemedButtonProps>(
             color: theme.palette.primary.main,
             borderColor: theme.palette.inflow.outlineVariant,
             '&:hover': {
-              borderColor: theme.palette.primary.main,
+              borderColor: theme.palette.inflow.outlineVariant,
               backgroundColor: theme.palette.inflow.rowSelected,
             },
           }),

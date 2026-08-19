@@ -1,4 +1,5 @@
 // Canonical source: docs/mui/inflow-theme.js
+import { createElement } from 'react';
 import { createTheme } from '@mui/material/styles';
 import type { Shadows } from '@mui/material/styles';
 import { resolveInflowColorMode } from './featureFlags';
@@ -197,7 +198,7 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
                 style: {
                   color: T.navy700,
                   borderColor: T.outlineVariant,
-                  '&:hover': { borderColor: T.navy700, backgroundColor: T.rowSelected },
+                  '&:hover': { borderColor: T.outlineVariant, backgroundColor: T.rowSelected },
                 },
               },
               {
@@ -258,9 +259,6 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
             '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: T.onSurface },
             '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: T.navy700, borderWidth: 2 },
           },
-          notchedOutline: {
-            '& legend span': { paddingRight: 0 },
-          },
         },
       },
       MuiFilledInput: {
@@ -277,10 +275,6 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
       MuiInputLabel: {
         styleOverrides: {
           root: {
-            lineHeight: 1,
-            '&.MuiInputLabel-outlined.MuiInputLabel-shrink': {
-              transform: 'translate(14px, -6px) scale(0.75)',
-            },
             '&.Mui-focused': { color: T.navy700 },
           },
         },
@@ -429,7 +423,7 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
           }),
         },
       },
-      MuiMenu: { styleOverrides: { paper: { borderRadius: T.radiusXs } } },
+      MuiMenu: { styleOverrides: { paper: { borderRadius: 0, boxShadow: 'none' } } },
       MuiAutocomplete: {
         styleOverrides: {
           paper: { borderRadius: T.radiusXs },
@@ -511,7 +505,14 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
       MuiDrawer: { styleOverrides: { paper: { borderRight: `1px solid ${T.outlineVariant}` } } },
 
       MuiChip: {
-        defaultProps: { size: 'medium' },
+        defaultProps: {
+          size: 'medium',
+          deleteIcon: createElement(
+            'span',
+            { className: 'material-icons-outlined', 'aria-hidden': true },
+            'close',
+          ),
+        },
         styleOverrides: {
           root: {
             borderRadius: T.radiusFull,
@@ -635,6 +636,14 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
       },
 
       MuiAlert: {
+        defaultProps: {
+          iconMapping: {
+            error: createElement('span', { className: 'material-icons-outlined' }, 'error_outline'),
+            warning: createElement('span', { className: 'material-icons-outlined' }, 'warning_amber'),
+            info: createElement('span', { className: 'material-icons-outlined' }, 'info_outline'),
+            success: createElement('span', { className: 'material-icons-outlined' }, 'check_circle_outline'),
+          },
+        },
         styleOverrides: {
           root: {
             variants: [

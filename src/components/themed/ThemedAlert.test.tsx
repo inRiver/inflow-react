@@ -22,6 +22,8 @@ describe('ThemedAlert', () => {
 
     expect(screen.getByText('Connection issue')).toHaveClass('MuiAlertTitle-root');
     expect(container.querySelector('.MuiAlertTitle-root')).toBeInTheDocument();
+    expect(getComputedStyle(screen.getByText('Connection issue')).display).toBe('inline');
+    expect(getComputedStyle(container.querySelector('.MuiAlert-message') as HTMLElement).whiteSpace).toBe('nowrap');
   });
 
   it('renders children and exposes the alert role', () => {

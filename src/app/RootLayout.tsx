@@ -284,6 +284,10 @@ export function RootLayout() {
             py: 4,
             minWidth: 0,
             maxWidth: '100%',
+            mr: 'var(--infl-right-panel-width, 0px)',
+            transition: theme.transitions.create('margin-right', {
+              duration: theme.transitions.duration.enteringScreen,
+            }),
           }}
         >
           <Outlet />

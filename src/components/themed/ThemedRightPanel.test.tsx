@@ -86,6 +86,30 @@ describe('ThemedRightPanel', () => {
     expect(panel).toHaveStyle({ width: '400px' });
   });
 
+  it('keeps creation-style modal panels fixed-width unless resizing is explicitly enabled', async () => {
+    renderPanel({ mode: 'overlay', variant: 'modal' });
+    await screen.findByRole('complementary');
+
+    expect(screen.queryByTestId('right-panel-resize-handle')).not.toBeInTheDocument();
+  });
+
+  it('uses the specified half-opacity overlay backdrop', async () => {
+    renderPanel({ mode: 'overlay' });
+
+    const backdrop = await screen.findByTestId('right-panel-backdrop');
+    expect(getComputedStyle(backdrop).backgroundColor).toBe('rgba(0, 0, 0, 0.5)');
+  });
+
+  it('keeps editing as the primary action and discard as the secondary action', async () => {
+    renderPanel({ hasUnsavedChanges: true });
+    await screen.findByRole('complementary');
+
+    fireEvent.keyDown(document, { key: 'Escape' });
+
+    expect(await screen.findByRole('button', { name: 'Discard' })).toHaveClass('MuiButton-outlined');
+    expect(screen.getByRole('button', { name: 'Keep Editing' })).toHaveClass('MuiButton-contained');
+  });
+
   it('renders children through its composition slot', async () => {
     renderPanel();
     expect(await screen.findByText('Composed panel content')).toBeInTheDocument();

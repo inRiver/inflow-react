@@ -32,15 +32,21 @@ export const ThemedAlert = forwardRef<HTMLDivElement, ThemedAlertProps>(
       }}
       sx={(theme) => ({
         borderRadius: theme.shape.borderRadius,
-        alignItems: 'flex-start',
+        alignItems: 'center',
         '& .MuiAlert-icon': {
-          marginTop: '1px',
+          marginTop: 0,
           marginRight: theme.spacing(1.5),
+        },
+        '& .MuiAlert-message': {
+          minWidth: 0,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
         },
       })}
     >
       {title && (
-        <AlertTitle sx={{ fontWeight: 600, lineHeight: '20px', marginBottom: '2px' }}>
+        <AlertTitle component="span" sx={{ display: 'inline', fontWeight: 600, lineHeight: '20px', margin: 0, marginRight: 0.5 }}>
           {title}
         </AlertTitle>
       )}

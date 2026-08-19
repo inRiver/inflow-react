@@ -20,12 +20,19 @@ describe('ThemedBreadcrumbs', () => {
   });
 
   it.each([
+    ['bar', '|'],
     ['chevron', 'chevron_right'],
     ['slash', '/'],
   ] as const)('renders the %s separator', (separator, expected) => {
     renderWithInflow(<ThemedBreadcrumbs items={items} separator={separator} />);
 
     expect(screen.getAllByText(expected).length).toBeGreaterThan(0);
+  });
+
+  it('uses vertical bars by default', () => {
+    renderWithInflow(<ThemedBreadcrumbs items={items} />);
+
+    expect(screen.getAllByText('|')).toHaveLength(items.length - 1);
   });
 
   it('marks the last item as the current non-link page', () => {
