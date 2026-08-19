@@ -46,9 +46,10 @@ describe('ThemedToast', () => {
     renderWithInflow(<ThemedToast message="Layout message" />);
 
     const style = getComputedStyle(screen.getByRole('status'));
-    expect(style.maxWidth).toBe('560px');
-    expect(style.minHeight).toBe('48px');
+    expect(style.maxWidth).toBe('389px');
+    expect(style.height).toBe('39px');
     expect(style.display).toBe('inline-flex');
+    expect(style.borderRadius).toBe('5px');
   });
 
   it('renders an action button and invokes its callback', () => {
@@ -59,6 +60,7 @@ describe('ThemedToast', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Undo' }));
     expect(onClick).toHaveBeenCalledOnce();
+    expect(screen.getByRole('button', { name: 'Undo' })).toHaveStyle({ textDecoration: 'underline' });
   });
 
   it('renders a dismiss button only when onClose is provided and invokes it', () => {
@@ -68,6 +70,7 @@ describe('ThemedToast', () => {
     expect(screen.queryByRole('button', { name: 'Dismiss' })).not.toBeInTheDocument();
 
     rerender(<ThemedToast message="Closable message." onClose={onClose} />);
+    expect(screen.getByRole('button', { name: 'Dismiss' })).toHaveStyle({ width: '24px', height: '24px' });
     fireEvent.click(screen.getByRole('button', { name: 'Dismiss' }));
     expect(onClose).toHaveBeenCalledOnce();
   });

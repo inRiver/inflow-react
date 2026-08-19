@@ -20,8 +20,9 @@ function isToastSeverity(value: unknown): value is ThemedToastSeverity {
 
 export function ToastDemo() {
   const [severity, setSeverity] = useState<ThemedToastSeverity>('info');
-  const [showTitle, setShowTitle] = useState(true);
+  const [showTitle, setShowTitle] = useState(false);
   const [actionCount, setActionCount] = useState(0);
+  const [isPreviewVisible, setPreviewVisible] = useState(true);
   const [isDismissibleVisible, setDismissibleVisible] = useState(true);
 
   const props = { severity, title: showTitle };
@@ -29,20 +30,27 @@ export function ToastDemo() {
 
 <ThemedToast
   severity="${severity}"
-  title="Changes saved"
-  message="Your product information is up to date."
-  action={{ label: 'View details', onClick: handleDetails }}
+${showTitle ? '  title="Changes saved"\n' : ''}  message="Information message."
+  action={{ label: 'Click here action', onClick: handleAction }}
   onClose={handleDismiss}
 />`;
 
   return (
     <>
       <DemoFrame title="Toast - Interactive">
-        <ThemedToast
-          severity={severity}
-          title={showTitle ? 'Changes saved' : undefined}
-          message="Your product information is up to date."
-        />
+        {isPreviewVisible ? (
+          <ThemedToast
+            severity={severity}
+            title={showTitle ? 'Changes saved' : undefined}
+            message="Information message."
+            action={{ label: 'Click here action', onClick: () => setActionCount((count) => count + 1) }}
+            onClose={() => setPreviewVisible(false)}
+          />
+        ) : (
+          <ThemedButton size="small" variant="text" onClick={() => setPreviewVisible(true)}>
+            Restore toast
+          </ThemedButton>
+        )}
       </DemoFrame>
 
       <PropsPlayground

@@ -52,6 +52,7 @@ export const ThemedChip = forwardRef<HTMLDivElement, ThemedChipProps>(
         ? 'outlined'
         : requestedVariant;
     const color = isPrimaryVariant ? 'primary' : requestedColor;
+    const isDefaultColor = requestedColor === undefined || requestedColor === 'default';
     const size = requestedSize === 'sm'
       ? 'small'
       : requestedSize === 'md' || requestedSize === 'lg'
@@ -62,10 +63,13 @@ export const ThemedChip = forwardRef<HTMLDivElement, ThemedChipProps>(
       : requestedSize === 'lg'
         ? 20
         : 18;
+    const iconMarginLeft = requestedSize === 'sm' || requestedSize === 'small' ? 4 : 6;
     const sizeStyles = requestedSize === 'lg'
       ? {
           '&&.MuiChip-sizeMedium': {
             height: 40,
+            width: 'fit-content',
+            flex: '0 0 auto',
             paddingLeft: 20,
             paddingRight: 20,
             fontSize: '1rem',
@@ -81,13 +85,42 @@ export const ThemedChip = forwardRef<HTMLDivElement, ThemedChipProps>(
           fontWeight: theme.typography.fontWeightMedium,
           letterSpacing: '0.00625rem',
           ...(variant === 'outlined' && {
-            backgroundColor: requestedVariant === 'outlined-primary' ? 'transparent' : undefined,
+            backgroundColor: theme.palette.inflow.surfaceLowest,
             borderColor: requestedVariant === 'outlined-primary'
               ? theme.palette.primary.main
               : theme.palette.inflow.outlineVariant,
             color: color === 'primary'
               ? theme.palette.primary.main
-              : theme.palette.text.secondary,
+              : theme.palette.text.primary,
+            '& .MuiChip-deleteIcon': {
+              color: color === 'primary'
+                ? theme.palette.primary.main
+                : theme.palette.inflow.outline,
+              opacity: 1,
+              '&:hover': {
+                color: color === 'primary'
+                  ? theme.palette.primary.dark
+                  : theme.palette.text.primary,
+              },
+            },
+          }),
+          ...(variant !== 'outlined' && isDefaultColor && {
+            backgroundColor: theme.palette.mode === 'dark'
+              ? theme.palette.grey[700]
+              : theme.palette.grey[300],
+            color: theme.palette.text.primary,
+            '&:hover': {
+              backgroundColor: theme.palette.mode === 'dark'
+                ? theme.palette.grey[600]
+                : theme.palette.grey[400],
+            },
+            '& .MuiChip-deleteIcon': {
+              color: theme.palette.inflow.outline,
+              opacity: 1,
+              '&:hover': {
+                color: theme.palette.text.primary,
+              },
+            },
           }),
           ...(variant !== 'outlined' && color === 'primary' && {
             backgroundColor: theme.palette.inflow.primaryTab,
@@ -128,7 +161,7 @@ export const ThemedChip = forwardRef<HTMLDivElement, ThemedChipProps>(
           icon={leadingIcon ? (
             <Icon
               baseClassName="material-icons-outlined"
-              sx={{ fontSize: `${iconSize}px !important`, ml: '6px' }}
+              sx={{ fontSize: `${iconSize}px !important`, ml: `${iconMarginLeft}px` }}
             >
               {leadingIcon}
             </Icon>

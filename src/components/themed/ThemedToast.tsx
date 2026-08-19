@@ -1,7 +1,6 @@
 import { forwardRef } from 'react';
 import { Box, Icon, IconButton } from '@mui/material';
 import type { ReactNode } from 'react';
-import { ThemedButton } from './ThemedButton';
 
 export type ThemedToastSeverity = 'error' | 'info' | 'success' | 'warning';
 
@@ -32,10 +31,10 @@ export const ThemedToast = forwardRef<HTMLDivElement, ThemedToastProps>(
       sx={(theme) => ({
         display: 'inline-flex',
         alignItems: 'center',
-        gap: 2,
-        minHeight: 48,
-        padding: theme.spacing(1.5, 2),
-        borderRadius: theme.shape.borderRadius,
+        gap: 2.5,
+        height: 39,
+        padding: theme.spacing(0, 2.5),
+        borderRadius: `${theme.shape.borderRadius}px`,
         backgroundColor: {
           error: theme.palette.inflow.highlightRed,
           info: theme.palette.inflow.toastInfoBg,
@@ -44,7 +43,7 @@ export const ThemedToast = forwardRef<HTMLDivElement, ThemedToastProps>(
         }[severity],
         color: theme.palette.text.primary,
         width: '100%',
-        maxWidth: 560,
+        maxWidth: 389,
         boxSizing: 'border-box',
       })}
     >
@@ -53,7 +52,8 @@ export const ThemedToast = forwardRef<HTMLDivElement, ThemedToastProps>(
         sx={(theme) => ({
           color: theme.palette.text.primary,
           flexShrink: 0,
-          fontSize: 22,
+          fontSize: 18,
+          lineHeight: '18px',
         })}
       >
         {iconNames[severity]}
@@ -84,10 +84,24 @@ export const ThemedToast = forwardRef<HTMLDivElement, ThemedToastProps>(
           {message}
         </Box>
         {action && (
-          <Box component="span" sx={{ flexShrink: 0 }}>
-            <ThemedButton variant="text" size="small" onClick={action.onClick}>
-              {action.label}
-            </ThemedButton>
+          <Box
+            component="button"
+            type="button"
+            onClick={action.onClick}
+            sx={{
+              flexShrink: 0,
+              appearance: 'none',
+              border: 0,
+              padding: 0,
+              background: 'transparent',
+              color: 'inherit',
+              cursor: 'pointer',
+              font: 'inherit',
+              lineHeight: 'inherit',
+              textDecoration: 'underline',
+            }}
+          >
+            {action.label}
           </Box>
         )}
       </Box>
@@ -100,11 +114,13 @@ export const ThemedToast = forwardRef<HTMLDivElement, ThemedToastProps>(
           sx={(theme) => ({
             color: theme.palette.text.primary,
             flexShrink: 0,
-            marginLeft: theme.spacing(0.5),
+            width: 24,
+            height: 24,
+            padding: 0,
             '&:hover': { backgroundColor: theme.palette.action.hover },
           })}
         >
-          <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 20 }}>
+          <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24 }}>
             close
           </Icon>
         </IconButton>

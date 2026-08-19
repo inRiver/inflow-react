@@ -1,5 +1,6 @@
-import { fireEvent, screen, waitFor } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import { useState } from 'react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { renderWithInflow } from '../../test/renderWithInflow';
 import { ThemedRightPanel } from './ThemedRightPanel';
 
@@ -13,7 +14,33 @@ function renderPanel(props: Partial<React.ComponentProps<typeof ThemedRightPanel
   );
 }
 
+function PanelPair({ firstUnsaved = false }: { firstUnsaved?: boolean }) {
+  const [firstOpen, setFirstOpen] = useState(true);
+  const [secondOpen, setSecondOpen] = useState(false);
+
+  return (
+    <>
+      <button onClick={() => setSecondOpen(true)}>Open second panel</button>
+      <ThemedRightPanel
+        open={firstOpen}
+        hasUnsavedChanges={firstUnsaved}
+        onClose={() => setFirstOpen(false)}
+        aria-label="First panel"
+      >
+        First panel content
+      </ThemedRightPanel>
+      <ThemedRightPanel open={secondOpen} onClose={() => setSecondOpen(false)} aria-label="Second panel">
+        Second panel content
+      </ThemedRightPanel>
+    </>
+  );
+}
+
 describe('ThemedRightPanel', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it('toggles visibility and moves focus into the panel', async () => {
     const { rerender } = renderPanel({ open: false });
     expect(screen.queryByRole('complementary')).not.toBeInTheDocument();
@@ -53,6 +80,16 @@ describe('ThemedRightPanel', () => {
     expect(panel).toHaveStyle({ width: expectedWidth });
   });
 
+  it.each([
+    ['assistant', '400px'],
+    ['editor', '520px'],
+    ['modal', '520px'],
+  ] as const)('uses the specification default width for the %s variant', async (variant, expectedWidth) => {
+    renderPanel({ variant });
+    const panel = await screen.findByRole('complementary');
+    expect(panel).toHaveStyle({ width: expectedWidth });
+  });
+
   it('calls onClose from Escape without rendering a panel-owned close button', async () => {
     renderPanel();
     await screen.findByRole('complementary');
@@ -60,6 +97,33 @@ describe('ThemedRightPanel', () => {
     fireEvent.keyDown(document, { key: 'Escape' });
     expect(onClose).toHaveBeenCalledTimes(1);
     expect(screen.queryByRole('button', { name: 'Close panel' })).not.toBeInTheDocument();
+  });
+
+  it('closes query editors on navigation while assistants remain open', async () => {
+    const { rerender } = renderPanel({ variant: 'assistant' });
+    await screen.findByRole('complementary');
+
+    window.dispatchEvent(new Event('hashchange'));
+    expect(onClose).not.toHaveBeenCalled();
+
+    rerender(
+      <ThemedRightPanel open variant="editor" onClose={onClose} aria-label="Product details">
+        <div>Composed panel content</div>
+      </ThemedRightPanel>,
+    );
+
+    window.dispatchEvent(new Event('hashchange'));
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('routes navigation through the unsaved-changes confirmation', async () => {
+    renderPanel({ variant: 'editor', hasUnsavedChanges: true });
+    await screen.findByRole('complementary');
+
+    act(() => window.dispatchEvent(new Event('popstate')));
+
+    expect(await screen.findByRole('heading', { name: 'Discard changes?' })).toBeInTheDocument();
+    expect(onClose).not.toHaveBeenCalled();
   });
 
   it('resizes from the pointer drag handle', async () => {
@@ -108,6 +172,46 @@ describe('ThemedRightPanel', () => {
 
     expect(await screen.findByRole('button', { name: 'Discard' })).toHaveClass('MuiButton-outlined');
     expect(screen.getByRole('button', { name: 'Keep Editing' })).toHaveClass('MuiButton-contained');
+  });
+
+  it('lets composed close controls use the guarded close behavior', async () => {
+    renderWithInflow(
+      <ThemedRightPanel open hasUnsavedChanges onClose={onClose}>
+        {({ requestClose }) => <button onClick={requestClose}>Cancel</button>}
+      </ThemedRightPanel>,
+    );
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Cancel' }));
+
+    expect(await screen.findByRole('heading', { name: 'Discard changes?' })).toBeInTheDocument();
+    expect(onClose).not.toHaveBeenCalled();
+  });
+
+  it('replaces the active panel when a second panel opens', async () => {
+    renderWithInflow(<PanelPair />);
+    expect(await screen.findByRole('complementary', { name: 'First panel' })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Open second panel' }));
+
+    expect(await screen.findByRole('complementary', { name: 'Second panel' })).toBeInTheDocument();
+    await waitFor(() => expect(screen.queryByRole('complementary', { name: 'First panel' })).not.toBeInTheDocument());
+  });
+
+  it('keeps the active panel when replacement is cancelled and replaces it after discard', async () => {
+    renderWithInflow(<PanelPair firstUnsaved />);
+    expect(await screen.findByRole('complementary', { name: 'First panel' })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Open second panel' }));
+    await act(async () => fireEvent.click(await screen.findByRole('button', { name: 'Keep Editing' })));
+
+    expect(await screen.findByRole('complementary', { name: 'First panel' })).toBeInTheDocument();
+    expect(screen.queryByRole('complementary', { name: 'Second panel' })).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Open second panel' }));
+    await act(async () => fireEvent.click(await screen.findByRole('button', { name: 'Discard' })));
+
+    expect(await screen.findByRole('complementary', { name: 'Second panel' })).toBeInTheDocument();
+    await waitFor(() => expect(screen.queryByRole('complementary', { name: 'First panel' })).not.toBeInTheDocument());
   });
 
   it('renders children through its composition slot', async () => {

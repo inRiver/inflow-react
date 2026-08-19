@@ -30,7 +30,7 @@ describe('ThemedAlert', () => {
     renderWithInflow(<ThemedAlert>Alert message</ThemedAlert>);
 
     expect(screen.getByText('Alert message')).toBeInTheDocument();
-    expect(screen.getByRole('alert')).toBeInTheDocument();
+    expect(screen.getByRole('alert')).toHaveStyle({ borderRadius: '5px' });
   });
 
   it('renders a close button only with onClose and calls it when clicked', () => {

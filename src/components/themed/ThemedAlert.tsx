@@ -31,7 +31,7 @@ export const ThemedAlert = forwardRef<HTMLDivElement, ThemedAlertProps>(
         success: <span className="material-icons-outlined" style={{ fontSize: 20 }}>{iconMap.success}</span>,
       }}
       sx={(theme) => ({
-        borderRadius: theme.shape.borderRadius,
+        borderRadius: `${theme.shape.borderRadius}px`,
         alignItems: 'center',
         '& .MuiAlert-icon': {
           marginTop: 0,

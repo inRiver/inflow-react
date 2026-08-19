@@ -422,9 +422,10 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
 
         <Box component="footer" sx={{ flexShrink: 0, p: (theme) => theme.spacing(1, 2, 1.5) }}>
           <Box
+            data-testid="chat-composer"
             sx={{
               bgcolor: 'inflow.navy100',
-              borderRadius: (theme) => theme.shape.borderRadius,
+              borderRadius: `${inflowTokens.radius.sm}px`,
               p: (theme) => theme.spacing(1, 0.5, 1, 1.5),
               display: 'flex',
               alignItems: 'center',

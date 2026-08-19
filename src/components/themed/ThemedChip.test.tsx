@@ -23,7 +23,10 @@ describe('ThemedChip', () => {
   it('keeps the existing default MUI chip behavior', () => {
     renderWithInflow(<ThemedChip label="Default" />);
 
-    expect(getChip('Default')).toHaveClass('MuiChip-filled');
+    const chip = getChip('Default');
+
+    expect(chip).toHaveClass('MuiChip-filled');
+    expect(getComputedStyle(chip).backgroundColor).toBe(toCssColor(inflowTheme.palette.grey[300]));
   });
 
   it('translates filled-primary to the primary filled chip tokens', () => {
@@ -43,10 +46,23 @@ describe('ThemedChip', () => {
     const chip = getChip('Outlined primary');
     const style = getComputedStyle(chip);
 
-    expect(style.backgroundColor).toBe(toCssColor('transparent'));
+    expect(style.backgroundColor).toBe(toCssColor(inflowTheme.palette.inflow.surfaceLowest));
     expect(style.color).toBe(toCssColor(inflowTheme.palette.primary.main));
     expect(style.borderTopWidth).toBe('1px');
     expect(style.borderTopColor).toBe(toCssColor(inflowTheme.palette.primary.main));
+  });
+
+  it('uses the design-system surface, text, and outline-icon tokens for outlined chips', () => {
+    renderWithInflow(<ThemedChip label="Nike" variant="outlined" onDelete={() => undefined} />);
+
+    const chip = getChip('Nike');
+    const deleteIcon = screen.getByText('close');
+
+    expect(getComputedStyle(chip).backgroundColor).toBe(
+      toCssColor(inflowTheme.palette.inflow.surfaceLowest),
+    );
+    expect(getComputedStyle(chip).color).toBe(toCssColor(inflowTheme.palette.text.primary));
+    expect(getComputedStyle(deleteIcon).color).toBe(toCssColor(inflowTheme.palette.inflow.outline));
   });
 
   it.each([
@@ -68,9 +84,9 @@ describe('ThemedChip', () => {
   });
 
   it('renders the requested Material Symbols leading icon', () => {
-    renderWithInflow(<ThemedChip label="Add item" leadingIcon="add" />);
+    renderWithInflow(<ThemedChip label="Suggested" leadingIcon="auto_awesome" />);
 
-    const icon = screen.getByText('add');
+    const icon = screen.getByText('auto_awesome');
     expect(icon).toHaveClass('material-icons-outlined');
   });
 

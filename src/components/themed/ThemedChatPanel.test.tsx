@@ -85,6 +85,12 @@ describe('ThemedChatPanel', () => {
     expect(screen.getByRole('button', { name: 'Send message' })).toBeInTheDocument();
   });
 
+  it('uses the 5px design-system radius for the composer surface', async () => {
+    renderChatPanel();
+
+    expect(await screen.findByTestId('chat-composer')).toHaveStyle({ borderRadius: '5px' });
+  });
+
   it('overrides chat strings and accessible labels through props', async () => {
     renderChatPanel({
       onExpand: vi.fn(),

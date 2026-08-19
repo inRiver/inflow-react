@@ -10,6 +10,60 @@ import { getThemedComponentInfo } from '../themedComponentInfo';
 
 const themedInfo = getThemedComponentInfo('chip');
 
+const themedExamples = {
+  Filled: {
+    variant: 'filled',
+    color: 'default',
+    size: 'md',
+    label: 'Filled',
+    leadingIcon: 'none',
+    deletable: false,
+  },
+  Outlined: {
+    variant: 'outlined',
+    color: 'default',
+    size: 'md',
+    label: 'Outlined',
+    leadingIcon: 'none',
+    deletable: false,
+  },
+  'In review': {
+    variant: 'filled-primary',
+    color: 'default',
+    size: 'md',
+    label: 'In review',
+    leadingIcon: 'none',
+    deletable: false,
+  },
+  Suggested: {
+    variant: 'outlined-primary',
+    color: 'default',
+    size: 'md',
+    label: 'Suggested',
+    leadingIcon: 'auto_awesome',
+    deletable: false,
+  },
+  Nike: {
+    variant: 'outlined',
+    color: 'default',
+    size: 'md',
+    label: 'Nike',
+    leadingIcon: 'none',
+    deletable: true,
+  },
+  Small: {
+    variant: 'outlined',
+    color: 'default',
+    size: 'sm',
+    label: 'Small',
+    leadingIcon: 'none',
+    deletable: false,
+  },
+} as const;
+
+type ThemedExampleName = keyof typeof themedExamples;
+const themedExampleOptions = [...Object.keys(themedExamples), 'Custom'];
+
 export function ChipDemo() {
   const [variant, setVariant] = useState<DemoVariant>('mui');
   const [props, setProps] = useState<Record<string, any>>({
@@ -17,10 +71,61 @@ export function ChipDemo() {
   "color": "default",
   "disabled": false,
   "size": "medium",
-  "label": "Chip"
+  "label": "Chip",
+  "leadingIcon": "none",
+  "deletable": true,
+  "example": "Custom"
 });
 
+  const handleVariantChange = (nextVariant: DemoVariant) => {
+    setVariant(nextVariant);
+    setProps((current) => {
+      if (nextVariant === 'themed') {
+        return {
+          ...current,
+          ...themedExamples.Suggested,
+          example: 'Suggested',
+        };
+      }
+
+      return {
+        ...current,
+        variant: current.variant === 'outlined' || current.variant === 'outlined-primary'
+          ? 'outlined'
+          : 'filled',
+        size: current.size === 'sm' ? 'small' : 'medium',
+        leadingIcon: 'none',
+        example: 'Custom',
+      };
+    });
+  };
+
+  const handlePropsChange = (nextProps: Record<string, unknown>) => {
+    const changedProp = Object.keys(nextProps).find((name) => nextProps[name] !== props[name]);
+
+    if (variant === 'themed' && changedProp === 'example') {
+      const example = nextProps.example;
+      if (typeof example === 'string' && example in themedExamples) {
+        setProps({
+          ...nextProps,
+          ...themedExamples[example as ThemedExampleName],
+          example,
+        });
+        return;
+      }
+    }
+
+    setProps({
+      ...nextProps,
+      example: variant === 'themed' ? 'Custom' : nextProps.example,
+    });
+  };
+
   const muiSchema: PropSchema[] = [
+  {
+    "name": "label",
+    "type": "text"
+  },
   {
     "name": "variant",
     "type": "select",
@@ -53,10 +158,24 @@ export function ChipDemo() {
   {
     "name": "disabled",
     "type": "boolean"
+  },
+  {
+    "name": "deletable",
+    "type": "boolean"
   }
 ];
 
   const themedSchema: PropSchema[] = [
+    {
+      "name": "example",
+      "label": "Design-system example",
+      "type": "select",
+      "options": themedExampleOptions
+    },
+    {
+      "name": "label",
+      "type": "text"
+    },
     {
       "name": "variant",
       "type": "select",
@@ -90,7 +209,22 @@ export function ChipDemo() {
       ]
     },
     {
+      "name": "leadingIcon",
+      "label": "Leading icon",
+      "type": "select",
+      "options": [
+        "none",
+        "auto_awesome",
+        "add",
+        "check"
+      ]
+    },
+    {
       "name": "disabled",
+      "type": "boolean"
+    },
+    {
+      "name": "deletable",
       "type": "boolean"
     }
   ];
@@ -117,13 +251,18 @@ import { ThemedChip } from '@inriver/inflow-react';
   size={props.size}
   disabled={props.disabled}
   label={props.label}
+  leadingIcon={props.leadingIcon === 'none' ? undefined : props.leadingIcon}
+  onDelete={props.deletable ? () => {} : undefined}
 />`;
+
+  const { example: _example, leadingIcon, deletable, ...componentProps } = props;
+  void _example;
 
   return (
     <>
       <DemoVariantTabs
         value={variant}
-        onChange={setVariant}
+        onChange={handleVariantChange}
         muiLabel="MUI Chip"
         themedLabel="ThemedChip"
         themedReason={themedInfo?.reason}
@@ -131,16 +270,20 @@ import { ThemedChip } from '@inriver/inflow-react';
 
       <DemoFrame title="Chip - Interactive">
         {variant === 'mui' ? (
-          <Chip {...props} onDelete={() => {}} />
+          <Chip {...componentProps} onDelete={deletable ? () => {} : undefined} />
         ) : (
-          <ThemedChip {...props} onDelete={() => {}} />
+          <ThemedChip
+            {...componentProps}
+            leadingIcon={leadingIcon === 'none' ? undefined : leadingIcon}
+            onDelete={deletable ? () => {} : undefined}
+          />
         )}
       </DemoFrame>
 
       <PropsPlayground 
         schema={variant === 'mui' ? muiSchema : themedSchema}
         values={props}
-        onChange={setProps}
+        onChange={handlePropsChange}
       />
 
       <CodeBlock code={variant === 'mui' ? muiCodeExample : themedCodeExample} language="tsx" />
@@ -160,21 +303,23 @@ import { ThemedChip } from '@inriver/inflow-react';
           </Stack>
         </DemoFrame>
       ) : (
-        <DemoFrame title="ThemedChip Variants and Sizes">
-          <Stack spacing={2}>
-            {(['filled', 'outlined', 'filled-primary', 'outlined-primary'] as const).map((chipVariant) => (
-              <Stack key={chipVariant} direction="row" spacing={2} sx={{ alignItems: 'center' }}>
-                {(['sm', 'md', 'lg'] as const).map((size) => (
-                  <ThemedChip
-                    key={size}
-                    label={`${chipVariant} ${size}`}
-                    variant={chipVariant}
-                    size={size}
-                    leadingIcon="add"
-                  />
-                ))}
-              </Stack>
-            ))}
+        <DemoFrame title="ThemedChip Design-System Reference">
+          <Stack
+            direction="row"
+            spacing={1.5}
+            useFlexGap
+            sx={{ alignItems: 'center', flexWrap: 'wrap' }}
+          >
+            <ThemedChip label="Filled" variant="filled" />
+            <ThemedChip label="Outlined" variant="outlined" />
+            <ThemedChip label="In review" variant="filled-primary" />
+            <ThemedChip
+              label="Suggested"
+              variant="outlined-primary"
+              leadingIcon="auto_awesome"
+            />
+            <ThemedChip label="Nike" variant="outlined" onDelete={() => {}} />
+            <ThemedChip label="Small" variant="outlined" size="sm" />
           </Stack>
         </DemoFrame>
       )}
