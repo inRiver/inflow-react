@@ -50,7 +50,7 @@ export function ChatPanelDemo() {
   const [isTyping, setIsTyping] = useState(false);
   const [showCredits, setShowCredits] = useState(true);
   const [showCharCount, setShowCharCount] = useState(true);
-  const [showInputHint, setShowInputHint] = useState(true);
+  const [showInputHint, setShowInputHint] = useState(false);
   const [charLimit, setCharLimit] = useState(2000);
   const [attachments, setAttachments] = useState<ThemedChatAttachment[]>([{ id: 'spring-catalog', name: 'spring-catalog.csv', status: 'done' }]);
 
