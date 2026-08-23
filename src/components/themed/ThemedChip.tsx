@@ -17,6 +17,12 @@ export interface ThemedChipProps extends Omit<ChipProps, 'size' | 'variant'> {
   leadingIcon?: string;
 }
 
+const chipSizeStyles = {
+  sm: { height: 24, paddingX: 8, fontSize: '0.75rem', iconSize: 14, gap: 6 },
+  md: { height: 32, paddingX: 12, fontSize: '0.875rem', iconSize: 18, gap: 8 },
+  lg: { height: 40, paddingX: 20, fontSize: '1rem', iconSize: 20, gap: 10 },
+} as const;
+
 /**
  * ThemedChip
  * 
@@ -58,27 +64,26 @@ export const ThemedChip = forwardRef<HTMLDivElement, ThemedChipProps>(
       : requestedSize === 'md' || requestedSize === 'lg'
         ? 'medium'
         : requestedSize;
-    const iconSize = requestedSize === 'sm' || requestedSize === 'small'
-      ? 14
+    const sizeKey = requestedSize === 'sm' || requestedSize === 'small'
+      ? 'sm'
       : requestedSize === 'lg'
-        ? 20
-        : 18;
-    const iconMarginLeft = requestedSize === 'sm' || requestedSize === 'small' ? 4 : 6;
-    const sizeStyles = requestedSize === 'lg'
-      ? {
-          '&&.MuiChip-sizeMedium': {
-            height: 40,
-            width: 'fit-content',
-            flex: '0 0 auto',
-            paddingLeft: 20,
-            paddingRight: 20,
-            fontSize: '1rem',
-            gap: 10,
-          },
-          '&& .MuiChip-label': { paddingLeft: 0, paddingRight: 0 },
-          '&& .MuiChip-icon': { marginLeft: 0, marginRight: 0, color: 'inherit' },
-        }
-      : undefined;
+        ? 'lg'
+        : 'md';
+    const chipSize = chipSizeStyles[sizeKey];
+    const sizeStyles = {
+      [`&&.MuiChip-size${size === 'small' ? 'Small' : 'Medium'}`]: {
+        height: chipSize.height,
+        width: 'fit-content',
+        flex: '0 0 auto',
+        paddingLeft: `${chipSize.paddingX}px`,
+        paddingRight: `${chipSize.paddingX}px`,
+        fontSize: chipSize.fontSize,
+        gap: `${chipSize.gap}px`,
+      },
+      '&& .MuiChip-label': { paddingLeft: 0, paddingRight: 0 },
+      '&& .MuiChip-icon': { marginLeft: 0, marginRight: 0, color: 'inherit' },
+      '&& .MuiChip-deleteIcon': { marginRight: 0 },
+    };
     const customStyles = inflowVariant
       ? (theme: Theme) => ({
           borderRadius: '9999px',
@@ -161,13 +166,13 @@ export const ThemedChip = forwardRef<HTMLDivElement, ThemedChipProps>(
           icon={leadingIcon ? (
             <Icon
               baseClassName="material-icons-outlined"
-              sx={{ fontSize: `${iconSize}px !important`, ml: `${iconMarginLeft}px` }}
+              sx={{ fontSize: `${chipSize.iconSize}px !important` }}
             >
               {leadingIcon}
             </Icon>
           ) : undefined}
           deleteIcon={deleteIcon ?? (
-            <Icon baseClassName="material-icons-outlined" sx={{ fontSize: `${iconSize}px !important` }}>
+            <Icon baseClassName="material-icons-outlined" sx={{ fontSize: `${chipSize.iconSize}px !important` }}>
               close
             </Icon>
           )}

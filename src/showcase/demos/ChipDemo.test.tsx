@@ -19,4 +19,21 @@ describe('ChipDemo', () => {
       'material-icons-outlined',
     );
   });
+
+  it('offers additional Material outlined icons without changing the single-chip playground', () => {
+    renderWithInflow(<ChipDemo />);
+
+    fireEvent.click(screen.getByRole('tab', { name: 'ThemedChip' }));
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'Leading icon' }));
+    fireEvent.click(screen.getByRole('option', { name: 'lightbulb' }));
+
+    expect(screen.getByRole('combobox', { name: 'Design-system example' })).toHaveTextContent(
+      'Custom',
+    );
+    const interactiveChip = screen.getAllByText('Suggested')[0].closest('.MuiChip-root');
+    expect(interactiveChip).not.toBeNull();
+    expect(within(interactiveChip as HTMLElement).getByText('lightbulb')).toHaveClass(
+      'material-icons-outlined',
+    );
+  });
 });

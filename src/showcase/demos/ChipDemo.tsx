@@ -63,19 +63,46 @@ const themedExamples = {
 
 type ThemedExampleName = keyof typeof themedExamples;
 const themedExampleOptions = [...Object.keys(themedExamples), 'Custom'];
+const leadingIconOptions = [
+  'none',
+  'auto_awesome',
+  'add',
+  'check',
+  'done',
+  'star',
+  'favorite',
+  'info',
+  'warning_amber',
+  'error_outline',
+  'schedule',
+  'person',
+  'group',
+  'label',
+  'sell',
+  'filter_alt',
+  'search',
+  'settings',
+  'visibility',
+  'edit',
+  'link',
+  'notifications',
+  'lightbulb',
+  'verified',
+  'bolt',
+];
 
 export function ChipDemo() {
   const [variant, setVariant] = useState<DemoVariant>('mui');
   const [props, setProps] = useState<Record<string, any>>({
-  "variant": "filled",
-  "color": "default",
-  "disabled": false,
-  "size": "medium",
-  "label": "Chip",
-  "leadingIcon": "none",
-  "deletable": true,
-  "example": "Custom"
-});
+    variant: 'filled',
+    color: 'default',
+    disabled: false,
+    size: 'medium',
+    label: 'Chip',
+    leadingIcon: 'none',
+    deletable: true,
+    example: 'Custom',
+  });
 
   const handleVariantChange = (nextVariant: DemoVariant) => {
     setVariant(nextVariant);
@@ -212,12 +239,7 @@ export function ChipDemo() {
       "name": "leadingIcon",
       "label": "Leading icon",
       "type": "select",
-      "options": [
-        "none",
-        "auto_awesome",
-        "add",
-        "check"
-      ]
+      "options": leadingIconOptions
     },
     {
       "name": "disabled",

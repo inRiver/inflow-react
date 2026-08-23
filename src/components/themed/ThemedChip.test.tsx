@@ -86,8 +86,17 @@ describe('ThemedChip', () => {
   it('renders the requested Material Symbols leading icon', () => {
     renderWithInflow(<ThemedChip label="Suggested" leadingIcon="auto_awesome" />);
 
+    const chip = getChip('Suggested');
     const icon = screen.getByText('auto_awesome');
+    const label = screen.getByText('Suggested');
+
     expect(icon).toHaveClass('material-icons-outlined');
+    expect(getComputedStyle(chip).paddingLeft).toBe('12px');
+    expect(getComputedStyle(chip).paddingRight).toBe('12px');
+    expect(getComputedStyle(chip).gap).toBe('8px');
+    expect(getComputedStyle(icon).marginLeft).toBe('0px');
+    expect(getComputedStyle(icon).marginRight).toBe('0px');
+    expect(getComputedStyle(label).paddingLeft).toBe('0px');
   });
 
   it('uses an outlined close icon for deletable chips', () => {
