@@ -43,7 +43,7 @@ describe('inflowGridThemeParams', () => {
     expect(inflowGridThemeParams.foregroundColor).toBe(lightTokens.onSurface);
     expect(inflowGridThemeParams.cellTextColor).toBe(lightTokens.onSurfaceVariant);
     expect(inflowGridThemeParams.oddRowBackgroundColor).toBe(lightTokens.white);
-    expect(inflowGridThemeParams.headerBackgroundColor).toBe(lightTokens.surfaceHighest);
+    expect(inflowGridThemeParams.headerBackgroundColor).toBe(lightTokens.white);
     expect(inflowGridThemeParams.headerTextColor).toBe(lightTokens.onSurface);
     expect(inflowGridThemeParams.borderColor).toBe(lightTokens.outlineVariant);
     expect(inflowGridThemeParams.rowHoverColor).toBe(lightTokens.rowHover);

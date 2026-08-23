@@ -52,7 +52,7 @@ export const inflowGridThemeParams = {
   foregroundColor: lightTokens.onSurface,
   cellTextColor: lightTokens.onSurfaceVariant,
   oddRowBackgroundColor: lightTokens.white,
-  headerBackgroundColor: lightTokens.surfaceHighest,
+  headerBackgroundColor: lightTokens.white,
   headerTextColor: lightTokens.onSurface,
   borderColor: lightTokens.outlineVariant,
   rowHoverColor: lightTokens.rowHover,
