@@ -2,7 +2,7 @@ import { themeQuartz, type ThemeDefaultParams } from 'ag-grid-community';
 import { describe, expect, it } from 'vitest';
 import { lightTokens } from '../theme/inflow-tokens';
 import { inflowTokens } from '../theme/tokens';
-import { inflowGridThemeParams } from './index';
+import { inflowGridSelectionSx, inflowGridThemeParams } from './index';
 
 const expectedParamKeys = [
   'accentColor',
@@ -19,6 +19,9 @@ const expectedParamKeys = [
   'rangeSelectionBackgroundColor',
   'inputFocusBorder',
   'rowBorder',
+  'pinnedColumnBorder',
+  'checkboxBorderRadius',
+  'checkboxBorderWidth',
   'checkboxCheckedBackgroundColor',
   'checkboxCheckedBorderColor',
   'checkboxCheckedShapeColor',
@@ -52,6 +55,9 @@ describe('inflowGridThemeParams', () => {
     expect(inflowGridThemeParams.rangeSelectionBackgroundColor).toBe(lightTokens.primaryFixed);
     expect(inflowGridThemeParams.inputFocusBorder).toBe(`1px solid ${lightTokens.navy700}`);
     expect(inflowGridThemeParams.rowBorder).toBe(`1px solid ${lightTokens.outlineVariant}`);
+    expect(inflowGridThemeParams.pinnedColumnBorder).toBe(false);
+    expect(inflowGridThemeParams.checkboxBorderRadius).toBe(2);
+    expect(inflowGridThemeParams.checkboxBorderWidth).toBe(2);
     expect(inflowGridThemeParams.checkboxCheckedBackgroundColor).toBe(lightTokens.navy700);
     expect(inflowGridThemeParams.checkboxCheckedBorderColor).toBe(lightTokens.navy700);
     expect(inflowGridThemeParams.checkboxCheckedShapeColor).toBe(lightTokens.white);
@@ -80,5 +86,19 @@ describe('inflowGridThemeParams', () => {
     expect(allInflowGridParamKeysAreKnown).toBe(true);
     expect(() => themeQuartz.withParams(inflowGridThemeParams as Partial<ThemeDefaultParams>)).not.toThrow();
     expect(Object.keys(inflowGridThemeParams)).toEqual(expectedParamKeys);
+  });
+});
+
+describe('inflowGridSelectionSx', () => {
+  it('exports the optional hover-only checked-glyph treatment as plain styles', () => {
+    expect(inflowGridSelectionSx['& .ag-checkbox-input-wrapper.ag-checked::after']).toEqual({
+      opacity: 0,
+      transition: 'opacity 120ms ease',
+    });
+    expect(
+      inflowGridSelectionSx[
+        '& .ag-row:hover .ag-checkbox-input-wrapper.ag-checked::after, & .ag-row.ag-row-hover .ag-checkbox-input-wrapper.ag-checked::after, & .ag-row.ag-row-focus .ag-checkbox-input-wrapper.ag-checked::after, & .ag-row:focus-within .ag-checkbox-input-wrapper.ag-checked::after'
+      ],
+    ).toEqual({ opacity: 1 });
   });
 });

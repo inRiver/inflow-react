@@ -25,8 +25,11 @@ export interface InflowGridThemeParams {
   /** AG Grid border parameters. */
   readonly inputFocusBorder: string;
   readonly rowBorder: string;
+  readonly pinnedColumnBorder: boolean;
 
   /** AG Grid checkbox parameters. */
+  readonly checkboxBorderRadius: number;
+  readonly checkboxBorderWidth: number;
   readonly checkboxCheckedBackgroundColor: string;
   readonly checkboxCheckedBorderColor: string;
   readonly checkboxCheckedShapeColor: string;
@@ -61,6 +64,9 @@ export const inflowGridThemeParams = {
   rangeSelectionBackgroundColor: lightTokens.primaryFixed,
   inputFocusBorder: `1px solid ${lightTokens.navy700}`,
   rowBorder: `1px solid ${lightTokens.outlineVariant}`,
+  pinnedColumnBorder: false,
+  checkboxBorderRadius: 2,
+  checkboxBorderWidth: 2,
   checkboxCheckedBackgroundColor: lightTokens.navy700,
   checkboxCheckedBorderColor: lightTokens.navy700,
   checkboxCheckedShapeColor: lightTokens.white,
@@ -77,3 +83,23 @@ export const inflowGridThemeParams = {
   cellWidgetSpacing: inflowTokens.grid.cellWidgetSpacing,
   wrapperBorderRadius: inflowTokens.radius.xs,
 } as const satisfies InflowGridThemeParams;
+
+/**
+ * Optional, dependency-free MUI `sx` recipe for the Inflow row-selection treatment.
+ *
+ * Apply this object to an element wrapping AG Grid. It only changes the rendered
+ * checkbox presentation; row selection and keyboard behavior remain owned by AG Grid
+ * and configured by the consuming application.
+ */
+export const inflowGridSelectionSx = {
+  '& .ag-checkbox-input-wrapper.ag-checked::after': {
+    opacity: 0,
+    transition: 'opacity 120ms ease',
+  },
+  '& .ag-row:hover .ag-checkbox-input-wrapper.ag-checked::after, & .ag-row.ag-row-hover .ag-checkbox-input-wrapper.ag-checked::after, & .ag-row.ag-row-focus .ag-checkbox-input-wrapper.ag-checked::after, & .ag-row:focus-within .ag-checkbox-input-wrapper.ag-checked::after': {
+    opacity: 1,
+  },
+  '& .ag-header-cell:hover .ag-checkbox-input-wrapper.ag-checked::after, & .ag-header-cell:focus-within .ag-checkbox-input-wrapper.ag-checked::after': {
+    opacity: 1,
+  },
+} as const;
