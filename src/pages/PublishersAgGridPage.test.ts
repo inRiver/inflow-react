@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   publisherColumnDefs,
+  publisherGridSx,
   publisherGridThemeParams,
   publisherRowData,
   publisherRowSelection,
@@ -23,6 +24,9 @@ describe('PublishersAgGridPage reference table', () => {
     expect(publisherGridThemeParams.rowHeight).toBe(40);
     expect(publisherGridThemeParams.headerFontWeight).toBe(700);
     expect(publisherGridThemeParams.headerColumnResizeHandleColor).toBe('transparent');
+    expect(publisherGridThemeParams.pinnedColumnBorder).toBe(false);
+    expect(publisherGridThemeParams.checkboxBorderRadius).toBe(2);
+    expect(publisherGridThemeParams.checkboxBorderWidth).toBe(2);
     expect(publisherGridThemeParams.selectedRowBackgroundColor).toBe('rgba(11, 45, 110, 0.08)');
     expect(publisherGridThemeParams.wrapperBorderRadius).toBe(0);
   });
@@ -38,6 +42,15 @@ describe('PublishersAgGridPage reference table', () => {
       pinned: 'left',
       resizable: false,
     });
+    expect(publisherGridSx['& .ag-checkbox-input-wrapper.ag-checked::after']).toEqual({
+      opacity: 0,
+      transition: 'opacity 120ms ease',
+    });
+    expect(
+      publisherGridSx[
+        '& .ag-row:hover .ag-checkbox-input-wrapper.ag-checked::after, & .ag-row.ag-row-hover .ag-checkbox-input-wrapper.ag-checked::after, & .ag-row.ag-row-focus .ag-checkbox-input-wrapper.ag-checked::after, & .ag-row:focus-within .ag-checkbox-input-wrapper.ag-checked::after'
+      ],
+    ).toEqual({ opacity: 1 });
   });
 
   it('uses stable product data with media and completeness values', () => {
@@ -63,6 +76,15 @@ describe('PublishersAgGridPage reference table', () => {
     });
     expect(publisherUsageCode).toContain('function EntityCell');
     expect(publisherUsageCode).toContain('function MediaCell');
+    expect(publisherUsageCode).toContain('const productGridSx = {');
+    expect(publisherUsageCode).toContain('inflowGridSelectionSx,');
+    expect(publisherUsageCode).toContain('...inflowGridSelectionSx,');
+    expect(publisherUsageCode).toContain(
+      '// AG Grid registration stays in the consuming app; the Inflow export does not import AG Grid.',
+    );
+    expect(publisherUsageCode).toContain(
+      '// Optional presentation-only recipe: reveal selected checkmarks on hover or focus.',
+    );
     expect(publisherUsageCode).toContain("initialState={{ rowSelection: ['T60V0111', 'T60V0212'] }}");
   });
 });

@@ -1,5 +1,5 @@
 import type { ColDef, MultiRowSelectionOptions, SelectionColumnDef } from 'ag-grid-community';
-import { inflowGridThemeParams } from '../ag-grid';
+import { inflowGridSelectionSx, inflowGridThemeParams } from '../ag-grid';
 import { tableReferenceRows, type TableReferenceRow } from '../showcase/tableReferenceData';
 import { EntityCell, MediaCell } from './PublishersAgGridCells';
 
@@ -71,6 +71,13 @@ export const publisherSelectionColumnDef: SelectionColumnDef = {
   sortable: false,
 };
 
+export const publisherGridSx = {
+  width: '100%',
+  height: 272,
+  overflow: 'hidden',
+  ...inflowGridSelectionSx,
+} as const;
+
 export const publisherUsageCode = `import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import { Box } from '@mui/material';
 import {
@@ -81,8 +88,12 @@ import {
   type ICellRendererParams,
 } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
-import { inflowGridThemeParams } from '@inriver/inflow-react/ag-grid';
+import {
+  inflowGridSelectionSx,
+  inflowGridThemeParams,
+} from '@inriver/inflow-react/ag-grid';
 
+// AG Grid registration stays in the consuming app; the Inflow export does not import AG Grid.
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 type ProductRow = {
@@ -151,6 +162,7 @@ const productColumns: ColDef<ProductRow>[] = [
     colId: 'entity',
     headerName: 'Entity',
     valueGetter: ({ data }) => data?.entityId,
+    // Cell renderers are application components, not part of the shared theme.
     cellRenderer: EntityCell,
     minWidth: 190,
     width: 210,
@@ -179,7 +191,9 @@ const productColumns: ColDef<ProductRow>[] = [
 ];
 
 const productTheme = themeQuartz.withParams({
+  // Shared, dependency-free Inflow values for AG Grid's supported theme parameters.
   ...inflowGridThemeParams,
+  // Density and table-specific overrides remain local to this grid.
   headerHeight: 32,
   rowHeight: 40,
   headerFontSize: 12,
@@ -192,9 +206,19 @@ const productTheme = themeQuartz.withParams({
   wrapperBorderRadius: 0,
 });
 
+const productGridSx = {
+  // The consuming app controls the grid wrapper's layout.
+  width: '100%',
+  height: 272,
+  overflow: 'hidden',
+  // Optional presentation-only recipe: reveal selected checkmarks on hover or focus.
+  ...inflowGridSelectionSx,
+} as const;
+
 export function ProductsGrid() {
+  // Columns, filtering, selection behavior, and initial state are configured by the app.
   return (
-    <Box sx={{ width: '100%', height: 272, overflow: 'hidden' }}>
+    <Box sx={productGridSx}>
       <AgGridReact<ProductRow>
         theme={productTheme}
         rowData={productRows}

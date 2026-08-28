@@ -4,6 +4,7 @@ import { AgGridReact } from 'ag-grid-react';
 import { CodeBlock } from '../showcase/CodeBlock';
 import {
   publisherColumnDefs,
+  publisherGridSx,
   publisherGridThemeParams,
   publisherRowData,
   publisherRowSelection,
@@ -46,7 +47,7 @@ export function PublishersAgGridPage() {
           >
             Comfortable (M) — default
           </Typography>
-          <Box sx={{ width: '100%', height: 272, overflow: 'hidden' }}>
+          <Box sx={publisherGridSx}>
             <AgGridReact<PublisherRowData>
               theme={gridTheme}
               rowData={publisherRowData}
@@ -70,9 +71,11 @@ export function PublishersAgGridPage() {
             Usage
           </Typography>
           <Typography variant="body1" color="text.secondary" gutterBottom>
-            The <code>@inriver/inflow-react/ag-grid</code> export supplies the shared theme values.
-            Table-specific density and selection stay local to the grid, just like component-level
-            <code> sx</code> overrides.
+            The dependency-free <code>@inriver/inflow-react/ag-grid</code> export supplies the shared
+            theme values and the optional <code>inflowGridSelectionSx</code> presentation recipe. It
+            does not import or bundle AG Grid. Apply the recipe to the grid wrapper for the Inflow
+            hover-only checkmark treatment; columns, filters, selection behavior, and cell renderers
+            remain the consuming application&apos;s responsibility.
           </Typography>
           <CodeBlock code={publisherUsageCode} language="tsx" />
         </Box>
