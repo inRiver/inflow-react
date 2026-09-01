@@ -55,7 +55,7 @@ export function PublishersAgGridPage() {
               rowSelection={publisherRowSelection}
               selectionColumnDef={publisherSelectionColumnDef}
               getRowId={({ data }) => data.entityId}
-              initialState={{ rowSelection: ['T60V0111', 'T60V0212'] }}
+              suppressMenuHide={false}
               defaultColDef={{
                 sortable: true,
                 filter: true,
@@ -72,10 +72,12 @@ export function PublishersAgGridPage() {
           </Typography>
           <Typography variant="body1" color="text.secondary" gutterBottom>
             The dependency-free <code>@inriver/inflow-react/ag-grid</code> export supplies the shared
-            theme values and the optional <code>inflowGridSelectionSx</code> presentation recipe. It
-            does not import or bundle AG Grid. Apply the recipe to the grid wrapper for the Inflow
-            hover-only checkmark treatment; columns, filters, selection behavior, and cell renderers
-            remain the consuming application&apos;s responsibility.
+            theme values and optional presentation recipes for contextual row checkboxes and header
+            actions. It does not import or bundle AG Grid. Apply the recipes to the grid wrapper;
+            columns, filters, selection behavior, menu modules, and cell renderers remain the
+            consuming application&apos;s responsibility. This Community showcase renders its filter
+            action; applications that provide AG Grid&apos;s column-menu module also receive the same
+            hover treatment for the options action.
           </Typography>
           <CodeBlock code={publisherUsageCode} language="tsx" />
         </Box>

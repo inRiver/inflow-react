@@ -42,15 +42,16 @@ describe('PublishersAgGridPage reference table', () => {
       pinned: 'left',
       resizable: false,
     });
-    expect(publisherGridSx['& .ag-checkbox-input-wrapper.ag-checked::after']).toEqual({
-      opacity: 0,
-      transition: 'opacity 120ms ease',
-    });
     expect(
       publisherGridSx[
-        '& .ag-row:hover .ag-checkbox-input-wrapper.ag-checked::after, & .ag-row.ag-row-hover .ag-checkbox-input-wrapper.ag-checked::after, & .ag-row.ag-row-focus .ag-checkbox-input-wrapper.ag-checked::after, & .ag-row:focus-within .ag-checkbox-input-wrapper.ag-checked::after'
+        '& .ag-row:not(.ag-row-selected) .ag-selection-checkbox .ag-checkbox-input-wrapper'
       ],
-    ).toEqual({ opacity: 1 });
+    ).toEqual({ opacity: 0, transition: 'opacity 120ms ease' });
+    expect(
+      publisherGridSx[
+        '& .ag-header-cell .ag-header-cell-filter-button, & .ag-header-cell .ag-header-cell-menu-button'
+      ],
+    ).toEqual({ opacity: 0, transition: 'opacity 120ms ease' });
   });
 
   it('uses stable product data with media and completeness values', () => {
@@ -79,12 +80,15 @@ describe('PublishersAgGridPage reference table', () => {
     expect(publisherUsageCode).toContain('const productGridSx = {');
     expect(publisherUsageCode).toContain('inflowGridSelectionSx,');
     expect(publisherUsageCode).toContain('...inflowGridSelectionSx,');
+    expect(publisherUsageCode).toContain('inflowGridHeaderActionsSx,');
+    expect(publisherUsageCode).toContain('...inflowGridHeaderActionsSx,');
     expect(publisherUsageCode).toContain(
       '// AG Grid registration stays in the consuming app; the Inflow export does not import AG Grid.',
     );
     expect(publisherUsageCode).toContain(
-      '// Optional presentation-only recipe: reveal selected checkmarks on hover or focus.',
+      '// Optional presentation-only recipes; AG Grid still owns the underlying behavior.',
     );
-    expect(publisherUsageCode).toContain("initialState={{ rowSelection: ['T60V0111', 'T60V0212'] }}");
+    expect(publisherUsageCode).toContain('suppressMenuHide={false}');
+    expect(publisherUsageCode).not.toContain('initialState={{ rowSelection:');
   });
 });

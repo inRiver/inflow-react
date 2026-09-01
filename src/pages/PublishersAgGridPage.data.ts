@@ -1,5 +1,9 @@
 import type { ColDef, MultiRowSelectionOptions, SelectionColumnDef } from 'ag-grid-community';
-import { inflowGridSelectionSx, inflowGridThemeParams } from '../ag-grid';
+import {
+  inflowGridHeaderActionsSx,
+  inflowGridSelectionSx,
+  inflowGridThemeParams,
+} from '../ag-grid';
 import { tableReferenceRows, type TableReferenceRow } from '../showcase/tableReferenceData';
 import { EntityCell, MediaCell } from './PublishersAgGridCells';
 
@@ -76,6 +80,7 @@ export const publisherGridSx = {
   height: 272,
   overflow: 'hidden',
   ...inflowGridSelectionSx,
+  ...inflowGridHeaderActionsSx,
 } as const;
 
 export const publisherUsageCode = `import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
@@ -89,6 +94,7 @@ import {
 } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import {
+  inflowGridHeaderActionsSx,
   inflowGridSelectionSx,
   inflowGridThemeParams,
 } from '@inriver/inflow-react/ag-grid';
@@ -211,12 +217,13 @@ const productGridSx = {
   width: '100%',
   height: 272,
   overflow: 'hidden',
-  // Optional presentation-only recipe: reveal selected checkmarks on hover or focus.
+  // Optional presentation-only recipes; AG Grid still owns the underlying behavior.
   ...inflowGridSelectionSx,
+  ...inflowGridHeaderActionsSx,
 } as const;
 
 export function ProductsGrid() {
-  // Columns, filtering, selection behavior, and initial state are configured by the app.
+  // Columns, filtering, selection behavior, and available header actions are app-owned.
   return (
     <Box sx={productGridSx}>
       <AgGridReact<ProductRow>
@@ -240,7 +247,9 @@ export function ProductsGrid() {
           sortable: false,
         }}
         getRowId={({ data }) => data.entityId}
-        initialState={{ rowSelection: ['T60V0111', 'T60V0212'] }}
+        // AG Grid hides its menu button on header hover when this is false.
+        // The Inflow header recipe applies the same contextual treatment to the filter button.
+        suppressMenuHide={false}
         defaultColDef={{
           sortable: true,
           filter: true,
