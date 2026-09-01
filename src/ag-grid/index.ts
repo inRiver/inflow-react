@@ -92,14 +92,28 @@ export const inflowGridThemeParams = {
  * and configured by the consuming application.
  */
 export const inflowGridSelectionSx = {
-  '& .ag-checkbox-input-wrapper.ag-checked::after': {
+  '& .ag-row:not(.ag-row-selected) .ag-selection-checkbox .ag-checkbox-input-wrapper': {
     opacity: 0,
     transition: 'opacity 120ms ease',
   },
-  '& .ag-row:hover .ag-checkbox-input-wrapper.ag-checked::after, & .ag-row.ag-row-hover .ag-checkbox-input-wrapper.ag-checked::after, & .ag-row.ag-row-focus .ag-checkbox-input-wrapper.ag-checked::after, & .ag-row:focus-within .ag-checkbox-input-wrapper.ag-checked::after': {
+  '& .ag-row:not(.ag-row-selected):hover .ag-selection-checkbox .ag-checkbox-input-wrapper, & .ag-row.ag-row-hover:not(.ag-row-selected) .ag-selection-checkbox .ag-checkbox-input-wrapper, & .ag-row.ag-row-focus:not(.ag-row-selected) .ag-selection-checkbox .ag-checkbox-input-wrapper, & .ag-row:not(.ag-row-selected):focus-within .ag-selection-checkbox .ag-checkbox-input-wrapper': {
     opacity: 1,
   },
-  '& .ag-header-cell:hover .ag-checkbox-input-wrapper.ag-checked::after, & .ag-header-cell:focus-within .ag-checkbox-input-wrapper.ag-checked::after': {
+} as const;
+
+/**
+ * Optional, dependency-free MUI `sx` recipe for contextual AG Grid header actions.
+ *
+ * Apply this object to an element wrapping AG Grid. It controls only the visibility
+ * of filter and menu buttons that AG Grid renders. Which actions exist and what they
+ * do remain configured by the consuming application.
+ */
+export const inflowGridHeaderActionsSx = {
+  '& .ag-header-cell .ag-header-cell-filter-button, & .ag-header-cell .ag-header-cell-menu-button': {
+    opacity: 0,
+    transition: 'opacity 120ms ease',
+  },
+  '& .ag-header-cell:hover .ag-header-cell-filter-button, & .ag-header-cell:hover .ag-header-cell-menu-button, & .ag-header-cell.ag-header-active .ag-header-cell-filter-button, & .ag-header-cell.ag-header-active .ag-header-cell-menu-button, & .ag-header-cell:focus-within .ag-header-cell-filter-button, & .ag-header-cell:focus-within .ag-header-cell-menu-button, & .ag-header-cell .ag-header-cell-filter-button.ag-filter-active': {
     opacity: 1,
   },
 } as const;

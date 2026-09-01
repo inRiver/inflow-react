@@ -2,7 +2,11 @@ import { themeQuartz, type ThemeDefaultParams } from 'ag-grid-community';
 import { describe, expect, it } from 'vitest';
 import { lightTokens } from '../theme/inflow-tokens';
 import { inflowTokens } from '../theme/tokens';
-import { inflowGridSelectionSx, inflowGridThemeParams } from './index';
+import {
+  inflowGridHeaderActionsSx,
+  inflowGridSelectionSx,
+  inflowGridThemeParams,
+} from './index';
 
 const expectedParamKeys = [
   'accentColor',
@@ -90,14 +94,30 @@ describe('inflowGridThemeParams', () => {
 });
 
 describe('inflowGridSelectionSx', () => {
-  it('exports the optional hover-only checked-glyph treatment as plain styles', () => {
-    expect(inflowGridSelectionSx['& .ag-checkbox-input-wrapper.ag-checked::after']).toEqual({
-      opacity: 0,
-      transition: 'opacity 120ms ease',
-    });
+  it('exports the optional hover-revealed unchecked-row treatment as plain styles', () => {
     expect(
       inflowGridSelectionSx[
-        '& .ag-row:hover .ag-checkbox-input-wrapper.ag-checked::after, & .ag-row.ag-row-hover .ag-checkbox-input-wrapper.ag-checked::after, & .ag-row.ag-row-focus .ag-checkbox-input-wrapper.ag-checked::after, & .ag-row:focus-within .ag-checkbox-input-wrapper.ag-checked::after'
+        '& .ag-row:not(.ag-row-selected) .ag-selection-checkbox .ag-checkbox-input-wrapper'
+      ],
+    ).toEqual({ opacity: 0, transition: 'opacity 120ms ease' });
+    expect(
+      inflowGridSelectionSx[
+        '& .ag-row:not(.ag-row-selected):hover .ag-selection-checkbox .ag-checkbox-input-wrapper, & .ag-row.ag-row-hover:not(.ag-row-selected) .ag-selection-checkbox .ag-checkbox-input-wrapper, & .ag-row.ag-row-focus:not(.ag-row-selected) .ag-selection-checkbox .ag-checkbox-input-wrapper, & .ag-row:not(.ag-row-selected):focus-within .ag-selection-checkbox .ag-checkbox-input-wrapper'
+      ],
+    ).toEqual({ opacity: 1 });
+  });
+});
+
+describe('inflowGridHeaderActionsSx', () => {
+  it('exports contextual filter and menu button visibility as plain styles', () => {
+    expect(
+      inflowGridHeaderActionsSx[
+        '& .ag-header-cell .ag-header-cell-filter-button, & .ag-header-cell .ag-header-cell-menu-button'
+      ],
+    ).toEqual({ opacity: 0, transition: 'opacity 120ms ease' });
+    expect(
+      inflowGridHeaderActionsSx[
+        '& .ag-header-cell:hover .ag-header-cell-filter-button, & .ag-header-cell:hover .ag-header-cell-menu-button, & .ag-header-cell.ag-header-active .ag-header-cell-filter-button, & .ag-header-cell.ag-header-active .ag-header-cell-menu-button, & .ag-header-cell:focus-within .ag-header-cell-filter-button, & .ag-header-cell:focus-within .ag-header-cell-menu-button, & .ag-header-cell .ag-header-cell-filter-button.ag-filter-active'
       ],
     ).toEqual({ opacity: 1 });
   });
