@@ -64,6 +64,7 @@
     "lint": "eslint .",
     "test": "vitest",
     "test:run": "vitest --run",
+    "test:pack": "node scripts/pack-smoke.mjs",
     "prepublishOnly": "node scripts/guard-publish.cjs",
     "preview": "vite preview"
   },

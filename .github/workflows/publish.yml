@@ -52,6 +52,8 @@ jobs:
 
       - run: npm run build
 
+      - run: npm run test:pack
+
       - name: Publish
         env:
           INFLOW_THEME_RELEASE_TAG: ${{ steps.tagcheck.outputs.checkpoint }}

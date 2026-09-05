@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import MuiBadge from '@mui/material/Badge';
+import { Badge as MuiBadge } from '@mui/material';
 import type { BadgeProps as MuiBadgeProps } from '@mui/material/Badge';
 import { styled } from '@mui/material/styles';
 

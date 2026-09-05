@@ -22,7 +22,7 @@ export default defineConfig({
         { format: 'es', chunkFileNames: '[name].js' },
         { format: 'cjs', chunkFileNames: '[name].cjs' },
       ],
-      external: [
+      external: (id) => [
         'react',
         'react-dom',
         'react/jsx-runtime',
@@ -35,7 +35,7 @@ export default defineConfig({
         'ag-grid-community',
         'ag-grid-enterprise',
         'ag-grid-react',
-      ],
+      ].includes(id) || id.startsWith('@mui/material/'),
     },
   },
 });

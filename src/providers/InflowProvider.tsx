@@ -1,9 +1,18 @@
-import createCache, { type EmotionCache } from '@emotion/cache';
+import { default as createCache, type EmotionCache } from '@emotion/cache';
 import { CacheProvider } from '@emotion/react';
 import { ScopedCssBaseline } from '@mui/material';
 import { ThemeProvider, type SxProps, type Theme } from '@mui/material/styles';
 import { useMemo, type ReactNode } from 'react';
 import { createInflowTheme, type InflowColorMode } from '../theme/inflow';
+
+type EmotionCacheFactory = (options: Parameters<typeof createCache>[0]) => EmotionCache;
+type EmotionCacheFactoryModule = { readonly default: EmotionCacheFactory };
+
+function resolveEmotionCacheFactory(
+  factory: EmotionCacheFactory | EmotionCacheFactoryModule,
+): EmotionCacheFactory {
+  return typeof factory === 'function' ? factory : factory.default;
+}
 
 export interface InflowProviderProps {
   children: ReactNode;
@@ -68,7 +77,7 @@ export function InflowProvider({
   emotionCache,
 }: InflowProviderProps) {
   const theme = useMemo(() => createInflowTheme(mode), [mode]);
-  const internalCache = useMemo(() => createCache({ key: cacheKey }), [cacheKey]);
+  const internalCache = useMemo(() => resolveEmotionCacheFactory(createCache)({ key: cacheKey }), [cacheKey]);
   const cache = emotionCache ?? internalCache;
   const rootSx = useMemo<SxProps<Theme>>(
     () => [
