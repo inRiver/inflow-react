@@ -2,6 +2,11 @@
 
 All notable changes to `@inriver/inflow-react` are documented here. This project follows [Semantic Versioning](https://semver.org/).
 
+## [3.5.1] - 2026-09-05
+
+### Security
+- Updated the locked Browserslist development dependency from 4.28.2 to 4.28.9 and its supporting browser data packages, resolving the high-severity npm audit finding.
+
 ## [3.5.0] - 2026-09-05
 
 ### Changed
