@@ -12,11 +12,10 @@ semantics), see [`docs/VERSIONING.md`](./VERSIONING.md). This file is about
 the mechanics of how a release actually gets from a git tag to the npm
 registry.
 
-**Status.** `@inriver/inflow-react` is published and public. Releases
-`0.1.0` through `0.1.8` are live. As of `0.1.8`, `latest` and the
-`react19-mui6.3` checkpoint tag both point to the newest published version -
-`latest` is auto-promoted by CI immediately after every checkpoint publish
-(see "Current publishing setup" below). The repository now lives at
+**Status.** `@inriver/inflow-react` is public and **Beta**. Beta describes
+project maturity; it is not an npm prerelease version or a separate publishing
+channel. Check the npm registry for published versions and dist-tags before
+installation or promotion. The repository now lives at
 [`github.com/inRiver/inflow-react`](https://github.com/inRiver/inflow-react)
 (public, owned by a personal, non-EMU GitHub account), not the original
 GitHub Enterprise Managed Users (EMU) org - that move is what unblocked
@@ -39,16 +38,19 @@ The repository lives at `github.com/inRiver/inflow-react` (public). Two
 GitHub Actions workflows drive everything:
 
 - **`.github/workflows/ci.yml`** - runs on every push and PR to `master`:
-  `npm ci` → `lint` → `test:run` → `build` → pack the tarball and verify it
-  contains the expected files. This is a general quality gate, independent
-  of releases.
+  `npm ci` → `lint` → `test:run` → `build` → `npm run test:pack`. The packed
+  consumer check creates a tarball, installs it into an isolated consumer, and
+  verifies ESM and CommonJS imports (including server rendering), AG Grid, and
+  package-boundary rejection. This is a general quality gate, independent of
+  releases.
 - **`.github/workflows/publish.yml`** - runs only when a tag matching
   `theme/*/v*` is pushed (the same source-tag convention documented in
   `docs/VERSIONING.md`):
   1. Derives the checkpoint name and version from the tag, and verifies the
      tag's version matches `package.json`.
-  2. `npm ci` → `lint` → `test:run` → `build` (same gate as CI - a lint or
-     test failure blocks the release before it ever reaches npm).
+  2. `npm ci` → `lint` → `test:run` → `build` → `npm run test:pack` (the same
+     packed ESM/CommonJS consumer gate as CI). Any failure blocks the release
+     before it reaches npm.
   3. `npm publish --tag <checkpoint> --provenance` via **npm Trusted
      Publishing (OIDC)** - no npm token is stored anywhere for this step.
      npm mints a short-lived, workflow-scoped credential via GitHub's OIDC
@@ -73,9 +75,10 @@ For a normal release, see the release workflow steps in
 
 ```bash
 npm version patch
+VERSION="$(node -p "require('./package.json').version")"
 git push origin master
-git tag -a theme/react19-mui6.3/v0.1.9 -m "@inriver/inflow-react 0.1.9 - <summary>"
-git push origin theme/react19-mui6.3/v0.1.9
+git tag -a "theme/react19-mui9.3/v$VERSION" -m "@inriver/inflow-react $VERSION - <summary>"
+git push origin "theme/react19-mui9.3/v$VERSION"
 ```
 
 Pushing that tag is the entire release step. There is no manual `npm
@@ -211,7 +214,7 @@ described in "Current publishing setup" above.
 Verify a release after CI reports success:
 
 - [ ] Confirm the `publish.yml` workflow run is green, including both the
-      `Publish` and `Promote to latest` steps.
+      packed consumer check, `Publish`, and `Promote to latest` steps.
 - [ ] Open `https://www.npmjs.com/package/@inriver/inflow-react` and confirm
       the version, README, and file list look correct. **The npmjs.com
       website is cached and can lag several minutes behind the registry** -
@@ -222,7 +225,7 @@ Verify a release after CI reports success:
 - [ ] In a fresh throwaway project, test install from the checkpoint tag:
 
 ```bash
-npm install @inriver/inflow-react@react19-mui6.3
+npm install @inriver/inflow-react@react19-mui9.3
 ```
 
 - [ ] Verify the expected exports work in a consumer:

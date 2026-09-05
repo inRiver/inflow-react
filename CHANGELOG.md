@@ -2,6 +2,15 @@
 
 All notable changes to `@inriver/inflow-react` are documented here. This project follows [Semantic Versioning](https://semver.org/).
 
+## [3.5.0] - 2026-09-05
+
+### Changed
+- Declared the project Beta in the README and release guidance, including the light-only limitation and Semantic Versioning expectations for public APIs.
+- Updated the showcase compatibility badge to React 19 / MUI 9.3 while keeping its displayed package version sourced from `package.json`.
+
+### Fixed
+- Fixed packaged CommonJS/SSR loading and added `npm run test:pack` as a packed ESM/CommonJS consumer regression gate in CI and the publishing workflow.
+
 ## [3.4.1] - 2026-08-19
 
 ### Security

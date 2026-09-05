@@ -41,7 +41,7 @@ export function LandingPage() {
             <Chip label={`@inriver/inflow-react v${pkg.version}`} size="small" color="primary" />
             <Chip label={`React ${reactVersion}`} size="small" variant="outlined" />
             <Chip label={`MUI ${muiVersion}`} size="small" variant="outlined" />
-            <Chip label="tag: react19-mui7.3" size="small" variant="outlined" />
+            <Chip label="tag: react19-mui9.3" size="small" variant="outlined" />
           </Stack>
         </Box>
 

@@ -2,11 +2,11 @@
 
 Shared Inflow React and MUI theme, design tokens, and themed components for Inriver product UIs.
 
-[![npm version](https://img.shields.io/npm/v/@inriver/inflow-react.svg)](https://www.npmjs.com/package/@inriver/inflow-react) [![license](https://img.shields.io/npm/l/@inriver/inflow-react.svg)](./LICENSE) [![React 19](https://img.shields.io/badge/React-19-61dafb)](https://react.dev/) [![MUI 9](https://img.shields.io/badge/MUI-9-007fff)](https://mui.com/) [![status: alpha](https://img.shields.io/badge/status-alpha-orange)](https://github.com/inRiver/inflow-react/issues)
+[![npm version](https://img.shields.io/npm/v/@inriver/inflow-react.svg)](https://www.npmjs.com/package/@inriver/inflow-react) [![license](https://img.shields.io/npm/l/@inriver/inflow-react.svg)](./LICENSE) [![React 19](https://img.shields.io/badge/React-19-61dafb)](https://react.dev/) [![MUI 9](https://img.shields.io/badge/MUI-9-007fff)](https://mui.com/) [![status: beta](https://img.shields.io/badge/status-beta-blue)](https://github.com/inRiver/inflow-react/issues)
 
 [Live showcase](https://inriver.github.io/inflow-react/) · [npm package](https://www.npmjs.com/package/@inriver/inflow-react)
 
-> **Alpha:** APIs may change. Only light mode is currently enabled; dark mode is still feature-flagged off. Report bugs, rough edges, and requests through [GitHub Issues](https://github.com/inRiver/inflow-react/issues).
+> **Beta:** Public APIs follow Semantic Versioning: backward-compatible fixes use patch releases, backward-compatible additions use minor releases, and breaking API or peer-baseline changes require a major release. Only light mode is currently enabled; dark mode is still feature-flagged off. Report bugs, rough edges, and requests through [GitHub Issues](https://github.com/inRiver/inflow-react/issues).
 
 ## Requirements and compatibility
 
@@ -28,7 +28,7 @@ import { InflowProvider, ThemedButton } from '@inriver/inflow-react';
 
 Do not import showcase code, demo components, or internal source paths. The package ships TypeScript declarations and supports both ESM and CommonJS through its `exports` map.
 
-Compatibility is managed through checkpoint tags. The current checkpoint is `react19-mui9.3` (React 19 / MUI 9.3). The previous checkpoint, `react19-mui7.3`, remains available for apps still on MUI 7. Use a checkpoint tag or an exact version when you need a known React and MUI contract. The `latest` tag is promoted automatically by CI and is never published to directly.
+Compatibility is managed through checkpoint tags. The current compatibility target is `react19-mui9.3` (React 19 / MUI 9.3); the prior `react19-mui7.3` checkpoint remains available for apps still on MUI 7. Use a checkpoint tag or an exact version when you need a known React and MUI contract. The `latest` tag is promoted automatically by CI and is never published to directly. The npm registry is authoritative for published versions and dist-tags.
 
 ## Installation
 
