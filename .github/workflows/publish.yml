@@ -1,6 +1,12 @@
 name: Publish to npm
 
 on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing source tag to publish
+        required: true
+        type: string
   push:
     tags:
       - 'theme/*/v*'
@@ -14,6 +20,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ format('refs/tags/{0}', inputs.release_tag || github.ref_name) }}
 
       - uses: actions/setup-node@v7
         with:
@@ -24,13 +32,24 @@ jobs:
       - name: Ensure npm supports Trusted Publishing (OIDC)
         run: |
           echo "Bundled npm: $(npm --version)"
-          npm install -g npm@latest
+          npm install -g npm@11.13.0
           echo "Upgraded npm: $(npm --version)"
 
       - name: Derive checkpoint tag and verify version
         id: tagcheck
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag || github.ref_name }}
         run: |
-          RAW_TAG="${GITHUB_REF#refs/tags/}"
+          RAW_TAG="$RELEASE_TAG"
+          if [[ ! "$RAW_TAG" =~ ^theme/[^/]+/v[^/]+$ ]]; then
+            echo "::error::Expected a theme/<checkpoint>/v<version> source tag."
+            exit 1
+          fi
+          TAG_COMMIT="$(git rev-parse "refs/tags/$RAW_TAG^{commit}")"
+          if [ "$(git rev-parse HEAD)" != "$TAG_COMMIT" ]; then
+            echo "::error::Checkout does not match the requested source tag."
+            exit 1
+          fi
           echo "Source tag: $RAW_TAG"
           CHECKPOINT="$(echo "$RAW_TAG" | cut -d '/' -f2)"
           TAG_VERSION="$(echo "$RAW_TAG" | cut -d '/' -f3 | sed 's/^v//')"
