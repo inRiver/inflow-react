@@ -17,6 +17,7 @@ const steps = ['Personal Info', 'Address', 'Confirmation'].map((label) => ({ lab
 export default function DialogScreen() {
   const [open, setOpen] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
+  const [completedStep, setCompletedStep] = useState(0);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -28,6 +29,7 @@ export default function DialogScreen() {
   const handleClose = () => {
     setOpen(false);
     setActiveStep(0);
+    setCompletedStep(0);
     setFormData({ firstName: '', lastName: '', street: '', city: '' });
   };
 
@@ -35,7 +37,11 @@ export default function DialogScreen() {
     if (activeStep === steps.length - 1) {
       handleClose();
     } else {
-      setActiveStep((prev) => prev + 1);
+      setActiveStep((previousStep) => {
+        const nextStep = previousStep + 1;
+        setCompletedStep((furthestStep) => Math.max(furthestStep, nextStep));
+        return nextStep;
+      });
     }
   };
 
@@ -121,7 +127,12 @@ export default function DialogScreen() {
         <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
           <DialogTitle>Multi-Step Form</DialogTitle>
           <DialogContent sx={{ pt: 3 }}>
-            <ThemedStepper activeStep={activeStep} steps={steps} sx={{ mb: 3 }} />
+            <ThemedStepper
+              activeStep={activeStep}
+              completedStep={completedStep}
+              steps={steps}
+              sx={{ mb: 3 }}
+            />
 
             {renderStepContent()}
           </DialogContent>
