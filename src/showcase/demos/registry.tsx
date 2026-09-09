@@ -182,7 +182,17 @@ export const demoRegistry: Record<string, DemoRegistryEntry> = {
   badge: createEntry(demos.BadgeDemo),
   avatar: createEntry(demos.AvatarDemo),
   tooltip: createEntry(demos.TooltipDemo),
-  table: createEntry(demos.TableDemo),
+  table: createEntry(demos.TableDemo, {
+    maturityStatus: 'Ready',
+    guidelines: [
+      'Use themed AG Grid for every single or focused product data table.',
+      'Use Table only for compact, read-only summaries embedded in composite surfaces such as chat.',
+      'When an embedded summary expands into a focused table, switch to themed AG Grid.',
+      'Keep columns, filtering, editing, selection, and modules in the consuming application.',
+      'Apply Inflow AG Grid theme parameters and recipes instead of styling AG Grid ad hoc.',
+    ],
+    muiDocsUrl: 'https://www.ag-grid.com/react-data-grid/accessibility/',
+  }),
   card: createEntry(demos.CardDemo),
   list: createEntry(demos.ListDemo),
   accordion: createEntry(demos.AccordionDemo),

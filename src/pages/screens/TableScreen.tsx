@@ -1,116 +1,136 @@
 
+import { useCallback, useState } from 'react';
+import { Box, Chip, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { DataTable } from '../../components/DataTable';
 import {
-  Box,
-  Container,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-  Chip,
-} from '@mui/material';
+  createFocusedCellReply,
+  type DataTableCellContext,
+} from '../../components/DataTable.data';
+import { ThemedAppNav } from '../../components/themed/ThemedAppNav';
+import {
+  ThemedChatPanel,
+  type ThemedChatMessageDef,
+} from '../../components/themed/ThemedChatPanel';
+import { ThemedPageHeader } from '../../components/themed/ThemedPageHeader';
+import { ThemedRightPanel } from '../../components/themed/ThemedRightPanel';
 
-interface DataRow {
-  id: number;
-  name: string;
-  email: string;
-  status: 'active' | 'inactive' | 'pending';
-  joinDate: string;
-}
-
-const sampleData: DataRow[] = [
+const initialMessages: ThemedChatMessageDef[] = [
   {
-    id: 1,
-    name: 'John Doe',
-    email: 'john@example.com',
-    status: 'active',
-    joinDate: '2024-01-15',
-  },
-  {
-    id: 2,
-    name: 'Jane Smith',
-    email: 'jane@example.com',
-    status: 'active',
-    joinDate: '2024-02-20',
-  },
-  {
-    id: 3,
-    name: 'Bob Johnson',
-    email: 'bob@example.com',
-    status: 'pending',
-    joinDate: '2024-03-10',
-  },
-  {
-    id: 4,
-    name: 'Alice Williams',
-    email: 'alice@example.com',
-    status: 'inactive',
-    joinDate: '2024-01-05',
-  },
-  {
-    id: 5,
-    name: 'Charlie Brown',
-    email: 'charlie@example.com',
-    status: 'active',
-    joinDate: '2024-03-25',
+    id: 'assistant-intro',
+    role: 'assistant',
+    content: 'Focus an editable grid cell, change it if needed, then ask me for the latest value.',
   },
 ];
 
-function getStatusColor(status: string): 'success' | 'default' | 'warning' {
-  switch (status) {
-    case 'active':
-      return 'success';
-    case 'inactive':
-      return 'default';
-    case 'pending':
-      return 'warning';
-    default:
-      return 'default';
-  }
-}
-
 export default function TableScreen() {
-  return (
-    <Container maxWidth="lg">
-      <Box sx={{ py: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 3 }}>
-          Users
-        </Typography>
+  const theme = useTheme();
+  const isNarrow = useMediaQuery(theme.breakpoints.down('md'));
+  const [assistantOpen, setAssistantOpen] = useState(true);
+  const [focusedCell, setFocusedCell] = useState<DataTableCellContext | null>(null);
+  const [inputValue, setInputValue] = useState('');
+  const [messages, setMessages] = useState<ThemedChatMessageDef[]>(initialMessages);
 
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead sx={{ backgroundColor: '#f5f5f5' }}>
-              <TableRow>
-                <TableCell>ID</TableCell>
-                <TableCell>Name</TableCell>
-                <TableCell>Email</TableCell>
-                <TableCell>Status</TableCell>
-                <TableCell>Join Date</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {sampleData.map((row) => (
-                <TableRow key={row.id} hover>
-                  <TableCell>{row.id}</TableCell>
-                  <TableCell>{row.name}</TableCell>
-                  <TableCell>{row.email}</TableCell>
-                  <TableCell>
-                    <Chip
-                      label={row.status}
-                      color={getStatusColor(row.status)}
-                      size="small"
-                    />
-                  </TableCell>
-                  <TableCell>{row.joinDate}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+  const handleSendMessage = useCallback((text: string) => {
+    setMessages((current) => [
+      ...current,
+      { id: `user-${current.length}`, role: 'user', content: text },
+      {
+        id: `assistant-${current.length + 1}`,
+        role: 'assistant',
+        content: createFocusedCellReply(focusedCell),
+      },
+    ]);
+    setInputValue('');
+  }, [focusedCell]);
+
+  return (
+    <>
+      <Box
+        sx={{
+          display: 'flex',
+          minHeight: { xs: 560, md: 640 },
+          overflow: 'hidden',
+          border: 1,
+          borderColor: 'inflow.outlineVariant',
+          bgcolor: 'inflow.appBackground',
+        }}
+      >
+        <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+          <ThemedAppNav
+            items={[
+              { label: 'Dashboard', icon: 'dashboard', href: '#/examples/dashboard' },
+              { label: 'Products', icon: 'inventory_2', href: '#/examples/table', active: true },
+              { label: 'Channels', icon: 'hub', href: '#/publishers/ag-grid' },
+              { label: 'Tasks', icon: 'task_alt', href: '#/guidelines' },
+            ]}
+            footer={[{ label: 'Settings', icon: 'settings', href: '#/guidelines' }]}
+          />
+        </Box>
+
+        <Box sx={{ display: 'flex', flex: 1, minWidth: 0, flexDirection: 'column' }}>
+          <ThemedPageHeader
+            eyebrow="Product workspace"
+            title="Data Table"
+            actions={[{ label: 'Ask assistant', variant: 'filled', onClick: () => setAssistantOpen(true) }]}
+          />
+
+          <Stack spacing={2} sx={{ minWidth: 0, p: { xs: 2, md: 3 } }}>
+            <Box>
+              <Typography variant="h5" component="h2">
+                Products
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                AG Grid owns sorting, filtering, row selection, keyboard focus, and inline editing.
+              </Typography>
+            </Box>
+
+            <Box
+              role="status"
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+                minHeight: 40,
+                px: 2,
+                py: 1,
+                bgcolor: 'inflow.surfaceLow',
+                border: 1,
+                borderColor: 'inflow.outlineVariant',
+              }}
+            >
+              <Chip size="small" color={focusedCell ? 'primary' : 'default'} label="Assistant context" />
+              <Typography variant="body2">
+                {focusedCell
+                  ? `${focusedCell.rowId} · ${focusedCell.columnLabel}: ${focusedCell.value}`
+                  : 'Focus a cell to give the assistant live grid context.'}
+              </Typography>
+            </Box>
+
+            <DataTable onFocusedCellChange={setFocusedCell} />
+          </Stack>
+        </Box>
       </Box>
-    </Container>
+
+      <ThemedRightPanel
+        open={assistantOpen}
+        mode={isNarrow ? 'overlay' : 'push'}
+        width={isNarrow ? 'narrow' : 'medium'}
+        variant="assistant"
+        aria-label="AI data assistant"
+        onClose={() => setAssistantOpen(false)}
+      >
+        <ThemedChatPanel
+          title="Data Assistant"
+          dropdownOptions={['Data Assistant']}
+          messages={messages}
+          inputValue={inputValue}
+          inputPlaceholder="Ask about the focused cell"
+          showCredits={false}
+          onClose={() => setAssistantOpen(false)}
+          onInputChange={setInputValue}
+          onSendMessage={handleSendMessage}
+        />
+      </ThemedRightPanel>
+    </>
   );
 }

@@ -1,57 +1,169 @@
-import React, { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import {
-  Paper,
   Box,
-  Tabs,
-  Tab,
-  Tooltip,
-  IconButton,
-  Typography,
   Button,
-  TableContainer,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  Checkbox,
-  TableSortLabel,
-  TableBody,
   Chip,
-  LinearProgress,
-  Icon
+  Icon,
+  IconButton,
+  Paper,
+  Tab,
+  Tabs,
+  Tooltip,
+  Typography,
 } from '@mui/material';
+import {
+  AllCommunityModule,
+  ModuleRegistry,
+  themeQuartz,
+  type CellFocusedEvent,
+  type CellValueChangedEvent,
+  type ColDef,
+  type FirstDataRenderedEvent,
+  type SelectionChangedEvent,
+} from 'ag-grid-community';
+import { AgGridReact, type CustomCellRendererProps } from 'ag-grid-react';
+import {
+  inflowGridHeaderActionsSx,
+  inflowGridSelectionSx,
+  inflowGridThemeParams,
+} from '../ag-grid';
+import {
+  createDataTableCellContext,
+  dataTableRows,
+  isDataTableField,
+  type DataTableCellContext,
+  type DataTableRow,
+  type DataTableStatus,
+} from './DataTable.data';
 
-const MI = ({ size = 24, children }: { size?: number, children: string }) => (
-  <Icon baseClassName="material-icons-outlined" sx={{ fontSize: size }}>{children}</Icon>
+ModuleRegistry.registerModules([AllCommunityModule]);
+
+const gridTheme = themeQuartz.withParams({
+  ...inflowGridThemeParams,
+  headerHeight: 40,
+  rowHeight: 44,
+  wrapperBorder: false,
+  wrapperBorderRadius: 0,
+});
+
+const rowSelection = {
+  mode: 'multiRow',
+  checkboxes: true,
+  headerCheckbox: true,
+  enableClickSelection: true,
+} as const;
+
+const selectionColumnDef = {
+  width: 48,
+  minWidth: 48,
+  maxWidth: 48,
+  pinned: 'left',
+  lockPosition: true,
+  resizable: false,
+  sortable: false,
+} as const;
+
+const MI = ({ size = 24, children }: { readonly size?: number; readonly children: string }) => (
+  <Icon baseClassName="material-icons-outlined" sx={{ fontSize: size }}>
+    {children}
+  </Icon>
 );
 
-const ROWS = [
-  { sku: 'ABX-200', name: 'Running shoe', channel: 'Amazon', status: 'Active', pct: 98 },
-  { sku: 'TJ-014', name: 'Trail jacket', channel: 'Shopify', status: 'Draft', pct: 61 },
-  { sku: 'WB-077', name: 'Wool beanie', channel: 'Salsify', status: 'Active', pct: 100 },
-  { sku: 'MS-310', name: 'Merino socks', channel: 'Print', status: 'Archived', pct: 44 },
-  { sku: 'HP-512', name: 'Hydration pack', channel: 'Amazon', status: 'Draft', pct: 73 },
-];
+function statusColor(status: DataTableStatus): 'success' | 'warning' | 'default' {
+  switch (status) {
+    case 'Active':
+      return 'success';
+    case 'Draft':
+      return 'warning';
+    case 'Archived':
+      return 'default';
+  }
+}
 
-const SC: Record<string, 'success' | 'warning' | 'default'> = { 
-  Active: 'success', 
-  Draft: 'warning', 
-  Archived: 'default' 
-};
-
-export const DataTable: React.FC = () => {
-  const [tab, setTab] = useState(0);
-  const [sel, setSel] = useState<string[]>(['WB-077']);
-  
-  const toggle = (s: string) => setSel((p) => p.includes(s) ? p.filter(x => x !== s) : [...p, s]);
+function StatusCell({ value }: CustomCellRendererProps<DataTableRow, DataTableStatus>) {
+  if (!value) return null;
 
   return (
-    <Paper variant="outlined">
+    <Chip
+      color={statusColor(value)}
+      label={value}
+      size="small"
+      variant={value === 'Archived' ? 'outlined' : 'filled'}
+    />
+  );
+}
+
+const columnDefs: ColDef<DataTableRow>[] = [
+  { field: 'sku', headerName: 'SKU', minWidth: 120, pinned: 'left' },
+  { field: 'name', headerName: 'Product', editable: true, minWidth: 180, flex: 1 },
+  { field: 'channel', headerName: 'Channel', editable: true, minWidth: 140 },
+  {
+    field: 'status',
+    headerName: 'Status',
+    editable: true,
+    minWidth: 130,
+    cellEditor: 'agSelectCellEditor',
+    cellEditorParams: { values: ['Active', 'Draft', 'Archived'] },
+    cellRenderer: StatusCell,
+  },
+  {
+    field: 'completeness',
+    headerName: 'Completeness',
+    editable: true,
+    minWidth: 150,
+    filter: 'agNumberColumnFilter',
+    valueFormatter: ({ value }) => `${value}%`,
+    valueParser: ({ newValue, oldValue }) => {
+      const parsedValue = typeof newValue === 'number' ? newValue : Number.parseFloat(String(newValue));
+      return Number.isFinite(parsedValue) ? Math.min(100, Math.max(0, parsedValue)) : oldValue;
+    },
+  },
+];
+
+export interface DataTableProps {
+  readonly onFocusedCellChange?: (context: DataTableCellContext | null) => void;
+}
+
+export function DataTable({ onFocusedCellChange }: DataTableProps) {
+  const [tab, setTab] = useState(0);
+  const [selectedCount, setSelectedCount] = useState(0);
+  const rowData = useMemo(
+    () => dataTableRows.filter(({ status }) => tab === 0 || status === ['Active', 'Draft', 'Archived'][tab - 1]),
+    [tab],
+  );
+
+  const publishFocusedContext = useCallback((event: CellFocusedEvent<DataTableRow>) => {
+    const field = typeof event.column === 'string' || event.column === null
+      ? undefined
+      : event.column.getColDef().field;
+    const row = event.rowIndex === null ? undefined : event.api.getDisplayedRowAtIndex(event.rowIndex)?.data;
+    onFocusedCellChange?.(row && isDataTableField(field) ? createDataTableCellContext(row, field) : null);
+  }, [onFocusedCellChange]);
+
+  const publishEditedContext = useCallback((event: CellValueChangedEvent<DataTableRow>) => {
+    const field = event.colDef.field;
+    onFocusedCellChange?.(
+      event.data && isDataTableField(field) ? createDataTableCellContext(event.data, field) : null,
+    );
+  }, [onFocusedCellChange]);
+
+  const selectReferenceRow = useCallback((event: FirstDataRenderedEvent<DataTableRow>) => {
+    event.api.getRowNode('WB-077')?.setSelected(true);
+  }, []);
+
+  const updateSelectedCount = useCallback((event: SelectionChangedEvent<DataTableRow>) => {
+    setSelectedCount(event.api.getSelectedRows().length);
+  }, []);
+
+  return (
+    <Paper variant="outlined" sx={{ overflow: 'hidden' }}>
       <Box sx={{ px: 2, borderBottom: 1, borderColor: 'divider' }}>
         <Box sx={{ display: 'flex', flexWrap: { xs: 'wrap', sm: 'nowrap' }, alignItems: 'center', gap: 1 }}>
           <Tabs
             value={tab}
-            onChange={(_e, v) => setTab(v)}
+            onChange={(_event, value: unknown) => {
+              if (typeof value === 'number') setTab(value);
+            }}
             variant="scrollable"
             scrollButtons="auto"
             sx={{ flex: 1, minWidth: 0 }}
@@ -63,78 +175,49 @@ export const DataTable: React.FC = () => {
           </Tabs>
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: { xs: '100%', sm: 'auto' } }}>
             <Tooltip title="Filter">
-              <IconButton><MI size={20}>filter_list</MI></IconButton>
+              <IconButton aria-label="Filter products"><MI size={20}>filter_list</MI></IconButton>
             </Tooltip>
             <Tooltip title="Columns">
-              <IconButton><MI size={20}>view_column</MI></IconButton>
+              <IconButton aria-label="Choose visible columns"><MI size={20}>view_column</MI></IconButton>
             </Tooltip>
           </Box>
         </Box>
       </Box>
-      
-      {sel.length > 0 && (
+
+      {selectedCount > 0 && (
         <Box sx={{ px: 2, py: 1, bgcolor: 'inflow.surfaceLow', display: 'flex', alignItems: 'center', gap: 2 }} data-testid="bulk-action-bar">
-          <Typography variant="body2" color="primary.main">{sel.length} selected</Typography>
+          <Typography variant="body2" color="primary.main">{selectedCount} selected</Typography>
           <Button size="small" variant="text" startIcon={<MI size={16}>publish</MI>}>Publish</Button>
           <Button size="small" variant="text" startIcon={<MI size={16}>auto_fix_high</MI>}>Enrich</Button>
           <Button size="small" variant="text" color="error" startIcon={<MI size={16}>delete</MI>}>Delete</Button>
         </Box>
       )}
-      
-      <TableContainer sx={{ maxWidth: '100%', overflow: 'auto' }}>
-        <Table size="small" sx={{ minWidth: 600 }}>
-          <TableHead>
-            <TableRow>
-              <TableCell padding="checkbox">
-                <Checkbox 
-                  size="small" 
-                  checked={sel.length === ROWS.length}
-                  indeterminate={sel.length > 0 && sel.length < ROWS.length}
-                  onChange={(e) => setSel(e.target.checked ? ROWS.map(r => r.sku) : [])} 
-                />
-              </TableCell>
-              <TableCell><TableSortLabel active direction="asc">SKU</TableSortLabel></TableCell>
-              <TableCell>Product</TableCell>
-              <TableCell>Channel</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell sx={{ width: 180 }}>Completeness</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {ROWS.map((r) => {
-              const on = sel.includes(r.sku);
-              return (
-                <TableRow 
-                  key={r.sku} 
-                  hover 
-                  selected={on} 
-                  sx={{ cursor: 'pointer' }} 
-                  onClick={() => toggle(r.sku)}
-                >
-                  <TableCell padding="checkbox"><Checkbox size="small" checked={on} /></TableCell>
-                  <TableCell sx={{ fontFamily: 'ui-monospace, Menlo, monospace' }}>{r.sku}</TableCell>
-                  <TableCell>{r.name}</TableCell>
-                  <TableCell>{r.channel}</TableCell>
-                  <TableCell>
-                    <Chip 
-                      size="small" 
-                      label={r.status} 
-                      color={SC[r.status]} 
-                      variant={r.status === 'Archived' ? 'outlined' : 'filled'} 
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <LinearProgress variant="determinate" value={r.pct} sx={{ flex: 1, height: 6 }} />
-                      <Typography variant="caption" color="text.secondary" sx={{ width: 32 }}>{r.pct}%</Typography>
-                    </Box>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
+
+      <Box
+        role="region"
+        aria-label="Product data grid"
+        sx={{
+          height: 300,
+          width: '100%',
+          overflow: 'hidden',
+          ...inflowGridSelectionSx,
+          ...inflowGridHeaderActionsSx,
+        }}
+      >
+        <AgGridReact<DataTableRow>
+          columnDefs={columnDefs}
+          defaultColDef={{ sortable: true, filter: true, resizable: true }}
+          getRowId={({ data }) => data.sku}
+          rowData={rowData}
+          rowSelection={rowSelection}
+          selectionColumnDef={selectionColumnDef}
+          theme={gridTheme}
+          onCellFocused={publishFocusedContext}
+          onCellValueChanged={publishEditedContext}
+          onFirstDataRendered={selectReferenceRow}
+          onSelectionChanged={updateSelectedCount}
+        />
+      </Box>
     </Paper>
   );
-};
+}

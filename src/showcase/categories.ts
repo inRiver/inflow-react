@@ -128,7 +128,7 @@ export const EXAMPLE_PAGES: ExamplePage[] = [
   {
     id: 'table',
     label: 'Data Table',
-    description: 'Advanced table with sorting and filtering',
+    description: 'AG Grid standard for sortable, filterable, editable product data',
     icon: 'TableChart',
   },
   {
