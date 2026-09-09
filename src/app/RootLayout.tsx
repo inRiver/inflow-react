@@ -25,7 +25,7 @@ import { useShowcaseTheme, DARK_MODE_ENABLED } from './ThemeContext';
 export function RootLayout() {
   const theme = useTheme();
   const navigate = useNavigate();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const { currentTheme, toggleTheme, colorModePreference, resolvedColorMode, cycleColorMode } = useShowcaseTheme();
   const [sidebarOpen, setSidebarOpen] = useState(!isMobile);
   const [componentSearchQuery, setComponentSearchQuery] = useState('');
@@ -85,7 +85,6 @@ export function RootLayout() {
           display: 'flex', 
           flexDirection: 'column',
           minWidth: 0, // Prevent flex item from overflowing
-          width: '100%',
         }}
       >
         <AppBar 
@@ -280,8 +279,8 @@ export function RootLayout() {
           component="main" 
           sx={{ 
             flexGrow: 1, 
-            px: 6,
-            py: 4,
+            px: { xs: 2, sm: 3, md: 6 },
+            py: { xs: 2, md: 4 },
             minWidth: 0,
             maxWidth: '100%',
             mr: 'var(--infl-right-panel-width, 0px)',

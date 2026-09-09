@@ -1,27 +1,32 @@
-import { Container, Typography, Button, Stack, Card, CardActionArea, CardContent, Box, Grid, Divider, Chip } from '@mui/material';
-import { Link } from 'react-router-dom';
-import { COMPONENT_CATEGORIES, EXAMPLE_PAGES, getAllComponents } from '../showcase/categories';
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Chip,
+  Container,
+  Divider,
+  Grid,
+  Stack,
+  Typography,
+} from '@mui/material';
+import type { SvgIconComponent } from '@mui/icons-material';
 import * as Icons from '@mui/icons-material';
+import { Link } from 'react-router-dom';
 import pkg from '../../package.json';
+import { COMPONENT_CATEGORIES, getAllComponents } from '../showcase/categories';
+import { ExampleScreensOverview, PopularComponentsOverview } from './LandingOverviewSections';
 
 const muiVersion = (await import('@mui/material/package.json')).version;
 const reactVersion = (await import('react/package.json')).version;
 
-const categoryIcons = {
+const categoryIcons: Readonly<Record<string, SvgIconComponent>> = {
   Campaign: Icons.Campaign,
   Category: Icons.Category,
   Dashboard: Icons.Dashboard,
   Edit: Icons.Edit,
   Explore: Icons.Explore,
   TableRows: Icons.TableRows,
-};
-
-const exampleIcons = {
-  Dashboard: Icons.Dashboard,
-  Dialog: Icons.RateReview,
-  Inbox: Icons.Inbox,
-  Login: Icons.Login,
-  TableChart: Icons.TableChart,
 };
 
 export function LandingPage() {
@@ -76,17 +81,13 @@ export function LandingPage() {
 
         <Grid container spacing={3}>
           {Object.values(COMPONENT_CATEGORIES).map((category) => {
-            const Icon = categoryIcons[category.icon as keyof typeof categoryIcons] || Icons.Category;
+            const Icon = categoryIcons[category.icon] ?? Icons.Category;
             return (
-              <Grid
-                key={category.id}
-                size={{
-                  xs: 12,
-                  sm: 6,
-                  md: 4
-                }}>
+              <Grid key={category.id} size={{ xs: 12, sm: 6, md: 4 }}>
                 <Card sx={{ height: '100%' }}>
-                  <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, p: 3 }}>
+                  <CardContent
+                    sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, p: 3 }}
+                  >
                     <Icon color="primary" sx={{ fontSize: 40 }} />
                     <Typography variant="h6" component="div">
                       {category.label}
@@ -94,7 +95,11 @@ export function LandingPage() {
                     <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center' }}>
                       {category.components.length} Components
                     </Typography>
-                    <Typography variant="caption" color="text.secondary" sx={{ textAlign: 'center', fontStyle: 'italic' }}>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ textAlign: 'center', fontStyle: 'italic' }}
+                    >
                       Browse in sidebar or open the full index
                     </Typography>
                   </CardContent>
@@ -104,90 +109,8 @@ export function LandingPage() {
           })}
         </Grid>
 
-        <Divider sx={{ my: 4 }} />
-
-        <Box>
-          <Typography variant="h5" gutterBottom>
-            Example Screens
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            Full-page examples showing components in realistic layouts
-          </Typography>
-          <Grid container spacing={2}>
-            {EXAMPLE_PAGES.map((example) => {
-              const Icon = exampleIcons[example.icon as keyof typeof exampleIcons] || Icons.ViewModule;
-              return (
-                <Grid
-                  key={example.id}
-                  size={{
-                    xs: 12,
-                    sm: 6,
-                    md: 4
-                  }}>
-                  <Card>
-                    <CardActionArea component={Link} to={`/examples/${example.id}`} sx={{ p: 2 }}>
-                      <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
-                        <Icon color="primary" />
-                        <Box>
-                          <Typography variant="subtitle1">{example.label}</Typography>
-                          <Typography variant="caption" color="text.secondary">
-                            {example.description}
-                          </Typography>
-                        </Box>
-                      </Stack>
-                    </CardActionArea>
-                  </Card>
-                </Grid>
-              );
-            })}
-          </Grid>
-        </Box>
-
-        <Divider sx={{ my: 4 }} />
-
-        <Box>
-          <Stack
-            direction={{ xs: 'column', sm: 'row' }}
-            spacing={2}
-            sx={{
-              alignItems: { xs: 'flex-start', sm: 'center' },
-              justifyContent: 'space-between',
-              mb: 2,
-            }}
-          >
-            <Box>
-              <Typography variant="h5" gutterBottom>
-                Popular Components
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Quick access to commonly used components
-              </Typography>
-            </Box>
-            <Button component={Link} to="/components" endIcon={<Icons.ArrowForward />}>
-              View all {totalComponents} components
-            </Button>
-          </Stack>
-          <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap', gap: 2 }}>
-            <Button variant="contained" component={Link} to="/components/button">
-              Button
-            </Button>
-            <Button variant="contained" component={Link} to="/components/textfield">
-              Text Field
-            </Button>
-            <Button variant="contained" component={Link} to="/components/select">
-              Select
-            </Button>
-            <Button variant="contained" component={Link} to="/components/checkbox">
-              Checkbox
-            </Button>
-            <Button variant="contained" component={Link} to="/components/table">
-              Table
-            </Button>
-            <Button variant="contained" component={Link} to="/components/card">
-              Card
-            </Button>
-          </Stack>
-        </Box>
+        <ExampleScreensOverview />
+        <PopularComponentsOverview totalComponents={totalComponents} />
 
         <Divider sx={{ my: 4 }} />
 
@@ -196,25 +119,25 @@ export function LandingPage() {
             More Resources
           </Typography>
           <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap', gap: 2 }}>
-            <Button 
-              variant="outlined" 
-              component={Link} 
+            <Button
+              variant="outlined"
+              component={Link}
               to="/guidelines"
               startIcon={<Icons.IntegrationInstructions />}
             >
               Import Guidelines
             </Button>
-            <Button 
-              variant="outlined" 
-              component={Link} 
+            <Button
+              variant="outlined"
+              component={Link}
               to="/tokens"
               startIcon={<Icons.Palette />}
             >
               Design Tokens
             </Button>
-            <Button 
-              variant="outlined" 
-              component={Link} 
+            <Button
+              variant="outlined"
+              component={Link}
               to="/pre-rendered"
               startIcon={<Icons.Code />}
             >
