@@ -283,8 +283,8 @@ export function ComponentPage() {
                           />
                         </Stack>
                         <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 720 }}>
-                          Live MUI-based reference for Inflow&apos;s {componentLabel.toLowerCase()} pattern, with the
-                          playground, code examples, and lightweight documentation kept on a single page.
+                          Live reference for Inflow&apos;s {componentLabel.toLowerCase()} pattern, with examples, guidance,
+                          and lightweight documentation kept on a single page.
                         </Typography>
                       </Stack>
 
@@ -394,8 +394,8 @@ export function ComponentPage() {
                 </Box>
 
                 <Typography variant="body1" color="text.secondary">
-                  This component inherits MUI&apos;s built-in accessibility behavior. These notes establish the baseline,
-                  and component-specific Inflow accessibility guidance can expand here as needed.
+                  This component follows the accessibility behavior of its underlying UI library. These notes establish
+                  the baseline, and component-specific Inflow accessibility guidance can expand here as needed.
                 </Typography>
 
                 <MuiLink
@@ -405,7 +405,7 @@ export function ComponentPage() {
                   underline="hover"
                   sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.75, fontWeight: 600, width: 'fit-content' }}
                 >
-                  Review the corresponding MUI documentation
+                  Review the corresponding accessibility documentation
                   <OpenInNewRoundedIcon sx={{ fontSize: 18 }} />
                 </MuiLink>
               </Stack>
