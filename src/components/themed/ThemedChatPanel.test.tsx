@@ -36,6 +36,10 @@ describe('ThemedChatPanel', () => {
     expect(screen.getByText('smart_toy')).toBeInTheDocument();
     expect(screen.getByText('Summarize this product.').closest('[data-chat-role="user"]')).toBeInTheDocument();
     expect(screen.getByTestId('chat-user-bubble')).toHaveStyle({ maxWidth: '75%' });
+    expect(screen.getByText('How can I help?')).toHaveStyle({
+      overflowWrap: 'break-word',
+      wordBreak: 'keep-all',
+    });
   });
 
   it('toggles suggestion chips between outlined and filled primary variants', async () => {

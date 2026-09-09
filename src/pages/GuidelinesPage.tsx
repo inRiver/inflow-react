@@ -16,6 +16,7 @@ import { Link } from 'react-router-dom';
 import { CodeBlock } from '../showcase/CodeBlock';
 import { INFLOW_DARK_MODE_ENABLED } from '../theme';
 import { THEMED_COMPONENT_INFO } from '../showcase/themedComponentInfo';
+import { ThemedToast } from '../components/themed';
 
 const installCode = `npm install @inriver/inflow-react@react19-mui6.3 @mui/material@">=6.3.0 <6.4.0" @emotion/react @emotion/styled react@^19 react-dom@^19`;
 
@@ -226,10 +227,33 @@ export function GuidelinesPage() {
           </Typography>
         </Box>
 
-        <Alert severity="info">
-          This repo is package-ready, not publish-by-default. Releases must go through an approved
-          React/MUI compatibility checkpoint; direct publishing to <code>latest</code> is blocked.
-        </Alert>
+        <Box
+          sx={{
+            '& > [role="status"]': {
+              height: 'auto',
+              maxWidth: 'none',
+              py: 1.5,
+            },
+            '& > [role="status"] > .MuiBox-root': {
+              alignItems: 'flex-start',
+              flexDirection: 'column',
+              gap: 0.5,
+              whiteSpace: 'normal',
+            },
+          }}
+        >
+          <ThemedToast
+            severity="info"
+            title="Publish through a compatibility checkpoint"
+            message={
+              <>
+                This repo is package-ready, not publish-by-default. Releases must go through an
+                approved React/MUI compatibility checkpoint; direct publishing to{' '}
+                <code>latest</code> is blocked.
+              </>
+            }
+          />
+        </Box>
 
         <Card>
           <CardContent>

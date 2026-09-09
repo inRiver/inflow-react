@@ -579,7 +579,16 @@ function ChatMessage({
           {assistantLabel}
         </Typography>
       </Box>
-      <Typography variant="body2" color="text.primary" sx={{ lineHeight: '20px', letterSpacing: '0.17px' }}>
+      <Typography
+        variant="body2"
+        color="text.primary"
+        sx={{
+          lineHeight: '20px',
+          letterSpacing: '0.17px',
+          overflowWrap: 'break-word',
+          wordBreak: 'keep-all',
+        }}
+      >
         {message.content}
       </Typography>
       {message.chips && message.chips.length > 0 && (

@@ -251,6 +251,7 @@ export const ThemedRightPanel = forwardRef<HTMLDivElement, ThemedRightPanelProps
       right: 0,
       bottom: 0,
       width: panelWidth,
+      maxWidth: '100vw',
       zIndex: isOverlay ? theme.zIndex.modal + 1 : variant === 'editor' ? theme.zIndex.appBar + 1 : theme.zIndex.appBar,
       display: 'flex',
       flexDirection: 'column',
