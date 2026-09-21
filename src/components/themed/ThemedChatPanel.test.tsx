@@ -71,6 +71,21 @@ describe('ThemedChatPanel', () => {
     expect(screen.getByRole('button', { name: 'Send message' })).toBeInTheDocument();
   });
 
+  it('omits the header entirely when hideHeader is set', async () => {
+    renderChatPanel({ hideHeader: true, onExpand: vi.fn(), onMore: vi.fn() });
+
+    await screen.findByTestId('themed-chat-panel');
+    expect(screen.queryByRole('banner')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Close chat panel' })).not.toBeInTheDocument();
+  });
+
+  it('renders the header by default (hideHeader omitted)', async () => {
+    renderChatPanel({ onClose: vi.fn() });
+
+    await screen.findByTestId('themed-chat-panel');
+    expect(screen.getByRole('banner')).toBeInTheDocument();
+  });
+
   it('renders its default strings unchanged', async () => {
     renderChatPanel({ onExpand: vi.fn(), onMore: vi.fn(), credits: { used: 8, total: 10 } });
 
