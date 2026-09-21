@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import { ThemedButton } from '../../components/themed/ThemedButton';
+import { ThemedChatAccordion, type ThemedChatAccordionStep } from '../../components/themed/ThemedChatAccordion';
 import { ThemedChatPanel, type ThemedChatAttachment, type ThemedChatMessageDef } from '../../components/themed/ThemedChatPanel';
 import { ThemedRightPanel, type ThemedRightPanelWidth } from '../../components/themed/ThemedRightPanel';
 import { CodeBlock } from '../CodeBlock';
@@ -40,6 +41,18 @@ const chatPanelSchema: PropSchema[] = [
   { name: 'charLimit', type: 'select', options: ['2000', '8000'], label: 'Character limit' },
 ];
 
+const reasoningSteps: ThemedChatAccordionStep[] = [
+  { id: 'create-session', label: 'Tool used: Creating session' },
+  { id: 'load-file', label: 'Tool used: Loading file' },
+  { id: 'extract-data', label: 'Using tool: Extracting data', isActive: true },
+];
+
+const completedReasoningSteps: ThemedChatAccordionStep[] = reasoningSteps.map((step) => ({
+  ...step,
+  label: step.isActive ? 'Tool used: Extracting data' : step.label,
+  isActive: false,
+}));
+
 export function ChatPanelDemo() {
   const [open, setOpen] = useState(false);
   const [panelWidth, setPanelWidth] = useState<ThemedRightPanelWidth>('medium');
@@ -64,6 +77,27 @@ export function ChatPanelDemo() {
           <ThemedButton variant="contained" onClick={() => setOpen(true)}>
             Open chat assistant
           </ThemedButton>
+        </Stack>
+      </DemoFrame>
+
+      <DemoFrame title="Assistant reasoning states">
+        <Stack spacing={2} sx={{ width: '100%' }}>
+          <Typography variant="body2" color="text.secondary">
+            Completed tool calls stay readable while the current call is emphasized; after completion, the same history starts collapsed.
+          </Typography>
+          <Stack direction={{ xs: 'column', md: 'row' }} spacing={3}>
+            <Box sx={{ flex: 1, minWidth: 0 }}>
+              <Typography variant="subtitle2" sx={{ mb: 1 }}>While processing</Typography>
+              <ThemedChatAccordion title="Reasoning" steps={reasoningSteps} isStreaming />
+            </Box>
+            <Box sx={{ flex: 1, minWidth: 0 }}>
+              <Typography variant="subtitle2" sx={{ mb: 1 }}>After completion</Typography>
+              <ThemedChatAccordion
+                title="Reasoning"
+                steps={completedReasoningSteps}
+              />
+            </Box>
+          </Stack>
         </Stack>
       </DemoFrame>
 

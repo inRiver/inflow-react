@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Accordion, AccordionSummary, AccordionDetails, Typography, Stack } from '@mui/material';
+import { Accordion, AccordionSummary, AccordionDetails, Box, Typography, Stack } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { DemoFrame } from '../DemoFrame';
 import { CodeBlock } from '../CodeBlock';
@@ -8,6 +8,7 @@ import type { PropSchema } from '../PropsPlayground';
 import { DemoVariantTabs, type DemoVariant } from '../DemoVariantTabs';
 import { getThemedComponentInfo } from '../themedComponentInfo';
 import { ThemedAccordion } from '../../components/themed/ThemedAccordion';
+import { ThemedChatAccordion, type ThemedChatAccordionStep } from '../../components/themed/ThemedChatAccordion';
 
 const themedInfo = getThemedComponentInfo('accordion');
 
@@ -22,6 +23,18 @@ const multipleItems = [
   { id: 'security', summary: 'Security', details: 'Review your security settings.' },
   { id: 'integrations', summary: 'Integrations', details: 'Manage your connected integrations.' },
 ];
+
+const chatReasoningSteps: ThemedChatAccordionStep[] = [
+  { id: 'create-session', label: 'Tool used: Creating session' },
+  { id: 'load-file', label: 'Tool used: Loading file' },
+  { id: 'extract-data', label: 'Using tool: Extracting data', isActive: true },
+];
+
+const chatCompletedSteps: ThemedChatAccordionStep[] = chatReasoningSteps.map((step) => ({
+  ...step,
+  label: step.isActive ? 'Tool used: Extracting data' : step.label,
+  isActive: false,
+}));
 
 type MuiAccordionPlaygroundProps = {
   disabled: boolean;
@@ -167,6 +180,45 @@ import { Accordion } from '@mui/material';
               }}
             />
           </DemoFrame>
+
+          <DemoFrame title="ThemedChatAccordion - Chat reasoning">
+            <Stack spacing={2} sx={{ width: '100%' }}>
+              <Typography variant="body2" color="text.secondary">
+                ThemedChatAccordion is a separate chat-specific component, not a ThemedAccordion variant.
+                It exists because an assistant&apos;s tool-call history has a product rule the generic
+                items-API does not cover: while streaming, steps render inline with the active step
+                emphasized; once streaming ends, the same history folds into a collapsed accordion so
+                the transcript stays scannable. Use ThemedAccordion for general disclosure lists; use
+                ThemedChatAccordion only for chat reasoning blocks.
+              </Typography>
+              <Stack direction={{ xs: 'column', md: 'row' }} spacing={3}>
+                <Box sx={{ flex: 1, minWidth: 0 }}>
+                  <Typography variant="subtitle2" sx={{ mb: 1 }}>While streaming</Typography>
+                  <ThemedChatAccordion title="Reasoning" steps={chatReasoningSteps} isStreaming />
+                </Box>
+                <Box sx={{ flex: 1, minWidth: 0 }}>
+                  <Typography variant="subtitle2" sx={{ mb: 1 }}>After completion</Typography>
+                  <ThemedChatAccordion title="Reasoning" steps={chatCompletedSteps} />
+                </Box>
+              </Stack>
+            </Stack>
+          </DemoFrame>
+
+          <CodeBlock
+            code={`import { ThemedChatAccordion } from '@inriver/inflow-react';
+
+const steps = [
+  { id: 'create-session', label: 'Tool used: Creating session' },
+  { id: 'extract-data', label: 'Using tool: Extracting data', isActive: true },
+];
+
+// While streaming: steps render inline with a spinner on the active step.
+<ThemedChatAccordion title="Reasoning" steps={steps} isStreaming />
+
+// After completion: the same steps fold into a collapsed accordion.
+<ThemedChatAccordion title="Reasoning" steps={steps} />`}
+            language="tsx"
+          />
 
           <CodeBlock
             code={`import { ThemedAccordion } from '@inriver/inflow-react';
