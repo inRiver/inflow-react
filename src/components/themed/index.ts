@@ -6,6 +6,7 @@ export * from './ThemedBadge';
 export * from './ThemedBreadcrumbs';
 export * from './ThemedButton';
 export * from './ThemedCard';
+export * from './ThemedChatAccordion';
 export * from './ThemedChatPanel';
 export * from './ThemedChip';
 export * from './ThemedDetailPanel';
