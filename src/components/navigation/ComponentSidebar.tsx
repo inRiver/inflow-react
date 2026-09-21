@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import type { KeyboardEvent } from 'react';
 import {
   Drawer,
@@ -82,10 +82,11 @@ export const ComponentSidebar: React.FC<ComponentSidebarProps> = ({
     return nextExpanded;
   }, [activeComponentId, filteredComponents, searchQuery]);
 
-  // Route/search changes reset user overrides so the new context stays visible.
-  useEffect(() => {
+  const [previousAutoExpanded, setPreviousAutoExpanded] = useState(autoExpanded);
+  if (previousAutoExpanded !== autoExpanded) {
+    setPreviousAutoExpanded(autoExpanded);
     setOverrides(new Map());
-  }, [autoExpanded]);
+  }
 
   const expanded = useMemo(() => {
     const nextExpanded = new Set(autoExpanded);
