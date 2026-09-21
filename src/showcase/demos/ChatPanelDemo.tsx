@@ -8,6 +8,25 @@ import { CodeBlock } from '../CodeBlock';
 import { DemoFrame } from '../DemoFrame';
 import { PropsPlayground, type PropSchema } from '../PropsPlayground';
 
+const reasoningSteps: ThemedChatAccordionStep[] = [
+  { id: 'create-session', label: 'Tool used: Creating session' },
+  { id: 'load-file', label: 'Tool used: Loading file' },
+  { id: 'extract-data', label: 'Using tool: Extracting data', isActive: true },
+];
+
+const completedReasoningSteps: ThemedChatAccordionStep[] = reasoningSteps.map((step) => ({
+  ...step,
+  label: step.isActive ? 'Tool used: Extracting data' : step.label,
+  isActive: false,
+}));
+
+const streamingReasoningSteps: ThemedChatAccordionStep[] = [
+  { id: 'classify', label: <em>Classifying document type (3 voting rounds)</em> },
+  { id: 'create-session-stream', label: <em>Tool used: Creating session</em> },
+  { id: 'load-file-stream', label: <em>Tool used: Loading file</em> },
+  { id: 'extract-data-stream', label: <>Using tool: <strong>Extracting data</strong></>, isActive: true },
+];
+
 const messages: ThemedChatMessageDef[] = [
   {
     id: 'assistant-intro',
@@ -17,9 +36,14 @@ const messages: ThemedChatMessageDef[] = [
     actions: ['Review products'],
   },
   {
-    id: 'user-request',
+    id: 'user-request-fields',
     role: 'user',
     content: 'Show the missing fields first.',
+  },
+  {
+    id: 'assistant-reasoning-history',
+    role: 'assistant',
+    content: <ThemedChatAccordion title="Reasoning" steps={completedReasoningSteps} />,
   },
   {
     id: 'assistant-followup',
@@ -27,7 +51,16 @@ const messages: ThemedChatMessageDef[] = [
     content: 'The product summary, material composition, and care instructions need review.',
     actions: ['Create a task', 'Export list'],
   },
-  { id: 'tool-progress', role: 'assistant', content: null, kind: 'tool' },
+  {
+    id: 'user-request-prompt',
+    role: 'user',
+    content: 'Update my prompt from remembered preferences',
+  },
+  {
+    id: 'assistant-reasoning-streaming',
+    role: 'assistant',
+    content: <ThemedChatAccordion title="Reasoning" steps={streamingReasoningSteps} isStreaming />,
+  },
 ];
 
 const chatPanelSchema: PropSchema[] = [
@@ -40,18 +73,6 @@ const chatPanelSchema: PropSchema[] = [
   { name: 'showInputHint', type: 'boolean', label: 'Show input hint' },
   { name: 'charLimit', type: 'select', options: ['2000', '8000'], label: 'Character limit' },
 ];
-
-const reasoningSteps: ThemedChatAccordionStep[] = [
-  { id: 'create-session', label: 'Tool used: Creating session' },
-  { id: 'load-file', label: 'Tool used: Loading file' },
-  { id: 'extract-data', label: 'Using tool: Extracting data', isActive: true },
-];
-
-const completedReasoningSteps: ThemedChatAccordionStep[] = reasoningSteps.map((step) => ({
-  ...step,
-  label: step.isActive ? 'Tool used: Extracting data' : step.label,
-  isActive: false,
-}));
 
 export function ChatPanelDemo() {
   const [open, setOpen] = useState(false);
