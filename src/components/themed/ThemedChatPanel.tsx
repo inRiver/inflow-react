@@ -587,6 +587,7 @@ function ChatMessage({
       <Typography
         variant="body2"
         color="text.primary"
+        component="div"
         sx={{
           lineHeight: '20px',
           letterSpacing: '0.17px',
