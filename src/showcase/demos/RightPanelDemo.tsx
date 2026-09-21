@@ -1,6 +1,24 @@
 import { useState } from 'react';
-import { Box, FormControl, Icon, IconButton, InputLabel, MenuItem, Select, Stack, Typography } from '@mui/material';
+import {
+  Autocomplete,
+  Box,
+  Button,
+  FormControl,
+  Icon,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
+  Stack,
+  Switch,
+  TextField,
+  ToggleButton,
+  ToggleButtonGroup,
+  Typography,
+} from '@mui/material';
 import { ThemedButton } from '../../components/themed/ThemedButton';
+import { ThemedChatPanel, type ThemedChatMessageDef } from '../../components/themed/ThemedChatPanel';
+import { ThemedDetailPanel, ThemedDetailPanelSection } from '../../components/themed/ThemedDetailPanel';
 import {
   ThemedRightPanel,
   type ThemedRightPanelMode,
@@ -11,10 +29,77 @@ import { CodeBlock } from '../CodeBlock';
 import { DemoFrame } from '../DemoFrame';
 import { PropsPlayground, type PropSchema } from '../PropsPlayground';
 
+const SAMPLE_MESSAGES: ThemedChatMessageDef[] = [
+  {
+    id: '1',
+    role: 'assistant',
+    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+    chips: ['Action chip active', 'Chip selected'],
+  },
+  {
+    id: '2',
+    role: 'user',
+    content: 'Lorem ipsum dolor sit amet.',
+  },
+  {
+    id: '3',
+    role: 'assistant',
+    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do.',
+    actions: ['Action button', 'Action button'],
+  },
+];
+
+const CONDITIONS = ['Equals', 'Not equals', 'Contains', 'Is empty'];
+
+const selectedToggleSx = {
+  fontFamily: 'inherit',
+  '&.Mui-selected, &.Mui-selected:hover': {
+    bgcolor: 'primary.main',
+    color: 'primary.contrastText',
+    borderColor: 'primary.main',
+  },
+};
+
+function ConditionRow({ onDelete, infoIcon = false, size = 'small' }: { onDelete?: () => void; infoIcon?: boolean; size?: 'small' | 'medium' }) {
+  return (
+    <Stack direction="row" spacing={1} alignItems="center">
+      <Autocomplete
+        options={['Attribute A', 'Attribute B', 'Attribute C']}
+        size={size}
+        sx={{ flex: 1 }}
+        renderInput={(params) => <TextField {...params} size={size} label="Value" />}
+      />
+      <Autocomplete
+        options={CONDITIONS}
+        defaultValue="Equals"
+        size={size}
+        sx={{ flex: 1 }}
+        renderInput={(params) => <TextField {...params} size={size} label="Condition" />}
+      />
+      <Autocomplete
+        options={['Value 1', 'Value 2', 'Value 3']}
+        size={size}
+        sx={{ flex: 1 }}
+        renderInput={(params) => <TextField {...params} size={size} label="Value" />}
+      />
+      {infoIcon && (
+        <IconButton size="small" aria-label="More info" sx={{ color: 'text.secondary' }}>
+          <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 20 }}>info</Icon>
+        </IconButton>
+      )}
+      {onDelete && (
+        <IconButton size="small" aria-label="Delete condition" onClick={onDelete} sx={{ color: 'text.secondary' }}>
+          <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 20 }}>delete</Icon>
+        </IconButton>
+      )}
+    </Stack>
+  );
+}
+
 const widths: ThemedRightPanelWidth[] = ['narrow', 'medium', 'wide'];
 const variants: ThemedRightPanelVariant[] = ['assistant', 'editor', 'modal'];
 
-type RightPanelScenario = 'assistant' | 'query-editor' | 'create-signal' | 'create-project' | 'custom';
+type RightPanelScenario = 'assistant' | 'query-editor' | 'default' | 'custom';
 
 const scenarioOptions: Array<{
   id: Exclude<RightPanelScenario, 'custom'>;
@@ -24,18 +109,17 @@ const scenarioOptions: Array<{
   width: ThemedRightPanelWidth;
   resizable: boolean;
 }> = [
-  { id: 'assistant', label: 'Assistant', mode: 'push', variant: 'assistant', width: 'medium', resizable: true },
-  { id: 'query-editor', label: 'Query editor', mode: 'push', variant: 'editor', width: 'wide', resizable: true },
-  { id: 'create-signal', label: 'Create signal', mode: 'overlay', variant: 'modal', width: 'wide', resizable: false },
-  { id: 'create-project', label: 'Create project', mode: 'overlay', variant: 'modal', width: 'wide', resizable: false },
+  { id: 'assistant',    label: 'Assistant',    mode: 'push',    variant: 'assistant', width: 'medium', resizable: true },
+  { id: 'query-editor', label: 'Query editor', mode: 'push',    variant: 'editor',    width: 'wide',   resizable: true },
+  { id: 'default',      label: 'Default',      mode: 'overlay', variant: 'modal',     width: 'wide',   resizable: false },
 ];
 
 const rightPanelSchema: PropSchema[] = [
-  { name: 'mode', type: 'select', options: ['push', 'overlay'] },
-  { name: 'variant', type: 'select', options: variants },
-  { name: 'open', type: 'boolean' },
-  { name: 'width', type: 'select', options: widths },
-  { name: 'resizable', type: 'boolean' },
+  { name: 'mode',              type: 'select',  options: ['push', 'overlay'] },
+  { name: 'variant',           type: 'select',  options: variants },
+  { name: 'open',              type: 'boolean' },
+  { name: 'width',             type: 'select',  options: widths },
+  { name: 'resizable',         type: 'boolean' },
   { name: 'hasUnsavedChanges', type: 'boolean' },
 ];
 
@@ -47,31 +131,27 @@ export function RightPanelDemo() {
   const [width, setWidth] = useState<ThemedRightPanelWidth>('medium');
   const [resizable, setResizable] = useState(true);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  const [secondaryView, setSecondaryView] = useState(false);
 
-  const selectedScenario = scenarioOptions.find((option) => option.id === scenario);
+  // Query editor state
+  const [qeAndOr, setQeAndOr] = useState<'and' | 'or'>('and');
+  const [qeAlertEnabled, setQeAlertEnabled] = useState(true);
+
+  // Default panel state
+  const [defAndOr, setDefAndOr] = useState<'and' | 'or'>('and');
+  const [defSectionEnabled, setDefSectionEnabled] = useState(true);
+
+  const selectedScenario = scenarioOptions.find((o) => o.id === scenario);
   const scenarioLabel = selectedScenario?.label ?? 'Custom';
 
-  const applyScenario = (nextScenario: Exclude<RightPanelScenario, 'custom'>) => {
-    const config = scenarioOptions.find((option) => option.id === nextScenario)!;
-    setScenario(nextScenario);
+  const applyScenario = (next: Exclude<RightPanelScenario, 'custom'>) => {
+    const config = scenarioOptions.find((o) => o.id === next)!;
+    setScenario(next);
     setMode(config.mode);
     setVariant(config.variant);
     setWidth(config.width);
     setResizable(config.resizable);
     setHasUnsavedChanges(false);
-    setSecondaryView(false);
   };
-
-  const panelTitle = secondaryView
-    ? 'Query Assistant'
-    : scenario === 'query-editor'
-      ? 'Query editor'
-      : scenario === 'create-signal'
-        ? 'Create signal'
-        : scenario === 'create-project'
-          ? 'Create project'
-          : 'Assistant';
 
   return (
     <>
@@ -87,12 +167,12 @@ export function RightPanelDemo() {
                 labelId="right-panel-scenario-label"
                 label="Scenario"
                 value={scenario}
-                onChange={(event) => {
-                  const nextScenario = event.target.value as RightPanelScenario;
-                  if (nextScenario !== 'custom') applyScenario(nextScenario);
+                onChange={(e) => {
+                  const next = e.target.value as RightPanelScenario;
+                  if (next !== 'custom') applyScenario(next);
                 }}
               >
-                {scenarioOptions.map((option) => <MenuItem key={option.id} value={option.id}>{option.label}</MenuItem>)}
+                {scenarioOptions.map((o) => <MenuItem key={o.id} value={o.id}>{o.label}</MenuItem>)}
                 {scenario === 'custom' && <MenuItem value="custom">Custom</MenuItem>}
               </Select>
             </FormControl>
@@ -102,29 +182,20 @@ export function RightPanelDemo() {
                 labelId="right-panel-width-label"
                 label="Width"
                 value={width}
-                onChange={(event) => {
+                onChange={(e) => {
                   setScenario('custom');
-                  setWidth(event.target.value as ThemedRightPanelWidth);
+                  setWidth(e.target.value as ThemedRightPanelWidth);
                 }}
               >
-                {widths.map((option) => <MenuItem key={option} value={option}>{option}</MenuItem>)}
+                {widths.map((o) => <MenuItem key={o} value={o}>{o}</MenuItem>)}
               </Select>
             </FormControl>
           </Stack>
-          <Box
-            sx={{
-              width: '100%',
-              minHeight: 120,
-              p: 2,
-              bgcolor: 'background.default',
-              border: 1,
-              borderColor: 'divider',
-            }}
-          >
+          <Box sx={{ width: '100%', minHeight: 120, p: 2, bgcolor: 'background.default', border: 1, borderColor: 'divider' }}>
             <Typography variant="body2">
               {mode === 'push'
                 ? 'The panel sits below the global header. Host content shifts left and remains interactive.'
-                : 'The panel covers the global header. A half-opacity backdrop blocks and locks the host content.'}
+                : 'The panel covers the global header. A semi-transparent backdrop blocks the host content.'}
             </Typography>
           </Box>
         </Stack>
@@ -141,7 +212,6 @@ export function RightPanelDemo() {
           setWidth(values.width === 'narrow' || values.width === 'wide' ? values.width : 'medium');
           setResizable(values.resizable === true);
           setHasUnsavedChanges(values.hasUnsavedChanges === true);
-          setSecondaryView(false);
         }}
       />
 
@@ -157,10 +227,7 @@ export function RightPanelDemo() {
   onClose={() => setOpen(false)}
 >
   {({ requestClose }) => (
-    <ChatOrDetailPanel
-      onCancel={requestClose}
-      onClose={requestClose}
-    />
+    <ThemedChatPanel onClose={requestClose} {/* or ThemedDetailPanel */} />
   )}
 </ThemedRightPanel>`}
       />
@@ -175,53 +242,193 @@ export function RightPanelDemo() {
         aria-label="Right panel example"
         onClose={() => setOpen(false)}
       >
-        {({ requestClose }) => (
-          <>
-            <Box component="header" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 3, py: 2, borderBottom: 1, borderColor: 'divider' }}>
-              <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-                {secondaryView && (
-                  <IconButton aria-label="Back to create signal" size="small" onClick={() => setSecondaryView(false)}>
-                    <Icon baseClassName="material-icons-outlined">arrow_back</Icon>
-                  </IconButton>
-                )}
-                <Typography variant="h6">{panelTitle}</Typography>
-              </Stack>
-              <Stack direction="row" spacing={0.5}>
-                <IconButton aria-label="More panel actions" size="small">
-                  <Icon baseClassName="material-icons-outlined">more_vert</Icon>
-                </IconButton>
-                <IconButton aria-label="Close panel" size="small" onClick={requestClose}>
-                  <Icon baseClassName="material-icons-outlined">close</Icon>
-                </IconButton>
-              </Stack>
-            </Box>
-            <Stack spacing={2} sx={{ flex: '1 1 auto', minHeight: 0, overflow: 'auto', p: 3 }}>
-              <Typography variant="body2">
-                {secondaryView
-                  ? 'This assistant replaces the creation form in place and inherits the same 520px panel width.'
-                  : resizable
-                    ? 'Drag the left edge to resize this panel or choose one of the width presets.'
-                    : 'Creation panels use a fixed 520px overlay and do not expose a resize handle.'}
-              </Typography>
-              {scenario === 'create-signal' && !secondaryView && (
-                <ThemedButton variant="outlined" onClick={() => setSecondaryView(true)}>
-                  Open Query Assistant
-                </ThemedButton>
-              )}
-              {Array.from({ length: 16 }, (_, index) => (
-                <Box key={index} sx={{ p: 2, border: 1, borderColor: 'divider', borderRadius: 1 }}>
-                  <Typography variant="subtitle2">Activity {index + 1}</Typography>
-                  <Typography variant="body2" color="text.secondary">Scrollable content remains inside the composed panel body.</Typography>
-                </Box>
-              ))}
-            </Stack>
-            <Box component="footer" sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1, px: 3, py: 2, borderTop: 1, borderColor: 'divider' }}>
-              <ThemedButton variant="outlined" onClick={requestClose}>Cancel</ThemedButton>
-              {secondaryView && <ThemedButton variant="contained" onClick={() => setSecondaryView(false)}>Apply</ThemedButton>}
-              {!secondaryView && variant === 'modal' && <ThemedButton variant="contained" onClick={() => setOpen(false)}>Save</ThemedButton>}
-            </Box>
-          </>
-        )}
+        {({ requestClose }) => {
+
+          /* ── Assistant ──────────────────────────────────────── */
+          if (scenario === 'assistant') {
+            return (
+              <ThemedChatPanel
+                title="Query Assistant"
+                messages={SAMPLE_MESSAGES}
+                attachedFile="Attached file"
+                onRemoveAttachment={() => {}}
+                credits={{ used: 235, total: 2500 }}
+                showCredits
+                showCharCount
+                showInputHint={false}
+                onClose={requestClose}
+                onExpand={() => {}}
+                onMore={() => {}}
+              />
+            );
+          }
+
+          /* ── Query editor ───────────────────────────────────── */
+          if (scenario === 'query-editor') {
+            return (
+              <ThemedDetailPanel
+                title="Query editor"
+                onClose={requestClose}
+                actions={
+                  <>
+                    <ThemedButton variant="outlined" onClick={requestClose}>Cancel</ThemedButton>
+                    <ThemedButton variant="contained" onClick={() => setOpen(false)}>Save</ThemedButton>
+                  </>
+                }
+              >
+                <ThemedDetailPanelSection title="Filters">
+                  <Autocomplete
+                    options={['Products', 'Assets', 'Categories']}
+                    fullWidth
+                    size="medium"
+                    renderInput={(params) => <TextField {...params} label="Entity type" size="medium" />}
+                  />
+                  <ConditionRow infoIcon size="medium" />
+                  <ToggleButtonGroup
+                    exclusive
+                    size="small"
+                    value={qeAndOr}
+                    onChange={(_, val) => val && setQeAndOr(val)}
+                  >
+                    <ToggleButton value="and" sx={selectedToggleSx}>And</ToggleButton>
+                    <ToggleButton value="or"  sx={selectedToggleSx}>Or</ToggleButton>
+                  </ToggleButtonGroup>
+                  <ConditionRow onDelete={() => {}} size="medium" />
+                  <Stack direction="row" spacing={2}>
+                    <Button variant="text" size="small" sx={{ color: 'primary.main', p: 0, minWidth: 0, fontSize: '0.875rem' }}>+ Add condition</Button>
+                    <Button variant="text" size="small" sx={{ color: 'primary.main', p: 0, minWidth: 0, fontSize: '0.875rem' }}>+ Add completeness condition</Button>
+                  </Stack>
+                </ThemedDetailPanelSection>
+
+                <ThemedDetailPanelSection
+                  title="Alert"
+                  headerAction={
+                    <Switch
+                      checked={qeAlertEnabled}
+                      onChange={(e) => setQeAlertEnabled(e.target.checked)}
+                      color="primary"
+                      size="small"
+                    />
+                  }
+                >
+                  <Stack direction="row" spacing={1}>
+                    <Autocomplete
+                      options={['Alert A', 'Alert B']}
+                      size="medium"
+                      sx={{ flex: 1 }}
+                      renderInput={(params) => <TextField {...params} label="Alert name" size="medium" />}
+                    />
+                    <Autocomplete
+                      options={['Email', 'SMS', 'In-app']}
+                      defaultValue="Email"
+                      size="medium"
+                      sx={{ flex: 1 }}
+                      renderInput={(params) => <TextField {...params} label="Notify by" size="medium" />}
+                    />
+                  </Stack>
+                  <Stack direction="row" spacing={1}>
+                    {['Status', 'Status'].map((label, i) => (
+                      <Autocomplete
+                        key={i}
+                        options={['Draft', 'Active', 'Archived']}
+                        size="medium"
+                        sx={{ flex: 1 }}
+                        renderInput={(params) => <TextField {...params} label={label} size="medium" />}
+                      />
+                    ))}
+                  </Stack>
+                </ThemedDetailPanelSection>
+              </ThemedDetailPanel>
+            );
+          }
+
+          /* ── Default ────────────────────────────────────────── */
+          if (scenario === 'default') {
+            return (
+              <ThemedDetailPanel
+                title="Title"
+                onClose={requestClose}
+                actions={
+                  <>
+                    <ThemedButton variant="outlined" onClick={requestClose}>Button</ThemedButton>
+                    <ThemedButton variant="contained" onClick={() => setOpen(false)}>Button</ThemedButton>
+                  </>
+                }
+              >
+                <ThemedDetailPanelSection title="Subtitle">
+                  <Autocomplete
+                    options={['Option A', 'Option B', 'Option C']}
+                    fullWidth
+                    size="medium"
+                    renderInput={(params) => <TextField {...params} label="Label" size="medium" />}
+                  />
+                  <ConditionRow infoIcon size="medium" />
+                  <ToggleButtonGroup
+                    exclusive
+                    size="small"
+                    value={defAndOr}
+                    onChange={(_, val) => val && setDefAndOr(val)}
+                  >
+                    <ToggleButton value="and" sx={selectedToggleSx}>And</ToggleButton>
+                    <ToggleButton value="or"  sx={selectedToggleSx}>Or</ToggleButton>
+                  </ToggleButtonGroup>
+                  <ConditionRow onDelete={() => {}} size="medium" />
+                  <Stack direction="row" spacing={2}>
+                    <Button variant="text" size="small" sx={{ color: 'primary.main', p: 0, minWidth: 0, fontSize: '0.875rem' }}>+ Label</Button>
+                    <Button variant="text" size="small" sx={{ color: 'primary.main', p: 0, minWidth: 0, fontSize: '0.875rem' }}>+ Label</Button>
+                  </Stack>
+                </ThemedDetailPanelSection>
+
+                <ThemedDetailPanelSection
+                  title="Subtitle"
+                  headerAction={
+                    <Switch
+                      checked={defSectionEnabled}
+                      onChange={(e) => setDefSectionEnabled(e.target.checked)}
+                      color="primary"
+                      size="small"
+                    />
+                  }
+                >
+                  <Autocomplete
+                    options={['Option A', 'Option B']}
+                    fullWidth
+                    renderInput={(params) => <TextField {...params} label="Label" size="medium" />}
+                  />
+                  <Autocomplete
+                    options={['Option A', 'Option B']}
+                    fullWidth
+                    renderInput={(params) => <TextField {...params} label="Label" size="medium" />}
+                  />
+                </ThemedDetailPanelSection>
+              </ThemedDetailPanel>
+            );
+          }
+
+          /* ── Custom (props playground) ──────────────────────── */
+          return (
+            <ThemedDetailPanel
+              title="Custom panel"
+              onClose={requestClose}
+              actions={<ThemedButton variant="outlined" onClick={requestClose}>Close</ThemedButton>}
+            >
+              <ThemedDetailPanelSection title="Identification">
+                {['Name', 'Description', 'External ID'].map((item) => (
+                  <Box key={item} sx={{ p: 1.5, border: 1, borderColor: 'divider', borderRadius: 1 }}>
+                    <Typography variant="body2" color="text.secondary">{item}</Typography>
+                  </Box>
+                ))}
+              </ThemedDetailPanelSection>
+              <ThemedDetailPanelSection title="Classification">
+                {['Category', 'Tags', 'Status'].map((item) => (
+                  <Box key={item} sx={{ p: 1.5, border: 1, borderColor: 'divider', borderRadius: 1 }}>
+                    <Typography variant="body2" color="text.secondary">{item}</Typography>
+                  </Box>
+                ))}
+              </ThemedDetailPanelSection>
+            </ThemedDetailPanel>
+          );
+        }}
       </ThemedRightPanel>
     </>
   );

@@ -12,11 +12,20 @@ import { getThemedComponentInfo } from '../themedComponentInfo';
 
 const themedInfo = getThemedComponentInfo('menu');
 
-const themedItems: ThemedMenuItemDef[] = [
-  { id: 'profile', label: 'Profile', icon: 'person', shortcut: '⌘P', selected: true },
-  { id: 'account', label: 'My account', icon: 'settings', shortcut: '⌘,' },
-  { id: 'export', label: 'Export', icon: 'download', dividerBefore: true },
-  { id: 'logout', label: 'Log out', icon: 'logout', disabled: true, dividerBefore: true },
+const regularItems: ThemedMenuItemDef[] = [
+  { id: 'profile', label: 'Profile', selected: true },
+  { id: 'account', label: 'My account' },
+  { id: 'export', label: 'Export', locked: true, lockedTooltip: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' },
+  { id: 'logout', label: 'Log out', disabled: true },
+];
+
+const incompleteItems: ThemedMenuItemDef[] = [
+  { id: 'incomplete', label: 'Incomplete Products', selected: true },
+  { id: 'merch', label: 'Merchandising', locked: true, lockedTooltip: 'Used by "Compliance copy fixes". A work area query can only be assigned to one signal at a time.' },
+  { id: 'marketing', label: 'Marketing' },
+  { id: 'content', label: 'Content Operations' },
+  { id: 'localization', label: 'Localization' },
+  { id: 'compliance', label: 'Compliance', locked: true, lockedTooltip: 'Already assigned to another signal.' },
 ];
 
 const schema: PropSchema[] = [{ name: 'dense', type: 'boolean' }];
@@ -31,9 +40,10 @@ const themedCodeExample = `
 import { ThemedMenu } from '@inriver/inflow-react';
 
 const items = [
-  { id: 'profile', label: 'Profile', icon: 'person', shortcut: '⌘P', selected: true },
-  { id: 'export', label: 'Export', icon: 'download', dividerBefore: true },
-  { id: 'logout', label: 'Log out', disabled: true, dividerBefore: true },
+  { id: 'incomplete', label: 'Incomplete Products', selected: true },
+  { id: 'merch', label: 'Merchandising', locked: true, lockedTooltip: 'Used by "Compliance copy fixes". A work area query can only be assigned to one signal at a time.' },
+  { id: 'marketing', label: 'Marketing' },
+  { id: 'compliance', label: 'Compliance', locked: true, lockedTooltip: 'Already assigned to another signal.' },
 ];
 
 <ThemedMenu
@@ -48,6 +58,7 @@ export function MenuDemo() {
   const [variant, setVariant] = useState<DemoVariant>('mui');
   const [props, setProps] = useState<Record<string, unknown>>({ dense: false });
   const [themedAnchorEl, setThemedAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [incompleteAnchorEl, setIncompleteAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [denseAnchorEl, setDenseAnchorEl] = useState<HTMLButtonElement | null>(null);
   const dense = props.dense === true;
 
@@ -93,10 +104,11 @@ export function MenuDemo() {
         </>
       ) : (
         <>
-          <DemoFrame title="ThemedMenu - Interactive">
+          <DemoFrame title="ThemedMenu - Regular">
             <Button
               variant="contained"
               onClick={(event) => {
+                setIncompleteAnchorEl(null);
                 setDenseAnchorEl(null);
                 setThemedAnchorEl(event.currentTarget);
               }}
@@ -107,7 +119,27 @@ export function MenuDemo() {
               anchorEl={themedAnchorEl}
               open={Boolean(themedAnchorEl)}
               onClose={() => setThemedAnchorEl(null)}
-              items={themedItems}
+              items={regularItems}
+              dense={dense}
+            />
+          </DemoFrame>
+
+          <DemoFrame title="ThemedMenu - With locked items">
+            <Button
+              variant="outlined"
+              onClick={(event) => {
+                setThemedAnchorEl(null);
+                setDenseAnchorEl(null);
+                setIncompleteAnchorEl(event.currentTarget);
+              }}
+            >
+              Open work area menu
+            </Button>
+            <ThemedMenu
+              anchorEl={incompleteAnchorEl}
+              open={Boolean(incompleteAnchorEl)}
+              onClose={() => setIncompleteAnchorEl(null)}
+              items={incompleteItems}
               dense={dense}
             />
           </DemoFrame>
@@ -121,6 +153,7 @@ export function MenuDemo() {
               variant="outlined"
               onClick={(event) => {
                 setThemedAnchorEl(null);
+                setIncompleteAnchorEl(null);
                 setDenseAnchorEl(event.currentTarget);
               }}
             >
@@ -130,7 +163,7 @@ export function MenuDemo() {
               anchorEl={denseAnchorEl}
               open={Boolean(denseAnchorEl)}
               onClose={() => setDenseAnchorEl(null)}
-              items={themedItems}
+              items={regularItems}
               dense
             />
           </DemoFrame>

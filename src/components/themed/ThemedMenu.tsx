@@ -7,6 +7,7 @@ import {
   ListItemText,
   Menu,
   MenuItem,
+  Tooltip,
 } from '@mui/material';
 import type { ReactNode } from 'react';
 
@@ -19,6 +20,10 @@ export interface ThemedMenuItemDef {
   selected?: boolean;
   /** Renders a divider before this item. */
   dividerBefore?: boolean;
+  /** Prevents selection and shows a lock icon. */
+  locked?: boolean;
+  /** Tooltip shown on hover when the item is locked. */
+  lockedTooltip?: string;
 }
 
 export interface ThemedMenuProps {
@@ -52,49 +57,69 @@ export const ThemedMenu = forwardRef<HTMLDivElement, ThemedMenuProps>(
       {items.map((item) => (
         <Fragment key={item.id}>
           {item.dividerBefore && <Divider />}
-          <MenuItem
-            disabled={item.disabled}
-            selected={item.selected}
-            onClick={() => {
-              onSelect?.(item.id);
-              onClose();
-            }}
-            sx={{
-              px: 2,
-              minHeight: dense ? 36 : 48,
-              gap: 1,
-            }}
+          <Tooltip
+            title={item.locked ? (item.lockedTooltip ?? '') : ''}
+            placement="bottom-end"
+            disableHoverListener={!item.locked}
+            disableFocusListener={!item.locked}
+            disableTouchListener={!item.locked}
           >
-            {item.icon && (
-              <ListItemIcon sx={{ minWidth: 32, color: 'text.secondary' }}>
-                <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 20 }}>
-                  {item.icon}
-                </Icon>
-              </ListItemIcon>
-            )}
-            <ListItemText
-              primary={item.label}
-              slotProps={{
-                primary: {
-                  variant: 'body2',
-                  sx: { fontWeight: item.selected ? 500 : 400 },
-                },
+            <MenuItem
+              disabled={item.disabled}
+              selected={item.selected}
+              onClick={item.locked ? undefined : () => {
+                onSelect?.(item.id);
+                onClose();
               }}
-            />
-            {item.shortcut && (
-              <Box
-                component="span"
-                sx={{
-                  fontSize: '0.75rem',
-                  color: (theme) => theme.palette.inflow.outline,
-                  ml: 2,
-                  flexShrink: 0,
+              sx={{
+                ...(item.locked && {
+                  cursor: 'default',
+                  '&:hover': { backgroundColor: 'transparent' },
+                }),
+              }}
+            >
+              {item.icon && (
+                <ListItemIcon sx={{ minWidth: 32, color: 'text.secondary' }}>
+                  <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 20 }}>
+                    {item.icon}
+                  </Icon>
+                </ListItemIcon>
+              )}
+              <ListItemText
+                primary={item.label}
+                slotProps={{
+                  primary: {
+                    variant: 'body2',
+                    sx: {
+                      fontWeight: item.selected ? 500 : 400,
+                      color: item.locked ? 'text.disabled' : undefined,
+                    },
+                  },
                 }}
-              >
-                {item.shortcut}
-              </Box>
-            )}
-          </MenuItem>
+              />
+              {item.locked && (
+                <Icon
+                  baseClassName="material-icons-outlined"
+                  sx={{ fontSize: 18, color: 'text.disabled', flexShrink: 0 }}
+                >
+                  lock
+                </Icon>
+              )}
+              {!item.locked && item.shortcut && (
+                <Box
+                  component="span"
+                  sx={{
+                    fontSize: '0.75rem',
+                    color: (theme) => theme.palette.inflow.outline,
+                    ml: 2,
+                    flexShrink: 0,
+                  }}
+                >
+                  {item.shortcut}
+                </Box>
+              )}
+            </MenuItem>
+          </Tooltip>
         </Fragment>
       ))}
     </Menu>

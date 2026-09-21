@@ -1,6 +1,7 @@
 // Canonical source: docs/mui/inflow-theme.js
 import { createElement } from 'react';
 import { createTheme } from '@mui/material/styles';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import type { Shadows } from '@mui/material/styles';
 import { resolveInflowColorMode } from './featureFlags';
 import { darkTokens, lightTokens, type InflowThemeTokens } from './inflow-tokens';
@@ -255,8 +256,8 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
         styleOverrides: {
           root: {
             borderRadius: T.radiusXs,
-            '& .MuiOutlinedInput-notchedOutline': { borderColor: T.outline },
-            '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: T.onSurface },
+            '& .MuiOutlinedInput-notchedOutline': { borderColor: T.outlineVariant },
+            '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: T.outline },
             '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: T.navy700, borderWidth: 2 },
           },
         },
@@ -424,7 +425,23 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
         },
       },
       MuiMenu: { styleOverrides: { paper: { borderRadius: 0, boxShadow: 'none' } } },
+      MuiPickersDay: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            '&.Mui-selected': {
+              backgroundColor: theme.palette.primary.main,
+              color: theme.palette.primary.contrastText,
+              '&:hover, &:focus': {
+                backgroundColor: theme.palette.primary.dark,
+              },
+            },
+          }),
+        },
+      },
       MuiAutocomplete: {
+        defaultProps: {
+          popupIcon: createElement(ExpandMoreIcon),
+        },
         styleOverrides: {
           paper: { borderRadius: T.radiusXs },
           option: {
