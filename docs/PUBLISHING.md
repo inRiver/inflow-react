@@ -77,8 +77,8 @@ For a normal release, see the release workflow steps in
 npm version patch
 VERSION="$(node -p "require('./package.json').version")"
 git push origin master
-git tag -a "theme/react19-mui9.3/v$VERSION" -m "@inriver/inflow-react $VERSION - <summary>"
-git push origin "theme/react19-mui9.3/v$VERSION"
+git tag -a "theme/react19-mui9.4/v$VERSION" -m "@inriver/inflow-react $VERSION - <summary>"
+git push origin "theme/react19-mui9.4/v$VERSION"
 ```
 
 Pushing that tag is the entire release step. There is no manual `npm
@@ -225,7 +225,7 @@ Verify a release after CI reports success:
 - [ ] In a fresh throwaway project, test install from the checkpoint tag:
 
 ```bash
-npm install @inriver/inflow-react@react19-mui9.3
+npm install @inriver/inflow-react@react19-mui9.4
 ```
 
 - [ ] Verify the expected exports work in a consumer:
