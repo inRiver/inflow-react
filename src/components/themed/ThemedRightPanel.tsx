@@ -66,7 +66,7 @@ export const ThemedRightPanel = forwardRef<HTMLDivElement, ThemedRightPanelProps
       hasUnsavedChanges = false,
       resizable,
       closeOnNavigation,
-      topOffset = 56,
+      topOffset = 64,
       children,
       'aria-label': ariaLabel = 'Right panel',
     },

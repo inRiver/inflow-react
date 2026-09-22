@@ -90,6 +90,18 @@ describe('ThemedRightPanel', () => {
     expect(panel).toHaveStyle({ width: expectedWidth });
   });
 
+  it('offsets the pushed panel below the 64px inriver global header by default', async () => {
+    renderPanel();
+    const panel = await screen.findByRole('complementary');
+    expect(panel).toHaveStyle({ top: '64px' });
+  });
+
+  it('honors an explicit topOffset override', async () => {
+    renderPanel({ topOffset: 48 });
+    const panel = await screen.findByRole('complementary');
+    expect(panel).toHaveStyle({ top: '48px' });
+  });
+
   it('calls onClose from Escape without rendering a panel-owned close button', async () => {
     renderPanel();
     await screen.findByRole('complementary');
