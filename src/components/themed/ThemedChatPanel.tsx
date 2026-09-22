@@ -7,9 +7,10 @@ import {
   LinearProgress,
   Menu,
   MenuItem,
+  SvgIcon,
   Typography,
 } from '@mui/material';
-import { forwardRef, useCallback, useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
+import { forwardRef, useCallback, useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
 import { inflowTokens } from '../../theme';
 import { ThemedButton } from './ThemedButton';
 import { ThemedChip } from './ThemedChip';
@@ -69,6 +70,7 @@ export interface ThemedChatPanelProps {
   /** Defaults to whether an attachment callback is supplied for existing consumers. */
   showAttach?: boolean;
   attachAriaLabel?: string;
+  toolsAriaLabel?: string;
   tools?: ThemedChatTool[];
   onToolSelect?: (toolId: string) => void;
   /** Aggregate host-owned upload progress, paired with attachment status/progress. */
@@ -136,6 +138,7 @@ const DEFAULT_STRINGS = {
   sendAriaLabel: 'Send message',
   stopAriaLabel: 'Stop generating',
   attachAriaLabel: 'Attach files',
+  toolsAriaLabel: 'Add tools',
 } as const;
 
 const iconButtonSx = {
@@ -145,6 +148,46 @@ const iconButtonSx = {
   color: 'text.secondary',
   '&:hover': { backgroundColor: 'action.hover' },
 } as const;
+
+const sendButtonSx = {
+  color: 'text.secondary',
+  width: 48,
+  height: 48,
+  borderRadius: '50%',
+  '&:hover': { backgroundColor: 'action.hover' },
+} as const;
+
+const selectedSurfaceSx = {
+  '&&': {
+    backgroundColor: 'inflow.navy100',
+    borderColor: 'primary.main',
+    color: 'primary.main',
+    '&:hover': { backgroundColor: 'inflow.navy100' },
+  },
+} as const;
+
+/** Official Google Material Symbols `pin_end` vector, inlined to avoid a second icon font. */
+const PIN_END_PATH =
+  'M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v240h-80v-240H160v480h400v80H160Zm398-225L440-503v89h-80v-226h226v80h-90l118 118-56 57Zm202 225q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 50-35 85t-85 35Z';
+
+function PinEndIcon() {
+  return (
+    <SvgIcon viewBox="0 -960 960 960" sx={{ fontSize: 22 }}>
+      <path d={PIN_END_PATH} />
+    </SvgIcon>
+  );
+}
+
+/** Solid Material `send` glyph, inlined so the composer's submit control stays filled regardless of icon font. */
+const SEND_PATH = 'M2.01 21 23 12 2.01 3 2 10l15 2-15 2z';
+
+function SendIcon() {
+  return (
+    <SvgIcon viewBox="0 0 24 24" sx={{ fontSize: 24 }}>
+      <path d={SEND_PATH} />
+    </SvgIcon>
+  );
+}
 
 /**
  * The AI assistant conversation content intended for composition inside a
@@ -169,6 +212,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
       renderAttachment,
       showAttach = Boolean(onAttachFile),
       attachAriaLabel = DEFAULT_STRINGS.attachAriaLabel,
+      toolsAriaLabel = DEFAULT_STRINGS.toolsAriaLabel,
       tools,
       onToolSelect,
       uploadProgress,
@@ -210,6 +254,10 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
   ) {
     const scrollRef = useRef<HTMLDivElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const assistantMenuId = useId();
+    const assistantTriggerId = useId();
+    const toolsMenuId = useId();
+    const toolsTriggerId = useId();
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
     const [toolsAnchorEl, setToolsAnchorEl] = useState<HTMLElement | null>(null);
     const [selected, setSelected] = useState(title);
@@ -257,8 +305,33 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
       if (!isTyping) return null;
       if (renderTypingIndicator) return renderTypingIndicator();
       return (
-        <Box data-testid="default-typing-indicator" sx={{ display: 'flex', gap: 0.5, color: 'text.secondary' }}>
-          {[0, 1, 2].map((dot) => <Box key={dot} sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: 'currentColor' }} />)}
+        <Box
+          data-testid="default-typing-indicator"
+          role="status"
+          aria-label={`${assistantLabel} is typing`}
+          sx={{ display: 'flex', gap: 0.5, p: 1.25 }}
+        >
+          {[0, 1, 2].map((dot) => (
+            <Box
+              key={dot}
+              aria-hidden="true"
+              sx={{
+                width: 8,
+                height: 8,
+                borderRadius: '50%',
+                bgcolor: 'text.disabled',
+                '@keyframes inflowChatTypingBounce': {
+                  '0%, 60%, 100%': { transform: 'translateY(0)' },
+                  '30%': { transform: 'translateY(-6px)' },
+                },
+                animationName: 'inflowChatTypingBounce',
+                animationDuration: '1.4s',
+                animationTimingFunction: 'ease',
+                animationIterationCount: 'infinite',
+                animationDelay: `${dot * 0.2}s`,
+              }}
+            />
+          ))}
         </Box>
       );
     };
@@ -284,13 +357,18 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
             alignItems: 'center',
             justifyContent: 'space-between',
             gap: 2,
-            p: (theme) => theme.spacing(1.5, 2),
+            p: (theme) => theme.spacing(1.5, 1.5, 1.5, 2),
             flexShrink: 0,
           }}
         >
+          <Box sx={{ position: 'relative', minWidth: 0 }}>
           <ThemedButton
+            id={assistantTriggerId}
             size="small"
             endIcon={<Icon baseClassName="material-icons-outlined" sx={{ fontSize: 18 }}>arrow_drop_down</Icon>}
+            aria-haspopup="menu"
+            aria-expanded={Boolean(anchorEl)}
+            aria-controls={anchorEl ? assistantMenuId : undefined}
             onClick={(event) => setAnchorEl(event.currentTarget)}
             sx={{
               height: 24,
@@ -300,20 +378,23 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
               color: 'primary.main',
               fontSize: 13,
               fontWeight: 400,
-              px: 1.5,
+              pl: 1.5,
+              pr: 0.75,
               py: 0,
               minWidth: 0,
-              maxWidth: 220,
+              maxWidth: '100%',
               bgcolor: 'background.paper',
               textTransform: 'none',
               whiteSpace: 'nowrap',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
+              '& .MuiButton-endIcon': { ml: 0.5, mr: 0 },
               '&:hover': { bgcolor: 'action.hover' },
             }}
           >
             {selected}
           </ThemedButton>
+          </Box>
 
           <Menu
             anchorEl={anchorEl}
@@ -322,6 +403,10 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
             anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
             transformOrigin={{ vertical: 'top', horizontal: 'left' }}
             slotProps={{
+              list: {
+                id: assistantMenuId,
+                'aria-labelledby': assistantTriggerId,
+              },
               paper: {
                 sx: {
                   minWidth: 248,
@@ -339,7 +424,16 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
                 key={option}
                 selected={option === selected}
                 onClick={() => handleSelect(option)}
-                sx={{ fontSize: 16, py: 1.5, px: 2, gap: 1.5 }}
+                sx={{
+                  fontSize: '1rem',
+                  py: 1.5,
+                  px: 2,
+                  gap: 1.5,
+                  '&.Mui-selected': {
+                    bgcolor: 'inflow.navy100',
+                    '&:hover': { bgcolor: 'inflow.navy100' },
+                  },
+                }}
               >
                 <ListItemIcon sx={{ minWidth: 20 }}>
                   <Icon
@@ -361,7 +455,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, flexShrink: 0 }}>
             {onExpand && (
               <IconButton aria-label={expandAriaLabel} size="small" onClick={onExpand} sx={iconButtonSx}>
-                <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 22 }}>view_sidebar</Icon>
+                <PinEndIcon />
               </IconButton>
             )}
             {onMore && (
@@ -405,12 +499,31 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
         </Box>
 
         {displayedAttachments.length > 0 && (
-          <Box sx={{ flexShrink: 0, px: 2, pb: 1 }}>
+          <Box sx={{ flexShrink: 0, px: 2, pt: 1 }}>
             {displayedAttachments.map((attachment) => renderAttachment ? (
-              <Box key={attachment.id}>{renderAttachment(attachment)}</Box>
+              <Box
+                key={attachment.id}
+                data-attachment-status={attachment.status ?? 'done'}
+                role={attachment.status === 'error' ? 'alert' : undefined}
+                aria-label={attachment.status === 'error' ? `Attachment ${attachment.name} failed to upload` : undefined}
+              >
+                {renderAttachment(attachment)}
+              </Box>
             ) : (
-              <Box key={attachment.id} sx={{ display: 'inline-flex', flexDirection: 'column', minWidth: 160, mr: 1, mb: 0.5 }}>
-                <ThemedChip label={attachment.name} onDelete={() => onRemoveAttachment?.(attachment.id)} size="sm" variant="filled-primary" />
+              <Box
+                key={attachment.id}
+                data-attachment-status={attachment.status ?? 'done'}
+                role={attachment.status === 'error' ? 'alert' : undefined}
+                aria-label={attachment.status === 'error' ? `Attachment ${attachment.name} failed to upload` : undefined}
+                sx={{ display: 'inline-flex', flexDirection: 'column', width: 'fit-content', minWidth: 0, maxWidth: '100%', mr: 1, mb: 0.5 }}
+              >
+                <ThemedChip
+                  label={attachment.name}
+                  onDelete={() => onRemoveAttachment?.(attachment.id)}
+                  size="sm"
+                  variant="filled-primary"
+                  sx={{ maxWidth: '100%', '& .MuiChip-label': { overflow: 'hidden', textOverflow: 'ellipsis' } }}
+                />
                 {(attachment.status === 'pending' || attachment.status === 'uploading') && (
                   <LinearProgress variant="determinate" value={Math.min(attachment.progress ?? 0, 100)} sx={{ mt: 0.5, borderRadius: 999 }} />
                 )}
@@ -439,23 +552,41 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
             }}
           >
             {showAttach && (
-              <>
-                <input ref={fileInputRef} data-testid="chat-file-input" type="file" hidden multiple onChange={(event) => {
-                  const files = event.target.files;
-                  if (files) onAttachFile?.(Array.from(files));
-                  event.target.value = '';
-                }} />
-                <IconButton aria-label={attachAriaLabel} onClick={() => fileInputRef.current?.click()} sx={{ color: 'text.secondary', width: 32, height: 32 }}>
-                  <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24 }}>add</Icon>
-                </IconButton>
-              </>
+              <input ref={fileInputRef} data-testid="chat-file-input" type="file" hidden multiple onChange={(event) => {
+                const files = event.target.files;
+                if (files) onAttachFile?.(Array.from(files));
+                event.target.value = '';
+              }} />
             )}
             {tools?.length ? (
+              // A single leading `+` opens one menu; when attach is also enabled it
+              // becomes the menu's first item so the composer never shows two `+`.
               <>
-                <IconButton aria-label={attachAriaLabel} onClick={(event) => setToolsAnchorEl(event.currentTarget)} sx={{ color: 'text.secondary', width: 32, height: 32 }}>
+                <IconButton
+                  id={toolsTriggerId}
+                  aria-label={toolsAriaLabel}
+                  aria-haspopup="menu"
+                  aria-expanded={Boolean(toolsAnchorEl)}
+                  aria-controls={toolsAnchorEl ? toolsMenuId : undefined}
+                  onClick={(event) => setToolsAnchorEl(event.currentTarget)}
+                  sx={{ color: 'text.secondary', width: 32, height: 32 }}
+                >
                   <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24 }}>add</Icon>
                 </IconButton>
-                <Menu anchorEl={toolsAnchorEl} open={Boolean(toolsAnchorEl)} onClose={() => setToolsAnchorEl(null)}>
+                <Menu
+                  anchorEl={toolsAnchorEl}
+                  open={Boolean(toolsAnchorEl)}
+                  onClose={() => setToolsAnchorEl(null)}
+                  slotProps={{ list: { id: toolsMenuId, 'aria-labelledby': toolsTriggerId } }}
+                >
+                  {showAttach && (
+                    <MenuItem key="__attach" onClick={() => {
+                      setToolsAnchorEl(null);
+                      fileInputRef.current?.click();
+                    }}>
+                      {attachAriaLabel}
+                    </MenuItem>
+                  )}
                   {tools.map((tool) => (
                     <MenuItem key={tool.id} disabled={tool.disabled} title={tool.disabled ? tool.disabledLabel : undefined} onClick={() => {
                       setToolsAnchorEl(null);
@@ -466,6 +597,10 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
                   ))}
                 </Menu>
               </>
+            ) : showAttach ? (
+              <IconButton aria-label={attachAriaLabel} onClick={() => fileInputRef.current?.click()} sx={{ color: 'text.secondary', width: 32, height: 32 }}>
+                <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24 }}>add</Icon>
+              </IconButton>
             ) : null}
             <Box sx={{ flex: '1 1 auto', minWidth: 0 }}>
               <InputBase
@@ -477,7 +612,11 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
                 multiline={multiline}
                 maxRows={multiline ? maxRows : undefined}
                 inputProps={{ 'aria-label': inputPlaceholder, maxLength: charLimit }}
-                sx={{ color: 'text.primary', fontSize: '1rem', lineHeight: 1.5, letterSpacing: '0.15px', width: '100%' }}
+                sx={{
+                  color: 'text.primary',
+                  width: '100%',
+                  '& .MuiInputBase-input': { fontSize: '1rem', lineHeight: 1.5, letterSpacing: '0.15px', p: '4px 0' },
+                }}
               />
               {showInputHint && inputHint && (
                 <Typography variant="caption" color="text.secondary" sx={{ lineHeight: '16px', letterSpacing: '0.4px' }}>
@@ -486,12 +625,12 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
               )}
             </Box>
             {isStreaming && onStop ? (
-              <IconButton aria-label={stopAriaLabel} onClick={onStop} sx={{ color: 'text.secondary', width: 48, height: 48 }}>
+              <IconButton aria-label={stopAriaLabel} onClick={onStop} sx={sendButtonSx}>
                 <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24 }}>stop</Icon>
               </IconButton>
             ) : (
-              <IconButton aria-label={sendAriaLabel} onClick={handleSend} disabled={sendDisabled} sx={{ color: 'text.secondary', width: 48, height: 48 }}>
-                <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24 }}>send</Icon>
+              <IconButton aria-label={sendAriaLabel} onClick={handleSend} disabled={sendDisabled} sx={sendButtonSx}>
+                <SendIcon />
               </IconButton>
             )}
           </Box>
@@ -499,7 +638,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pt: 0.5 }}>
             {showCredits && credits ? (
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                <Typography variant="caption" color="text.disabled">
+                <Typography variant="caption" color="text.disabled" sx={{ fontSize: '0.75rem', lineHeight: '16px', letterSpacing: '0.4px' }}>
                   {typeof creditsLabel === 'function'
                     ? creditsLabel(credits.used, credits.total)
                     : `${creditsLabel} ${credits.used}/${credits.total}`}
@@ -508,7 +647,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
               </Box>
             ) : <span />}
             {showCharCount && (
-              <Typography variant="caption" color="primary" sx={{ letterSpacing: '0.4px' }}>
+              <Typography variant="caption" color="primary" sx={{ fontSize: '0.75rem', lineHeight: '16px', letterSpacing: '0.4px' }}>
                 {charCount} / {charLimit}
               </Typography>
             )}
@@ -517,7 +656,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
           <Typography
             variant="caption"
             color="text.disabled"
-            sx={{ display: 'block', textAlign: 'center', fontSize: '0.6875rem', fontWeight: 500, letterSpacing: '0.5px', mt: 0.25 }}
+            sx={{ display: 'block', textAlign: 'center', fontSize: '0.6875rem', fontWeight: 500, lineHeight: '16px', letterSpacing: '0.5px', mt: 0.5 }}
           >
             {aiDisclaimer}
           </Typography>
@@ -553,7 +692,7 @@ function ChatMessage({
   if (!isAssistant) {
     return (
       <Box data-chat-role="user" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 1.25 }}>
           <Typography variant="caption" sx={{ fontSize: 12, fontWeight: 500, lineHeight: '20px', letterSpacing: '0.14px', color: 'text.secondary' }}>
             {userLabel}
           </Typography>
@@ -563,12 +702,14 @@ function ChatMessage({
           data-testid="chat-user-bubble"
           sx={{
             bgcolor: 'inflow.navy100',
-            borderRadius: 2,
+            borderRadius: '10px',
             p: 1.25,
             maxWidth: '75%',
+            minWidth: 0,
+            textAlign: 'right',
           }}
         >
-          <Typography variant="body2" color="text.primary" sx={{ lineHeight: '20px', letterSpacing: '0.17px' }}>
+          <Typography variant="body2" color="text.primary" sx={{ lineHeight: '20px', letterSpacing: '0.17px', overflowWrap: 'anywhere' }}>
             {message.content}
           </Typography>
         </Box>
@@ -593,6 +734,7 @@ function ChatMessage({
           letterSpacing: '0.17px',
           overflowWrap: 'break-word',
           wordBreak: 'keep-all',
+          minWidth: 0,
         }}
       >
         {message.content}
@@ -603,9 +745,15 @@ function ChatMessage({
             <ThemedChip
               key={chip}
               label={chip}
-              variant={selectedChips.has(chip) ? 'filled-primary' : 'outlined-primary'}
+              variant={selectedChips.has(chip) ? 'filled-primary' : 'outlined'}
+              color="primary"
               size="sm"
+              aria-pressed={selectedChips.has(chip)}
               onClick={() => toggleChip(chip)}
+              sx={[
+                { '&&.MuiChip-sizeSmall': { paddingLeft: '12px', paddingRight: '12px' } },
+                selectedChips.has(chip) ? selectedSurfaceSx : {},
+              ]}
             />
           ))}
         </Box>
@@ -613,7 +761,12 @@ function ChatMessage({
       {message.actions && message.actions.length > 0 && (
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
           {message.actions.map((action) => (
-            <ThemedButton key={action} variant="outlined" size="small" sx={{ height: 32 }}>
+            <ThemedButton
+              key={action}
+              variant="outlined"
+              size="small"
+              sx={{ height: 32, px: 2 }}
+            >
               {action}
             </ThemedButton>
           ))}
