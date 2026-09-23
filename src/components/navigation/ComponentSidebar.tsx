@@ -49,7 +49,7 @@ export const ComponentSidebar: React.FC<ComponentSidebarProps> = ({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   
-  const [manualExpanded, setManualExpanded] = useState<Set<string>>(new Set());
+  const [overrides, setOverrides] = useState<Map<string, boolean>>(new Map());
   const filteredComponents = useComponentSearch(searchQuery);
 
   const activeComponentId = useMemo(() => {
@@ -82,23 +82,39 @@ export const ComponentSidebar: React.FC<ComponentSidebarProps> = ({
     return nextExpanded;
   }, [activeComponentId, filteredComponents, searchQuery]);
 
+  const [previousAutoExpanded, setPreviousAutoExpanded] = useState(autoExpanded);
+  if (previousAutoExpanded !== autoExpanded) {
+    setPreviousAutoExpanded(autoExpanded);
+    setOverrides(new Map());
+  }
+
   const expanded = useMemo(() => {
-    const nextExpanded = new Set(manualExpanded);
-    autoExpanded.forEach((categoryId) => nextExpanded.add(categoryId));
+    const nextExpanded = new Set(autoExpanded);
+    overrides.forEach((isExpanded, categoryId) => {
+      if (isExpanded) {
+        nextExpanded.add(categoryId);
+      } else {
+        nextExpanded.delete(categoryId);
+      }
+    });
     return nextExpanded;
-  }, [autoExpanded, manualExpanded]);
+  }, [autoExpanded, overrides]);
 
   const toggleCategory = (id: string) => {
-    setManualExpanded((previousExpanded) => {
-      const nextExpanded = new Set(previousExpanded);
+    setOverrides((previous) => {
+      const next = new Map(previous);
+      const currentlyExpanded = expanded.has(id);
+      const autoDefault = autoExpanded.has(id);
 
-      if (nextExpanded.has(id)) {
-        nextExpanded.delete(id);
+      if (currentlyExpanded === autoDefault) {
+        // No effective override yet — flip relative to the auto default.
+        next.set(id, !autoDefault);
       } else {
-        nextExpanded.add(id);
+        // Already overridden — clear the override to return to the auto default.
+        next.delete(id);
       }
 
-      return nextExpanded;
+      return next;
     });
   };
 

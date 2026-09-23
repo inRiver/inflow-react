@@ -111,6 +111,13 @@ All spacing is derived from the existing 4px Inflow scale and MUI `theme.spacing
 - **Motion**: MUI slide/fade transitions; reduced-motion behavior follows the theme and platform preference.
 - **Layout**: right-side panel; push on desktop, overlay on narrow viewports.
 
+### ThemedChatAccordion
+
+- **Structure**: product-owned reasoning labels rendered by a shared ordered-step shell.
+- **States**: completed steps remain quiet inline text while streaming; the sole active step is an outlined row with a tool glyph and trailing progress indicator; finalized steps move into a borderless accordion that starts collapsed.
+- **Accessibility**: streaming updates use a polite live region, the active row exposes `aria-current="step"`, decorative activity icons stay hidden from assistive technology, and the completed summary is a named keyboard control.
+- **Usage**: hosts own step wording and lifecycle state; the design system owns spacing, current-step emphasis, and collapse behavior.
+
 ### Overview navigation groups
 
 - **Structure**: one outlined surface with a descriptive header and a flush, segmented grid of `CardActionArea` links.

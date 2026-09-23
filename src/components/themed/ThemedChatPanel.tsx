@@ -59,6 +59,8 @@ export interface ThemedChatPanelProps {
   onClose?: () => void;
   onExpand?: () => void;
   onMore?: () => void;
+  /** When true, the built-in header is not rendered (host provides its own). */
+  hideHeader?: boolean;
   attachedFile?: string;
   attachments?: ThemedChatAttachment[];
   onAttachFile?: (files: File[]) => void;
@@ -159,6 +161,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
       onClose,
       onExpand,
       onMore,
+      hideHeader = false,
       attachedFile,
       attachments,
       onAttachFile,
@@ -273,6 +276,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
           overflow: 'hidden',
         }}
       >
+        {!hideHeader && (
         <Box
           component="header"
           sx={{
@@ -372,6 +376,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
             )}
           </Box>
         </Box>
+        )}
 
         <Box
           ref={scrollRef}
@@ -582,6 +587,7 @@ function ChatMessage({
       <Typography
         variant="body2"
         color="text.primary"
+        component="div"
         sx={{
           lineHeight: '20px',
           letterSpacing: '0.17px',

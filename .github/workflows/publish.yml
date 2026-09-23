@@ -4,9 +4,19 @@ on:
   workflow_dispatch:
     inputs:
       release_tag:
-        description: Existing source tag to publish
+        description: 'Source tag to publish (for example theme/react19-mui9.3/v3.5.0)'
         required: true
         type: string
+      dist_tag_only:
+        description: 'Skip publish; only correct npm dist-tags for an already-published version'
+        required: false
+        type: boolean
+        default: false
+      skip_latest:
+        description: 'Skip promoting this version to latest (use when restoring an older checkpoint)'
+        required: false
+        type: boolean
+        default: false
   push:
     tags:
       - 'theme/*/v*'
@@ -64,21 +74,33 @@ jobs:
           echo "version=$PKG_VERSION" >> "$GITHUB_OUTPUT"
 
       - run: npm ci
+        if: ${{ !inputs.dist_tag_only }}
 
       - run: npm run lint
+        if: ${{ !inputs.dist_tag_only }}
 
       - run: npm run test:run
+        if: ${{ !inputs.dist_tag_only }}
 
       - run: npm run build
+        if: ${{ !inputs.dist_tag_only }}
 
       - run: npm run test:pack
+        if: ${{ !inputs.dist_tag_only }}
 
       - name: Publish
+        if: ${{ !inputs.dist_tag_only }}
         env:
           INFLOW_THEME_RELEASE_TAG: ${{ steps.tagcheck.outputs.checkpoint }}
         run: npm publish --tag "${{ steps.tagcheck.outputs.checkpoint }}" --access public --provenance
 
+      - name: Set checkpoint dist-tag
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+        run: npm dist-tag add "@inriver/inflow-react@${{ steps.tagcheck.outputs.version }}" "${{ steps.tagcheck.outputs.checkpoint }}"
+
       - name: Promote to latest
+        if: ${{ !inputs.skip_latest }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
         run: npm dist-tag add "@inriver/inflow-react@${{ steps.tagcheck.outputs.version }}" latest

@@ -20,6 +20,10 @@ import { ExampleScreensOverview, PopularComponentsOverview } from './LandingOver
 const muiVersion = (await import('@mui/material/package.json')).version;
 const reactVersion = (await import('react/package.json')).version;
 
+const reactMajor = reactVersion.split('.')[0];
+const [muiMajor, muiMinor] = muiVersion.split('.');
+const checkpointTag = `react${reactMajor}-mui${muiMajor}.${muiMinor}`;
+
 const categoryIcons: Readonly<Record<string, SvgIconComponent>> = {
   Campaign: Icons.Campaign,
   Category: Icons.Category,
@@ -46,7 +50,7 @@ export function LandingPage() {
             <Chip label={`@inriver/inflow-react v${pkg.version}`} size="small" color="primary" />
             <Chip label={`React ${reactVersion}`} size="small" variant="outlined" />
             <Chip label={`MUI ${muiVersion}`} size="small" variant="outlined" />
-            <Chip label="tag: react19-mui9.3" size="small" variant="outlined" />
+            <Chip label={`tag: ${checkpointTag}`} size="small" variant="outlined" />
           </Stack>
         </Box>
 
