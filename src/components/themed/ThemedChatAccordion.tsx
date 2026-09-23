@@ -1,4 +1,4 @@
-import { forwardRef, useId } from 'react';
+import { forwardRef, useId, useState } from 'react';
 import type { ReactNode, SyntheticEvent } from 'react';
 import {
   Accordion,
@@ -29,6 +29,12 @@ export interface ThemedChatAccordionProps {
    * from `defaultExpanded` once streaming ends.
    */
   isStreaming?: boolean;
+  /**
+   * Renders per-step todo/checklist status icons in the streaming view:
+   * done steps show `check_circle`, the active step shows the spinner, and
+   * pending steps show `radio_button_unchecked`.
+   */
+  stepStatusIcons?: boolean;
   defaultExpanded?: boolean;
   /** Controlled expansion. Omit to keep the product rule: collapsed when done. */
   expanded?: boolean;
@@ -51,12 +57,17 @@ export interface ThemedChatAccordionProps {
  * />
  */
 export const ThemedChatAccordion = forwardRef<HTMLDivElement, ThemedChatAccordionProps>(
-  ({ title, steps, isStreaming = false, defaultExpanded = false, expanded, onChange, sx }, ref) => {
+  ({ title, steps, isStreaming = false, stepStatusIcons = false, defaultExpanded = false, expanded, onChange, sx }, ref) => {
     const accordionId = useId();
     const summaryId = `${accordionId}-summary`;
     const detailsId = `${accordionId}-details`;
 
+    const isControlled = expanded !== undefined;
+    const [internalExpanded, setInternalExpanded] = useState(defaultExpanded);
+    const open = isControlled ? expanded : internalExpanded;
+
     const handleChange = (_event: SyntheticEvent, isExpanded: boolean) => {
+      if (!isControlled) setInternalExpanded(isExpanded);
       onChange?.(isExpanded);
     };
 
@@ -82,31 +93,64 @@ export const ThemedChatAccordion = forwardRef<HTMLDivElement, ThemedChatAccordio
       -1,
     );
 
+    const activePillSx = {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 1,
+      minHeight: 40,
+      mb: 1,
+      px: 1.5,
+      py: 1,
+      border: '1px solid',
+      borderColor: 'divider',
+      borderRadius: 2.5,
+    } as const;
+
+    const statusLeadingIcon = (status: 'done' | 'active' | 'pending') => {
+      if (status === 'active') {
+        return <CircularProgress aria-hidden="true" size={16} thickness={5} sx={{ flexShrink: 0 }} />;
+      }
+      return (
+        <Icon
+          aria-hidden="true"
+          baseClassName="material-icons-outlined"
+          sx={{ flexShrink: 0, fontSize: 18, color: status === 'done' ? 'primary.main' : 'text.disabled' }}
+        >
+          {status === 'done' ? 'check_circle' : 'radio_button_unchecked'}
+        </Icon>
+      );
+    };
+
     if (isStreaming) {
       return (
         <Box ref={ref} sx={sx}>
           <Box component="ul" aria-live="polite" sx={{ listStyle: 'none', m: 0, p: 0 }}>
             {steps.map((step, index) => {
               const isActive = index === activeStepIndex;
+
+              if (stepStatusIcons) {
+                const status = activeStepIndex === -1 || index < activeStepIndex
+                  ? 'done'
+                  : isActive ? 'active' : 'pending';
+                return (
+                  <Box
+                    component="li"
+                    key={step.id}
+                    aria-current={isActive ? 'step' : undefined}
+                    sx={isActive ? activePillSx : { display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}
+                  >
+                    {statusLeadingIcon(status)}
+                    {stepLabel(step, isActive)}
+                  </Box>
+                );
+              }
+
               return (
                 <Box
                   component="li"
                   key={step.id}
                   aria-current={isActive ? 'step' : undefined}
-                  sx={isActive
-                    ? {
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 1,
-                        minHeight: 40,
-                        mb: 1,
-                        px: 1.5,
-                        py: 1,
-                        border: '1px solid',
-                        borderColor: 'divider',
-                        borderRadius: 2.5,
-                      }
-                    : { display: 'block', mb: 1 }}
+                  sx={isActive ? activePillSx : { display: 'block', mb: 1 }}
                 >
                   {isActive ? (
                     <Icon
@@ -132,8 +176,7 @@ export const ThemedChatAccordion = forwardRef<HTMLDivElement, ThemedChatAccordio
     return (
       <Box ref={ref} sx={sx}>
         <Accordion
-          expanded={expanded}
-          defaultExpanded={defaultExpanded}
+          expanded={open}
           onChange={handleChange}
           disableGutters
           elevation={0}
@@ -149,21 +192,24 @@ export const ThemedChatAccordion = forwardRef<HTMLDivElement, ThemedChatAccordio
             id={summaryId}
             aria-controls={detailsId}
             expandIcon={
-              <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 20, color: 'text.secondary' }}>
-                expand_more
+              <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 18, color: 'text.secondary' }}>
+                {open ? 'expand_more' : 'chevron_right'}
               </Icon>
             }
             sx={(theme) => ({
               minHeight: 32,
               px: 0,
-              fontSize: theme.typography.body2.fontSize,
-              fontWeight: theme.typography.fontWeightRegular,
+              width: 'fit-content',
+              fontSize: '0.75rem',
+              fontWeight: theme.typography.fontWeightMedium,
               lineHeight: theme.typography.body2.lineHeight,
               letterSpacing: theme.typography.body2.letterSpacing,
-              color: 'text.primary',
+              color: 'text.secondary',
               '&.Mui-expanded': { minHeight: 32 },
-              '& .MuiAccordionSummary-content': { my: 0 },
+              '& .MuiAccordionSummary-content': { my: 0, flexGrow: 0 },
               '& .MuiAccordionSummary-content.Mui-expanded': { my: 0 },
+              '& .MuiAccordionSummary-expandIconWrapper': { ml: 0.5 },
+              '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': { transform: 'none' },
             })}
           >
             {title}

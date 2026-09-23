@@ -1,4 +1,4 @@
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { ThemedChatAccordion, type ThemedChatAccordionStep } from './ThemedChatAccordion';
 import { renderWithInflow } from '../../test/renderWithInflow';
@@ -35,6 +35,29 @@ describe('ThemedChatAccordion', () => {
     expect(done?.querySelector('.MuiCircularProgress-root')).toBeNull();
   });
 
+  it('renders todo-style status icons per step when stepStatusIcons is set', () => {
+    renderWithInflow(
+      <ThemedChatAccordion
+        title="Reasoning"
+        isStreaming
+        stepStatusIcons
+        steps={[
+          { id: 'a', label: 'First' },
+          { id: 'b', label: 'Second', isActive: true },
+          { id: 'c', label: 'Third' },
+        ]}
+      />,
+    );
+
+    const done = screen.getByText('First').closest('li') as HTMLElement;
+    const active = screen.getByText('Second').closest('li') as HTMLElement;
+    const pending = screen.getByText('Third').closest('li') as HTMLElement;
+
+    expect(within(done).getByText('check_circle')).toBeInTheDocument();
+    expect(active.querySelector('.MuiCircularProgress-root')).not.toBeNull();
+    expect(within(pending).getByText('radio_button_unchecked')).toBeInTheDocument();
+  });
+
   it('uses only the latest active step as the current progress row', () => {
     renderWithInflow(
       <ThemedChatAccordion
@@ -61,6 +84,19 @@ describe('ThemedChatAccordion', () => {
     expect(summary).toHaveAttribute('aria-controls');
     expect(summary.closest('.MuiAccordion-root')).not.toHaveClass('MuiPaper-outlined');
     expect(screen.getByText('Tool used: Creating session')).not.toBeVisible();
+  });
+
+  it('renders a compact secondary trigger whose chevron glyph swaps on expand', () => {
+    renderWithInflow(<ThemedChatAccordion title="Reasoning" steps={steps} />);
+
+    const summary = screen.getByRole('button', { name: 'Reasoning' });
+    expect(summary).toHaveStyle({ fontSize: '0.75rem' });
+    expect(within(summary).getByText('chevron_right')).toBeInTheDocument();
+    expect(within(summary).queryByText('expand_more')).not.toBeInTheDocument();
+
+    fireEvent.click(summary);
+    expect(within(summary).getByText('expand_more')).toBeInTheDocument();
+    expect(within(summary).queryByText('chevron_right')).not.toBeInTheDocument();
   });
 
   it('toggles expansion and reports state through onChange', () => {
