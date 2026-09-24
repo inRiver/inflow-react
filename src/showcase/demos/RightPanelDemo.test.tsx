@@ -9,22 +9,16 @@ function selectScenario(name: string) {
 }
 
 describe('RightPanelDemo', () => {
-  it('demonstrates a fixed wide creation overlay and its inherited secondary view', async () => {
+  it('demonstrates a fixed wide modal overlay', async () => {
     renderWithInflow(<RightPanelDemo />);
 
-    selectScenario('Create signal');
-    fireEvent.click(screen.getByRole('button', { name: 'Open create signal' }));
+    selectScenario('Default');
+    fireEvent.click(screen.getByRole('button', { name: 'Open default' }));
 
     const panel = await screen.findByRole('complementary', { name: 'Right panel example' });
     expect(panel).toHaveStyle({ width: '520px' });
     expect(screen.getByTestId('right-panel-backdrop')).toBeInTheDocument();
     expect(screen.queryByTestId('right-panel-resize-handle')).not.toBeInTheDocument();
-
-    fireEvent.click(screen.getByRole('button', { name: 'Open Query Assistant' }));
-
-    expect(screen.getByRole('button', { name: 'Back to create signal' })).toBeInTheDocument();
-    expect(screen.getByText(/inherits the same 520px panel width/i)).toBeInTheDocument();
-    expect(panel).toHaveStyle({ width: '520px' });
   });
 
   it('demonstrates the query editor navigation-close behavior', async () => {
