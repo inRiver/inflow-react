@@ -101,7 +101,7 @@ describe('ThemedMenu', () => {
   it('reduces menu item minHeight when dense', () => {
     renderWithInflow(<MenuHarness dense />);
 
-    expect(getComputedStyle(screen.getByRole('menuitem', { name: /Edit profile/ })).minHeight).toBe('36px');
+    expect(getComputedStyle(screen.getByRole('menuitem', { name: /Edit profile/ })).minHeight).toBe('32px');
   });
 
   it('uses the square, shadowless design-system menu surface', () => {

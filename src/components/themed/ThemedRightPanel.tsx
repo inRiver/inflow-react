@@ -259,7 +259,12 @@ export const ThemedRightPanel = forwardRef<HTMLDivElement, ThemedRightPanelProps
       bgcolor: theme.palette.background.paper,
       borderLeft: 1,
       borderColor: theme.palette.divider,
-      boxShadow: isOverlay ? theme.shadows[8] : 'none',
+      boxShadow:
+        variant === 'editor'
+          ? '-10px 0 28px rgba(11,45,110,0.1)'
+          : variant === 'modal'
+            ? '-12px 0 32px rgba(11,45,110,0.2)'
+            : 'none',
       fontFamily: String(theme.typography.fontFamily),
     };
 
