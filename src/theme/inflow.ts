@@ -3,6 +3,7 @@ import { createElement } from 'react';
 import { createTheme } from '@mui/material/styles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import type { Shadows } from '@mui/material/styles';
+import type {} from '@mui/x-date-pickers/themeAugmentation';
 import { resolveInflowColorMode } from './featureFlags';
 import { darkTokens, lightTokens, type InflowThemeTokens } from './inflow-tokens';
 
@@ -425,7 +426,7 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
         },
       },
       MuiMenu: { styleOverrides: { paper: { borderRadius: 0, boxShadow: 'none' } } },
-      MuiPickersDay: {
+      MuiPickerDay: {
         styleOverrides: {
           root: ({ theme }) => ({
             '&.Mui-selected': {

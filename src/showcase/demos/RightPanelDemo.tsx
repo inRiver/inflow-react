@@ -62,7 +62,7 @@ const selectedToggleSx = {
 
 function ConditionRow({ onDelete, infoIcon = false, size = 'small' }: { onDelete?: () => void; infoIcon?: boolean; size?: 'small' | 'medium' }) {
   return (
-    <Stack direction="row" spacing={1} alignItems="center">
+    <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
       <Autocomplete
         options={['Attribute A', 'Attribute B', 'Attribute C']}
         size={size}
