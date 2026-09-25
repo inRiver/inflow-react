@@ -2,6 +2,60 @@
 
 All notable changes to `@inriver/inflow-react` are documented here. This project follows [Semantic Versioning](https://semver.org/).
 
+## [3.8.0] - 2026-09-25
+
+### Added
+- `ThemedChatPanel` composer variants: a single "add" control, a filled send button, and outlined chip-style action buttons.
+- Animated typing indicator in the chat panel.
+- `ThemedChatAccordion` reasoning trigger styling and optional per-step status icons for the reasoning-steps disclosure.
+- `ThemedRightPanel` push mode now offsets itself below the 64px global header so the panel does not overlap the app chrome (library-facing).
+- Showcase-only: per-assistant chat fixtures, playground toggles, and multi-stage expand examples.
+- Showcase-only: components and demos aligned with the latest design-system guidance.
+
+### Changed
+- Updated `AGENTS.md` and Copilot instructions to clarify build and test expectations.
+
+### Fixed
+- Corrected the MUI style-override key from `MuiPickersDay` to `MuiPickerDay` in the inflow theme (library-facing).
+- Showcase-only: updated `RightPanelDemo` `Stack` alignment for visual consistency.
+
+### Tests
+- Updated `RightPanelDemo` tests and adjusted dense `ThemedMenu` minimum-height expectations.
+
+## [3.7.2] - 2026-09-21
+
+### Fixed
+- Showcase only: the displayed compatibility checkpoint tag is now derived from the installed `react` and `@mui/material` versions instead of a hardcoded value.
+
+## [3.7.1] - 2026-09-21
+
+### Changed
+- Promoted `react19-mui9.4` to the current compatibility checkpoint (previously `react19-mui9.3`).
+- Bumped the `@mui/material` and `@mui/icons-material` peer-style dependencies to `^9.4.0` to lock in the MUI 9.4 baseline.
+
+### Fixed
+- Fixed component-sidebar state handling to reset overrides during render, satisfying the `react-hooks/exhaustive-deps` lint rule.
+
+## [3.7.0] - 2026-09-21
+
+### Added
+- Showcase reasoning states are embedded in the chat thread as a multi-turn conversation.
+- `ThemedChatPanel` renders assistant content in a `div` so block-level React nodes display correctly.
+
+### Changed
+- Bumped many development and peer-aligned dependencies across React, MUI, Vite, Vitest, TypeScript-ESLint, AG Grid, and Playwright.
+
+## [3.6.0] - 2026-09-21
+
+### Added
+- New `ThemedChatAccordion` component for chat reasoning steps.
+- `ThemedChatPanel` gained a `hideHeader` prop for host-provided headers.
+- Showcase demos for `ThemedChatAccordion` in the accordion and chat-panel pages.
+
+### Changed
+- `ComponentSidebar` now uses override-driven expansion state instead of manual expanded-state management.
+- Updated Vitest and related test packages to 4.1.11.
+
 ## [3.5.1] - 2026-09-05
 
 ### Security
