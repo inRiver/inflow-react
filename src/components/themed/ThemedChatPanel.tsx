@@ -709,7 +709,12 @@ function ChatMessage({
             textAlign: 'right',
           }}
         >
-          <Typography variant="body2" color="text.primary" sx={{ lineHeight: '20px', letterSpacing: '0.17px', overflowWrap: 'anywhere' }}>
+          <Typography
+            variant="body2"
+            color="text.primary"
+            component="div"
+            sx={{ lineHeight: '20px', letterSpacing: '0.17px', overflowWrap: 'anywhere' }}
+          >
             {message.content}
           </Typography>
         </Box>
