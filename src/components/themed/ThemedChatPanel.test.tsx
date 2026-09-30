@@ -774,6 +774,24 @@ describe('ThemedChatPanel', () => {
     });
   });
 
+  it('renders user message content in a block container so block-level ReactNode content is valid', () => {
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    try {
+      renderWithInflow(
+        <ThemedChatPanel
+          messages={[{ id: 'user-block', role: 'user', content: <div data-testid="user-block-content"><p>First</p><ul><li>Item</li></ul></div> }]}
+        />,
+      );
+
+      const content = screen.getByTestId('user-block-content');
+      expect(content.closest('p')).toBeNull();
+      expect(within(screen.getByTestId('chat-user-bubble')).getByText('Item')).toBeInTheDocument();
+      expect(errorSpy.mock.calls.flat().join(' ')).not.toMatch(/cannot be a descendant of <p>|validateDOMNesting/);
+    } finally {
+      errorSpy.mockRestore();
+    }
+  });
+
   describe('composer metadata visibility', () => {
     it('shows the credits block when credits are supplied and showCredits is not set', async () => {
       renderChatPanel({ credits: { used: 8, total: 10 } });
