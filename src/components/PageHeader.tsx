@@ -45,8 +45,7 @@ export function PageHeader({ title, onBack, actions = [] }: PageHeaderProps) {
       
       <Box sx={{ flex: 1 }}>
         <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 0.25 }}>
-          <Link underline="hover" href="#" variant="caption">Catalog</Link>
-          <Typography variant="caption" color="primary.main">Dashboard</Typography>
+          <Link underline="always" href="#" variant="caption" color="primary.main">Catalog</Link>
         </Breadcrumbs>
         <Typography variant="h6">{title || 'Projects'}</Typography>
       </Box>

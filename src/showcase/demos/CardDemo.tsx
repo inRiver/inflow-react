@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Card, CardActions, CardContent, CardHeader, Button, Typography, Stack } from '@mui/material';
-import { ThemedButton, ThemedCard } from '../../components/themed';
+import { ThemedCard } from '../../components/themed';
 import { DemoFrame } from '../DemoFrame';
 import { CodeBlock } from '../CodeBlock';
 import { PropsPlayground } from '../PropsPlayground';
@@ -47,7 +47,7 @@ import { Card, CardHeader, CardContent, CardActions, Button, Typography } from '
 </Card>`;
 
   const themedCodeExample = `
-import { ThemedCard, ThemedButton } from '@inriver/inflow-react';
+import { ThemedCard, Button } from '@inriver/inflow-react';
 
 // <InflowProvider> only needs to be declared once at your app root - see Guidelines
 <ThemedCard
@@ -55,7 +55,7 @@ import { ThemedCard, ThemedButton } from '@inriver/inflow-react';
   disableContentPadding={props.disableContentPadding}
   title="Card Title"
   subheader="Card subtitle"
-  actions={<ThemedButton size="small">Learn More</ThemedButton>}
+  actions={<Button size="small">Learn More</Button>}
 >
   Card content
 </ThemedCard>`;
@@ -87,7 +87,7 @@ import { ThemedCard, ThemedButton } from '@inriver/inflow-react';
             {...props}
             title="Card Title"
             subheader="Card subtitle"
-            actions={<ThemedButton size="small">Learn More</ThemedButton>}
+            actions={<Button size="small">Learn More</Button>}
           >
             <Typography variant="body2">Card content</Typography>
           </ThemedCard>

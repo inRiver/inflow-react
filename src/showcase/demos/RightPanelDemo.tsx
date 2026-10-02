@@ -16,7 +16,6 @@ import {
   ToggleButtonGroup,
   Typography,
 } from '@mui/material';
-import { ThemedButton } from '../../components/themed/ThemedButton';
 import { ThemedChatPanel, type ThemedChatMessageDef } from '../../components/themed/ThemedChatPanel';
 import { ThemedDetailPanel, ThemedDetailPanelSection } from '../../components/themed/ThemedDetailPanel';
 import {
@@ -158,9 +157,9 @@ export function RightPanelDemo() {
       <DemoFrame title="Right panel - push and overlay">
         <Stack spacing={2} sx={{ width: '100%', alignItems: 'flex-start' }}>
           <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap' }}>
-            <ThemedButton variant="contained" onClick={() => setOpen(true)}>
+            <Button variant="contained" onClick={() => setOpen(true)}>
               Open {scenarioLabel.toLowerCase()}
-            </ThemedButton>
+            </Button>
             <FormControl size="small" sx={{ minWidth: 180 }}>
               <InputLabel id="right-panel-scenario-label">Scenario</InputLabel>
               <Select
@@ -271,8 +270,8 @@ export function RightPanelDemo() {
                 onClose={requestClose}
                 actions={
                   <>
-                    <ThemedButton variant="outlined" onClick={requestClose}>Cancel</ThemedButton>
-                    <ThemedButton variant="contained" onClick={() => setOpen(false)}>Save</ThemedButton>
+                    <Button variant="outlined" onClick={requestClose}>Cancel</Button>
+                    <Button variant="contained" onClick={() => setOpen(false)}>Save</Button>
                   </>
                 }
               >
@@ -350,8 +349,8 @@ export function RightPanelDemo() {
                 onClose={requestClose}
                 actions={
                   <>
-                    <ThemedButton variant="outlined" onClick={requestClose}>Button</ThemedButton>
-                    <ThemedButton variant="contained" onClick={() => setOpen(false)}>Button</ThemedButton>
+                    <Button variant="outlined" onClick={requestClose}>Button</Button>
+                    <Button variant="contained" onClick={() => setOpen(false)}>Button</Button>
                   </>
                 }
               >
@@ -410,7 +409,7 @@ export function RightPanelDemo() {
             <ThemedDetailPanel
               title="Custom panel"
               onClose={requestClose}
-              actions={<ThemedButton variant="outlined" onClick={requestClose}>Close</ThemedButton>}
+              actions={<Button variant="outlined" onClick={requestClose}>Close</Button>}
             >
               <ThemedDetailPanelSection title="Identification">
                 {['Name', 'Description', 'External ID'].map((item) => (

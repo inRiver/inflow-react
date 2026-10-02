@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { Box, Switch, TextField } from '@mui/material';
-import { ThemedButton } from '../../components/themed/ThemedButton';
+import { Box, Button, Switch, TextField } from '@mui/material';
 import { ThemedDetailPanel, ThemedDetailPanelSection } from '../../components/themed/ThemedDetailPanel';
 import { CodeBlock } from '../CodeBlock';
 import { DemoFrame } from '../DemoFrame';
@@ -11,7 +10,7 @@ const codeExample = `import { ThemedDetailPanel, ThemedDetailPanelSection } from
 <ThemedDetailPanel
   title="Edit product"
   onClose={handleClose}
-  actions={<ThemedButton variant="contained">Save</ThemedButton>}
+  actions={<Button variant="contained">Save</Button>}
 >
   <ThemedDetailPanelSection title="Details">
     <TextField label="Product name" fullWidth />
@@ -43,8 +42,8 @@ export function DetailPanelDemo() {
             onClose={showClose ? () => undefined : undefined}
             actions={showActions ? (
               <>
-                <ThemedButton variant="outlined">Cancel</ThemedButton>
-                <ThemedButton variant="contained">Save changes</ThemedButton>
+                <Button variant="outlined">Cancel</Button>
+                <Button variant="contained">Save changes</Button>
               </>
             ) : undefined}
           >

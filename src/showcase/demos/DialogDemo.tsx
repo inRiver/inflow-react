@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, Stack, Paper, Box } from '@mui/material';
-import { ThemedButton, ThemedDialog } from '../../components/themed';
+import { ThemedDialog } from '../../components/themed';
 import { DemoFrame } from '../DemoFrame';
 import { CodeBlock } from '../CodeBlock';
 import { PropsPlayground } from '../PropsPlayground';
@@ -52,13 +52,14 @@ import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, B
     <DialogContentText>Dialog content goes here.</DialogContentText>
   </DialogContent>
   <DialogActions>
-    <Button onClick={() => setOpen(false)}>Cancel</Button>
+    <Button variant="outlined" onClick={() => setOpen(false)}>Cancel</Button>
     <Button onClick={() => setOpen(false)}>Agree</Button>
   </DialogActions>
 </Dialog>`;
 
   const themedCodeExample = `
-import { ThemedDialog, ThemedButton } from '@inriver/inflow-react';
+import { ThemedDialog } from '@inriver/inflow-react';
+import { Button } from '@mui/material';
 
 // <InflowProvider> only needs to be declared once at your app root - see Guidelines
 <ThemedDialog
@@ -69,8 +70,8 @@ import { ThemedDialog, ThemedButton } from '@inriver/inflow-react';
   title="Dialog Title"
   actions={
     <>
-      <ThemedButton variant="text" onClick={() => setOpen(false)}>Cancel</ThemedButton>
-      <ThemedButton onClick={() => setOpen(false)}>Agree</ThemedButton>
+      <Button variant="outlined" onClick={() => setOpen(false)}>Cancel</Button>
+      <Button onClick={() => setOpen(false)}>Agree</Button>
     </>
   }
 >
@@ -104,14 +105,14 @@ import { ThemedDialog, ThemedButton } from '@inriver/inflow-react';
                   <DialogContentText>Dialog content goes here.</DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                  <Button onClick={() => setOpen(false)}>Cancel</Button>
+                  <Button variant="outlined" onClick={() => setOpen(false)}>Cancel</Button>
                   <Button onClick={() => setOpen(false)}>Agree</Button>
                 </DialogActions>
               </Dialog>
             </>
           ) : (
             <>
-              <ThemedButton onClick={() => setOpen(true)}>Open Dialog</ThemedButton>
+              <Button onClick={() => setOpen(true)}>Open Dialog</Button>
               <ThemedDialog
                 open={open}
                 onClose={() => setOpen(false)}
@@ -121,8 +122,8 @@ import { ThemedDialog, ThemedButton } from '@inriver/inflow-react';
                 title="Dialog Title"
                 actions={
                   <>
-                    <ThemedButton variant="text" onClick={() => setOpen(false)}>Cancel</ThemedButton>
-                    <ThemedButton onClick={() => setOpen(false)}>Agree</ThemedButton>
+                    <Button variant="outlined" onClick={() => setOpen(false)}>Cancel</Button>
+                    <Button onClick={() => setOpen(false)}>Agree</Button>
                   </>
                 }
               >
@@ -160,7 +161,7 @@ import { ThemedDialog, ThemedButton } from '@inriver/inflow-react';
               </DialogContentText>
             </DialogContent>
             <DialogActions>
-              <Button variant="text">Cancel</Button>
+              <Button variant="outlined">Cancel</Button>
               <Button variant="contained">Confirm</Button>
             </DialogActions>
           </Paper>

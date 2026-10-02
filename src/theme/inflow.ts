@@ -171,7 +171,7 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
       h6: { fontWeight: 700, fontSize: '1.375rem', lineHeight: '2.25rem', letterSpacing: '0.009375rem' },
       subtitle1: { fontWeight: 400, fontSize: '1rem', lineHeight: 1.5, letterSpacing: '0.009375rem' },
       subtitle2: { fontWeight: 500, fontSize: '0.875rem', lineHeight: '1.25rem', letterSpacing: '0.00625rem' },
-      body1: { fontWeight: 400, fontSize: '1rem', lineHeight: '1.5rem', letterSpacing: '0.03125rem' },
+      body1: { fontWeight: 400, fontSize: '1rem', lineHeight: '1.5rem', letterSpacing: 0 },
       body2: { fontWeight: 400, fontSize: '0.875rem', lineHeight: '1.25rem', letterSpacing: '0.015625rem' },
       button: { fontWeight: 500, fontSize: '0.875rem', lineHeight: '1.25rem', letterSpacing: '0.00625rem', textTransform: 'capitalize' },
       caption: { fontWeight: 400, fontSize: '0.75rem', lineHeight: '1rem', letterSpacing: '0.025rem' },
@@ -214,7 +214,7 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
           },
           sizeSmall: ({ theme }) => ({ height: 30, padding: theme.spacing(0, 2), fontSize: '0.8125rem' }),
           sizeMedium: ({ theme }) => ({ height: 40, padding: theme.spacing(0, 3), fontSize: '0.875rem' }),
-          sizeLarge: ({ theme }) => ({ height: 40, padding: theme.spacing(0, 3), fontSize: '0.875rem' }),
+          sizeLarge: ({ theme }) => ({ height: 48, padding: theme.spacing(0, 4), fontSize: '1rem' }),
           outlined: { borderColor: T.outlineVariant },
         },
       },
@@ -253,6 +253,15 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
       },
 
       MuiTextField: { defaultProps: { variant: 'outlined', size: 'small' } },
+      MuiSelect: { defaultProps: { size: 'small' } },
+      MuiFormControl: { defaultProps: { size: 'small' } },
+      MuiInputBase: {
+        styleOverrides: {
+          root: {
+            '&.MuiInputBase-sizeSmall': { fontSize: '0.875rem', lineHeight: '1.429' },
+          },
+        },
+      },
       MuiOutlinedInput: {
         styleOverrides: {
           root: {
@@ -278,6 +287,7 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
         styleOverrides: {
           root: {
             '&.Mui-focused': { color: T.navy700 },
+            '&.MuiInputLabel-sizeSmall': { fontSize: '0.875rem' },
           },
         },
       },
@@ -397,7 +407,7 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
         defaultProps: { elevation: 1 },
       },
       MuiCard: { styleOverrides: { root: { borderRadius: T.radiusSm } }, defaultProps: { elevation: 1 } },
-      MuiDialog: { styleOverrides: { paper: { borderRadius: T.radiusXl } } },
+      MuiDialog: { defaultProps: { maxWidth: 'xs' }, styleOverrides: { paper: { borderRadius: T.radiusXl, width: 'min(444px, calc(100vw - 32px))' } } },
       MuiDialogTitle: {
         styleOverrides: {
           root: ({ theme }) => ({

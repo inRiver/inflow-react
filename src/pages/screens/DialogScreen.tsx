@@ -138,7 +138,7 @@ export default function DialogScreen() {
           </DialogContent>
 
           <DialogActions sx={{ p: 2 }}>
-            <Button onClick={handleClose}>Cancel</Button>
+            <Button variant="outlined" onClick={handleClose}>Cancel</Button>
             <Button
               onClick={handleBack}
               disabled={activeStep === 0}

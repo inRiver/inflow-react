@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Breadcrumbs, Link, Typography, Stack } from '@mui/material';
+import { Breadcrumbs, Link, Stack } from '@mui/material';
 import { ThemedBreadcrumbs } from '../../components/themed/ThemedBreadcrumbs';
 import { DemoFrame } from '../DemoFrame';
 import { CodeBlock } from '../CodeBlock';
@@ -12,7 +12,6 @@ const themedInfo = getThemedComponentInfo('breadcrumbs');
 const themedShortTrail = [
   { label: 'Home', href: '/' },
   { label: 'Catalog', href: '/catalog', icon: 'category' },
-  { label: 'Accessories' },
 ];
 const themedLongTrail = [
   { label: 'Home', href: '/' },
@@ -20,7 +19,6 @@ const themedLongTrail = [
   { label: 'Accessories', href: '/accessories' },
   { label: 'Audio', href: '/audio' },
   { label: 'Headphones', href: '/headphones' },
-  { label: 'Wireless' },
 ];
 
 export function BreadcrumbsDemo() {
@@ -101,9 +99,8 @@ const items = [
         <>
           <DemoFrame title="Breadcrumbs - Interactive">
             <Breadcrumbs aria-label="breadcrumb" separator={muiSeparator} maxItems={muiMaxItems}>
-              <Link underline="hover" color="inherit" href="/">Home</Link>
-              <Link underline="hover" color="inherit" href="/catalog">Catalog</Link>
-              <Typography color="text.primary">Accessories</Typography>
+              <Link underline="always" color="primary.main" href="/">Home</Link>
+              <Link underline="always" color="primary.main" href="/catalog">Catalog</Link>
             </Breadcrumbs>
           </DemoFrame>
 
@@ -115,12 +112,12 @@ const items = [
             <Stack spacing={2} direction="column">
               <Stack spacing={2}>
                 <Breadcrumbs>
-                  <Link underline="hover" color="inherit" href="/">Home</Link>
-                  <Typography color="text.primary">Current</Typography>
+                  <Link underline="always" color="primary.main" href="/">Home</Link>
+                  <Link underline="always" color="primary.main" href="/catalog">Catalog</Link>
                 </Breadcrumbs>
                 <Breadcrumbs separator=">">
-                  <Link underline="hover" color="inherit" href="/">Home</Link>
-                  <Typography color="text.primary">Custom Separator</Typography>
+                  <Link underline="always" color="primary.main" href="/">Home</Link>
+                  <Link underline="always" color="primary.main" href="/catalog">Custom Separator</Link>
                 </Breadcrumbs>
               </Stack>
             </Stack>

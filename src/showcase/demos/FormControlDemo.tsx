@@ -10,7 +10,7 @@ export function FormControlDemo() {
     disabled: false,
     error: false,
     required: false,
-    size: 'medium',
+    size: 'small',
   });
 
   const schema: PropSchema[] = [

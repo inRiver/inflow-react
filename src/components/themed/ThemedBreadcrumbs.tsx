@@ -1,5 +1,5 @@
 import { forwardRef, useState } from 'react';
-import { Breadcrumbs, Icon, IconButton, Link, Typography } from '@mui/material';
+import { Box, Breadcrumbs, Icon, IconButton, Link, Typography } from '@mui/material';
 import type { ReactNode } from 'react';
 
 export interface ThemedBreadcrumbItem {
@@ -28,18 +28,24 @@ export const ThemedBreadcrumbs = forwardRef<HTMLElement, ThemedBreadcrumbsProps>
         >
           chevron_right
         </Icon>
+      ) : separator === 'bar' ? (
+        <Box
+          component="span"
+          sx={(theme) => ({
+            display: 'inline-block',
+            width: '1px',
+            height: '0.9em',
+            backgroundColor: theme.palette.primary.main,
+            verticalAlign: 'middle',
+            userSelect: 'none',
+          })}
+        />
       ) : (
         <Typography
           component="span"
-          sx={(theme) => ({
-            color: theme.palette.text.secondary,
-            opacity: 0.7,
-            userSelect: 'none',
-            fontSize: '1rem',
-            lineHeight: 1,
-          })}
+          sx={{ color: 'text.secondary', opacity: 0.7, userSelect: 'none', fontSize: 'inherit' }}
         >
-          {separator === 'bar' ? '|' : '/'}
+          /
         </Typography>
       );
     const visibleItems =
@@ -72,7 +78,6 @@ export const ThemedBreadcrumbs = forwardRef<HTMLElement, ThemedBreadcrumbsProps>
             );
           }
 
-          const isLast = index === visibleItems.length - 1;
           const content = (
             <>
               {item.icon && (
@@ -87,37 +92,15 @@ export const ThemedBreadcrumbs = forwardRef<HTMLElement, ThemedBreadcrumbsProps>
             </>
           );
 
-          if (isLast) {
-            return (
-              <Typography
-                key={index}
-                aria-current="page"
-                variant="body2"
-                sx={{
-                  color: 'text.primary',
-                  fontWeight: 500,
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-              >
-                {content}
-              </Typography>
-            );
-          }
-
           return (
             <Link
               key={index}
               href={item.href ?? '#'}
               onClick={item.onClick}
-              underline="hover"
+              underline="always"
               variant="body2"
-              color="text.secondary"
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                '&:hover': { color: 'primary.main' },
-              }}
+              color="primary.main"
+              sx={{ display: 'flex', alignItems: 'center' }}
             >
               {content}
             </Link>

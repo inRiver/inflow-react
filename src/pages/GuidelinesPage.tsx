@@ -84,15 +84,15 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
 
 const colorModeFlagCode = `import { INFLOW_DARK_MODE_ENABLED } from '@inriver/inflow-react';`;
 
-const componentCode = `import { Stack } from '@mui/material';
-import { ThemedButton, ThemedChip, ThemedTextField } from '@inriver/inflow-react';
+const componentCode = `import { Stack, Button, TextField } from '@mui/material';
+import { ThemedChip } from '@inriver/inflow-react';
 
 export function ProductStatus() {
   return (
     <Stack spacing={2} direction="row" alignItems="center">
       <ThemedChip label="Active" color="primary" />
-      <ThemedTextField label="Product name" />
-      <ThemedButton variant="contained">Save</ThemedButton>
+      <TextField label="Product name" />
+      <Button variant="contained">Save</Button>
     </Stack>
   );
 }`;
@@ -136,7 +136,7 @@ npm install  # Reinstalls from public npm or your normal lockfile source`;
 const publicExports = [
   'inflowTheme and defaultTheme',
   'inflowTokens, inflowCustomColors, and inflowSpacing',
-  'ThemedButton, ThemedChip, ThemedTextField, ThemedCard, ThemedDialog, and ThemedTable',
+  'ThemedChip, ThemedCard, ThemedDialog, ThemedTable, and other structural themed components',
   'inflowGridThemeParams (via @inriver/inflow-react/ag-grid)',
 ];
 
