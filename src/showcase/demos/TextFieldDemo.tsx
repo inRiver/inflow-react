@@ -17,7 +17,7 @@ export function TextFieldDemo() {
   "color": "primary",
   "disabled": false,
   "error": false,
-  "size": "medium",
+  "size": "small",
   "label": "Label"
 });
 

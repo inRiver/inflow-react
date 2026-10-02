@@ -14,7 +14,7 @@ const topFilms = [
 
 export function AutocompleteDemo() {
   const [props, setProps] = useState<Record<string, any>>({
-    size: 'medium',
+    size: 'small',
     disabled: false,
     multiple: false,
   });
