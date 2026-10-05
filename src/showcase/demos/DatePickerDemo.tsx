@@ -12,7 +12,7 @@ import type { PropSchema } from '../PropsPlayground';
 export function DatePickerDemo() {
   const [props, setProps] = useState<Record<string, any>>({
     disabled: false,
-    size: 'medium',
+    size: 'small',
   });
   const [value, setValue] = useState<Dayjs | null>(dayjs('2024-01-01'));
 

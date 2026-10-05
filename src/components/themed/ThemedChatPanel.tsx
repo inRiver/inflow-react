@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Icon,
   IconButton,
   InputBase,
@@ -12,7 +13,6 @@ import {
 } from '@mui/material';
 import { forwardRef, useCallback, useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
 import { inflowTokens } from '../../theme';
-import { ThemedButton } from './ThemedButton';
 import { ThemedChip } from './ThemedChip';
 
 export type ThemedChatMessageRole = 'assistant' | 'user';
@@ -362,7 +362,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
           }}
         >
           <Box sx={{ position: 'relative', minWidth: 0 }}>
-          <ThemedButton
+          <Button
             id={assistantTriggerId}
             size="small"
             endIcon={<Icon baseClassName="material-icons-outlined" sx={{ fontSize: 18 }}>arrow_drop_down</Icon>}
@@ -393,7 +393,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
             }}
           >
             {selected}
-          </ThemedButton>
+          </Button>
           </Box>
 
           <Menu
@@ -766,14 +766,14 @@ function ChatMessage({
       {message.actions && message.actions.length > 0 && (
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
           {message.actions.map((action) => (
-            <ThemedButton
+            <Button
               key={action}
               variant="outlined"
               size="small"
               sx={{ height: 32, px: 2 }}
             >
               {action}
-            </ThemedButton>
+            </Button>
           ))}
         </Box>
       )}

@@ -10,7 +10,7 @@ export function SelectDemo() {
   "variant": "outlined",
   "disabled": false,
   "error": false,
-  "size": "medium"
+  "size": "small"
 });
 
   const schema: PropSchema[] = [

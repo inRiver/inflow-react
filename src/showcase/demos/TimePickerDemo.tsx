@@ -8,7 +8,7 @@ import type { PropSchema } from '../PropsPlayground';
 export function TimePickerDemo() {
   const [props, setProps] = useState<Record<string, any>>({
     disabled: false,
-    size: 'medium',
+    size: 'small',
   });
 
   const schema: PropSchema[] = [

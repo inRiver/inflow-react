@@ -1,23 +1,17 @@
 import { useState } from 'react';
-import { TextField, Stack } from '@mui/material';
-import { ThemedTextField } from '../../components/themed';
+import { Alert, TextField, Stack } from '@mui/material';
 import { DemoFrame } from '../DemoFrame';
 import { CodeBlock } from '../CodeBlock';
 import { PropsPlayground } from '../PropsPlayground';
 import type { PropSchema } from '../PropsPlayground';
-import { DemoVariantTabs, type DemoVariant } from '../DemoVariantTabs';
-import { getThemedComponentInfo } from '../themedComponentInfo';
-
-const themedInfo = getThemedComponentInfo('textfield');
 
 export function TextFieldDemo() {
-  const [variant, setVariant] = useState<DemoVariant>('mui');
   const [props, setProps] = useState<Record<string, any>>({
   "variant": "outlined",
   "color": "primary",
   "disabled": false,
   "error": false,
-  "size": "medium",
+  "size": "small",
   "label": "Label"
 });
 
@@ -74,31 +68,16 @@ import { TextField } from '@mui/material';
   label="Label"
 />`;
 
-  const themedCodeExample = `
-import { ThemedTextField } from '@inriver/inflow-react';
-
-// <InflowProvider> only needs to be declared once at your app root - see Guidelines
-<ThemedTextField 
-  variant={props.variant}
-  color={props.color}
-  size={props.size}
-  disabled={props.disabled}
-  error={props.error}
-  label="Label"
-/>`;
-
   return (
     <>
-      <DemoVariantTabs
-        value={variant}
-        onChange={setVariant}
-        muiLabel="MUI TextField"
-        themedLabel="ThemedTextField"
-        themedReason={themedInfo?.reason}
-      />
+      <Alert severity="warning" sx={{ mb: 2 }}>
+        ThemedTextField is deprecated and will be removed in the next major release. The theme
+        already defaults MUI TextField to variant="outlined" and size="small" inside
+        InflowProvider, so a plain TextField from @mui/material looks and behaves the same.
+      </Alert>
 
       <DemoFrame title="Text Field - Interactive">
-        {variant === 'mui' ? <TextField {...props} /> : <ThemedTextField {...props} />}
+        <TextField {...props} />
       </DemoFrame>
 
       <PropsPlayground 
@@ -107,7 +86,7 @@ import { ThemedTextField } from '@inriver/inflow-react';
         onChange={setProps}
       />
 
-      <CodeBlock code={variant === 'mui' ? muiCodeExample : themedCodeExample} language="tsx" />
+      <CodeBlock code={muiCodeExample} language="tsx" />
 
       <DemoFrame title="All States">
         <Stack spacing={2} direction="column">

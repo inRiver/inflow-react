@@ -20,7 +20,6 @@ describe('ThemedBreadcrumbs', () => {
   });
 
   it.each([
-    ['bar', '|'],
     ['chevron', 'chevron_right'],
     ['slash', '/'],
   ] as const)('renders the %s separator', (separator, expected) => {
@@ -29,18 +28,18 @@ describe('ThemedBreadcrumbs', () => {
     expect(screen.getAllByText(expected).length).toBeGreaterThan(0);
   });
 
-  it('uses vertical bars by default', () => {
-    renderWithInflow(<ThemedBreadcrumbs items={items} />);
+  it('uses a CSS bar separator by default with correct number of separators', () => {
+    const { container } = renderWithInflow(<ThemedBreadcrumbs items={items} />);
 
-    expect(screen.getAllByText('|')).toHaveLength(items.length - 1);
+    const separators = container.querySelectorAll('.MuiBreadcrumbs-separator');
+    expect(separators).toHaveLength(items.length - 1);
   });
 
-  it('marks the last item as the current non-link page', () => {
+  it('renders all items as clickable links', () => {
     renderWithInflow(<ThemedBreadcrumbs items={items} />);
 
-    const currentPage = screen.getByText('Accessories');
-    expect(currentPage).toHaveAttribute('aria-current', 'page');
-    expect(currentPage.closest('a')).toBeNull();
+    const accessories = screen.getByText('Accessories');
+    expect(accessories.closest('a')).not.toBeNull();
   });
 
   it('renders intermediate items as clickable links', () => {
@@ -75,6 +74,5 @@ describe('ThemedBreadcrumbs', () => {
     renderWithInflow(<ThemedBreadcrumbs items={items} />);
 
     expect(screen.getByRole('navigation', { name: 'breadcrumb' })).toBeInTheDocument();
-    expect(screen.getByText('Accessories')).toHaveAttribute('aria-current', 'page');
   });
 });

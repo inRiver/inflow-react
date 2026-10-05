@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Fade,
   Slide,
   useTheme,
@@ -13,7 +14,6 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { ThemedButton } from './ThemedButton';
 import { ThemedDialog } from './ThemedDialog';
 
 export type ThemedRightPanelMode = 'push' | 'overlay';
@@ -336,12 +336,12 @@ export const ThemedRightPanel = forwardRef<HTMLDivElement, ThemedRightPanelProps
           title="Discard changes?"
           actions={(
             <>
-              <ThemedButton variant="outlined" onClick={discardChanges}>
+              <Button variant="outlined" onClick={discardChanges}>
                 Discard
-              </ThemedButton>
-              <ThemedButton variant="contained" onClick={keepEditing}>
+              </Button>
+              <Button variant="contained" onClick={keepEditing}>
                 Keep Editing
-              </ThemedButton>
+              </Button>
             </>
           )}
         >

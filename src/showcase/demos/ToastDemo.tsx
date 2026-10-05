@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { Stack, Typography } from '@mui/material';
-import { ThemedButton } from '../../components/themed/ThemedButton';
+import { Button, Stack, Typography } from '@mui/material';
 import { ThemedToast, type ThemedToastSeverity } from '../../components/themed/ThemedToast';
 import { CodeBlock } from '../CodeBlock';
 import { DemoFrame } from '../DemoFrame';
@@ -47,9 +46,9 @@ ${showTitle ? '  title="Changes saved"\n' : ''}  message="Information message."
             onClose={() => setPreviewVisible(false)}
           />
         ) : (
-          <ThemedButton size="small" variant="text" onClick={() => setPreviewVisible(true)}>
+          <Button size="small" variant="text" onClick={() => setPreviewVisible(true)}>
             Restore toast
-          </ThemedButton>
+          </Button>
         )}
       </DemoFrame>
 
@@ -94,9 +93,9 @@ ${showTitle ? '  title="Changes saved"\n' : ''}  message="Information message."
               onClose={() => setDismissibleVisible(false)}
             />
           ) : (
-            <ThemedButton size="small" variant="text" onClick={() => setDismissibleVisible(true)}>
+            <Button size="small" variant="text" onClick={() => setDismissibleVisible(true)}>
               Restore dismissible toast
-            </ThemedButton>
+            </Button>
           )}
         </Stack>
       </DemoFrame>

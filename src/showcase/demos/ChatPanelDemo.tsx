@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Box, Stack, Typography } from '@mui/material';
-import { ThemedButton } from '../../components/themed/ThemedButton';
+import { Box, Button, Stack, Typography } from '@mui/material';
 import { ThemedChatAccordion, type ThemedChatAccordionStep } from '../../components/themed/ThemedChatAccordion';
 import { ThemedChip } from '../../components/themed/ThemedChip';
 import { ThemedChatPanel, type ThemedChatAttachment, type ThemedChatMessageDef, type ThemedChatTool } from '../../components/themed/ThemedChatPanel';
@@ -171,7 +170,7 @@ const enrichMessages: ThemedChatMessageDef[] = [
           ))}
         </Box>
         <Box>
-          <ThemedButton variant="contained" size="small">Confirm</ThemedButton>
+          <Button variant="contained" size="small">Confirm</Button>
         </Box>
       </Stack>
     ),
@@ -262,9 +261,9 @@ export function ChatPanelDemo() {
           <Typography variant="body2" color="text.secondary">
             An Inflow PIM assistant composes its full chat experience into the right-panel host.
           </Typography>
-          <ThemedButton variant="contained" onClick={() => setOpen(true)}>
+          <Button variant="contained" onClick={() => setOpen(true)}>
             Open chat assistant
-          </ThemedButton>
+          </Button>
         </Stack>
       </DemoFrame>
 
