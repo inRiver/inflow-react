@@ -1,6 +1,6 @@
 {
   "name": "@inriver/inflow-react",
-  "version": "3.8.1",
+  "version": "3.9.1",
   "description": "Shared Inflow React/MUI design-system: canonical theme, design tokens, and themed wrapper components for Inriver product UIs.",
   "keywords": [
     "inriver",
