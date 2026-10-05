@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
-import { Box, Typography, Paper, Divider, Stack, IconButton, Snackbar } from '@mui/material';
+import { Box, Button, TextField, Typography, Paper, Divider, Stack, IconButton, Snackbar } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import {
-  ThemedButton,
-  ThemedTextField,
   ThemedCard,
   ThemedChip,
   ThemedDialog,
@@ -12,28 +10,28 @@ import {
 
 const componentsList = [
   {
-    name: 'ThemedButton',
-    description: 'A button component with Inflow tokens.',
-    code: `<ThemedButton variant="contained">Primary Action</ThemedButton>
-<ThemedButton variant="outlined">Secondary</ThemedButton>
-<ThemedButton variant="text">Text Button</ThemedButton>`,
+    name: 'Button',
+    description: 'A plain MUI Button styled by the Inflow theme inside InflowProvider.',
+    code: `<Button variant="contained">Primary Action</Button>
+<Button variant="outlined">Secondary</Button>
+<Button variant="text">Text Button</Button>`,
     component: (
       <Stack direction="row" spacing={2}>
-        <ThemedButton variant="contained">Primary Action</ThemedButton>
-        <ThemedButton variant="outlined">Secondary</ThemedButton>
-        <ThemedButton variant="text">Text Button</ThemedButton>
+        <Button variant="contained">Primary Action</Button>
+        <Button variant="outlined">Secondary</Button>
+        <Button variant="text">Text Button</Button>
       </Stack>
     )
   },
   {
-    name: 'ThemedTextField',
-    description: 'A text field component with Inflow tokens.',
-    code: `<ThemedTextField label="Username" placeholder="Enter username" />
-<ThemedTextField label="Password" type="password" error helperText="Incorrect password" />`,
+    name: 'TextField',
+    description: 'A plain MUI TextField styled by the Inflow theme inside InflowProvider (outlined + small by default).',
+    code: `<TextField label="Username" placeholder="Enter username" />
+<TextField label="Password" type="password" error helperText="Incorrect password" />`,
     component: (
       <Stack direction="row" spacing={2}>
-        <ThemedTextField label="Username" placeholder="Enter username" />
-        <ThemedTextField label="Password" type="password" error helperText="Incorrect password" />
+        <TextField label="Username" placeholder="Enter username" />
+        <TextField label="Password" type="password" error helperText="Incorrect password" />
       </Stack>
     )
   },
@@ -43,7 +41,7 @@ const componentsList = [
     code: `<ThemedCard 
   title="Project Title" 
   subheader="Created on Jan 1, 2026"
-  actions={<ThemedButton size="small">View Details</ThemedButton>}
+  actions={<Button size="small">View Details</Button>}
 >
   <Typography variant="body2">This is the main content area of the themed card.</Typography>
 </ThemedCard>`,
@@ -52,7 +50,7 @@ const componentsList = [
         <ThemedCard 
           title="Project Title" 
           subheader="Created on Jan 1, 2026"
-          actions={<ThemedButton size="small">View Details</ThemedButton>}
+          actions={<Button size="small">View Details</Button>}
         >
           <Typography variant="body2">This is the main content area of the themed card.</Typography>
         </ThemedCard>
@@ -166,7 +164,7 @@ export const PreRenderedPage: React.FC = () => {
            </Typography>
           
           <Paper variant="outlined" sx={{ p: 3, mb: 2, backgroundColor: '#f9f9fa' }}>
-            <ThemedButton onClick={() => setDialogOpen(true)}>Open Dialog</ThemedButton>
+            <Button onClick={() => setDialogOpen(true)}>Open Dialog</Button>
             
              <ThemedDialog
                open={dialogOpen}
@@ -174,11 +172,11 @@ export const PreRenderedPage: React.FC = () => {
                title="Edit Settings"
                actions={
                  <Stack direction="row" spacing={1}>
-                   <ThemedButton variant="outlined" onClick={() => setDialogOpen(false)}>Cancel</ThemedButton>
-                   <ThemedButton onClick={() => setDialogOpen(false)}>Save Changes</ThemedButton>
+                   <Button variant="outlined" onClick={() => setDialogOpen(false)}>Cancel</Button>
+                   <Button onClick={() => setDialogOpen(false)}>Save Changes</Button>
                  </Stack>
                }
-             >
+              >
                <Typography>
                  Configure the settings below. This dialog uses Inflow tokens for border-radius and background colors.
                </Typography>
@@ -202,8 +200,8 @@ export const PreRenderedPage: React.FC = () => {
   title="Edit Settings"
   actions={
     <Stack direction="row" spacing={1}>
-      <ThemedButton variant="outlined" onClick={() => setDialogOpen(false)}>Cancel</ThemedButton>
-      <ThemedButton onClick={() => setDialogOpen(false)}>Save Changes</ThemedButton>
+      <Button variant="outlined" onClick={() => setDialogOpen(false)}>Cancel</Button>
+      <Button onClick={() => setDialogOpen(false)}>Save Changes</Button>
     </Stack>
   }
 >
@@ -217,8 +215,8 @@ export const PreRenderedPage: React.FC = () => {
   title="Edit Settings"
   actions={
     <Stack direction="row" spacing={1}>
-      <ThemedButton variant="outlined" onClick={() => setDialogOpen(false)}>Cancel</ThemedButton>
-      <ThemedButton onClick={() => setDialogOpen(false)}>Save Changes</ThemedButton>
+      <Button variant="outlined" onClick={() => setDialogOpen(false)}>Cancel</Button>
+      <Button onClick={() => setDialogOpen(false)}>Save Changes</Button>
     </Stack>
   }
 >

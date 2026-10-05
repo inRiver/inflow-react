@@ -44,19 +44,10 @@ export const THEMED_COMPONENT_INFO: Record<string, ThemedComponentInfo> = {
     reason:
       'Adds an items array API with chevron/slash separators and expandable ellipsis collapse.',
   },
-  button: {
-    themedName: 'ThemedButton',
-    reason:
-      'Forces Inflow-specific tokens (radius, hover states, disableElevation) that stay consistent even if a product overrides the global button theme.',
-  },
   chip: {
     themedName: 'ThemedChip',
     reason:
       'Forces Inflow-specific tokens (radius, color and delete-icon states) and adds DS primary chip variants that stay consistent regardless of global theme overrides.',
-  },
-  textfield: {
-    themedName: 'ThemedTextField',
-    reason: 'Applies the Inflow default of outlined + small so teams do not have to repeat those props on every field.',
   },
   card: {
     themedName: 'ThemedCard',
