@@ -60,6 +60,18 @@ Themed components are thin MUI wrappers with a stable public contract. When addi
 
 The showcase demos (`src/showcase/demos/`) have their own tests (`*.test.tsx` alongside). If you rewrite a demo's scenarios, labels, or structure, its test drives UI that no longer exists — update both in the same commit.
 
+## Deprecated components — hidden from the showcase, kept in the API
+
+When a `Themed*` wrapper is deprecated (marked `@deprecated` in its source, e.g. `ThemedButton`, `ThemedTextField`), deprecating is a *two-sided* change and both sides ship together:
+
+- **Keep the public API.** The component file, its export from `src/components/themed/index.ts`, and its entry in the README API table all stay. Removal is a semver-major decision (see `docs/VERSIONING.md`) — never delete a deprecated export in a minor/patch change.
+- **Hide it from the showcase.** The showcase is consumer-facing guidance, so it must not demonstrate or advertise a deprecated component:
+  1. In the demo page (`src/showcase/demos/<Name>Demo.tsx`), remove the `DemoVariantTabs` MUI/Themed tabs, the themed import/render branch, and the themed code example — leave only the plain MUI demo.
+  2. Add a deprecation `Alert` (`severity="warning"`) at the top of the demo stating the component is deprecated, will be removed in the next major release, and what to use instead.
+  3. Remove the component's entry from `THEMED_COMPONENT_INFO` in `src/showcase/themedComponentInfo.ts` (this clears the sidebar badge).
+  4. Swap any usage in `src/pages/PreRenderedPage.tsx` (rendered output *and* the copy-paste code strings) to the plain MUI equivalent.
+- **Partial deprecation is a defect.** A demo page that shows a deprecation warning *and* still offers a live themed tab contradicts itself. When you deprecate a component, do all of the above in one commit; when you find one already deprecated in source but still showcased, fix it the same way.
+
 ## package-lock.json — do not commit platform drift
 
 This is a cross-platform repo; CI and most consumers run Linux. If your local `git status` shows `package-lock.json` modified with a large diff of **deletions** to `node_modules/@esbuild/*`, `node_modules/@rollup/*`, or similar platform-keyed optional packages, that is your local npm pruning binaries for other operating systems. **Discard it: `git checkout -- package-lock.json`.** Committing it breaks `npm ci` on other platforms. Only commit lockfile changes that correspond to a real `package.json` dependency change you made.
