@@ -7,6 +7,9 @@ All notable changes to `@inriver/inflow-react` are documented here. This project
 ### Added
 - `ThemedPageHeader` accepts a `breadcrumbs` prop (for example a `ThemedBreadcrumbs`) that renders above the title in place of the `eyebrow` (library-facing).
 - Showcase-only: Page Header demo examples for a title-only header and a header with breadcrumbs.
+- `ThemedFileTypeIcon`: a file-type icon that renders any extension on a page outline with a folded corner and a label showing the extension. Known formats are colored by family (documents, audio, video, image, compressed) and unknown formats stay neutral. Supports `size` (`sm`, `md`, or a width in px), `tone`, and `decorative` (library-facing).
+- `inflowFileTypeColors`, `inflowFileTypeExtensions`, and `normalizeFileExtension` theme exports for the file-type color families and extension parsing (library-facing).
+- Showcase-only: File Type Icon demo with a props playground, a format gallery, and a table-row example.
 
 ### Changed
 - `ThemedPageHeader` vertical padding is 10px instead of 12px, so the header is 76px tall with or without an eyebrow line. Headers with an eyebrow were 80px; title-only headers are unchanged at 76px (library-facing).
