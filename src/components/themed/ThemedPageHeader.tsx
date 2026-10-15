@@ -1,7 +1,7 @@
 import { forwardRef } from 'react';
 import { Box, IconButton, Stack, Typography } from '@mui/material';
 import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
-import type { CSSProperties } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { ThemedButton } from './ThemedButton';
 
 export interface PageHeaderAction {
@@ -12,6 +12,8 @@ export interface PageHeaderAction {
 
 export interface PageHeaderProps {
   eyebrow?: string;
+  /** Breadcrumb trail shown above the title in place of the eyebrow, e.g. a `ThemedBreadcrumbs`. */
+  breadcrumbs?: ReactNode;
   title?: string;
   onBack?: () => void;
   actions?: PageHeaderAction[];
@@ -27,7 +29,7 @@ export type ThemedPageHeaderProps = PageHeaderProps;
  * and page-level actions.
  */
 export const ThemedPageHeader = forwardRef<HTMLDivElement, ThemedPageHeaderProps>(
-  ({ eyebrow, title, onBack, actions = [], style }, ref) => (
+  ({ eyebrow, breadcrumbs, title, onBack, actions = [], style }, ref) => (
     <Box
       ref={ref}
       style={style}
@@ -38,7 +40,7 @@ export const ThemedPageHeader = forwardRef<HTMLDivElement, ThemedPageHeaderProps
         display: 'flex',
         gap: theme.spacing(2),
         minHeight: 76,
-        padding: theme.spacing(1.5, 3),
+        padding: theme.spacing(1.25, 3),
       })}
     >
       {onBack && (
@@ -60,11 +62,12 @@ export const ThemedPageHeader = forwardRef<HTMLDivElement, ThemedPageHeaderProps
       )}
 
       <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column', minWidth: 0 }}>
-        {eyebrow && (
-          <Typography color="primary" variant="body2">
-            {eyebrow}
-          </Typography>
-        )}
+        {breadcrumbs ??
+          (eyebrow && (
+            <Typography color="primary" variant="body2">
+              {eyebrow}
+            </Typography>
+          ))}
         {title && (
           <Typography color="primary" component="h1" variant="h6">
             {title}
