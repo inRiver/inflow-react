@@ -11,6 +11,19 @@ describe('ThemedPageHeader', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'Winter collection' })).toBeInTheDocument();
   });
 
+  it('renders breadcrumbs in place of the eyebrow', () => {
+    renderWithInflow(
+      <ThemedPageHeader
+        eyebrow="Product information"
+        breadcrumbs={<nav aria-label="Breadcrumb">Catalog</nav>}
+        title="Winter collection"
+      />,
+    );
+
+    expect(screen.getByRole('navigation', { name: 'Breadcrumb' })).toBeInTheDocument();
+    expect(screen.queryByText('Product information')).not.toBeInTheDocument();
+  });
+
   it('renders a named back button only when onBack is provided and invokes it', () => {
     const onBack = vi.fn();
     const { rerender } = renderWithInflow(<ThemedPageHeader title="Product" />);

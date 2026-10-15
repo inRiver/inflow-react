@@ -2,6 +2,44 @@
 
 All notable changes to `@inriver/inflow-react` are documented here. This project follows [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+- `ThemedPageHeader` accepts a `breadcrumbs` prop (for example a `ThemedBreadcrumbs`) that renders above the title in place of the `eyebrow` (library-facing).
+- Showcase-only: Page Header demo examples for a title-only header and a header with breadcrumbs.
+- `ThemedFileTypeIcon`: a file-type icon that renders any extension on a page outline with a folded corner and a label showing the extension. Known formats are colored by family (documents, audio, video, image, compressed) and unknown formats stay neutral. Supports `size` (`sm`, `md`, or a width in px), `tone`, and `decorative` (library-facing).
+- `inflowFileTypeColors`, `inflowFileTypeExtensions`, and `normalizeFileExtension` theme exports for the file-type color families and extension parsing (library-facing).
+- Showcase-only: File Type Icon demo with a props playground, a format gallery, and a table-row example.
+
+### Changed
+- Outlined primary `Button` has a `surfaceLowest` background (white in light mode) instead of a transparent one, so it reads the same on the pale app background. Hover is unchanged (library-facing).
+- `ThemedPageHeader` vertical padding is 10px instead of 12px, so the header is 76px tall with or without an eyebrow line. Headers with an eyebrow were 80px; title-only headers are unchanged at 76px (library-facing).
+
+## [3.9.2] - 2026-10-05
+
+### Fixed
+- Resolved `npm audit` vulnerabilities by updating the `overrides` for `undici` (`^7.29.1`) and adding `brace-expansion` (`>=5.0.12`).
+
+## [3.9.1] - 2026-10-05
+
+### Deprecated
+- `ThemedButton` and `ThemedTextField` are deprecated. The Inflow theme already applies the same styling to MUI's `Button` and `TextField` inside `InflowProvider`, so use those directly. Both remain exported and will be removed in the next major version. See the Migration page in the showcase.
+
+### Changed
+- Small inputs (`size="small"`, 40px) use 14px text, and small input labels use 14px (library-facing).
+- `Select` and `FormControl` default to `size="small"`, consistent with `TextField` (library-facing).
+- `body1` letter spacing is `0` instead of `0.03125rem` (library-facing).
+- `Button` `size="large"` is now 48px tall with 1rem text. It was previously identical to `size="medium"` (library-facing).
+- `Dialog` defaults to `maxWidth="xs"` and a 444px-wide paper that stays within the viewport on small screens (library-facing).
+- `ThemedBreadcrumbs`: every item, including the last, is now a primary-blue link with an always-visible underline. The `bar` separator is a 1px primary-blue line instead of a `|` character, and the current page is no longer rendered as plain text with `aria-current="page"` (library-facing).
+- Showcase-only: demos, guidelines, and pre-rendered examples use MUI `Button` and `TextField` in place of the deprecated wrappers, input demos default to `size="small"`, and the dialog Cancel button uses `variant="outlined"`.
+- `DESIGN.md` now uses `outlineVariant` for field borders.
+
+## [3.8.1] - 2026-09-30
+
+### Fixed
+- `ThemedChatPanel` renders user message text in a `div` instead of a `p` for better semantic structure.
+
 ## [3.8.0] - 2026-09-25
 
 ### Added

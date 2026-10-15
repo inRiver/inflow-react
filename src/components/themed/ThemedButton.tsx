@@ -52,6 +52,7 @@ export const ThemedButton = forwardRef<HTMLButtonElement, ThemedButtonProps>(
           ...(props.variant === 'outlined' && (props.color === 'primary' || !props.color) && {
             color: theme.palette.primary.main,
             borderColor: theme.palette.inflow.outlineVariant,
+            backgroundColor: theme.palette.inflow.surfaceLowest,
             '&:hover': {
               borderColor: theme.palette.inflow.outlineVariant,
               backgroundColor: theme.palette.inflow.rowSelected,

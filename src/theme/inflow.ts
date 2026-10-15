@@ -200,6 +200,7 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
                 style: {
                   color: T.navy700,
                   borderColor: T.outlineVariant,
+                  backgroundColor: T.surfaceLowest,
                   '&:hover': { borderColor: T.outlineVariant, backgroundColor: T.rowSelected },
                 },
               },

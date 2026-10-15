@@ -72,6 +72,11 @@ export const THEMED_COMPONENT_INFO: Record<string, ThemedComponentInfo> = {
     reason:
       'Renders a popup menu from a declarative items array (icons, shortcuts, dividers, selection) instead of manual MenuItem composition.',
   },
+  filetypeicon: {
+    themedName: 'ThemedFileTypeIcon',
+    reason:
+      'Renders any file extension on a consistent page icon, colored by file family with a neutral fallback, and follows the theme mode.',
+  },
   pageheader: {
     themedName: 'ThemedPageHeader',
     reason: 'Provides the structural Inflow page chrome for context, back navigation, and page-level actions.',
