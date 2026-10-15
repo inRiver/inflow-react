@@ -212,6 +212,7 @@ export const demoRegistry: Record<string, DemoRegistryEntry> = {
   appnav: createEntry(demos.AppNavDemo, { maturityStatus: 'Beta' }),
   chatpanel: createEntry(demos.ChatPanelDemo, { maturityStatus: 'Beta' }),
   detailpanel: createEntry(demos.DetailPanelDemo, { maturityStatus: 'Beta' }),
+  filetypeicon: createEntry(demos.FileTypeIconDemo, { maturityStatus: 'Beta' }),
   pageheader: createEntry(demos.PageHeaderDemo, { maturityStatus: 'Beta' }),
   rightpanel: createEntry(demos.RightPanelDemo, { maturityStatus: 'Beta' }),
   appbar: createEntry(demos.AppBarDemo),

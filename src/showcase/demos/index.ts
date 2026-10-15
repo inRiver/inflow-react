@@ -30,6 +30,7 @@ export { PaperDemo } from './PaperDemo';
 export { AppNavDemo } from './AppNavDemo';
 export { ChatPanelDemo } from './ChatPanelDemo';
 export { DetailPanelDemo } from './DetailPanelDemo';
+export { FileTypeIconDemo } from './FileTypeIconDemo';
 export { PageHeaderDemo } from './PageHeaderDemo';
 export { RightPanelDemo } from './RightPanelDemo';
 export { AppBarDemo } from './AppBarDemo';

@@ -1,3 +1,4 @@
+export * from './FileTypeIcon';
 export * from './ThemedAccordion';
 export * from './ThemedAlert';
 export * from './ThemedAppNav';
