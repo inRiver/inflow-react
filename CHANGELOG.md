@@ -12,6 +12,7 @@ All notable changes to `@inriver/inflow-react` are documented here. This project
 - Showcase-only: File Type Icon demo with a props playground, a format gallery, and a table-row example.
 
 ### Changed
+- Outlined primary `Button` has a `surfaceLowest` background (white in light mode) instead of a transparent one, so it reads the same on the pale app background. Hover is unchanged (library-facing).
 - `ThemedPageHeader` vertical padding is 10px instead of 12px, so the header is 76px tall with or without an eyebrow line. Headers with an eyebrow were 80px; title-only headers are unchanged at 76px (library-facing).
 
 ## [3.9.2] - 2026-10-05
