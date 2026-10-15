@@ -2,6 +2,13 @@
 
 All notable changes to `@inriver/inflow-react` are documented here. This project follows [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+- `FileTypeIcon`: a file-type icon that renders any extension on a page outline with a folded corner and a label showing the extension. Known formats are colored by family (documents, audio, video, image, compressed) and unknown formats stay neutral. Supports `size` (`sm`, `md`, or a width in px), `tone`, and `decorative` (library-facing).
+- `inflowFileTypeColors`, `inflowFileTypeExtensions`, and `normalizeFileExtension` theme exports for the file-type color families and extension parsing (library-facing).
+- Showcase-only: File Type Icon demo with a props playground, a format gallery, and a table-row example.
+
 ## [3.8.0] - 2026-09-25
 
 ### Added
