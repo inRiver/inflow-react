@@ -144,7 +144,7 @@ All spacing is derived from the existing 4px Inflow scale and MUI `theme.spacing
 
 - Motion communicates hover, selection, focus, or panel state only.
 - Prefer opacity and transform. Avoid decorative animation and layout-property animation.
-- Respect `prefers-reduced-motion` through the platform/MUI transition layer.
+- Honor `prefers-reduced-motion` in custom animation and transforms. MUI's `theme.motion.reducedMotion` defaults to `'never'` and the theme does not override it, so MUI's own transitions do not currently follow the setting.
 - Overview navigation adapts beui.dev's `shared-layout-bg` affordance to a 120ms tonal hover plus a short directional-arrow transform; reduced motion keeps the tonal state and removes the transform.
 
 ## 7. Depth & Surface

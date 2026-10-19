@@ -6,6 +6,10 @@ import { TokensPage } from '../pages/TokensPage';
 import { ComponentPage } from '../pages/ComponentPage';
 import { PreRenderedPage } from '../pages/PreRenderedPage';
 import { PublishersAgGridPage } from '../pages/PublishersAgGridPage';
+import { IntroductionPage } from '../pages/IntroductionPage';
+import { CapitalizationPage } from '../pages/CapitalizationPage';
+import { AccessibilityPage } from '../pages/AccessibilityPage';
+import { MigrationPage } from '../pages/MigrationPage';
 import { GuidelinesPage } from '../pages/GuidelinesPage';
 import { NotFoundPage } from '../pages/NotFoundPage';
 import LoginScreen from '../pages/screens/LoginScreen';
@@ -21,6 +25,10 @@ export const router = createHashRouter(
       element: <RootLayout />,
         children: [
           { index: true, element: <LandingPage /> },
+          { path: 'introduction', element: <IntroductionPage /> },
+          { path: 'capitalization', element: <CapitalizationPage /> },
+          { path: 'accessibility', element: <AccessibilityPage /> },
+          { path: 'migration', element: <MigrationPage /> },
           { path: 'components', element: <ComponentsIndexPage /> },
           { path: 'guidelines', element: <GuidelinesPage /> },
           { path: 'tokens', element: <TokensPage /> },

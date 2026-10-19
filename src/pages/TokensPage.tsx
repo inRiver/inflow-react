@@ -1,7 +1,121 @@
-import { Container, Typography, Stack, Box, Card, Grid, Paper } from '@mui/material';
+import {
+  Alert,
+  Container,
+  Typography,
+  Stack,
+  Box,
+  Card,
+  Grid,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  useTheme,
+} from '@mui/material';
 import { inflowTokens } from '../theme/tokens';
 
+// Density values are theme.spacing() units (8px each): #4 = 32px, #9.5 = 76px.
+const densityClasses = ['Compact', 'Default (Comfortable)', 'Cozy (Comfy)'] as const;
+
+const pageHeaderDensity = [
+  { title: '#4 (32px)', tabs: '#4 (32px)' },
+  { title: '#9.5 (76px)', tabs: '#6 (48px)' },
+  { title: '#10 (80px)', tabs: '#7 (56px)' },
+];
+
+const agGridDensity = [
+  { values: '#4 (32px)', fontSize: '12px' },
+  { values: '#5 (40px)', fontSize: '14px' },
+  { values: '#6 (48px)', fontSize: '14px' },
+];
+
+function DensityTable({ label, columns, rows }: { label: string; columns: string[]; rows: string[][] }) {
+  return (
+    <TableContainer component={Paper} variant="outlined">
+      <Table aria-label={label}>
+        <TableHead>
+          <TableRow>
+            <TableCell>Class</TableCell>
+            {columns.map((column) => (
+              <TableCell key={column}>{column}</TableCell>
+            ))}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {rows.map((row, index) => (
+            <TableRow key={densityClasses[index]}>
+              <TableCell component="th" scope="row" sx={{ fontWeight: index === 1 ? 700 : 400 }}>
+                {densityClasses[index]}
+              </TableCell>
+              {row.map((value, valueIndex) => (
+                <TableCell key={columns[valueIndex]} sx={{ fontWeight: index === 1 ? 700 : 400 }}>
+                  {value}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+}
+
+function ValueTable({ label, columns, rows }: { label: string; columns: string[]; rows: string[][] }) {
+  return (
+    <TableContainer component={Paper} variant="outlined">
+      <Table aria-label={label}>
+        <TableHead>
+          <TableRow>
+            {columns.map((column) => (
+              <TableCell key={column}>{column}</TableCell>
+            ))}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {rows.map((row) => (
+            <TableRow key={row[0]}>
+              {row.map((value, index) => (
+                <TableCell
+                  key={columns[index]}
+                  component={index === 0 ? 'th' : 'td'}
+                  scope={index === 0 ? 'row' : undefined}
+                  sx={index === 0 ? { fontWeight: 700 } : undefined}
+                >
+                  {value}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+}
+
+const radiusUsage: Record<string, string> = {
+  xs: 'Inputs, autocomplete menus, and tooltips',
+  sm: 'Buttons, button groups, cards, and the default shape.borderRadius',
+  md: 'Snackbar messages',
+  lg: 'Themed tabs',
+  xl: 'Dialogs',
+  full: 'Chips, icon buttons, and progress bars',
+};
+
 export function TokensPage() {
+  const theme = useTheme();
+  const radiusRows = Object.entries(inflowTokens.radius).map(([name, value]) => [
+    name,
+    value === 9999 ? 'Full (pill)' : `${value}px`,
+    radiusUsage[name] ?? '',
+  ]);
+  const breakpointRows = Object.entries(theme.breakpoints.values).map(([name, value]) => [name, `${value}px`]);
+  const zIndexRows = Object.entries(theme.zIndex).map(([name, value]) => [name, String(value)]);
+  const durationRows = Object.entries(theme.transitions.duration).map(([name, value]) => [name, `${value}ms`]);
+  const easingRows = Object.entries(theme.transitions.easing).map(([name, value]) => [name, value]);
+
   return (
     <Container maxWidth="lg">
       <Stack spacing={6} sx={{ py: 4 }}>
@@ -134,6 +248,77 @@ export function TokensPage() {
           </Stack>
         </Box>
         
+        {/* Content Density Section */}
+        <Box>
+          <Typography variant="h5" gutterBottom>Content Density</Typography>
+          <Typography variant="body1" sx={{ mb: 2 }}>
+            Inflow has three density classes. Default (Comfortable) is used unless a product chooses otherwise.
+            Values are spacing units, where each unit is 8px.
+          </Typography>
+          <Alert severity="info" sx={{ mb: 3 }}>
+            Apply these values in your product. The library's AG Grid defaults are a 52px row and a 48px header,
+            so set the row height for your density class on the grid yourself.
+          </Alert>
+          <Stack spacing={3}>
+            <Box>
+              <Typography variant="h6" gutterBottom>Page Header</Typography>
+              <DensityTable
+                label="Page header density"
+                columns={['Title', 'Tabs']}
+                rows={pageHeaderDensity.map((row) => [row.title, row.tabs])}
+              />
+            </Box>
+            <Box>
+              <Typography variant="h6" gutterBottom>AG Grid</Typography>
+              <DensityTable
+                label="AG Grid density"
+                columns={['Row Height', 'Font Size in Grid']}
+                rows={agGridDensity.map((row) => [row.values, row.fontSize])}
+              />
+            </Box>
+          </Stack>
+        </Box>
+
+        {/* Shape Section */}
+        <Box>
+          <Typography variant="h5" gutterBottom>Shape</Typography>
+          <Typography variant="body1" sx={{ mb: 2 }}>
+            The default corner radius, <code>theme.shape.borderRadius</code>, is {theme.shape.borderRadius}px.
+            Components use the radius tokens below.
+          </Typography>
+          <ValueTable label="Radius tokens" columns={['Token', 'Value', 'Used For']} rows={radiusRows} />
+        </Box>
+
+        {/* Breakpoints Section */}
+        <Box>
+          <Typography variant="h5" gutterBottom>Breakpoints</Typography>
+          <Typography variant="body1" sx={{ mb: 2 }}>
+            Inflow uses MUI's default breakpoints. Each value is the minimum width where that breakpoint starts.
+          </Typography>
+          <ValueTable label="Breakpoints" columns={['Breakpoint', 'Minimum Width']} rows={breakpointRows} />
+        </Box>
+
+        {/* Z-Index Section */}
+        <Box>
+          <Typography variant="h5" gutterBottom>Z-Index</Typography>
+          <Typography variant="body1" sx={{ mb: 2 }}>
+            Inflow uses MUI's default stacking order. Use these theme values instead of hard-coded numbers.
+          </Typography>
+          <ValueTable label="Z-index layers" columns={['Layer', 'Value']} rows={zIndexRows} />
+        </Box>
+
+        {/* Transitions Section */}
+        <Box>
+          <Typography variant="h5" gutterBottom>Transitions</Typography>
+          <Typography variant="body1" sx={{ mb: 2 }}>
+            Inflow uses MUI's default durations and easing curves through <code>theme.transitions</code>.
+          </Typography>
+          <Stack spacing={3}>
+            <ValueTable label="Transition durations" columns={['Duration', 'Value']} rows={durationRows} />
+            <ValueTable label="Transition easing" columns={['Easing', 'Curve']} rows={easingRows} />
+          </Stack>
+        </Box>
+
         {/* Shadows Section */}
         <Box>
           <Typography variant="h5" gutterBottom>Shadows</Typography>

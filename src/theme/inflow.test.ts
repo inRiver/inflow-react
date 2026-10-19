@@ -5,6 +5,7 @@ interface ButtonVariantStyle {
   props: { color?: string; variant?: string };
   style: {
     borderColor?: string;
+    backgroundColor?: string;
     '&:hover'?: { borderColor?: string };
   };
 }
@@ -19,6 +20,16 @@ describe('createInflowTheme', () => {
 
     expect(outlinedPrimary?.style.borderColor).toBe(theme.palette.inflow.outlineVariant);
     expect(outlinedPrimary?.style['&:hover']?.borderColor).toBe(theme.palette.inflow.outlineVariant);
+  });
+
+  it.each(['light', 'dark'] as const)('gives the outlined primary button a surface background in %s mode', (mode) => {
+    const theme = createInflowTheme(mode);
+    const root = theme.components?.MuiButton?.styleOverrides?.root as { variants?: ButtonVariantStyle[] };
+    const outlinedPrimary = root.variants?.find(
+      ({ props }) => props.variant === 'outlined' && props.color === 'primary',
+    );
+
+    expect(outlinedPrimary?.style.backgroundColor).toBe(theme.palette.inflow.surfaceLowest);
   });
 
   it('keeps native field label and notch geometry intact', () => {

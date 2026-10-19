@@ -11,6 +11,7 @@ export * from './ThemedChatPanel';
 export * from './ThemedChip';
 export * from './ThemedDetailPanel';
 export * from './ThemedDialog';
+export * from './ThemedFileTypeIcon';
 export * from './ThemedMenu';
 export * from './ThemedPageHeader';
 export * from './ThemedRightPanel';

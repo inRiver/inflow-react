@@ -176,6 +176,94 @@ export const ComponentSidebar: React.FC<ComponentSidebarProps> = ({
           </ListItem>
           <ListItem disablePadding>
             <ListItemButton
+              onClick={() => handleNavigate('/introduction')}
+              selected={location.pathname === '/introduction'}
+              sx={{
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: 2,
+                  justifyContent: 'center',
+                }}
+              >
+                <Icon baseClassName="material-icons-outlined">info</Icon>
+              </ListItemIcon>
+              <ListItemText primary="Introduction" slotProps={{
+                primary: { sx: { fontWeight: 'bold' } }
+              }} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton
+              onClick={() => handleNavigate('/capitalization')}
+              selected={location.pathname === '/capitalization'}
+              sx={{
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: 2,
+                  justifyContent: 'center',
+                }}
+              >
+                <Icon baseClassName="material-icons-outlined">text_fields</Icon>
+              </ListItemIcon>
+              <ListItemText primary="Capitalization" slotProps={{
+                primary: { sx: { fontWeight: 'bold' } }
+              }} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton
+              onClick={() => handleNavigate('/accessibility')}
+              selected={location.pathname === '/accessibility'}
+              sx={{
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: 2,
+                  justifyContent: 'center',
+                }}
+              >
+                <Icon baseClassName="material-icons-outlined">accessibility_new</Icon>
+              </ListItemIcon>
+              <ListItemText primary="Accessibility" slotProps={{
+                primary: { sx: { fontWeight: 'bold' } }
+              }} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton
+              onClick={() => handleNavigate('/migration')}
+              selected={location.pathname === '/migration'}
+              sx={{
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: 2,
+                  justifyContent: 'center',
+                }}
+              >
+                <Icon baseClassName="material-icons-outlined">sync_alt</Icon>
+              </ListItemIcon>
+              <ListItemText primary="Migration" slotProps={{
+                primary: { sx: { fontWeight: 'bold' } }
+              }} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton
               onClick={() => handleNavigate('/guidelines')}
               selected={location.pathname === '/guidelines'}
               sx={{
