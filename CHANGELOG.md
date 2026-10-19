@@ -4,6 +4,14 @@ All notable changes to `@inriver/inflow-react` are documented here. This project
 
 ## [Unreleased]
 
+## [3.10.1] - 2026-10-19
+
+### Changed
+- Promoted `react19-mui9.5` to the current compatibility checkpoint (previously `react19-mui9.4`).
+- Bumped `@mui/material` and `@mui/icons-material` to `^9.5.0`, `@mui/x-date-pickers` to `^9.15.0`, `react` and `react-dom` to `^19.3.1`, and refreshed dev dependencies (Vite, Vitest, ESLint, typescript-eslint, Playwright, testing-library, @types/node, globals).
+
+## [3.10.0] - 2026-10-19
+
 ### Added
 - `ThemedPageHeader` accepts a `breadcrumbs` prop (for example a `ThemedBreadcrumbs`) that renders above the title in place of the `eyebrow` (library-facing).
 - Showcase-only: Page Header demo examples for a title-only header and a header with breadcrumbs.
@@ -14,6 +22,9 @@ All notable changes to `@inriver/inflow-react` are documented here. This project
 ### Changed
 - Outlined primary `Button` has a `surfaceLowest` background (white in light mode) instead of a transparent one, so it reads the same on the pale app background. Hover is unchanged (library-facing).
 - `ThemedPageHeader` vertical padding is 10px instead of 12px, so the header is 76px tall with or without an eyebrow line. Headers with an eyebrow were 80px; title-only headers are unchanged at 76px (library-facing).
+
+### Security
+- Applied `npm audit fix` for `source-map-js` 1.2.1 → 1.2.2 (GHSA-68fv-2mgg-jv7q).
 
 ## [3.9.2] - 2026-10-05
 

@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       release_tag:
-        description: 'Source tag to publish (for example theme/react19-mui9.3/v3.5.0)'
+        description: 'Source tag to publish (for example theme/react19-mui9.5/v3.10.1)'
         required: true
         type: string
       dist_tag_only:

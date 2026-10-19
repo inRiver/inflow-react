@@ -28,16 +28,16 @@ import { InflowProvider, ThemedButton } from '@inriver/inflow-react';
 
 Do not import showcase code, demo components, or internal source paths. The package ships TypeScript declarations and supports both ESM and CommonJS through its `exports` map.
 
-Compatibility is managed through checkpoint tags. The current compatibility target is `react19-mui9.4` (React 19 / MUI 9.4); the prior `react19-mui9.3` and `react19-mui7.3` checkpoints remain available for apps still on MUI 9.3 or MUI 7. Use a checkpoint tag or an exact version when you need a known React and MUI contract. The `latest` tag is promoted automatically by CI and is never published to directly. The npm registry is authoritative for published versions and dist-tags.
+Compatibility is managed through checkpoint tags. The current compatibility target is `react19-mui9.5` (React 19 / MUI 9.5); the prior `react19-mui9.4`, `react19-mui9.3`, and `react19-mui7.3` checkpoints remain available for apps still on MUI 9.4, 9.3, or 7. Use a checkpoint tag or an exact version when you need a known React and MUI contract. The `latest` tag is promoted automatically by CI and is never published to directly. The npm registry is authoritative for published versions and dist-tags.
 
 ## Installation
 
 ```sh
-npm install @inriver/inflow-react@react19-mui9.4
+npm install @inriver/inflow-react@react19-mui9.5
 npm install react@^19.0.0 react-dom@^19.0.0 @mui/material@">=9.0.0 <10.0.0" @emotion/react@^11.13.0 @emotion/styled@^11.13.0
 ```
 
-Use the checkpoint tag instead of `latest` so the installed package stays on the validated React 19 and MUI 9 compatibility channel. If you are still on MUI 9.3, use the `react19-mui9.3` checkpoint tag; for MUI 7, use `react19-mui7.3`.
+Use the checkpoint tag instead of `latest` so the installed package stays on the validated React 19 and MUI 9 compatibility channel. If you are still on MUI 9.4, use the `react19-mui9.4` checkpoint tag; for MUI 9.3, use `react19-mui9.3`; for MUI 7, use `react19-mui7.3`.
 
 ## Quick start
 
