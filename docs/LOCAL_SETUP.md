@@ -150,6 +150,7 @@ Run `npm ls react` in both the theme repo and the consuming app to check for dup
 Once the showcase is running locally:
 
 - [`docs/ARCHITECTURE.md`](ARCHITECTURE.md) - how the codebase is structured and what belongs in the package vs. the showcase.
+- [`docs/CONTRIBUTING.md`](CONTRIBUTING.md) - the change checklist, including the demo-test rule (relevant once you start editing, not just browsing).
 - [`docs/VERSIONING.md`](VERSIONING.md) - how releases, compatibility checkpoints, and version tags work.
 - [`docs/PUBLISHING.md`](PUBLISHING.md) - the checklist for publishing a new package version (only relevant if you're releasing changes, not just browsing).
 - The root [README.md](../README.md) - package usage in consuming apps and peer dependencies.

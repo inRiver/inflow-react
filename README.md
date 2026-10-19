@@ -149,6 +149,7 @@ For SSR or Next.js, follow the [official MUI Next.js integration guide](https://
 | Live showcase | [inriver.github.io/inflow-react](https://inriver.github.io/inflow-react/) |
 | npm package | [npmjs.com/package/@inriver/inflow-react](https://www.npmjs.com/package/@inriver/inflow-react) |
 | Local setup | [`docs/LOCAL_SETUP.md`](docs/LOCAL_SETUP.md) |
+| Contributing | [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) |
 | Architecture | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) |
 | Versioning | [`docs/VERSIONING.md`](docs/VERSIONING.md) |
 | Publishing | [`docs/PUBLISHING.md`](docs/PUBLISHING.md) |
@@ -161,7 +162,7 @@ For SSR or Next.js, follow the [official MUI Next.js integration guide](https://
 - Add wrappers only for repeated patterns that need a shared contract.
 - Run `npm run build` before handing off a change.
 
-For the full architecture and package boundary, see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
+See [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) for the full checklist, including the demo-test rule. For the architecture and package boundary, see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
 ## License
 

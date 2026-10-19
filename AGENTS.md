@@ -58,7 +58,15 @@ Themed components are thin MUI wrappers with a stable public contract. When addi
 
 ## Tests and demos move together
 
-The showcase demos (`src/showcase/demos/`) have their own tests (`*.test.tsx` alongside). If you rewrite a demo's scenarios, labels, or structure, its test drives UI that no longer exists — update both in the same commit.
+Every demo in `src/showcase/demos/` ships with a `<Name>Demo.test.tsx` alongside it. This is an invariant, not a conditional:
+
+- **Adding a demo** means adding its test in the same commit — even if the demo is "just" a showcase page.
+- **Changing a demo** — new scenarios, renamed labels, restructured layout, changed defaults — means updating its test in the same commit. There is no "the existing test still passes" exemption: if the demo's UI surface changed, the test must cover the new surface.
+- The same applies to pages in `src/pages/` and components in `src/components/themed/`, which already follow this rule.
+
+The phrasing matters because a literal reading of "update the test when you rewrite a demo" lets an agent add scenarios to a demo that has no test and conclude no work is required. That has shipped here; do not repeat it. When a demo has no test, treat adding one as part of any change to that demo.
+
+Demo tests are shallow smoke tests: render through `src/test/renderWithInflow.tsx`, assert each scenario/frame renders, and exercise the playground controls that change the rendered output (see `ChipDemo.test.tsx` and `PageHeaderDemo.test.tsx` for the pattern). See [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) for the fuller contributor-facing version.
 
 ## Deprecated components — hidden from the showcase, kept in the API
 
