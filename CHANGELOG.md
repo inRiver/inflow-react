@@ -11,6 +11,7 @@ All notable changes to `@inriver/inflow-react` are documented here. This project
 - Parity tests that keep `tokens.ts` and the CSS `--text-*` tokens in line with the theme.
 
 ### Changed
+- `Select` uses the same `ExpandMore` chevron as `Autocomplete` instead of MUI's stock triangle, set once in the theme (`MuiSelect.defaultProps.IconComponent`). Every `Select` in consuming apps picks this up (library-facing).
 - Showcase-only: Input Adornment demo icons are `fontSize="small"` and its wrapped example fields use flex gap so they no longer touch.
 - `--font-size-body2` is 14px (was 13px) and `--text-body-large-letter-spacing` is 0 (was 0.5px), matching `theme.typography.body2` and `body1`. Page text set through the base `html, body` styles has slightly tighter letter spacing (library-facing).
 

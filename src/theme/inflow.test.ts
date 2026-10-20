@@ -53,4 +53,12 @@ describe('createInflowTheme', () => {
     expect(chipDeleteIcon.props.className).toBe('material-icons-outlined');
     expect(menuPaper).toMatchObject({ borderRadius: 0, boxShadow: 'none' });
   });
+
+  it('uses the ExpandMore chevron for both Select and Autocomplete dropdowns', () => {
+    const theme = createInflowTheme('light');
+    const selectIcon = theme.components?.MuiSelect?.defaultProps?.IconComponent;
+    const autocompleteIcon = theme.components?.MuiAutocomplete?.defaultProps?.popupIcon as { type: unknown };
+
+    expect(selectIcon).toBe(autocompleteIcon.type);
+  });
 });

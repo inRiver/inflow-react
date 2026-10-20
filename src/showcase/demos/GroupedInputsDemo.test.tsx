@@ -62,6 +62,19 @@ describe('GroupedInputsDemo', () => {
     );
   });
 
+  it('switches the grouped Autocomplete and Select to medium together', () => {
+    renderWithInflow(<GroupedInputsDemo />);
+
+    const root = (name: string) => screen.getByRole('combobox', { name }).closest('.MuiInputBase-root');
+    expect(root('Movie by decade')).toHaveClass('MuiInputBase-sizeSmall');
+    expect(root('Grouping')).toHaveClass('MuiInputBase-sizeSmall');
+
+    chooseOption(sizeSelect(GROUPED_OPTIONS), 'medium');
+
+    expect(root('Movie by decade')).not.toHaveClass('MuiInputBase-sizeSmall');
+    expect(root('Grouping')).not.toHaveClass('MuiInputBase-sizeSmall');
+  });
+
   it('disables each section from its own control', () => {
     renderWithInflow(<GroupedInputsDemo />);
 

@@ -223,11 +223,11 @@ import { Button, ButtonGroup } from '@mui/material';
             size={groupedOptions.size}
             disabled={groupedOptions.disabled}
             sx={{ width: 300 }}
-            renderInput={(params) => <TextField {...params} label="Movie by decade" />}
+            renderInput={(params) => <TextField {...params} label="Movie by decade" size={groupedOptions.size} />}
           />
           <FormControl size={groupedOptions.size} disabled={groupedOptions.disabled} sx={{ width: 240 }}>
             <InputLabel id="grouped-select-label">Grouping</InputLabel>
-            <Select defaultValue="" labelId="grouped-select-label" label="Grouping">
+            <Select defaultValue="" labelId="grouped-select-label" label="Grouping" size={groupedOptions.size}>
               <ListSubheader>Category 1</ListSubheader>
               <MenuItem value={1}>Option 1</MenuItem>
               <MenuItem value={2}>Option 2</MenuItem>
@@ -242,10 +242,10 @@ import { Button, ButtonGroup } from '@mui/material';
         code={`<Autocomplete
   options={options.sort((a, b) => a.decade.localeCompare(b.decade))}
   groupBy={(option) => option.decade}
-  renderInput={(params) => <TextField {...params} label="Movie by decade" />}
+  renderInput={(params) => <TextField {...params} label="Movie by decade" size={size} />}
 />
 
-<Select defaultValue="" label="Grouping">
+<Select defaultValue="" label="Grouping" size={size}>
   <ListSubheader>Category 1</ListSubheader>
   <MenuItem value={1}>Option 1</MenuItem>
   <ListSubheader>Category 2</ListSubheader>
@@ -311,7 +311,13 @@ import { Button, ButtonGroup } from '@mui/material';
               }}
             >
               <InputLabel id="unit-label">Unit</InputLabel>
-              <Select labelId="unit-label" label="Unit" value={unit} onChange={(event) => setUnit(event.target.value)}>
+              <Select
+                labelId="unit-label"
+                label="Unit"
+                size={unitField.size}
+                value={unit}
+                onChange={(event) => setUnit(event.target.value)}
+              >
                 {units.map((option) => (
                   <MenuItem key={option} value={option}>{option}</MenuItem>
                 ))}

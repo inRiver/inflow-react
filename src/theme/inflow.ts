@@ -254,7 +254,7 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
       },
 
       MuiTextField: { defaultProps: { variant: 'outlined', size: 'small' } },
-      MuiSelect: { defaultProps: { size: 'small' } },
+      MuiSelect: { defaultProps: { size: 'small', IconComponent: ExpandMoreIcon } },
       MuiFormControl: { defaultProps: { size: 'small' } },
       MuiInputBase: {
         styleOverrides: {
