@@ -8,22 +8,29 @@ import type { PropSchema } from '../PropsPlayground';
 
 const units = ['kg', 'lb', 'g'];
 
-function UnitSelect({ value, onChange, label, divider }: {
+type FieldSize = 'small' | 'medium';
+
+// Icons follow the field: 20px in a small (40px) field, 24px in a medium (56px) field.
+const iconSize: Record<FieldSize, string> = { small: '1.25rem', medium: '1.5rem' };
+
+function UnitSelect({ value, onChange, label, size, divider }: {
   value: string;
   onChange: (value: string) => void;
   label: string;
+  size: FieldSize;
   divider?: boolean;
 }) {
   return (
     <>
-      {divider && <Divider orientation="vertical" flexItem sx={{ mr: 1, my: 1 }} />}
+      {divider && <Divider orientation="vertical" flexItem sx={{ mr: 1, my: size === 'small' ? 1 : 1.5 }} />}
       <Select
         variant="standard"
         disableUnderline
         value={value}
         onChange={(event) => onChange(event.target.value)}
         slotProps={{ input: { 'aria-label': label } }}
-        sx={{ minWidth: 56 }}
+        size={size}
+        sx={{ minWidth: 56, '& .MuiSelect-icon': { fontSize: iconSize[size] } }}
       >
         {units.map((unit) => (
           <MenuItem key={unit} value={unit}>{unit}</MenuItem>
@@ -34,6 +41,8 @@ function UnitSelect({ value, onChange, label, divider }: {
 }
 
 export function InputAdornmentDemo() {
+  const [combined, setCombined] = useState<Record<string, any>>({ size: 'small' });
+  const size: FieldSize = combined.size;
   const [unitInside, setUnitInside] = useState('kg');
   const [unitInsideDivided, setUnitInsideDivided] = useState('kg');
   const [unitGap, setUnitGap] = useState('kg');
@@ -63,7 +72,7 @@ import { InputAdornment, TextField } from '@mui/material';
   variant={props.variant}
   disabled={props.disabled}
   InputProps={{
-    startAdornment: <InputAdornment position="start"><AccountCircle /></InputAdornment>
+    startAdornment: <InputAdornment position="start"><AccountCircle fontSize="small" /></InputAdornment>
   }}
 />`;
 
@@ -79,7 +88,7 @@ import { InputAdornment, TextField } from '@mui/material';
               input: {
                 startAdornment: (
                   <InputAdornment position="start">
-                    <AccountCircle />
+                    <AccountCircle fontSize="small" />
                   </InputAdornment>
                 ),
               }
@@ -94,7 +103,7 @@ import { InputAdornment, TextField } from '@mui/material';
               input: {
                 endAdornment: (
                   <InputAdornment position="end">
-                    <Visibility />
+                    <Visibility fontSize="small" />
                   </InputAdornment>
                 ),
               },
@@ -117,7 +126,7 @@ import { InputAdornment, TextField } from '@mui/material';
                 input: {
                   startAdornment: (
                     <InputAdornment position="start">
-                      <AccountCircle />
+                      <AccountCircle fontSize="small" />
                     </InputAdornment>
                   ),
                 }
@@ -130,7 +139,7 @@ import { InputAdornment, TextField } from '@mui/material';
                 input: {
                   endAdornment: (
                     <InputAdornment position="end">
-                      <Visibility />
+                      <Visibility fontSize="small" />
                     </InputAdornment>
                   ),
                 },
@@ -144,7 +153,7 @@ import { InputAdornment, TextField } from '@mui/material';
                 input: {
                   startAdornment: (
                     <InputAdornment position="start">
-                      <AccountCircle />
+                      <AccountCircle fontSize="small" />
                     </InputAdornment>
                   ),
                 }
@@ -159,9 +168,16 @@ import { InputAdornment, TextField } from '@mui/material';
         MUI and Material Design have no combined-field component. These are two ways to pair a number with a unit.
       </Typography>
 
+      <PropsPlayground
+        schema={[{ name: 'size', type: 'select', options: ['small', 'medium'] }]}
+        values={combined}
+        onChange={setCombined}
+      />
+
       <DemoFrame title="Option A - Unit select inside the field (one label, one border, one error state)">
         <Stack direction="row" spacing={3} sx={{ flexWrap: 'wrap' }}>
           <TextField
+            size={size}
             label="Weight"
             type="number"
             defaultValue={10}
@@ -169,13 +185,14 @@ import { InputAdornment, TextField } from '@mui/material';
               input: {
                 endAdornment: (
                   <InputAdornment position="end">
-                    <UnitSelect value={unitInside} onChange={setUnitInside} label="Weight unit" />
+                    <UnitSelect value={unitInside} onChange={setUnitInside} label="Weight unit" size={size} />
                   </InputAdornment>
                 ),
               },
             }}
           />
           <TextField
+            size={size}
             label="Weight (with divider)"
             type="number"
             defaultValue={10}
@@ -183,7 +200,7 @@ import { InputAdornment, TextField } from '@mui/material';
               input: {
                 endAdornment: (
                   <InputAdornment position="end">
-                    <UnitSelect value={unitInsideDivided} onChange={setUnitInsideDivided} label="Weight unit with divider" divider />
+                    <UnitSelect value={unitInsideDivided} onChange={setUnitInsideDivided} label="Weight unit with divider" size={size} divider />
                   </InputAdornment>
                 ),
               },
@@ -214,8 +231,8 @@ import { InputAdornment, TextField } from '@mui/material';
       <DemoFrame title="Option B - Side by side (two fields, two labels)">
         <Stack spacing={3}>
           <Stack direction="row" spacing={1} sx={{ maxWidth: 360 }}>
-            <TextField label="Weight" type="number" defaultValue={10} sx={{ flex: 1 }} />
-            <FormControl sx={{ minWidth: 100 }}>
+            <TextField size={size} label="Weight" type="number" defaultValue={10} sx={{ flex: 1 }} />
+            <FormControl size={size} sx={{ minWidth: 100 }}>
               <InputLabel id="unit-gap-label">Unit</InputLabel>
               <Select labelId="unit-gap-label" label="Unit" value={unitGap} onChange={(event) => setUnitGap(event.target.value)}>
                 {units.map((unit) => (
@@ -226,6 +243,7 @@ import { InputAdornment, TextField } from '@mui/material';
           </Stack>
           <Stack direction="row" sx={{ maxWidth: 360 }}>
             <TextField
+              size={size}
               label="Weight (joined)"
               type="number"
               defaultValue={10}
@@ -235,6 +253,7 @@ import { InputAdornment, TextField } from '@mui/material';
               }}
             />
             <FormControl
+              size={size}
               sx={{
                 minWidth: 100,
                 ml: '-1px',

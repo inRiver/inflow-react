@@ -35,4 +35,19 @@ describe('InputAdornmentDemo', () => {
     expect(screen.getByRole('combobox', { name: 'Unit' })).toHaveTextContent('g');
     expect(screen.getByRole('combobox', { name: 'Unit (joined)' })).toBeInTheDocument();
   });
+
+  it('switches the combined fields between small and medium', () => {
+    renderWithInflow(<InputAdornmentDemo />);
+
+    expect(document.querySelectorAll('.MuiInputBase-sizeSmall').length).toBeGreaterThan(0);
+    const sizeSelect = screen.getAllByRole('combobox', { name: 'size' })[0];
+    fireEvent.mouseDown(sizeSelect);
+    fireEvent.click(within(screen.getByRole('listbox')).getByRole('option', { name: 'medium' }));
+
+    const weight = screen.getAllByRole('spinbutton', { name: 'Weight' })[0];
+    expect(weight.closest('.MuiInputBase-root')).not.toHaveClass('MuiInputBase-sizeSmall');
+    expect(screen.getByRole('combobox', { name: 'Weight unit' }).closest('.MuiInputBase-root')).not.toHaveClass(
+      'MuiInputBase-sizeSmall',
+    );
+  });
 });
