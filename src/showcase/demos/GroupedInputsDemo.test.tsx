@@ -8,42 +8,68 @@ const chooseOption = (combobox: HTMLElement, option: string) => {
   fireEvent.click(within(screen.getByRole('listbox')).getByRole('option', { name: option }));
 };
 
+// Each section has its own controls, in page order: button group, grouped options, number with unit.
+const [BUTTON_GROUP, GROUPED_OPTIONS, UNIT] = [0, 1, 2];
+const sizeSelect = (section: number) => screen.getAllByRole('combobox', { name: 'size' })[section];
+const disabledBox = (section: number) => screen.getAllByRole('checkbox', { name: 'disabled' })[section];
+
 describe('GroupedInputsDemo', () => {
-  it('renders every grouped-input section on one page', () => {
+  it('renders every grouped-input section on one page, with controls inside each frame', () => {
     renderWithInflow(<GroupedInputsDemo />);
 
     expect(screen.getByText('Button group')).toBeInTheDocument();
     expect(screen.getByText('Grouped options')).toBeInTheDocument();
     expect(screen.getByText('Number with unit (for review)')).toBeInTheDocument();
     expect(screen.getByRole('group', { name: 'Button group' })).toBeInTheDocument();
+    expect(screen.getAllByRole('combobox', { name: 'size' })).toHaveLength(3);
+    expect(document.querySelector('#props')).toBeNull();
   });
 
-  it('has a single props playground', () => {
+  it('defaults every section to the small Inflow size', () => {
     renderWithInflow(<GroupedInputsDemo />);
 
-    expect(document.querySelectorAll('#props')).toHaveLength(1);
+    for (const section of [BUTTON_GROUP, GROUPED_OPTIONS, UNIT]) {
+      expect(sizeSelect(section)).toHaveTextContent('small');
+    }
+    expect(screen.getByRole('spinbutton', { name: 'Weight' }).closest('.MuiInputBase-root')).toHaveClass(
+      'MuiInputBase-sizeSmall',
+    );
   });
 
-  it('switches every example between small and medium', () => {
+  it('switches the button group between small and medium without touching the other sections', () => {
     renderWithInflow(<GroupedInputsDemo />);
 
     expect(document.querySelector('.MuiButtonGroup-root .MuiButton-sizeSmall')).not.toBeNull();
-    chooseOption(screen.getByRole('combobox', { name: 'size' }), 'medium');
+    chooseOption(sizeSelect(BUTTON_GROUP), 'medium');
 
     expect(document.querySelector('.MuiButtonGroup-root .MuiButton-sizeSmall')).toBeNull();
-    const weight = screen.getByRole('spinbutton', { name: 'Weight' });
-    expect(weight.closest('.MuiInputBase-root')).not.toHaveClass('MuiInputBase-sizeSmall');
+    expect(sizeSelect(UNIT)).toHaveTextContent('small');
+    expect(screen.getByRole('spinbutton', { name: 'Weight' }).closest('.MuiInputBase-root')).toHaveClass(
+      'MuiInputBase-sizeSmall',
+    );
+  });
+
+  it('switches the number-with-unit field to medium', () => {
+    renderWithInflow(<GroupedInputsDemo />);
+
+    chooseOption(sizeSelect(UNIT), 'medium');
+
+    expect(screen.getByRole('spinbutton', { name: 'Weight' }).closest('.MuiInputBase-root')).not.toHaveClass(
+      'MuiInputBase-sizeSmall',
+    );
     expect(screen.getByRole('combobox', { name: 'Weight unit' }).closest('.MuiInputBase-root')).not.toHaveClass(
       'MuiInputBase-sizeSmall',
     );
   });
 
-  it('disables every example from the playground', () => {
+  it('disables each section from its own control', () => {
     renderWithInflow(<GroupedInputsDemo />);
 
-    fireEvent.click(screen.getByRole('checkbox', { name: 'disabled' }));
-
+    fireEvent.click(disabledBox(BUTTON_GROUP));
     expect(screen.getByRole('button', { name: 'One' })).toBeDisabled();
+    expect(screen.getByRole('spinbutton', { name: 'Weight' })).not.toBeDisabled();
+
+    fireEvent.click(disabledBox(UNIT));
     expect(screen.getByRole('spinbutton', { name: 'Weight' })).toBeDisabled();
   });
 
@@ -83,28 +109,27 @@ describe('GroupedInputsDemo', () => {
   it('switches to side-by-side fields and joins their borders', () => {
     renderWithInflow(<GroupedInputsDemo />);
 
-    chooseOption(screen.getByRole('combobox', { name: 'number with unit' }), 'side by side');
+    chooseOption(screen.getByRole('combobox', { name: 'layout' }), 'side by side');
 
     expect(screen.queryByRole('combobox', { name: 'Weight unit' })).toBeNull();
-    expect(screen.getByRole('spinbutton', { name: 'Weight' })).toBeInTheDocument();
     chooseOption(screen.getByRole('combobox', { name: 'Unit' }), 'g');
     expect(screen.getByRole('combobox', { name: 'Unit' })).toHaveTextContent('g');
 
-    const field = screen.getByRole('spinbutton', { name: 'Weight' }).closest('.MuiTextField-root') as HTMLElement;
-    const radiusBefore = getComputedStyle(field.querySelector('.MuiOutlinedInput-root') as HTMLElement).borderTopRightRadius;
+    const outlined = () =>
+      screen.getByRole('spinbutton', { name: 'Weight' }).closest('.MuiOutlinedInput-root') as HTMLElement;
+    const radiusBefore = getComputedStyle(outlined()).borderTopRightRadius;
     fireEvent.click(screen.getByRole('checkbox', { name: 'joined borders (side by side)' }));
-    const radiusAfter = getComputedStyle(field.querySelector('.MuiOutlinedInput-root') as HTMLElement).borderTopRightRadius;
-    expect(radiusAfter).not.toBe(radiusBefore);
+    expect(getComputedStyle(outlined()).borderTopRightRadius).not.toBe(radiusBefore);
   });
 
   it('changes the button group variant and orientation', () => {
     renderWithInflow(<GroupedInputsDemo />);
 
-    chooseOption(screen.getByRole('combobox', { name: 'button group variant' }), 'contained');
+    chooseOption(screen.getByRole('combobox', { name: 'variant' }), 'contained');
     expect(document.querySelector('.MuiButtonGroup-contained')).not.toBeNull();
 
     expect(document.querySelector('.MuiButtonGroup-vertical')).toBeNull();
-    chooseOption(screen.getByRole('combobox', { name: 'button group orientation' }), 'vertical');
+    chooseOption(screen.getByRole('combobox', { name: 'orientation' }), 'vertical');
     expect(document.querySelector('.MuiButtonGroup-vertical')).not.toBeNull();
   });
 });

@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import {
   Autocomplete,
+  Box,
   Button,
   ButtonGroup,
+  Checkbox,
   Divider,
   FormControl,
+  FormControlLabel,
   InputAdornment,
   InputLabel,
   ListSubheader,
@@ -16,7 +19,6 @@ import {
 } from '@mui/material';
 import { DemoFrame } from '../DemoFrame';
 import { CodeBlock } from '../CodeBlock';
-import { PropsPlayground } from '../PropsPlayground';
 import type { PropSchema } from '../PropsPlayground';
 
 type FieldSize = 'small' | 'medium';
@@ -62,6 +64,68 @@ function UnitSelect({ value, onChange, label, size, disabled, divider }: {
   );
 }
 
+// Compact controls rendered inside each example's frame, so a setting sits next to the UI it changes.
+function ControlBar({ schema, values, onChange, idPrefix }: {
+  schema: PropSchema[];
+  values: Record<string, any>;
+  onChange: (values: Record<string, any>) => void;
+  idPrefix: string;
+}) {
+  return (
+    <>
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, alignItems: 'center', justifyContent: 'center' }}>
+        {schema.map(({ name, label = name, type, options }) =>
+          type === 'boolean' ? (
+            <FormControlLabel
+              key={name}
+              label={label}
+              control={
+                <Checkbox
+                  checked={!!values[name]}
+                  onChange={(event) => onChange({ ...values, [name]: event.target.checked })}
+                />
+              }
+            />
+          ) : (
+            <FormControl key={name} size="small" sx={{ minWidth: 160 }}>
+              <InputLabel id={`${idPrefix}-${name}-label`}>{label}</InputLabel>
+              <Select
+                labelId={`${idPrefix}-${name}-label`}
+                label={label}
+                value={values[name]}
+                onChange={(event) => onChange({ ...values, [name]: event.target.value })}
+              >
+                {options?.map((option) => (
+                  <MenuItem key={option} value={option}>{option}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          ),
+        )}
+      </Box>
+      <Divider sx={{ my: 3 }} />
+    </>
+  );
+}
+
+const sizeControl: PropSchema = { name: 'size', type: 'select', options: ['small', 'medium'] };
+const disabledControl: PropSchema = { name: 'disabled', type: 'boolean' };
+
+const buttonGroupSchema: PropSchema[] = [
+  sizeControl,
+  { name: 'variant', type: 'select', options: ['contained', 'outlined', 'text'] },
+  { name: 'orientation', type: 'select', options: ['horizontal', 'vertical'] },
+  disabledControl,
+];
+const groupedOptionsSchema: PropSchema[] = [sizeControl, disabledControl];
+const unitSchema: PropSchema[] = [
+  sizeControl,
+  { name: 'layout', type: 'select', options: ['unit inside field', 'side by side'] },
+  { name: 'divider', label: 'divider (unit inside field)', type: 'boolean' },
+  { name: 'joined', label: 'joined borders (side by side)', type: 'boolean' },
+  disabledControl,
+];
+
 function SectionIntro({ title, children }: { title: string; children: string }) {
   return (
     <Stack spacing={0.5} sx={{ mt: 4 }}>
@@ -72,35 +136,28 @@ function SectionIntro({ title, children }: { title: string; children: string }) 
 }
 
 export function GroupedInputsDemo() {
-  const [props, setProps] = useState<Record<string, any>>({
+  const [buttonGroup, setButtonGroup] = useState<Record<string, any>>({
     size: 'small',
-    disabled: false,
-    buttonVariant: 'outlined',
+    variant: 'outlined',
     orientation: 'horizontal',
-    unitLayout: 'unit inside field',
+    disabled: false,
+  });
+  const [groupedOptions, setGroupedOptions] = useState<Record<string, any>>({ size: 'small', disabled: false });
+  const [unitField, setUnitField] = useState<Record<string, any>>({
+    size: 'small',
+    layout: 'unit inside field',
     divider: false,
     joined: false,
+    disabled: false,
   });
-  const size: FieldSize = props.size;
-  const disabled: boolean = props.disabled;
   const [unit, setUnit] = useState('kg');
-  const insideField = props.unitLayout === 'unit inside field';
-
-  const schema: PropSchema[] = [
-    { name: 'size', type: 'select', options: ['small', 'medium'] },
-    { name: 'disabled', type: 'boolean' },
-    { name: 'buttonVariant', label: 'button group variant', type: 'select', options: ['contained', 'outlined', 'text'] },
-    { name: 'orientation', label: 'button group orientation', type: 'select', options: ['horizontal', 'vertical'] },
-    { name: 'unitLayout', label: 'number with unit', type: 'select', options: ['unit inside field', 'side by side'] },
-    { name: 'divider', label: 'divider (unit inside field)', type: 'boolean' },
-    { name: 'joined', label: 'joined borders (side by side)', type: 'boolean' },
-  ];
+  const insideField = unitField.layout === 'unit inside field';
 
   const buttonGroupCode = `
 import { Button, ButtonGroup } from '@mui/material';
 
 // <InflowProvider> only needs to be declared once at your app root - see Guidelines
-<ButtonGroup variant={props.buttonVariant} orientation={props.orientation} size={props.size} disabled={props.disabled}>
+<ButtonGroup variant={variant} orientation={orientation} size={size} disabled={disabled}>
   <Button>One</Button>
   <Button>Two</Button>
   <Button>Three</Button>
@@ -113,7 +170,7 @@ import { Button, ButtonGroup } from '@mui/material';
     input: {
       endAdornment: (
         <InputAdornment position="end">
-          ${props.divider ? '<Divider orientation="vertical" flexItem sx={{ mr: 1, my: 1 }} />\n          ' : ''}<Select variant="standard" disableUnderline value={unit} onChange={...}>
+          ${unitField.divider ? '<Divider orientation="vertical" flexItem sx={{ mr: 1, my: 1 }} />\n          ' : ''}<Select variant="standard" disableUnderline value={unit} onChange={...}>
             <MenuItem value="kg">kg</MenuItem>
           </Select>
         </InputAdornment>
@@ -122,9 +179,9 @@ import { Button, ButtonGroup } from '@mui/material';
   }}
 />`;
 
-  const unitSideBySideCode = `<Stack direction="row" spacing={${props.joined ? 0 : 1}}>
-  <TextField label="Weight" type="number" sx={{ flex: 1${props.joined ? ", '& .MuiOutlinedInput-root': { borderTopRightRadius: 0, borderBottomRightRadius: 0 }" : ''} }} />
-  <FormControl sx={{ minWidth: 100${props.joined ? ", ml: '-1px', '& .MuiOutlinedInput-root': { borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }" : ''} }}>
+  const unitSideBySideCode = `<Stack direction="row" spacing={${unitField.joined ? 0 : 1}}>
+  <TextField label="Weight" type="number" sx={{ flex: 1${unitField.joined ? ", '& .MuiOutlinedInput-root': { borderTopRightRadius: 0, borderBottomRightRadius: 0 }" : ''} }} />
+  <FormControl sx={{ minWidth: 100${unitField.joined ? ", ml: '-1px', '& .MuiOutlinedInput-root': { borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }" : ''} }}>
     <InputLabel id="unit-label">Unit</InputLabel>
     <Select labelId="unit-label" label="Unit" value={unit} onChange={...}>
       <MenuItem value="kg">kg</MenuItem>
@@ -134,17 +191,16 @@ import { Button, ButtonGroup } from '@mui/material';
 
   return (
     <>
-      <PropsPlayground schema={schema} values={props} onChange={setProps} />
-
       <SectionIntro title="Button group">
-        Related actions joined into one control. Use it for a small set of peer actions.
+        Related actions joined into one control. Use it for a small set of peer actions. Small is the Inflow default size; medium is MUI's stock size.
       </SectionIntro>
       <DemoFrame title="Button Group">
+        <ControlBar schema={buttonGroupSchema} values={buttonGroup} onChange={setButtonGroup} idPrefix="button-group" />
         <ButtonGroup
-          variant={props.buttonVariant}
-          orientation={props.orientation}
-          size={size}
-          disabled={disabled}
+          variant={buttonGroup.variant}
+          orientation={buttonGroup.orientation}
+          size={buttonGroup.size}
+          disabled={buttonGroup.disabled}
           aria-label="Button group"
         >
           <Button>One</Button>
@@ -158,17 +214,18 @@ import { Button, ButtonGroup } from '@mui/material';
         Long option lists split under headings. Autocomplete uses groupBy, and Select uses ListSubheader.
       </SectionIntro>
       <DemoFrame title="Grouped Options">
+        <ControlBar schema={groupedOptionsSchema} values={groupedOptions} onChange={setGroupedOptions} idPrefix="grouped-options" />
         <Stack direction="row" spacing={3} useFlexGap sx={{ flexWrap: 'wrap' }}>
           <Autocomplete
             options={groupedFilms}
             groupBy={(option) => option.decade}
             getOptionLabel={(option) => option.label}
-            size={size}
-            disabled={disabled}
+            size={groupedOptions.size}
+            disabled={groupedOptions.disabled}
             sx={{ width: 300 }}
             renderInput={(params) => <TextField {...params} label="Movie by decade" />}
           />
-          <FormControl size={size} disabled={disabled} sx={{ width: 240 }}>
+          <FormControl size={groupedOptions.size} disabled={groupedOptions.disabled} sx={{ width: 240 }}>
             <InputLabel id="grouped-select-label">Grouping</InputLabel>
             <Select defaultValue="" labelId="grouped-select-label" label="Grouping">
               <ListSubheader>Category 1</ListSubheader>
@@ -198,13 +255,14 @@ import { Button, ButtonGroup } from '@mui/material';
       />
 
       <SectionIntro title="Number with unit (for review)">
-        MUI and Material Design have no combined-field component. Use "number with unit" in the playground to compare the two options.
+        MUI and Material Design have no combined-field component. Use the controls above the example to compare the two options.
       </SectionIntro>
       <DemoFrame title={insideField ? 'Unit select inside the field (one label, one border, one error state)' : 'Side by side (two fields, two labels)'}>
+        <ControlBar schema={unitSchema} values={unitField} onChange={setUnitField} idPrefix="unit-field" />
         {insideField ? (
           <TextField
-            size={size}
-            disabled={disabled}
+            size={unitField.size}
+            disabled={unitField.disabled}
             label="Weight"
             type="number"
             defaultValue={10}
@@ -216,9 +274,9 @@ import { Button, ButtonGroup } from '@mui/material';
                       value={unit}
                       onChange={setUnit}
                       label="Weight unit"
-                      size={size}
-                      disabled={disabled}
-                      divider={props.divider}
+                      size={unitField.size}
+                      disabled={unitField.disabled}
+                      divider={unitField.divider}
                     />
                   </InputAdornment>
                 ),
@@ -226,26 +284,26 @@ import { Button, ButtonGroup } from '@mui/material';
             }}
           />
         ) : (
-          <Stack direction="row" spacing={props.joined ? 0 : 1} useFlexGap sx={{ maxWidth: 360 }}>
+          <Stack direction="row" spacing={unitField.joined ? 0 : 1} useFlexGap sx={{ maxWidth: 360 }}>
             <TextField
-              size={size}
-              disabled={disabled}
+              size={unitField.size}
+              disabled={unitField.disabled}
               label="Weight"
               type="number"
               defaultValue={10}
               sx={{
                 flex: 1,
-                ...(props.joined && {
+                ...(unitField.joined && {
                   '& .MuiOutlinedInput-root': { borderTopRightRadius: 0, borderBottomRightRadius: 0 },
                 }),
               }}
             />
             <FormControl
-              size={size}
-              disabled={disabled}
+              size={unitField.size}
+              disabled={unitField.disabled}
               sx={{
                 minWidth: 100,
-                ...(props.joined && {
+                ...(unitField.joined && {
                   ml: '-1px',
                   '& .MuiOutlinedInput-root': { borderTopLeftRadius: 0, borderBottomLeftRadius: 0 },
                   '& .Mui-focused': { zIndex: 1 },
