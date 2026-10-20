@@ -407,7 +407,7 @@
 
   --font-size-xs: 0.625rem;    /* 10px  */
   --font-size-sm: 0.75rem;     /* 12px  */
-  --font-size-body2: 0.8125rem; /* 13px  */
+  --font-size-body2: 0.875rem;  /* 14px — matches theme.typography.body2 */
   --font-size-base: 0.875rem;  /* 14px  */
   --font-size-md: 0.9375rem;   /* 15px  */
   --font-size-lg: 1rem;        /* 16px  */
@@ -601,11 +601,32 @@
      Line-heights and letter-spacing per Figma text styles.
   ─────────────────────────────────────────────────────────── */
 
+  /* Display (Material 3 roles; no MUI variant equivalent) */
+  --text-display-large-font-size:      3.5625rem;
+  --text-display-large-font-weight:    400;
+  --text-display-large-line-height:    4rem;
+  --text-display-large-letter-spacing: -0.015625rem;
+
+  --text-display-medium-font-size:      2.8125rem;
+  --text-display-medium-font-weight:    400;
+  --text-display-medium-line-height:    3.25rem;
+  --text-display-medium-letter-spacing: 0;
+
+  --text-display-small-font-size:      2.25rem;
+  --text-display-small-font-weight:    400;
+  --text-display-small-line-height:    2.75rem;
+  --text-display-small-letter-spacing: 0;
+
   /* Headline */
   --text-headline-large-font-size:      1.875rem;
   --text-headline-large-font-weight:    400;
   --text-headline-large-line-height:    2.5rem;
   --text-headline-large-letter-spacing: 0;
+
+  --text-headline-medium-font-size:      1.75rem;
+  --text-headline-medium-font-weight:    400;
+  --text-headline-medium-line-height:    2.25rem;
+  --text-headline-medium-letter-spacing: 0;
 
   --text-headline-small-font-size:      1.5rem;
   --text-headline-small-font-weight:    400;
@@ -634,7 +655,7 @@
   --text-body-large-font-size:      1rem;
   --text-body-large-font-weight:    400;
   --text-body-large-line-height:    1.5rem;
-  --text-body-large-letter-spacing: 0.03125rem;
+  --text-body-large-letter-spacing: 0;
 
   --text-body-medium-font-size:      0.875rem;
   --text-body-medium-font-weight:    400;
@@ -651,6 +672,16 @@
   --text-label-large-font-weight:    500;
   --text-label-large-line-height:    1.25rem;
   --text-label-large-letter-spacing: 0.00625rem;
+
+  --text-label-medium-font-size:      0.75rem;
+  --text-label-medium-font-weight:    500;
+  --text-label-medium-line-height:    1rem;
+  --text-label-medium-letter-spacing: 0.03125rem;
+
+  --text-label-small-font-size:      0.6875rem;
+  --text-label-small-font-weight:    500;
+  --text-label-small-line-height:    1rem;
+  --text-label-small-letter-spacing: 0.03125rem;
 
   /* Font family alias */
   --font-family-base: var(--font-family);  /* 'Inter', sans-serif */
@@ -834,6 +865,34 @@ code, kbd, samp, pre { font-family: var(--iv-font-mono); }
 /* =============================================================
    UTILITY — Typography
    ============================================================= */
+.text-display-large {
+  font-family:    var(--font-family-base);
+  font-size:      var(--text-display-large-font-size);
+  font-weight:    var(--text-display-large-font-weight);
+  line-height:    var(--text-display-large-line-height);
+  letter-spacing: var(--text-display-large-letter-spacing);
+}
+.text-display-medium {
+  font-family:    var(--font-family-base);
+  font-size:      var(--text-display-medium-font-size);
+  font-weight:    var(--text-display-medium-font-weight);
+  line-height:    var(--text-display-medium-line-height);
+  letter-spacing: var(--text-display-medium-letter-spacing);
+}
+.text-display-small {
+  font-family:    var(--font-family-base);
+  font-size:      var(--text-display-small-font-size);
+  font-weight:    var(--text-display-small-font-weight);
+  line-height:    var(--text-display-small-line-height);
+  letter-spacing: var(--text-display-small-letter-spacing);
+}
+.text-headline-medium {
+  font-family:    var(--font-family-base);
+  font-size:      var(--text-headline-medium-font-size);
+  font-weight:    var(--text-headline-medium-font-weight);
+  line-height:    var(--text-headline-medium-line-height);
+  letter-spacing: var(--text-headline-medium-letter-spacing);
+}
 .text-headline-large {
   font-family:    var(--font-family-base);
   font-size:      var(--text-headline-large-font-size);
@@ -898,6 +957,20 @@ code, kbd, samp, pre { font-family: var(--iv-font-mono); }
   letter-spacing: var(--text-label-large-letter-spacing);
 }
 
+.text-label-medium {
+  font-family:    var(--font-family-base);
+  font-size:      var(--text-label-medium-font-size);
+  font-weight:    var(--text-label-medium-font-weight);
+  line-height:    var(--text-label-medium-line-height);
+  letter-spacing: var(--text-label-medium-letter-spacing);
+}
+.text-label-small {
+  font-family:    var(--font-family-base);
+  font-size:      var(--text-label-small-font-size);
+  font-weight:    var(--text-label-small-font-weight);
+  line-height:    var(--text-label-small-line-height);
+  letter-spacing: var(--text-label-small-letter-spacing);
+}
 
 /* =============================================================
    COMPONENT STYLES
