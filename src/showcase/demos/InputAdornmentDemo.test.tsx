@@ -4,50 +4,29 @@ import { renderWithInflow } from '../../test/renderWithInflow';
 import { InputAdornmentDemo } from './InputAdornmentDemo';
 
 describe('InputAdornmentDemo', () => {
-  it('renders the interactive adornment frame and both combined-field options', () => {
+  it('renders the interactive and all-states frames with small adornment icons', () => {
     renderWithInflow(<InputAdornmentDemo />);
 
-    expect(screen.getByText('Combined fields (for review)')).toBeInTheDocument();
-    expect(screen.getByText(/^Option A/)).toBeInTheDocument();
-    expect(screen.getByText(/^Option B/)).toBeInTheDocument();
+    expect(screen.getByText('Input Adornment - Interactive')).toBeInTheDocument();
+    expect(screen.getByText('All States')).toBeInTheDocument();
+    expect(document.querySelectorAll('.MuiInputAdornment-root .MuiSvgIcon-fontSizeSmall').length).toBeGreaterThan(0);
+    expect(document.querySelectorAll('.MuiInputAdornment-root .MuiSvgIcon-fontSizeMedium')).toHaveLength(0);
   });
 
-  it('Option A puts a unit select inside the number field and changes the unit', () => {
+  it('disables the interactive fields from the playground', () => {
     renderWithInflow(<InputAdornmentDemo />);
 
-    const unit = screen.getByRole('combobox', { name: 'Weight unit' });
-    expect(unit).toHaveTextContent('kg');
-    fireEvent.mouseDown(unit);
-    fireEvent.click(within(screen.getByRole('listbox')).getByRole('option', { name: 'lb' }));
+    fireEvent.click(screen.getByRole('checkbox', { name: 'disabled' }));
 
-    expect(screen.getByRole('combobox', { name: 'Weight unit' })).toHaveTextContent('lb');
-    expect(screen.getByRole('combobox', { name: 'Weight unit with divider' })).toBeInTheDocument();
+    expect(screen.getAllByRole('textbox', { name: 'Username' })[0]).toBeDisabled();
   });
 
-  it('Option B renders a separate labelled unit select beside the number field', () => {
+  it('switches the interactive variant from the playground', () => {
     renderWithInflow(<InputAdornmentDemo />);
 
-    // One "Weight" number field in Option A and one in Option B.
-    expect(screen.getAllByRole('spinbutton', { name: 'Weight' })).toHaveLength(2);
-    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'Unit' }));
-    fireEvent.click(within(screen.getByRole('listbox')).getByRole('option', { name: 'g' }));
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'variant' }));
+    fireEvent.click(within(screen.getByRole('listbox')).getByRole('option', { name: 'filled' }));
 
-    expect(screen.getByRole('combobox', { name: 'Unit' })).toHaveTextContent('g');
-    expect(screen.getByRole('combobox', { name: 'Unit (joined)' })).toBeInTheDocument();
-  });
-
-  it('switches the combined fields between small and medium', () => {
-    renderWithInflow(<InputAdornmentDemo />);
-
-    expect(document.querySelectorAll('.MuiInputBase-sizeSmall').length).toBeGreaterThan(0);
-    const sizeSelect = screen.getAllByRole('combobox', { name: 'size' })[0];
-    fireEvent.mouseDown(sizeSelect);
-    fireEvent.click(within(screen.getByRole('listbox')).getByRole('option', { name: 'medium' }));
-
-    const weight = screen.getAllByRole('spinbutton', { name: 'Weight' })[0];
-    expect(weight.closest('.MuiInputBase-root')).not.toHaveClass('MuiInputBase-sizeSmall');
-    expect(screen.getByRole('combobox', { name: 'Weight unit' }).closest('.MuiInputBase-root')).not.toHaveClass(
-      'MuiInputBase-sizeSmall',
-    );
+    expect(document.querySelector('.MuiFilledInput-root')).not.toBeNull();
   });
 });

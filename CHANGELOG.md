@@ -7,10 +7,11 @@ All notable changes to `@inriver/inflow-react` are documented here. This project
 ### Added
 - Showcase-only: the Tokens page documents spacing units 0.5–10, every MUI typography variant (size, weight, line height, letter spacing, and usage), the full light-mode palette from `theme.palette` including `palette.inflow`, and the three Inflow shadow levels with the MUI elevation ranges they cover.
 - CSS tokens for the remaining Material 3 text roles (`display-large/medium/small`, `headline-medium`, `label-medium/small`) with matching `.text-*` utility classes (library-facing).
-- Showcase-only: Button Group demo page, "Grouped Options" examples in the Autocomplete (`groupBy`) and Select (`ListSubheader`) demos, and "Combined fields (for review)" on the Input Adornment demo comparing a unit select inside the field (with and without a divider) against side-by-side fields (spaced and joined), with smoke tests for all four.
+- Showcase-only: Grouped Inputs demo page that puts button groups, grouped options (Autocomplete `groupBy`, Select `ListSubheader`), and two number-with-unit field options (unit select inside the field, or two side-by-side fields) on one page with a single small/medium and disabled playground, plus smoke tests.
 - Parity tests that keep `tokens.ts` and the CSS `--text-*` tokens in line with the theme.
 
 ### Changed
+- Showcase-only: Input Adornment demo icons are `fontSize="small"` and its wrapped example fields use flex gap so they no longer touch.
 - `--font-size-body2` is 14px (was 13px) and `--text-body-large-letter-spacing` is 0 (was 0.5px), matching `theme.typography.body2` and `body1`. Page text set through the base `html, body` styles has slightly tighter letter spacing (library-facing).
 
 ## [3.10.1] - 2026-10-19

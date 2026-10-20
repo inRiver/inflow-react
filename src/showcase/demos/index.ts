@@ -41,7 +41,7 @@ export { StackDemo } from './StackDemo';
 export { AutocompleteDemo } from './AutocompleteDemo';
 export { RatingDemo } from './RatingDemo';
 export { ToggleButtonDemo } from './ToggleButtonDemo';
-export { ButtonGroupDemo } from './ButtonGroupDemo';
+export { GroupedInputsDemo } from './GroupedInputsDemo';
 export { FormControlDemo } from './FormControlDemo';
 export { InputAdornmentDemo } from './InputAdornmentDemo';
 export { DividerDemo } from './DividerDemo';

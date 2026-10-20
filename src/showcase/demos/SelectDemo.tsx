@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Select, MenuItem, ListSubheader, FormControl, InputLabel, Stack, Box } from '@mui/material';
+import { Select, MenuItem, FormControl, InputLabel, Stack, Box } from '@mui/material';
 import { DemoFrame } from '../DemoFrame';
 import { CodeBlock } from '../CodeBlock';
 import { PropsPlayground } from '../PropsPlayground';
@@ -93,30 +93,6 @@ import { Select } from '@mui/material';
           </Stack>
         </Stack>
       </DemoFrame>
-
-      <DemoFrame title="Grouped Options">
-        <FormControl sx={{ minWidth: 240 }}>
-          <InputLabel id="grouped-select-label">Grouping</InputLabel>
-          <Select defaultValue="" labelId="grouped-select-label" label="Grouping">
-            <ListSubheader>Category 1</ListSubheader>
-            <MenuItem value={1}>Option 1</MenuItem>
-            <MenuItem value={2}>Option 2</MenuItem>
-            <ListSubheader>Category 2</ListSubheader>
-            <MenuItem value={3}>Option 3</MenuItem>
-            <MenuItem value={4}>Option 4</MenuItem>
-          </Select>
-        </FormControl>
-      </DemoFrame>
-
-      <CodeBlock
-        code={`<Select defaultValue="" label="Grouping">
-  <ListSubheader>Category 1</ListSubheader>
-  <MenuItem value={1}>Option 1</MenuItem>
-  <ListSubheader>Category 2</ListSubheader>
-  <MenuItem value={3}>Option 3</MenuItem>
-</Select>`}
-        language="tsx"
-      />
     </>
   );
 }
