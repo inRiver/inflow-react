@@ -44,6 +44,8 @@ Inflow is a calm, operational product-information workspace: dense enough for ca
 | Caption | `caption` / `0.75rem` | 400-500 | Context and metadata |
 | Grid | `inflowTokens.grid.fontSize` / `0.875rem` | 400 | Cell values |
 
+The table above lists the levels Inflow screens use most. The Tokens page in the showcase documents all 13 MUI variants (`h1`–`h6`, `subtitle1/2`, `body1/2`, `button`, `caption`, `overline`) straight from `theme.typography`. The CSS `--text-*` tokens follow Material 3 role names; the theme variant they map to is listed in `docs/ports/MUI9_TOKEN_MAP.md`.
+
 ### Font Stack
 
 - Primary: `inflowTokens.typography.fontFamily` (`Inter`, then system UI fallbacks).
