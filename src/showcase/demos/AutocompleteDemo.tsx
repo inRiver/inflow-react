@@ -12,6 +12,13 @@ const topFilms = [
   { label: 'Pulp Fiction', year: 1994 },
 ];
 
+const groupedFilms = [
+  { label: 'The Shawshank Redemption', decade: '1990s' },
+  { label: 'Pulp Fiction', decade: '1990s' },
+  { label: 'The Godfather', decade: '1970s' },
+  { label: 'The Dark Knight', decade: '2000s' },
+];
+
 export function AutocompleteDemo() {
   const [props, setProps] = useState<Record<string, any>>({
     size: 'small',
@@ -118,6 +125,25 @@ import { Autocomplete, TextField } from '@mui/material';
           </Stack>
         </Stack>
       </DemoFrame>
+
+      <DemoFrame title="Grouped Options">
+        <Autocomplete
+          options={[...groupedFilms].sort((a, b) => a.decade.localeCompare(b.decade))}
+          groupBy={(option) => option.decade}
+          getOptionLabel={(option) => option.label}
+          sx={{ width: 360 }}
+          renderInput={(params) => <TextField {...params} label="Movie by decade" />}
+        />
+      </DemoFrame>
+
+      <CodeBlock
+        code={`<Autocomplete
+  options={options.sort((a, b) => a.decade.localeCompare(b.decade))}
+  groupBy={(option) => option.decade}
+  renderInput={(params) => <TextField {...params} label="Movie by decade" />}
+/>`}
+        language="tsx"
+      />
     </>
   );
 }

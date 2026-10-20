@@ -7,6 +7,7 @@ All notable changes to `@inriver/inflow-react` are documented here. This project
 ### Added
 - Showcase-only: the Tokens page documents spacing units 0.5–10, every MUI typography variant (size, weight, line height, letter spacing, and usage), the full light-mode palette from `theme.palette` including `palette.inflow`, and the three Inflow shadow levels with the MUI elevation ranges they cover.
 - CSS tokens for the remaining Material 3 text roles (`display-large/medium/small`, `headline-medium`, `label-medium/small`) with matching `.text-*` utility classes (library-facing).
+- Showcase-only: Button Group demo page, and "Grouped Options" examples in the Autocomplete (`groupBy`) and Select (`ListSubheader`) demos, with smoke tests for all three.
 - Parity tests that keep `tokens.ts` and the CSS `--text-*` tokens in line with the theme.
 
 ### Changed

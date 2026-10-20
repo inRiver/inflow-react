@@ -21,6 +21,7 @@ export const COMPONENT_CATEGORIES: Record<string, Category> = {
     icon: 'Edit',
     components: [
       'button',
+      'buttongroup',
       'textfield',
       'select',
       'checkbox',
@@ -149,6 +150,7 @@ export const EXAMPLE_PAGES: ExamplePage[] = [
 // Component display labels (maps slug -> human-readable label)
 export const COMPONENT_LABELS: Record<string, string> = {
   button: 'Button',
+  buttongroup: 'Button Group',
   textfield: 'Text Field',
   select: 'Select',
   checkbox: 'Checkbox',
