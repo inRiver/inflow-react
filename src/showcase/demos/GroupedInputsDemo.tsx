@@ -72,28 +72,65 @@ function SectionIntro({ title, children }: { title: string; children: string }) 
 }
 
 export function GroupedInputsDemo() {
-  const [props, setProps] = useState<Record<string, any>>({ size: 'small', disabled: false });
+  const [props, setProps] = useState<Record<string, any>>({
+    size: 'small',
+    disabled: false,
+    buttonVariant: 'outlined',
+    orientation: 'horizontal',
+    unitLayout: 'unit inside field',
+    divider: false,
+    joined: false,
+  });
   const size: FieldSize = props.size;
   const disabled: boolean = props.disabled;
-  const [unitInside, setUnitInside] = useState('kg');
-  const [unitInsideDivided, setUnitInsideDivided] = useState('kg');
-  const [unitGap, setUnitGap] = useState('kg');
-  const [unitJoined, setUnitJoined] = useState('kg');
+  const [unit, setUnit] = useState('kg');
+  const insideField = props.unitLayout === 'unit inside field';
 
   const schema: PropSchema[] = [
     { name: 'size', type: 'select', options: ['small', 'medium'] },
     { name: 'disabled', type: 'boolean' },
+    { name: 'buttonVariant', label: 'button group variant', type: 'select', options: ['contained', 'outlined', 'text'] },
+    { name: 'orientation', label: 'button group orientation', type: 'select', options: ['horizontal', 'vertical'] },
+    { name: 'unitLayout', label: 'number with unit', type: 'select', options: ['unit inside field', 'side by side'] },
+    { name: 'divider', label: 'divider (unit inside field)', type: 'boolean' },
+    { name: 'joined', label: 'joined borders (side by side)', type: 'boolean' },
   ];
 
   const buttonGroupCode = `
 import { Button, ButtonGroup } from '@mui/material';
 
 // <InflowProvider> only needs to be declared once at your app root - see Guidelines
-<ButtonGroup variant="outlined" size={props.size} disabled={props.disabled}>
+<ButtonGroup variant={props.buttonVariant} orientation={props.orientation} size={props.size} disabled={props.disabled}>
   <Button>One</Button>
   <Button>Two</Button>
   <Button>Three</Button>
 </ButtonGroup>`;
+
+  const unitInsideCode = `<TextField
+  label="Weight"
+  type="number"
+  slotProps={{
+    input: {
+      endAdornment: (
+        <InputAdornment position="end">
+          ${props.divider ? '<Divider orientation="vertical" flexItem sx={{ mr: 1, my: 1 }} />\n          ' : ''}<Select variant="standard" disableUnderline value={unit} onChange={...}>
+            <MenuItem value="kg">kg</MenuItem>
+          </Select>
+        </InputAdornment>
+      ),
+    },
+  }}
+/>`;
+
+  const unitSideBySideCode = `<Stack direction="row" spacing={${props.joined ? 0 : 1}}>
+  <TextField label="Weight" type="number" sx={{ flex: 1${props.joined ? ", '& .MuiOutlinedInput-root': { borderTopRightRadius: 0, borderBottomRightRadius: 0 }" : ''} }} />
+  <FormControl sx={{ minWidth: 100${props.joined ? ", ml: '-1px', '& .MuiOutlinedInput-root': { borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }" : ''} }}>
+    <InputLabel id="unit-label">Unit</InputLabel>
+    <Select labelId="unit-label" label="Unit" value={unit} onChange={...}>
+      <MenuItem value="kg">kg</MenuItem>
+    </Select>
+  </FormControl>
+</Stack>`;
 
   return (
     <>
@@ -103,21 +140,17 @@ import { Button, ButtonGroup } from '@mui/material';
         Related actions joined into one control. Use it for a small set of peer actions.
       </SectionIntro>
       <DemoFrame title="Button Group">
-        <Stack spacing={2} useFlexGap>
-          {(['contained', 'outlined', 'text'] as const).map((variant) => (
-            <ButtonGroup
-              key={variant}
-              variant={variant}
-              size={size}
-              disabled={disabled}
-              aria-label={`${variant} button group`}
-            >
-              <Button>One</Button>
-              <Button>Two</Button>
-              <Button>Three</Button>
-            </ButtonGroup>
-          ))}
-        </Stack>
+        <ButtonGroup
+          variant={props.buttonVariant}
+          orientation={props.orientation}
+          size={size}
+          disabled={disabled}
+          aria-label="Button group"
+        >
+          <Button>One</Button>
+          <Button>Two</Button>
+          <Button>Three</Button>
+        </ButtonGroup>
       </DemoFrame>
       <CodeBlock code={buttonGroupCode} language="tsx" />
 
@@ -165,10 +198,10 @@ import { Button, ButtonGroup } from '@mui/material';
       />
 
       <SectionIntro title="Number with unit (for review)">
-        MUI and Material Design have no combined-field component. These are two ways to pair a number with a unit.
+        MUI and Material Design have no combined-field component. Use "number with unit" in the playground to compare the two options.
       </SectionIntro>
-      <DemoFrame title="Option A - Unit select inside the field (one label, one border, one error state)">
-        <Stack direction="row" spacing={3} useFlexGap sx={{ flexWrap: 'wrap' }}>
+      <DemoFrame title={insideField ? 'Unit select inside the field (one label, one border, one error state)' : 'Side by side (two fields, two labels)'}>
+        {insideField ? (
           <TextField
             size={size}
             disabled={disabled}
@@ -179,79 +212,32 @@ import { Button, ButtonGroup } from '@mui/material';
               input: {
                 endAdornment: (
                   <InputAdornment position="end">
-                    <UnitSelect value={unitInside} onChange={setUnitInside} label="Weight unit" size={size} disabled={disabled} />
-                  </InputAdornment>
-                ),
-              },
-            }}
-          />
-          <TextField
-            size={size}
-            disabled={disabled}
-            label="Weight (with divider)"
-            type="number"
-            defaultValue={10}
-            slotProps={{
-              input: {
-                endAdornment: (
-                  <InputAdornment position="end">
                     <UnitSelect
-                      value={unitInsideDivided}
-                      onChange={setUnitInsideDivided}
-                      label="Weight unit with divider"
+                      value={unit}
+                      onChange={setUnit}
+                      label="Weight unit"
                       size={size}
                       disabled={disabled}
-                      divider
+                      divider={props.divider}
                     />
                   </InputAdornment>
                 ),
               },
             }}
           />
-        </Stack>
-      </DemoFrame>
-      <CodeBlock
-        code={`<TextField
-  label="Weight"
-  type="number"
-  slotProps={{
-    input: {
-      endAdornment: (
-        <InputAdornment position="end">
-          <Select variant="standard" disableUnderline value={unit} onChange={...}>
-            <MenuItem value="kg">kg</MenuItem>
-          </Select>
-        </InputAdornment>
-      ),
-    },
-  }}
-/>`}
-        language="tsx"
-      />
-
-      <DemoFrame title="Option B - Side by side (two fields, two labels)">
-        <Stack spacing={3} useFlexGap>
-          <Stack direction="row" spacing={1} useFlexGap sx={{ maxWidth: 360 }}>
-            <TextField size={size} disabled={disabled} label="Weight" type="number" defaultValue={10} sx={{ flex: 1 }} />
-            <FormControl size={size} disabled={disabled} sx={{ minWidth: 100 }}>
-              <InputLabel id="unit-gap-label">Unit</InputLabel>
-              <Select labelId="unit-gap-label" label="Unit" value={unitGap} onChange={(event) => setUnitGap(event.target.value)}>
-                {units.map((unit) => (
-                  <MenuItem key={unit} value={unit}>{unit}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Stack>
-          <Stack direction="row" sx={{ maxWidth: 360 }}>
+        ) : (
+          <Stack direction="row" spacing={props.joined ? 0 : 1} useFlexGap sx={{ maxWidth: 360 }}>
             <TextField
               size={size}
               disabled={disabled}
-              label="Weight (joined)"
+              label="Weight"
               type="number"
               defaultValue={10}
               sx={{
                 flex: 1,
-                '& .MuiOutlinedInput-root': { borderTopRightRadius: 0, borderBottomRightRadius: 0 },
+                ...(props.joined && {
+                  '& .MuiOutlinedInput-root': { borderTopRightRadius: 0, borderBottomRightRadius: 0 },
+                }),
               }}
             />
             <FormControl
@@ -259,33 +245,24 @@ import { Button, ButtonGroup } from '@mui/material';
               disabled={disabled}
               sx={{
                 minWidth: 100,
-                ml: '-1px',
-                '& .MuiOutlinedInput-root': { borderTopLeftRadius: 0, borderBottomLeftRadius: 0 },
-                '& .Mui-focused': { zIndex: 1 },
+                ...(props.joined && {
+                  ml: '-1px',
+                  '& .MuiOutlinedInput-root': { borderTopLeftRadius: 0, borderBottomLeftRadius: 0 },
+                  '& .Mui-focused': { zIndex: 1 },
+                }),
               }}
             >
-              <InputLabel id="unit-joined-label">Unit (joined)</InputLabel>
-              <Select labelId="unit-joined-label" label="Unit (joined)" value={unitJoined} onChange={(event) => setUnitJoined(event.target.value)}>
-                {units.map((unit) => (
-                  <MenuItem key={unit} value={unit}>{unit}</MenuItem>
+              <InputLabel id="unit-label">Unit</InputLabel>
+              <Select labelId="unit-label" label="Unit" value={unit} onChange={(event) => setUnit(event.target.value)}>
+                {units.map((option) => (
+                  <MenuItem key={option} value={option}>{option}</MenuItem>
                 ))}
               </Select>
             </FormControl>
           </Stack>
-        </Stack>
+        )}
       </DemoFrame>
-      <CodeBlock
-        code={`<Stack direction="row" spacing={1}>
-  <TextField label="Weight" type="number" sx={{ flex: 1 }} />
-  <FormControl sx={{ minWidth: 100 }}>
-    <InputLabel id="unit-label">Unit</InputLabel>
-    <Select labelId="unit-label" label="Unit" value={unit} onChange={...}>
-      <MenuItem value="kg">kg</MenuItem>
-    </Select>
-  </FormControl>
-</Stack>`}
-        language="tsx"
-      />
+      <CodeBlock code={insideField ? unitInsideCode : unitSideBySideCode} language="tsx" />
     </>
   );
 }
