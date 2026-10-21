@@ -9,7 +9,6 @@ import {
   Divider,
   FormControl,
   FormControlLabel,
-  InputAdornment,
   InputLabel,
   ListSubheader,
   MenuItem,
@@ -22,8 +21,6 @@ import { DemoFrame } from '../DemoFrame';
 import { CodeBlock } from '../CodeBlock';
 import type { PropSchema } from '../PropsPlayground';
 
-type FieldSize = 'small' | 'medium';
-
 const units = ['kg', 'lb', 'g'];
 
 const groupedFilms = [
@@ -32,38 +29,6 @@ const groupedFilms = [
   { label: 'The Godfather', decade: '1970s' },
   { label: 'The Dark Knight', decade: '2000s' },
 ].sort((a, b) => a.decade.localeCompare(b.decade));
-
-// Icons follow the field: 20px in a small (40px) field, 24px in a medium (56px) field.
-const iconSize: Record<FieldSize, string> = { small: '1.25rem', medium: '1.5rem' };
-
-function UnitSelect({ value, onChange, label, size, disabled, divider }: {
-  value: string;
-  onChange: (value: string) => void;
-  label: string;
-  size: FieldSize;
-  disabled?: boolean;
-  divider?: boolean;
-}) {
-  return (
-    <>
-      {divider && <Divider orientation="vertical" flexItem sx={{ mr: 1, my: size === 'small' ? 1 : 1.5 }} />}
-      <Select
-        variant="standard"
-        disableUnderline
-        value={value}
-        disabled={disabled}
-        onChange={(event) => onChange(event.target.value)}
-        slotProps={{ input: { 'aria-label': label } }}
-        size={size}
-        sx={{ minWidth: 56, '& .MuiSelect-icon': { fontSize: iconSize[size] } }}
-      >
-        {units.map((unit) => (
-          <MenuItem key={unit} value={unit}>{unit}</MenuItem>
-        ))}
-      </Select>
-    </>
-  );
-}
 
 // Compact controls rendered inside each example's frame, so a setting sits next to the UI it changes.
 function ControlBar({ schema, values, onChange, idPrefix }: {
@@ -119,13 +84,7 @@ const buttonGroupSchema: PropSchema[] = [
   disabledControl,
 ];
 const groupedOptionsSchema: PropSchema[] = [sizeControl, disabledControl];
-const unitSchema: PropSchema[] = [
-  sizeControl,
-  { name: 'layout', type: 'select', options: ['unit inside field', 'side by side'] },
-  { name: 'divider', label: 'divider (unit inside field)', type: 'boolean' },
-  { name: 'joined', label: 'joined borders (side by side)', type: 'boolean' },
-  disabledControl,
-];
+const unitSchema: PropSchema[] = [sizeControl, disabledControl];
 
 const splitOptions = [
   'even',
@@ -200,13 +159,7 @@ export function GroupedInputsDemo() {
     disabled: false,
   });
   const [groupedOptions, setGroupedOptions] = useState<Record<string, any>>({ size: 'small', disabled: false });
-  const [unitField, setUnitField] = useState<Record<string, any>>({
-    size: 'small',
-    layout: 'unit inside field',
-    divider: false,
-    joined: false,
-    disabled: false,
-  });
+  const [unitField, setUnitField] = useState<Record<string, any>>({ size: 'small', disabled: false });
   const [fieldRow, setFieldRow] = useState<Record<string, any>>({
     size: 'small',
     fields: '2',
@@ -227,7 +180,6 @@ export function GroupedInputsDemo() {
   {/* up to 5 fields: flex is the width ratio, so equal flex values split the row evenly */}
   {/* a dropdown field is <TextField select label="Unit" defaultValue="Option 1"><MenuItem .../></TextField> */}
 </Stack>`;
-  const insideField = unitField.layout === 'unit inside field';
 
   const buttonGroupCode = `
 import { Button, ButtonGroup } from '@mui/material';
@@ -239,25 +191,20 @@ import { Button, ButtonGroup } from '@mui/material';
   <Button>Three</Button>
 </ButtonGroup>`;
 
-  const unitInsideCode = `<TextField
-  label="Weight"
-  type="number"
-  slotProps={{
-    input: {
-      endAdornment: (
-        <InputAdornment position="end">
-          ${unitField.divider ? '<Divider orientation="vertical" flexItem sx={{ mr: 1, my: 1 }} />\n          ' : ''}<Select variant="standard" disableUnderline value={unit} onChange={...}>
-            <MenuItem value="kg">kg</MenuItem>
-          </Select>
-        </InputAdornment>
-      ),
-    },
-  }}
-/>`;
-
-  const unitSideBySideCode = `<Stack direction="row" spacing={${unitField.joined ? 0 : 1}}>
-  <TextField label="Weight" type="number" sx={{ flex: 1${unitField.joined ? ", '& .MuiOutlinedInput-root': { borderTopRightRadius: 0, borderBottomRightRadius: 0 }" : ''} }} />
-  <FormControl sx={{ minWidth: 100${unitField.joined ? ", ml: '-1px', '& .MuiOutlinedInput-root': { borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }" : ''} }}>
+  const unitCode = `<Stack direction="row" useFlexGap>
+  <TextField
+    label="Weight"
+    type="number"
+    sx={{ flex: 1, minWidth: 0, '& .MuiOutlinedInput-root': { borderTopRightRadius: 0, borderBottomRightRadius: 0 } }}
+  />
+  <FormControl
+    sx={{
+      minWidth: 100,
+      ml: '-1px',
+      '& .MuiOutlinedInput-root': { borderTopLeftRadius: 0, borderBottomLeftRadius: 0 },
+      '& .Mui-focused': { zIndex: 1 },
+    }}
+  >
     <InputLabel id="unit-label">Unit</InputLabel>
     <Select labelId="unit-label" label="Unit" value={unit} onChange={...}>
       <MenuItem value="kg">kg</MenuItem>
@@ -330,115 +277,107 @@ import { Button, ButtonGroup } from '@mui/material';
         language="tsx"
       />
 
-      <SectionIntro title="Number with unit (for review)">
-        MUI and Material Design have no combined-field component. Use the controls above the example to compare the two options.
+      <SectionIntro title="Number with unit">
+        MUI and Material Design have no combined-field component. Pair a number field and a unit select side by side with joined borders. The pair stays on one row at every width: the number field shrinks and the unit keeps its width.
       </SectionIntro>
-      <DemoFrame title={insideField ? 'Unit select inside the field (one label, one border, one error state)' : 'Side by side (two fields, two labels)'}>
+      <DemoFrame title="Number with unit">
         <ControlBar schema={unitSchema} values={unitField} onChange={setUnitField} idPrefix="unit-field" />
-        {insideField ? (
+        <Stack direction="row" useFlexGap sx={{ width: '100%', maxWidth: 360 }}>
           <TextField
             size={unitField.size}
             disabled={unitField.disabled}
             label="Weight"
             type="number"
             defaultValue={10}
-            slotProps={{
-              input: {
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <UnitSelect
-                      value={unit}
-                      onChange={setUnit}
-                      label="Weight unit"
-                      size={unitField.size}
-                      disabled={unitField.disabled}
-                      divider={unitField.divider}
-                    />
-                  </InputAdornment>
-                ),
-              },
+            sx={{
+              flex: 1,
+              minWidth: 0,
+              '& .MuiOutlinedInput-root': { borderTopRightRadius: 0, borderBottomRightRadius: 0 },
             }}
           />
-        ) : (
-          <Stack direction="row" spacing={unitField.joined ? 0 : 1} useFlexGap sx={{ maxWidth: 360 }}>
-            <TextField
+          <FormControl
+            size={unitField.size}
+            disabled={unitField.disabled}
+            sx={{
+              minWidth: 100,
+              ml: '-1px',
+              '& .MuiOutlinedInput-root': { borderTopLeftRadius: 0, borderBottomLeftRadius: 0 },
+              '& .Mui-focused': { zIndex: 1 },
+            }}
+          >
+            <InputLabel id="unit-label">Unit</InputLabel>
+            <Select
+              labelId="unit-label"
+              label="Unit"
               size={unitField.size}
-              disabled={unitField.disabled}
-              label="Weight"
-              type="number"
-              defaultValue={10}
-              sx={{
-                flex: 1,
-                ...(unitField.joined && {
-                  '& .MuiOutlinedInput-root': { borderTopRightRadius: 0, borderBottomRightRadius: 0 },
-                }),
-              }}
-            />
-            <FormControl
-              size={unitField.size}
-              disabled={unitField.disabled}
-              sx={{
-                minWidth: 100,
-                ...(unitField.joined && {
-                  ml: '-1px',
-                  '& .MuiOutlinedInput-root': { borderTopLeftRadius: 0, borderBottomLeftRadius: 0 },
-                  '& .Mui-focused': { zIndex: 1 },
-                }),
-              }}
+              value={unit}
+              onChange={(event) => setUnit(event.target.value)}
             >
-              <InputLabel id="unit-label">Unit</InputLabel>
-              <Select
-                labelId="unit-label"
-                label="Unit"
-                size={unitField.size}
-                value={unit}
-                onChange={(event) => setUnit(event.target.value)}
-              >
-                {units.map((option) => (
-                  <MenuItem key={option} value={option}>{option}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Stack>
-        )}
+              {units.map((option) => (
+                <MenuItem key={option} value={option}>{option}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Stack>
       </DemoFrame>
-      <CodeBlock code={insideField ? unitInsideCode : unitSideBySideCode} language="tsx" />
+      <CodeBlock code={unitCode} language="tsx" />
+
       <SectionIntro title="Field group (range and multi-field rows)">
-        Two to five related fields in one row, with an icon or word between them, such as min and max. Fields share the row by flex ratio, so equal values split it evenly and 2:1 makes one field twice as wide. Separators take only the space they need. Use up to five; beyond that, stack rows.
+        Two to five related fields in one row, with an icon or word between them, such as min and max. Fields share the row by flex ratio, so equal values split it evenly and 2:1 makes one field twice as wide. Separators take only the space they need. Use up to five. When the container is too narrow (about 100px per field), the row stacks into one column and the separator turns downward.
       </SectionIntro>
       <DemoFrame title="Field group">
         <ControlBar schema={fieldRowSchema} values={fieldRow} onChange={setFieldRow} idPrefix="field-row" />
-        <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'flex-start', width: '100%', maxWidth: 640 }}>
-          {weights.map((weight, index) => (
-            <Box key={index} sx={{ display: 'contents' }}>
-              {index > 0 && fieldRow.separator !== 'none' && (
-                <Box sx={{ display: 'flex', alignItems: 'center', height: fieldRow.size === 'small' ? 40 : 56, color: 'text.secondary' }}>
-                  {fieldRow.separator === 'icon' ? <ArrowForwardIcon fontSize="small" aria-hidden /> : <Typography variant="body2" color="text.secondary">to</Typography>}
-                </Box>
-              )}
-              <Box sx={{ flex: weight, minWidth: 0 }}>
-                <TextField
-                  fullWidth
-                  select={isDropdown(index, count, fieldRow.content)}
-                  size={fieldRow.size}
-                  disabled={fieldRow.disabled}
-                  label={fieldLabels[index]}
-                  type={isDropdown(index, count, fieldRow.content) ? undefined : 'number'}
-                  defaultValue={isDropdown(index, count, fieldRow.content) ? dropdownOptions[0] : index * 10}
-                >
-                  {dropdownOptions.map((option) => (
-                    <MenuItem key={option} value={option}>{option}</MenuItem>
-                  ))}
-                </TextField>
-                {fieldRow.showWidths && (
-                  <Typography variant="caption" color="text.secondary" sx={{ display: 'block', textAlign: 'center', mt: 0.5 }}>
-                    {Math.round((weight / totalWeight) * 100)}%
-                  </Typography>
+        {/* Stacks by the width of its own container (about 100px per field), not the screen, so it also works in narrow panels. */}
+        <Box sx={{ width: '100%', maxWidth: 640, containerType: 'inline-size' }}>
+          <Stack
+            direction="row"
+            spacing={1}
+            useFlexGap
+            sx={{
+              alignItems: 'flex-start',
+              [`@container (max-width: ${count * 100}px)`]: { flexDirection: 'column', alignItems: 'stretch' },
+            }}
+          >
+            {weights.map((weight, index) => (
+              <Box key={index} sx={{ display: 'contents' }}>
+                {index > 0 && fieldRow.separator !== 'none' && (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      alignSelf: 'center',
+                      height: fieldRow.size === 'small' ? 40 : 56,
+                      color: 'text.secondary',
+                      [`@container (max-width: ${count * 100}px)`]: { height: 'auto', transform: 'rotate(90deg)' },
+                    }}
+                  >
+                    {fieldRow.separator === 'icon' ? <ArrowForwardIcon fontSize="small" aria-hidden /> : <Typography variant="body2" color="text.secondary">to</Typography>}
+                  </Box>
                 )}
+                <Box sx={{ flex: weight, minWidth: 0, [`@container (max-width: ${count * 100}px)`]: { flex: 'none' } }}>
+                  <TextField
+                    fullWidth
+                    select={isDropdown(index, count, fieldRow.content)}
+                    size={fieldRow.size}
+                    disabled={fieldRow.disabled}
+                    label={fieldLabels[index]}
+                    type={isDropdown(index, count, fieldRow.content) ? undefined : 'number'}
+                    defaultValue={isDropdown(index, count, fieldRow.content) ? dropdownOptions[0] : index * 10}
+                  >
+                    {dropdownOptions.map((option) => (
+                      <MenuItem key={option} value={option}>{option}</MenuItem>
+                    ))}
+                  </TextField>
+                  {fieldRow.showWidths && (
+                    <Typography variant="caption" color="text.secondary" sx={{ display: 'block', textAlign: 'center', mt: 0.5 }}>
+                      {Math.round((weight / totalWeight) * 100)}%
+                    </Typography>
+                  )}
+                </Box>
               </Box>
-            </Box>
-          ))}
-        </Stack>
+            ))}
+          </Stack>
+        </Box>
       </DemoFrame>
       <CodeBlock code={fieldRowCode} language="tsx" />
     </>

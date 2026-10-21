@@ -19,7 +19,7 @@ describe('GroupedInputsDemo', () => {
 
     expect(screen.getByText('Button group')).toBeInTheDocument();
     expect(screen.getByText('Grouped options')).toBeInTheDocument();
-    expect(screen.getByText('Number with unit (for review)')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Number with unit' })).toBeInTheDocument();
     expect(screen.getByRole('group', { name: 'Button group' })).toBeInTheDocument();
     expect(screen.getAllByRole('combobox', { name: 'size' })).toHaveLength(4);
     expect(document.querySelector('#props')).toBeNull();
@@ -57,7 +57,7 @@ describe('GroupedInputsDemo', () => {
     expect(screen.getByRole('spinbutton', { name: 'Weight' }).closest('.MuiInputBase-root')).not.toHaveClass(
       'MuiInputBase-sizeSmall',
     );
-    expect(screen.getByRole('combobox', { name: 'Weight unit' }).closest('.MuiInputBase-root')).not.toHaveClass(
+    expect(screen.getByRole('combobox', { name: 'Unit' }).closest('.MuiInputBase-root')).not.toHaveClass(
       'MuiInputBase-sizeSmall',
     );
   });
@@ -99,40 +99,6 @@ describe('GroupedInputsDemo', () => {
     const listbox = screen.getByRole('listbox');
     expect(within(listbox).getByText('Category 1')).toBeInTheDocument();
     expect(within(listbox).getByText('Category 2')).toBeInTheDocument();
-  });
-
-  it('shows the unit select inside the number field by default and lets you change it', () => {
-    renderWithInflow(<GroupedInputsDemo />);
-
-    expect(screen.queryByRole('combobox', { name: 'Unit' })).toBeNull();
-    chooseOption(screen.getByRole('combobox', { name: 'Weight unit' }), 'lb');
-
-    expect(screen.getByRole('combobox', { name: 'Weight unit' })).toHaveTextContent('lb');
-  });
-
-  it('adds a divider before the unit when the divider control is on', () => {
-    renderWithInflow(<GroupedInputsDemo />);
-
-    expect(document.querySelector('.MuiInputAdornment-root .MuiDivider-root')).toBeNull();
-    fireEvent.click(screen.getByRole('checkbox', { name: 'divider (unit inside field)' }));
-
-    expect(document.querySelector('.MuiInputAdornment-root .MuiDivider-root')).not.toBeNull();
-  });
-
-  it('switches to side-by-side fields and joins their borders', () => {
-    renderWithInflow(<GroupedInputsDemo />);
-
-    chooseOption(screen.getByRole('combobox', { name: 'layout' }), 'side by side');
-
-    expect(screen.queryByRole('combobox', { name: 'Weight unit' })).toBeNull();
-    chooseOption(screen.getByRole('combobox', { name: 'Unit' }), 'g');
-    expect(screen.getByRole('combobox', { name: 'Unit' })).toHaveTextContent('g');
-
-    const outlined = () =>
-      screen.getByRole('spinbutton', { name: 'Weight' }).closest('.MuiOutlinedInput-root') as HTMLElement;
-    const radiusBefore = getComputedStyle(outlined()).borderTopRightRadius;
-    fireEvent.click(screen.getByRole('checkbox', { name: 'joined borders (side by side)' }));
-    expect(getComputedStyle(outlined()).borderTopRightRadius).not.toBe(radiusBefore);
   });
 
   it('changes the button group variant and orientation', () => {
@@ -200,5 +166,17 @@ describe('GroupedInputsDemo', () => {
     chooseOption(screen.getByRole('combobox', { name: 'content' }), 'all dropdowns');
     expect(screen.queryByRole('spinbutton', { name: 'Min' })).toBeNull();
     expect(screen.getByRole('combobox', { name: 'Min' })).toBeInTheDocument();
+  });
+
+  it('shows the number with unit side by side with joined borders', () => {
+    renderWithInflow(<GroupedInputsDemo />);
+
+    const number = screen.getByRole('spinbutton', { name: 'Weight' }).closest('.MuiOutlinedInput-root') as HTMLElement;
+    const unit = screen.getByRole('combobox', { name: 'Unit' }).closest('.MuiOutlinedInput-root') as HTMLElement;
+    expect(getComputedStyle(number).borderTopRightRadius).toBe('0px');
+    expect(getComputedStyle(unit).borderTopLeftRadius).toBe('0px');
+
+    chooseOption(screen.getByRole('combobox', { name: 'Unit' }), 'lb');
+    expect(screen.getByRole('combobox', { name: 'Unit' })).toHaveTextContent('lb');
   });
 });
