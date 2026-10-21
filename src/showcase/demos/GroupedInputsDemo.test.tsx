@@ -179,4 +179,16 @@ describe('GroupedInputsDemo', () => {
     chooseOption(screen.getByRole('combobox', { name: 'Unit' }), 'lb');
     expect(screen.getByRole('combobox', { name: 'Unit' })).toHaveTextContent('lb');
   });
+
+  it('applies the field group size to every field, dropdowns included', () => {
+    renderWithInflow(<GroupedInputsDemo />);
+
+    chooseOption(screen.getByRole('combobox', { name: 'content' }), 'alternate');
+    chooseOption(sizeSelect(FIELD_ROW), 'medium');
+
+    for (const name of ['Min', 'Max']) {
+      const role = name === 'Min' ? 'spinbutton' : 'combobox';
+      expect(screen.getByRole(role, { name }).closest('.MuiInputBase-root')).not.toHaveClass('MuiInputBase-sizeSmall');
+    }
+  });
 });

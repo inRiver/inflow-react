@@ -334,8 +334,9 @@ import { Button, ButtonGroup } from '@mui/material';
             spacing={1}
             useFlexGap
             sx={{
-              alignItems: 'flex-start',
-              [`@container (max-width: ${count * 100}px)`]: { flexDirection: 'column', alignItems: 'stretch' },
+              alignItems: 'center',
+              mb: fieldRow.showWidths ? 3 : 0,
+              [`@container (max-width: ${count * 100}px)`]: { flexDirection: 'column', alignItems: 'stretch', rowGap: fieldRow.showWidths ? 3 : 1 },
             }}
           >
             {weights.map((weight, index) => (
@@ -346,15 +347,14 @@ import { Button, ButtonGroup } from '@mui/material';
                       display: 'flex',
                       alignItems: 'center',
                       alignSelf: 'center',
-                      height: fieldRow.size === 'small' ? 40 : 56,
                       color: 'text.secondary',
-                      [`@container (max-width: ${count * 100}px)`]: { height: 'auto', transform: 'rotate(90deg)' },
+                      [`@container (max-width: ${count * 100}px)`]: { transform: 'rotate(90deg)' },
                     }}
                   >
                     {fieldRow.separator === 'icon' ? <ArrowForwardIcon fontSize="small" aria-hidden /> : <Typography variant="body2" color="text.secondary">to</Typography>}
                   </Box>
                 )}
-                <Box sx={{ flex: weight, minWidth: 0, [`@container (max-width: ${count * 100}px)`]: { flex: 'none' } }}>
+                <Box sx={{ position: 'relative', flex: weight, minWidth: 0, [`@container (max-width: ${count * 100}px)`]: { flex: 'none' } }}>
                   <TextField
                     fullWidth
                     select={isDropdown(index, count, fieldRow.content)}
@@ -363,13 +363,14 @@ import { Button, ButtonGroup } from '@mui/material';
                     label={fieldLabels[index]}
                     type={isDropdown(index, count, fieldRow.content) ? undefined : 'number'}
                     defaultValue={isDropdown(index, count, fieldRow.content) ? dropdownOptions[0] : index * 10}
+                    slotProps={{ select: { size: fieldRow.size } }}
                   >
                     {dropdownOptions.map((option) => (
                       <MenuItem key={option} value={option}>{option}</MenuItem>
                     ))}
                   </TextField>
                   {fieldRow.showWidths && (
-                    <Typography variant="caption" color="text.secondary" sx={{ display: 'block', textAlign: 'center', mt: 0.5 }}>
+                    <Typography variant="caption" color="text.secondary" sx={{ position: 'absolute', top: '100%', left: 0, right: 0, textAlign: 'center', mt: 0.5 }}>
                       {Math.round((weight / totalWeight) * 100)}%
                     </Typography>
                   )}
