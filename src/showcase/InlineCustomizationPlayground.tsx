@@ -104,7 +104,7 @@ export function InlineCustomizationPlayground({ excludedControls = [] }: InlineC
           flexWrap: 'wrap',
           gap: 3,
           alignItems: 'center',
-          justifyContent: 'center',
+          justifyContent: 'flex-start',
         }}
       >
         {visibleControls.map((control) => {

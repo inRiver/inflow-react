@@ -83,7 +83,7 @@ export const PropsPlayground: React.FC<PropsPlaygroundProps> = ({
         flexWrap: "wrap",
         gap: 3,
         alignItems: "center",
-        justifyContent: "center"
+        justifyContent: "flex-start"
       }}>
         {schema.map((prop) => {
           const { name, type, options, label } = prop;

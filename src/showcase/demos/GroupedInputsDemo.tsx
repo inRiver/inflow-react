@@ -39,7 +39,7 @@ function ControlBar({ schema, values, onChange, idPrefix }: {
 }) {
   return (
     <>
-      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, alignItems: 'center', justifyContent: 'center' }}>
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, alignItems: 'center', justifyContent: 'flex-start' }}>
         {schema.map(({ name, label = name, type, options }) =>
           type === 'boolean' ? (
             <FormControlLabel
