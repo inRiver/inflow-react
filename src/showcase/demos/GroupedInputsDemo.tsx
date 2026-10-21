@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import {
   Autocomplete,
   Box,
@@ -126,6 +127,24 @@ const unitSchema: PropSchema[] = [
   disabledControl,
 ];
 
+const fieldRowSchema: PropSchema[] = [
+  sizeControl,
+  { name: 'fields', label: 'fields', type: 'select', options: ['2', '3', '4', '5'] },
+  { name: 'separator', type: 'select', options: ['icon', 'word', 'none'] },
+  { name: 'split', type: 'select', options: ['even', 'first wider', 'last narrower'] },
+  { name: 'showWidths', label: 'show widths', type: 'boolean' },
+  disabledControl,
+];
+
+// Relative weights per split; fields share the row width (minus separators) in these ratios.
+function fieldWeights(count: number, split: string): number[] {
+  if (split === 'first wider') return Array.from({ length: count }, (_, i) => (i === 0 ? 2 : 1));
+  if (split === 'last narrower') return Array.from({ length: count }, (_, i) => (i === count - 1 ? 1 : 2));
+  return Array.from({ length: count }, () => 1);
+}
+
+const fieldLabels = ['Min', 'Max', 'Step', 'Unit', 'Extra'];
+
 function SectionIntro({ title, children }: { title: string; children: string }) {
   return (
     <Stack spacing={0.5} sx={{ mt: 4 }}>
@@ -150,7 +169,24 @@ export function GroupedInputsDemo() {
     joined: false,
     disabled: false,
   });
+  const [fieldRow, setFieldRow] = useState<Record<string, any>>({
+    size: 'small',
+    fields: '2',
+    separator: 'icon',
+    split: 'even',
+    showWidths: true,
+    disabled: false,
+  });
   const [unit, setUnit] = useState('kg');
+  const count = Number(fieldRow.fields);
+  const weights = fieldWeights(count, fieldRow.split);
+  const totalWeight = weights.reduce((sum, w) => sum + w, 0);
+  const fieldRowCode = `<Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center' }}>
+  <TextField label="Min" type="number" sx={{ flex: ${weights[0]}, minWidth: 0 }} />
+  ${fieldRow.separator === 'word' ? '<Typography color="text.secondary">to</Typography>' : fieldRow.separator === 'icon' ? '<ArrowForwardIcon fontSize="small" color="action" />' : '{/* no separator */}'}
+  <TextField label="Max" type="number" sx={{ flex: ${weights[1]}, minWidth: 0 }} />
+  {/* up to 5 fields: flex is the width ratio, so equal flex values split the row evenly */}
+</Stack>`;
   const insideField = unitField.layout === 'unit inside field';
 
   const buttonGroupCode = `
@@ -327,6 +363,39 @@ import { Button, ButtonGroup } from '@mui/material';
         )}
       </DemoFrame>
       <CodeBlock code={insideField ? unitInsideCode : unitSideBySideCode} language="tsx" />
+      <SectionIntro title="Field group (range and multi-field rows)">
+        Two to five related fields in one row, with an icon or word between them, such as min and max. Fields share the row by flex ratio, so equal values split it evenly and 2:1 makes one field twice as wide. Separators take only the space they need. Use up to five; beyond that, stack rows.
+      </SectionIntro>
+      <DemoFrame title="Field group">
+        <ControlBar schema={fieldRowSchema} values={fieldRow} onChange={setFieldRow} idPrefix="field-row" />
+        <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'flex-start', width: '100%', maxWidth: 640 }}>
+          {weights.map((weight, index) => (
+            <Box key={index} sx={{ display: 'contents' }}>
+              {index > 0 && fieldRow.separator !== 'none' && (
+                <Box sx={{ display: 'flex', alignItems: 'center', height: fieldRow.size === 'small' ? 40 : 56, color: 'text.secondary' }}>
+                  {fieldRow.separator === 'icon' ? <ArrowForwardIcon fontSize="small" aria-hidden /> : <Typography variant="body2" color="text.secondary">to</Typography>}
+                </Box>
+              )}
+              <Box sx={{ flex: weight, minWidth: 0 }}>
+                <TextField
+                  fullWidth
+                  size={fieldRow.size}
+                  disabled={fieldRow.disabled}
+                  label={fieldLabels[index]}
+                  type="number"
+                  defaultValue={index * 10}
+                />
+                {fieldRow.showWidths && (
+                  <Typography variant="caption" color="text.secondary" sx={{ display: 'block', textAlign: 'center', mt: 0.5 }}>
+                    {Math.round((weight / totalWeight) * 100)}%
+                  </Typography>
+                )}
+              </Box>
+            </Box>
+          ))}
+        </Stack>
+      </DemoFrame>
+      <CodeBlock code={fieldRowCode} language="tsx" />
     </>
   );
 }

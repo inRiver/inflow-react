@@ -9,7 +9,7 @@ const chooseOption = (combobox: HTMLElement, option: string) => {
 };
 
 // Each section has its own controls, in page order: button group, grouped options, number with unit.
-const [BUTTON_GROUP, GROUPED_OPTIONS, UNIT] = [0, 1, 2];
+const [BUTTON_GROUP, GROUPED_OPTIONS, UNIT, FIELD_ROW] = [0, 1, 2, 3];
 const sizeSelect = (section: number) => screen.getAllByRole('combobox', { name: 'size' })[section];
 const disabledBox = (section: number) => screen.getAllByRole('checkbox', { name: 'disabled' })[section];
 
@@ -21,7 +21,7 @@ describe('GroupedInputsDemo', () => {
     expect(screen.getByText('Grouped options')).toBeInTheDocument();
     expect(screen.getByText('Number with unit (for review)')).toBeInTheDocument();
     expect(screen.getByRole('group', { name: 'Button group' })).toBeInTheDocument();
-    expect(screen.getAllByRole('combobox', { name: 'size' })).toHaveLength(3);
+    expect(screen.getAllByRole('combobox', { name: 'size' })).toHaveLength(4);
     expect(document.querySelector('#props')).toBeNull();
   });
 
@@ -144,5 +144,35 @@ describe('GroupedInputsDemo', () => {
     expect(document.querySelector('.MuiButtonGroup-vertical')).toBeNull();
     chooseOption(screen.getByRole('combobox', { name: 'orientation' }), 'vertical');
     expect(document.querySelector('.MuiButtonGroup-vertical')).not.toBeNull();
+  });
+
+  it('splits a field group evenly or by ratio, for two to five fields', () => {
+    renderWithInflow(<GroupedInputsDemo />);
+
+    expect(screen.getByRole('spinbutton', { name: 'Min' })).toBeInTheDocument();
+    expect(screen.getByRole('spinbutton', { name: 'Max' })).toBeInTheDocument();
+    expect(screen.getAllByText('50%')).toHaveLength(2);
+
+    chooseOption(screen.getByRole('combobox', { name: 'fields' }), '5');
+    expect(screen.getByRole('spinbutton', { name: 'Extra' })).toBeInTheDocument();
+    expect(screen.getAllByText('20%')).toHaveLength(5);
+
+    chooseOption(screen.getByRole('combobox', { name: 'split' }), 'first wider');
+    expect(screen.getByText('33%')).toBeInTheDocument();
+
+    chooseOption(sizeSelect(FIELD_ROW), 'medium');
+    expect(screen.getByRole('spinbutton', { name: 'Min' }).closest('.MuiInputBase-root')).not.toHaveClass(
+      'MuiInputBase-sizeSmall',
+    );
+  });
+
+  it('switches the field group separator between icon, word and none', () => {
+    renderWithInflow(<GroupedInputsDemo />);
+
+    expect(document.querySelector('[data-testid="ArrowForwardIcon"]')).not.toBeNull();
+    chooseOption(screen.getByRole('combobox', { name: 'separator' }), 'word');
+    expect(screen.getByText('to', { selector: 'p' })).toBeInTheDocument();
+    chooseOption(screen.getByRole('combobox', { name: 'separator' }), 'none');
+    expect(screen.queryByText('to', { selector: 'p' })).toBeNull();
   });
 });
