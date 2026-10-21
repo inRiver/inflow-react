@@ -127,21 +127,59 @@ const unitSchema: PropSchema[] = [
   disabledControl,
 ];
 
+const splitOptions = [
+  'even',
+  'first wider (2:1)',
+  'first much wider (3:1)',
+  'last wider (1:2)',
+  'last much wider (1:3)',
+  'first narrower',
+  'last narrower',
+  'middle wider',
+  'ends wider',
+];
+const contentOptions = ['all inputs', 'all dropdowns', 'last is a dropdown', 'first is a dropdown', 'alternate'];
+
 const fieldRowSchema: PropSchema[] = [
   sizeControl,
   { name: 'fields', label: 'fields', type: 'select', options: ['2', '3', '4', '5'] },
   { name: 'separator', type: 'select', options: ['icon', 'word', 'none'] },
-  { name: 'split', type: 'select', options: ['even', 'first wider', 'last narrower'] },
+  { name: 'split', type: 'select', options: splitOptions },
+  { name: 'content', type: 'select', options: contentOptions },
   { name: 'showWidths', label: 'show widths', type: 'boolean' },
   disabledControl,
 ];
 
 // Relative weights per split; fields share the row width (minus separators) in these ratios.
 function fieldWeights(count: number, split: string): number[] {
-  if (split === 'first wider') return Array.from({ length: count }, (_, i) => (i === 0 ? 2 : 1));
-  if (split === 'last narrower') return Array.from({ length: count }, (_, i) => (i === count - 1 ? 1 : 2));
-  return Array.from({ length: count }, () => 1);
+  const last = count - 1;
+  const weight = (i: number): number => {
+    switch (split) {
+      case 'first wider (2:1)': return i === 0 ? 2 : 1;
+      case 'first much wider (3:1)': return i === 0 ? 3 : 1;
+      case 'last wider (1:2)': return i === last ? 2 : 1;
+      case 'last much wider (1:3)': return i === last ? 3 : 1;
+      case 'first narrower': return i === 0 ? 1 : 2;
+      case 'last narrower': return i === last ? 1 : 2;
+      case 'middle wider': return i > 0 && i < last ? 2 : 1;
+      case 'ends wider': return i === 0 || i === last ? 2 : 1;
+      default: return 1;
+    }
+  };
+  return Array.from({ length: count }, (_, i) => weight(i));
 }
+
+function isDropdown(index: number, count: number, content: string): boolean {
+  switch (content) {
+    case 'all dropdowns': return true;
+    case 'last is a dropdown': return index === count - 1;
+    case 'first is a dropdown': return index === 0;
+    case 'alternate': return index % 2 === 1;
+    default: return false;
+  }
+}
+
+const dropdownOptions = ['Option 1', 'Option 2', 'Option 3'];
 
 const fieldLabels = ['Min', 'Max', 'Step', 'Unit', 'Extra'];
 
@@ -174,6 +212,7 @@ export function GroupedInputsDemo() {
     fields: '2',
     separator: 'icon',
     split: 'even',
+    content: 'all inputs',
     showWidths: true,
     disabled: false,
   });
@@ -186,6 +225,7 @@ export function GroupedInputsDemo() {
   ${fieldRow.separator === 'word' ? '<Typography color="text.secondary">to</Typography>' : fieldRow.separator === 'icon' ? '<ArrowForwardIcon fontSize="small" color="action" />' : '{/* no separator */}'}
   <TextField label="Max" type="number" sx={{ flex: ${weights[1]}, minWidth: 0 }} />
   {/* up to 5 fields: flex is the width ratio, so equal flex values split the row evenly */}
+  {/* a dropdown field is <TextField select label="Unit" defaultValue="Option 1"><MenuItem .../></TextField> */}
 </Stack>`;
   const insideField = unitField.layout === 'unit inside field';
 
@@ -379,12 +419,17 @@ import { Button, ButtonGroup } from '@mui/material';
               <Box sx={{ flex: weight, minWidth: 0 }}>
                 <TextField
                   fullWidth
+                  select={isDropdown(index, count, fieldRow.content)}
                   size={fieldRow.size}
                   disabled={fieldRow.disabled}
                   label={fieldLabels[index]}
-                  type="number"
-                  defaultValue={index * 10}
-                />
+                  type={isDropdown(index, count, fieldRow.content) ? undefined : 'number'}
+                  defaultValue={isDropdown(index, count, fieldRow.content) ? dropdownOptions[0] : index * 10}
+                >
+                  {dropdownOptions.map((option) => (
+                    <MenuItem key={option} value={option}>{option}</MenuItem>
+                  ))}
+                </TextField>
                 {fieldRow.showWidths && (
                   <Typography variant="caption" color="text.secondary" sx={{ display: 'block', textAlign: 'center', mt: 0.5 }}>
                     {Math.round((weight / totalWeight) * 100)}%

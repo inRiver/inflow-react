@@ -157,7 +157,7 @@ describe('GroupedInputsDemo', () => {
     expect(screen.getByRole('spinbutton', { name: 'Extra' })).toBeInTheDocument();
     expect(screen.getAllByText('20%')).toHaveLength(5);
 
-    chooseOption(screen.getByRole('combobox', { name: 'split' }), 'first wider');
+    chooseOption(screen.getByRole('combobox', { name: 'split' }), 'first wider (2:1)');
     expect(screen.getByText('33%')).toBeInTheDocument();
 
     chooseOption(sizeSelect(FIELD_ROW), 'medium');
@@ -174,5 +174,31 @@ describe('GroupedInputsDemo', () => {
     expect(screen.getByText('to', { selector: 'p' })).toBeInTheDocument();
     chooseOption(screen.getByRole('combobox', { name: 'separator' }), 'none');
     expect(screen.queryByText('to', { selector: 'p' })).toBeNull();
+  });
+
+  it('offers more splits for a field group', () => {
+    renderWithInflow(<GroupedInputsDemo />);
+
+    chooseOption(screen.getByRole('combobox', { name: 'fields' }), '3');
+    chooseOption(screen.getByRole('combobox', { name: 'split' }), 'middle wider');
+    expect(screen.getAllByText('25%')).toHaveLength(2);
+    expect(screen.getByText('50%')).toBeInTheDocument();
+
+    chooseOption(screen.getByRole('combobox', { name: 'split' }), 'last much wider (1:3)');
+    expect(screen.getAllByText('20%')).toHaveLength(2);
+    expect(screen.getByText('60%')).toBeInTheDocument();
+  });
+
+  it('turns field group fields into dropdowns', () => {
+    renderWithInflow(<GroupedInputsDemo />);
+
+    expect(screen.queryByRole('combobox', { name: 'Max' })).toBeNull();
+    chooseOption(screen.getByRole('combobox', { name: 'content' }), 'last is a dropdown');
+    expect(screen.getByRole('spinbutton', { name: 'Min' })).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: 'Max' })).toHaveTextContent('Option 1');
+
+    chooseOption(screen.getByRole('combobox', { name: 'content' }), 'all dropdowns');
+    expect(screen.queryByRole('spinbutton', { name: 'Min' })).toBeNull();
+    expect(screen.getByRole('combobox', { name: 'Min' })).toBeInTheDocument();
   });
 });
