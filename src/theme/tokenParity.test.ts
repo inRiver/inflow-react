@@ -57,3 +57,18 @@ describe('CSS semantic text tokens parity with theme.typography', () => {
     expect(toPx(cssVar('font-size-body2')!)).toBe(toPx(String(theme.typography.body2.fontSize)));
   });
 });
+
+describe('CSS text utility classes', () => {
+  const roles = [...new Set([...tokensCss.matchAll(/--text-([a-z]+-[a-z]+)-font-size:/g)].map((m) => m[1]))];
+
+  it('finds the Material 3 text roles', () => {
+    expect(roles).toHaveLength(15);
+  });
+
+  it.each(roles)('.text-%s uses all four of its tokens', (role) => {
+    const rule = tokensCss.match(new RegExp(`\\.text-${role}\\s*\\{([^}]*)\\}`))?.[1] ?? '';
+    for (const property of ['font-size', 'font-weight', 'line-height', 'letter-spacing']) {
+      expect(rule).toContain(`var(--text-${role}-${property})`);
+    }
+  });
+});

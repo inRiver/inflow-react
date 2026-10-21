@@ -195,4 +195,52 @@ describe('GroupedInputsDemo', () => {
       expect(screen.getByRole(role, { name }).closest('.MuiInputBase-root')).not.toHaveClass('MuiInputBase-sizeSmall');
     }
   });
+
+  it('disables every field in the field group', () => {
+    renderWithInflow(<GroupedInputsDemo />);
+
+    fireEvent.click(disabledBox(FIELD_ROW));
+    expect(screen.getByRole('spinbutton', { name: 'Min' })).toBeDisabled();
+    expect(screen.getByRole('spinbutton', { name: 'Max' })).toBeDisabled();
+    expect(screen.getByRole('spinbutton', { name: 'Weight' })).not.toBeDisabled();
+  });
+
+  it('hides the width readout when show widths is off', () => {
+    renderWithInflow(<GroupedInputsDemo />);
+
+    expect(screen.getAllByText('50%')).toHaveLength(2);
+    fireEvent.click(screen.getByRole('checkbox', { name: 'show widths' }));
+    expect(screen.queryByText('50%')).toBeNull();
+  });
+
+  it('adds one separator control per gap and keeps earlier choices when the count changes', () => {
+    renderWithInflow(<GroupedInputsDemo />);
+
+    expect(screen.getAllByRole('combobox', { name: /^separator \d$/ })).toHaveLength(1);
+    chooseOption(screen.getByRole('combobox', { name: 'separator 1' }), 'word');
+    chooseOption(screen.getByRole('combobox', { name: 'fields' }), '5');
+
+    expect(screen.getAllByRole('combobox', { name: /^separator \d$/ })).toHaveLength(4);
+    expect(screen.getByRole('combobox', { name: 'separator 1' })).toHaveTextContent('word');
+    expect(screen.getByRole('combobox', { name: 'separator 2' })).toHaveTextContent('icon');
+  });
+
+  it('defines a container query so the field group stacks when narrow', () => {
+    renderWithInflow(<GroupedInputsDemo />);
+
+    const css = [...document.querySelectorAll('style')].map((style) => style.textContent).join('');
+    expect(css).toContain('@container (max-width: 200px)');
+    chooseOption(screen.getByRole('combobox', { name: 'fields' }), '5');
+    expect([...document.querySelectorAll('style')].map((style) => style.textContent).join('')).toContain(
+      '@container (max-width: 500px)',
+    );
+  });
+
+  it('lets the field group fields be dropdowns whose options can be chosen', () => {
+    renderWithInflow(<GroupedInputsDemo />);
+
+    chooseOption(screen.getByRole('combobox', { name: 'content' }), 'all dropdowns');
+    chooseOption(screen.getByRole('combobox', { name: 'Min' }), 'Option 3');
+    expect(screen.getByRole('combobox', { name: 'Min' })).toHaveTextContent('Option 3');
+  });
 });

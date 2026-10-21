@@ -71,3 +71,12 @@ describe('group headings', () => {
     expect(subheader).toEqual(groupLabel);
   });
 });
+
+describe('select defaults', () => {
+  it('keeps Select, TextField and FormControl at the small Inflow size', () => {
+    const { components } = createInflowTheme('light');
+    expect(components?.MuiSelect?.defaultProps?.size).toBe('small');
+    expect(components?.MuiTextField?.defaultProps?.size).toBe('small');
+    expect(components?.MuiFormControl?.defaultProps?.size).toBe('small');
+  });
+});
