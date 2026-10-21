@@ -62,3 +62,12 @@ describe('createInflowTheme', () => {
     expect(selectIcon).toBe(autocompleteIcon.type);
   });
 });
+
+describe('group headings', () => {
+  it('styles Select ListSubheader like the Autocomplete group label', () => {
+    const { components } = createInflowTheme('light');
+    const subheader = components?.MuiListSubheader?.styleOverrides?.root as Record<string, unknown>;
+    const groupLabel = components?.MuiAutocomplete?.styleOverrides?.groupLabel as Record<string, unknown>;
+    expect(subheader).toEqual(groupLabel);
+  });
+});

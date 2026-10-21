@@ -467,6 +467,7 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
           groupLabel: { color: T.onSurfaceVariant, fontWeight: 600 },
         },
       },
+      MuiListSubheader: { styleOverrides: { root: { color: T.onSurfaceVariant, fontWeight: 600 } } },
       MuiMenuItem: {
         styleOverrides: {
           root: {
