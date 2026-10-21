@@ -99,10 +99,18 @@ const splitOptions = [
 ];
 const contentOptions = ['all inputs', 'all dropdowns', 'last is a dropdown', 'first is a dropdown', 'alternate'];
 
-const fieldRowSchema: PropSchema[] = [
+const separatorOptions = ['icon', 'word', 'none'];
+
+// One separator control per gap between fields, so each can differ or be removed.
+const fieldRowSchema = (count: number): PropSchema[] => [
   sizeControl,
   { name: 'fields', label: 'fields', type: 'select', options: ['2', '3', '4', '5'] },
-  { name: 'separator', type: 'select', options: ['icon', 'word', 'none'] },
+  ...Array.from({ length: count - 1 }, (_, i): PropSchema => ({
+    name: `separator${i + 1}`,
+    label: `separator ${i + 1}`,
+    type: 'select',
+    options: separatorOptions,
+  })),
   { name: 'split', type: 'select', options: splitOptions },
   { name: 'content', type: 'select', options: contentOptions },
   { name: 'showWidths', label: 'show widths', type: 'boolean' },
@@ -163,7 +171,10 @@ export function GroupedInputsDemo() {
   const [fieldRow, setFieldRow] = useState<Record<string, any>>({
     size: 'small',
     fields: '2',
-    separator: 'icon',
+    separator1: 'icon',
+    separator2: 'icon',
+    separator3: 'icon',
+    separator4: 'icon',
     split: 'even',
     content: 'all inputs',
     showWidths: true,
@@ -175,8 +186,9 @@ export function GroupedInputsDemo() {
   const totalWeight = weights.reduce((sum, w) => sum + w, 0);
   const fieldRowCode = `<Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center' }}>
   <TextField label="Min" type="number" sx={{ flex: ${weights[0]}, minWidth: 0 }} />
-  ${fieldRow.separator === 'word' ? '<Typography color="text.secondary">to</Typography>' : fieldRow.separator === 'icon' ? '<ArrowForwardIcon fontSize="small" color="action" />' : '{/* no separator */}'}
+  ${fieldRow.separator1 === 'word' ? '<Typography color="text.secondary">to</Typography>' : fieldRow.separator1 === 'icon' ? '<ArrowForwardIcon fontSize="small" color="action" />' : '{/* no separator between these fields */}'}
   <TextField label="Max" type="number" sx={{ flex: ${weights[1]}, minWidth: 0 }} />
+  {/* each gap between fields has its own separator: an icon, a word, or none */}
   {/* up to 5 fields: flex is the width ratio, so equal flex values split the row evenly */}
   {/* a dropdown field is <TextField select label="Unit" defaultValue="Option 1"><MenuItem .../></TextField> */}
 </Stack>`;
@@ -323,10 +335,10 @@ import { Button, ButtonGroup } from '@mui/material';
       <CodeBlock code={unitCode} language="tsx" />
 
       <SectionIntro title="Field group (range and multi-field rows)">
-        Two to five related fields in one row, with an icon or word between them, such as min and max. Fields share the row by flex ratio, so equal values split it evenly and 2:1 makes one field twice as wide. Separators take only the space they need. Use up to five. When the container is too narrow (about 100px per field), the row stacks into one column and the separator turns downward.
+        Two to five related fields in one row, with an icon, a word, or nothing between each pair, such as min and max. Each separator is set on its own. Fields share the row by flex ratio, so equal values split it evenly and 2:1 makes one field twice as wide. Separators take only the space they need. Use up to five. When the container is too narrow (about 100px per field), the row stacks into one column and the separator turns downward.
       </SectionIntro>
       <DemoFrame title="Field group">
-        <ControlBar schema={fieldRowSchema} values={fieldRow} onChange={setFieldRow} idPrefix="field-row" />
+        <ControlBar schema={fieldRowSchema(count)} values={fieldRow} onChange={setFieldRow} idPrefix="field-row" />
         {/* Stacks by the width of its own container (about 100px per field), not the screen, so it also works in narrow panels. */}
         <Box sx={{ width: '100%', maxWidth: 640, containerType: 'inline-size' }}>
           <Stack
@@ -341,7 +353,7 @@ import { Button, ButtonGroup } from '@mui/material';
           >
             {weights.map((weight, index) => (
               <Box key={index} sx={{ display: 'contents' }}>
-                {index > 0 && fieldRow.separator !== 'none' && (
+                {index > 0 && fieldRow[`separator${index}`] !== 'none' && (
                   <Box
                     sx={{
                       display: 'flex',
@@ -351,7 +363,7 @@ import { Button, ButtonGroup } from '@mui/material';
                       [`@container (max-width: ${count * 100}px)`]: { transform: 'rotate(90deg)' },
                     }}
                   >
-                    {fieldRow.separator === 'icon' ? <ArrowForwardIcon fontSize="small" aria-hidden /> : <Typography variant="body2" color="text.secondary">to</Typography>}
+                    {fieldRow[`separator${index}`] === 'icon' ? <ArrowForwardIcon fontSize="small" aria-hidden /> : <Typography variant="body2" color="text.secondary">to</Typography>}
                   </Box>
                 )}
                 <Box sx={{ position: 'relative', flex: weight, minWidth: 0, [`@container (max-width: ${count * 100}px)`]: { flex: 'none' } }}>

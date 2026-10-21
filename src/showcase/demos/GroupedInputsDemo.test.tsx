@@ -132,16 +132,20 @@ describe('GroupedInputsDemo', () => {
     );
   });
 
-  it('switches the field group separator between icon, word and none', () => {
+  it('sets each field group separator on its own', () => {
     renderWithInflow(<GroupedInputsDemo />);
 
-    expect(document.querySelector('[data-testid="ArrowForwardIcon"]')).not.toBeNull();
-    chooseOption(screen.getByRole('combobox', { name: 'separator' }), 'word');
-    expect(screen.getByText('to', { selector: 'p' })).toBeInTheDocument();
-    chooseOption(screen.getByRole('combobox', { name: 'separator' }), 'none');
-    expect(screen.queryByText('to', { selector: 'p' })).toBeNull();
-  });
+    chooseOption(screen.getByRole('combobox', { name: 'fields' }), '4');
+    expect(document.querySelectorAll('[data-testid="ArrowForwardIcon"]')).toHaveLength(3);
 
+    chooseOption(screen.getByRole('combobox', { name: 'separator 2' }), 'word');
+    expect(screen.getByText('to', { selector: 'p' })).toBeInTheDocument();
+    expect(document.querySelectorAll('[data-testid="ArrowForwardIcon"]')).toHaveLength(2);
+
+    chooseOption(screen.getByRole('combobox', { name: 'separator 3' }), 'none');
+    expect(document.querySelectorAll('[data-testid="ArrowForwardIcon"]')).toHaveLength(1);
+    expect(screen.queryByRole('combobox', { name: 'separator 4' })).toBeNull();
+  });
   it('offers more splits for a field group', () => {
     renderWithInflow(<GroupedInputsDemo />);
 
