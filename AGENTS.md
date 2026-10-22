@@ -88,6 +88,14 @@ This is a cross-platform repo; CI and most consumers run Linux. If your local `g
 
 History follows Conventional Commits: `feat(scope): ...`, `fix(scope): ...`, `test: ...`, `chore(release): ...`, `docs: ...`. Match that style. Only commit when explicitly asked.
 
+## Changelog entries ship with every release
+
+A release (a version bump and tag, e.g. `chore(release): x.y.z`) is incomplete unless `CHANGELOG.md` contains a matching `## [x.y.z] - <date>` section in the version-bump commit, or in a commit that landed just before it.
+
+Use the established format: `### Added`, `### Changed`, `### Fixed`, `### Security`, and `### Deprecated` subsections; one fact per bullet; and tag each bullet with `Showcase-only:` at the start or `(library-facing)` at the end so the showcase Changelog page can filter correctly. Untagged bullets are allowed for dependency, security, or maintenance notes.
+
+The showcase Changelog page parses `CHANGELOG.md` directly at build time, so malformed headers or missing tags surface there. The changelog is the only consumer-facing record of what changed between versions; releasing without it ships an invisible change.
+
 ## Definition of done for any change
 
 1. `npm run build` green (this is the type check — includes the showcase).
@@ -96,3 +104,4 @@ History follows Conventional Commits: `feat(scope): ...`, `fix(scope): ...`, `te
 4. Behavior changes and their test updates are in the same commit.
 5. No new hardcoded theme literals in components.
 6. `package-lock.json` only committed when `package.json` actually changed.
+7. Release commits include the matching `CHANGELOG.md` section.
