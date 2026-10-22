@@ -53,12 +53,11 @@ type Block =
   | { kind: 'bullets'; items: string[] };
 
 /**
- * Parse the handwritten releases in CHANGELOG.md directly. Mirrors the filtering
- * rules in scripts/generate-changelog-digest.mjs so the page needs no generator
- * step: showcase-only bullets (and their continuation lines) and HTML comment
- * lines are dropped, `(library-facing)` suffixes are stripped, and empty
- * subsections/releases are omitted. The `## [Unreleased]` section and the
- * auto-generated `## For Library Consumers` digest are skipped entirely.
+ * Parse the handwritten releases in CHANGELOG.md directly. Showcase-only
+ * bullets (and their continuation lines) and HTML comment lines are dropped,
+ * `(library-facing)` suffixes are stripped, and empty subsections/releases are
+ * omitted. The `## [Unreleased]` section is skipped entirely, as is any
+ * `## For Library Consumers` digest section left over from older checkouts.
  */
 function parseChangelog(raw: string): Release[] {
   const lines = raw.split(/\r?\n/);

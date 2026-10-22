@@ -6,7 +6,6 @@ All notable changes to `@inriver/inflow-react` are documented here. This project
 
 ### Added
 - Showcase-only: Changelog page in the showcase app renders library-facing changes parsed directly from `CHANGELOG.md`, with version jump-nav, color-coded subsection chips, and per-release cards.
-- `npm run changelog:digest` script that regenerates the library-consumer digest section in `CHANGELOG.md` (filters showcase-only entries, strips `(library-facing)` suffixes, drops HTML comments).
 
 ### Changed
 - The showcase Changelog page now parses handwritten entries directly from `CHANGELOG.md` (no generator step required for the page).
