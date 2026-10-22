@@ -13,7 +13,7 @@ All notable changes to `@inriver/inflow-react` are documented here. This project
 
 ### Changed
 - Showcase-only: the settings controls (dropdowns and checkboxes) in the props playground, customization playground, and Grouped Inputs are left-aligned instead of centered.
-- Select group headings (`ListSubheader`) now match Autocomplete group labels (on-surface-variant color, weight 600).
+- `ListSubheader` (including Select group headings) now matches Autocomplete group labels: weight 600 on all subheaders, and on-surface-variant color on the default color only (`color="primary"` and `color="inherit"` are unchanged).
 - `Select` uses the same `ExpandMore` chevron as `Autocomplete` instead of MUI's stock triangle, set once in the theme (`MuiSelect.defaultProps.IconComponent`). Every `Select` in consuming apps picks this up (library-facing).
 - Showcase-only: Input Adornment demo icons are `fontSize="small"` and its wrapped example fields use flex gap so they no longer touch.
 - `--font-size-body2` is 14px (was 13px) and `--text-body-large-letter-spacing` is 0 (was 0.5px), matching `theme.typography.body2` and `body1`. Page text set through the base `html, body` styles has slightly tighter letter spacing (library-facing).

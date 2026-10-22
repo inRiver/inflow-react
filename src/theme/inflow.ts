@@ -467,7 +467,15 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
           groupLabel: { color: T.onSurfaceVariant, fontWeight: 600 },
         },
       },
-      MuiListSubheader: { styleOverrides: { root: { color: T.onSurfaceVariant, fontWeight: 600 } } },
+      MuiListSubheader: {
+        styleOverrides: {
+          root: {
+            fontWeight: 600,
+            // Only recolor the default subheader so color="primary" / "inherit" keep working.
+            variants: [{ props: { color: 'default' }, style: { color: T.onSurfaceVariant } }],
+          },
+        },
+      },
       MuiMenuItem: {
         styleOverrides: {
           root: {

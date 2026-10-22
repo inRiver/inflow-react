@@ -64,11 +64,16 @@ describe('createInflowTheme', () => {
 });
 
 describe('group headings', () => {
-  it('styles Select ListSubheader like the Autocomplete group label', () => {
+  it('styles Select ListSubheader like the Autocomplete group label without overriding color variants', () => {
     const { components } = createInflowTheme('light');
-    const subheader = components?.MuiListSubheader?.styleOverrides?.root as Record<string, unknown>;
-    const groupLabel = components?.MuiAutocomplete?.styleOverrides?.groupLabel as Record<string, unknown>;
-    expect(subheader).toEqual(groupLabel);
+    const subheader = components?.MuiListSubheader?.styleOverrides?.root as {
+      fontWeight: number;
+      variants: { props: { color: string }; style: { color: string } }[];
+    };
+    const groupLabel = components?.MuiAutocomplete?.styleOverrides?.groupLabel as { color: string; fontWeight: number };
+    expect(subheader.fontWeight).toBe(groupLabel.fontWeight);
+    expect(subheader).not.toHaveProperty('color');
+    expect(subheader.variants).toEqual([{ props: { color: 'default' }, style: { color: groupLabel.color } }]);
   });
 });
 

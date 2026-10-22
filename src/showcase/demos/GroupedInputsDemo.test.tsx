@@ -1,7 +1,15 @@
 import { fireEvent, screen, within } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import Prism from 'prismjs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { renderWithInflow } from '../../test/renderWithInflow';
 import { GroupedInputsDemo } from './GroupedInputsDemo';
+
+// Each test mounts the full 4-section demo; skip document-wide syntax highlighting
+// (irrelevant here) and give the interaction-heavy tests headroom under parallel workers.
+beforeEach(() => {
+  vi.spyOn(Prism, 'highlightAll').mockImplementation(() => {});
+});
+vi.setConfig({ testTimeout: 15_000 });
 
 const chooseOption = (combobox: HTMLElement, option: string) => {
   fireEvent.mouseDown(combobox);
