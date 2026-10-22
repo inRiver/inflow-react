@@ -4,6 +4,20 @@ All notable changes to `@inriver/inflow-react` are documented here. This project
 
 ## [Unreleased]
 
+### Added
+- Showcase-only: the Tokens page documents spacing units 0.5–10, every MUI typography variant (size, weight, line height, letter spacing, and usage), the full light-mode palette from `theme.palette` including `palette.inflow`, and the three Inflow shadow levels with the MUI elevation ranges they cover.
+- CSS tokens for the remaining Material 3 text roles (`display-large/medium/small`, `headline-medium`, `label-medium/small`) with matching `.text-*` utility classes (library-facing).
+- Showcase-only: Grouped Inputs demo page that puts button groups, grouped options (Autocomplete `groupBy`, Select `ListSubheader`), and a number-with-unit field (number and unit select side by side with joined borders) on one page with compact controls inside each example (size, disabled, button group variant and orientation) that default to the small Inflow size, plus smoke tests.
+- Showcase-only: Grouped Inputs field group section (two to five fields in a row with an icon or word between them, such as min/max) that stacks into one column when its container is narrow, with nine splits (even, first/last wider or narrower, 3:1, middle wider, ends wider), inputs or dropdowns per field, a separate icon/word/none separator for each gap, and a width-percentage readout, to review how a row should divide its space.
+- Parity tests that keep `tokens.ts` and the CSS `--text-*` tokens in line with the theme.
+
+### Changed
+- Showcase-only: the settings controls (dropdowns and checkboxes) in the props playground, customization playground, and Grouped Inputs are left-aligned instead of centered.
+- Select group headings (`ListSubheader`) now match Autocomplete group labels (on-surface-variant color, weight 600).
+- `Select` uses the same `ExpandMore` chevron as `Autocomplete` instead of MUI's stock triangle, set once in the theme (`MuiSelect.defaultProps.IconComponent`). Every `Select` in consuming apps picks this up (library-facing).
+- Showcase-only: Input Adornment demo icons are `fontSize="small"` and its wrapped example fields use flex gap so they no longer touch.
+- `--font-size-body2` is 14px (was 13px) and `--text-body-large-letter-spacing` is 0 (was 0.5px), matching `theme.typography.body2` and `body1`. Page text set through the base `html, body` styles has slightly tighter letter spacing (library-facing).
+
 ## [3.10.1] - 2026-10-19
 
 ### Changed

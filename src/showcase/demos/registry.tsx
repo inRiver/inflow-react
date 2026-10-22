@@ -30,6 +30,7 @@ const MUI_DOC_PATHS: Record<string, string> = {
   box: 'react-box',
   breadcrumbs: 'react-breadcrumbs',
   button: 'react-button',
+  groupedinputs: 'react-button-group',
   card: 'react-card',
   checkbox: 'react-checkbox',
   checkboxgroup: 'react-checkbox',
@@ -74,7 +75,7 @@ const MUI_DOC_PATHS: Record<string, string> = {
 
 const componentGroups = {
   actions: new Set(['button', 'fab', 'togglebutton']),
-  textInputs: new Set(['textfield', 'select', 'autocomplete', 'datepicker', 'timepicker', 'inputadornment']),
+  textInputs: new Set(['textfield', 'select', 'autocomplete', 'groupedinputs', 'datepicker', 'timepicker', 'inputadornment']),
   choiceInputs: new Set(['checkbox', 'checkboxgroup', 'radio', 'radiogroup', 'switch', 'slider', 'rating', 'formcontrol']),
   dataDisplay: new Set(['table', 'list', 'card', 'accordion', 'chip', 'badge', 'avatar', 'tooltip', 'imagelist']),
   navigation: new Set(['tabs', 'breadcrumbs', 'menu', 'drawer', 'bottomnavigation', 'pagination', 'stepper', 'speeddial', 'link']),
@@ -223,6 +224,7 @@ export const demoRegistry: Record<string, DemoRegistryEntry> = {
   autocomplete: createEntry(demos.AutocompleteDemo),
   rating: createEntry(demos.RatingDemo),
   togglebutton: createEntry(demos.ToggleButtonDemo),
+  groupedinputs: createEntry(demos.GroupedInputsDemo),
   formcontrol: createEntry(demos.FormControlDemo),
   inputadornment: createEntry(demos.InputAdornmentDemo),
   divider: createEntry(demos.DividerDemo),

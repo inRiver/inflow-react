@@ -32,14 +32,14 @@ import { InputAdornment, TextField } from '@mui/material';
   variant={props.variant}
   disabled={props.disabled}
   InputProps={{
-    startAdornment: <InputAdornment position="start"><AccountCircle /></InputAdornment>
+    startAdornment: <InputAdornment position="start"><AccountCircle fontSize="small" /></InputAdornment>
   }}
 />`;
 
   return (
     <>
       <DemoFrame title="Input Adornment - Interactive">
-        <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap' }}>
+        <Stack direction="row" spacing={2} useFlexGap sx={{ flexWrap: 'wrap' }}>
           <TextField
             label="Username"
             variant={props.variant}
@@ -48,7 +48,7 @@ import { InputAdornment, TextField } from '@mui/material';
               input: {
                 startAdornment: (
                   <InputAdornment position="start">
-                    <AccountCircle />
+                    <AccountCircle fontSize="small" />
                   </InputAdornment>
                 ),
               }
@@ -63,7 +63,7 @@ import { InputAdornment, TextField } from '@mui/material';
               input: {
                 endAdornment: (
                   <InputAdornment position="end">
-                    <Visibility />
+                    <Visibility fontSize="small" />
                   </InputAdornment>
                 ),
               },
@@ -79,14 +79,14 @@ import { InputAdornment, TextField } from '@mui/material';
 
       <DemoFrame title="All States">
         <Stack spacing={2} direction="column">
-          <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap' }}>
+          <Stack direction="row" spacing={2} useFlexGap sx={{ flexWrap: 'wrap' }}>
             <TextField
               label="Username"
               slotProps={{
                 input: {
                   startAdornment: (
                     <InputAdornment position="start">
-                      <AccountCircle />
+                      <AccountCircle fontSize="small" />
                     </InputAdornment>
                   ),
                 }
@@ -99,7 +99,7 @@ import { InputAdornment, TextField } from '@mui/material';
                 input: {
                   endAdornment: (
                     <InputAdornment position="end">
-                      <Visibility />
+                      <Visibility fontSize="small" />
                     </InputAdornment>
                   ),
                 },
@@ -113,7 +113,7 @@ import { InputAdornment, TextField } from '@mui/material';
                 input: {
                   startAdornment: (
                     <InputAdornment position="start">
-                      <AccountCircle />
+                      <AccountCircle fontSize="small" />
                     </InputAdornment>
                   ),
                 }

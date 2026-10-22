@@ -51,6 +51,9 @@ Used by **3 files** with injected CSS strings: `Tabs`, `PageHeader`, `AppNav`. *
 | `--spacing-1/2/3` | `8/16/24px` | Tabs, PageHeader | `theme.spacing(1/2/3)` | ✅ map |
 | `--text-label-large-*` (4 vars) | `14px/500/20px/0.1px` | Tabs | `theme.typography.button` (same values) | ✅ map |
 | `--text-body-medium-*` (2 vars) | `14px/20px` | Tabs, PageHeader | `theme.typography.body2` | ✅ map |
+| `--text-body-large-*` (4 vars) | `16px/400/24px/0` | base `html, body` | `theme.typography.body1` (parity-tested) | ✅ map |
+| `--text-body-small-*` (4 vars) | `12px/400/16px/0.4px` | — | `theme.typography.caption` (parity-tested) | ✅ map |
+| `--text-title-small-*` (4 vars) | `14px/500/20px/0.1px` | — | `theme.typography.subtitle2` (parity-tested) | ✅ map |
 | `--text-title-large-*` (4 vars) | `22px/700/36px/0.15px` | PageHeader | `theme.typography.h6` (h6 is 22px/700/36px/0.15px in Inflow) | ✅ map |
 | `--iv-navy-700` | `#0b2d6e` | PageHeader, AppNav | `palette.primary.main` | ✅ map |
 | `--custom-background` | `#ebf1fc` | PageHeader | `palette.inflow.appBackground` | ✅ map |
