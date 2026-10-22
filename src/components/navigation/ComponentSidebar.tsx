@@ -151,6 +151,28 @@ export const ComponentSidebar: React.FC<ComponentSidebarProps> = ({
     >
       <Box sx={{ width: sidebarWidth, pt: '20px', pb: '12px' }}>
         <List disablePadding>
+          <ListItem disablePadding>
+            <ListItemButton
+              onClick={() => handleNavigate('/changelog')}
+              selected={location.pathname === '/changelog'}
+              sx={{
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: 2,
+                  justifyContent: 'center',
+                }}
+              >
+                <Icon baseClassName="material-icons-outlined">history</Icon>
+              </ListItemIcon>
+              <ListItemText primary="Changelog" slotProps={{
+                primary: { sx: { fontWeight: 'bold' } }
+              }} />
+            </ListItemButton>
+          </ListItem>
           {/* Home/Overview link */}
           <ListItem disablePadding>
             <ListItemButton

@@ -61,6 +61,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build && npm run build:lib",
     "build:lib": "vite build --config vite.lib.config.ts && tsc -p tsconfig.lib.json",
+    "changelog:digest": "node scripts/generate-changelog-digest.mjs",
     "lint": "eslint .",
     "test": "vitest",
     "test:run": "vitest --run",

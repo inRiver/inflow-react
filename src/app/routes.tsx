@@ -10,6 +10,7 @@ import { IntroductionPage } from '../pages/IntroductionPage';
 import { CapitalizationPage } from '../pages/CapitalizationPage';
 import { AccessibilityPage } from '../pages/AccessibilityPage';
 import { MigrationPage } from '../pages/MigrationPage';
+import { ChangelogPage } from '../pages/ChangelogPage';
 import { GuidelinesPage } from '../pages/GuidelinesPage';
 import { NotFoundPage } from '../pages/NotFoundPage';
 import LoginScreen from '../pages/screens/LoginScreen';
@@ -25,6 +26,7 @@ export const router = createHashRouter(
       element: <RootLayout />,
         children: [
           { index: true, element: <LandingPage /> },
+          { path: 'changelog', element: <ChangelogPage /> },
           { path: 'introduction', element: <IntroductionPage /> },
           { path: 'capitalization', element: <CapitalizationPage /> },
           { path: 'accessibility', element: <AccessibilityPage /> },
