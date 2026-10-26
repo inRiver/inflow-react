@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createInflowTheme } from './inflow';
+import { darkTokens } from './inflow-tokens';
 
 interface ButtonVariantStyle {
   props: { color?: string; variant?: string };
@@ -32,6 +33,18 @@ describe('createInflowTheme', () => {
     expect(outlinedPrimary?.style.backgroundColor).toBe(theme.palette.inflow.surfaceLowest);
   });
 
+  it('restyles inline code chips only in dark mode', () => {
+    const dark = createInflowTheme('dark');
+    const darkRoot = dark.components?.MuiScopedCssBaseline?.styleOverrides?.root as Record<string, Record<string, string>>;
+
+    expect(darkRoot['& code']).toEqual({
+      backgroundColor: dark.palette.inflow.surfaceHighest,
+      color: dark.palette.text.primary,
+    });
+    expect(darkRoot['& pre code']).toEqual({ backgroundColor: 'transparent' });
+    expect(createInflowTheme('light').components?.MuiScopedCssBaseline).toBeUndefined();
+  });
+
   it('keeps native field label and notch geometry intact', () => {
     const theme = createInflowTheme('light');
     const labelRoot = theme.components?.MuiInputLabel?.styleOverrides?.root as Record<string, unknown>;
@@ -41,17 +54,25 @@ describe('createInflowTheme', () => {
     expect(theme.components?.MuiOutlinedInput?.styleOverrides).not.toHaveProperty('notchedOutline');
   });
 
-  it('provides outlined stock icons and a square shadowless menu surface', () => {
+  it('provides outlined stock icons', () => {
     const theme = createInflowTheme('light');
     const alertIcons = theme.components?.MuiAlert?.defaultProps?.iconMapping as Record<string, { props: { children: string } }>;
     const chipDeleteIcon = theme.components?.MuiChip?.defaultProps?.deleteIcon as { props: { children: string; className: string } };
-    const menuPaper = theme.components?.MuiMenu?.styleOverrides?.paper as Record<string, unknown>;
 
     expect(alertIcons.error.props.children).toBe('error_outline');
     expect(alertIcons.success.props.children).toBe('check_circle_outline');
     expect(chipDeleteIcon.props.children).toBe('close');
     expect(chipDeleteIcon.props.className).toBe('material-icons-outlined');
-    expect(menuPaper).toMatchObject({ borderRadius: 0, boxShadow: 'none' });
+  });
+
+  it('leaves light menus on MUI defaults, so they keep the elevation shadow and rounded corners', () => {
+    // Square, shadowless menus left no visible edge over same-colored content (white on white in light).
+    expect(createInflowTheme('light').components?.MuiMenu).toBeUndefined();
+  });
+
+  it('gives dark menus a 1px outline edge, because a shadow cannot show on a dark page', () => {
+    const paper = createInflowTheme('dark').components?.MuiMenu?.styleOverrides?.paper as Record<string, unknown>;
+    expect(paper).toEqual({ border: `1px solid ${darkTokens.outline}` });
   });
 
   it('uses the ExpandMore chevron for both Select and Autocomplete dropdowns', () => {
@@ -78,10 +99,11 @@ describe('group headings', () => {
 });
 
 describe('select defaults', () => {
-  it('keeps Select, TextField and FormControl at the small Inflow size', () => {
-    const { components } = createInflowTheme('light');
-    expect(components?.MuiSelect?.defaultProps?.size).toBe('small');
+  it.each(['light', 'dark'] as const)('keeps TextField and FormControl at the small Inflow size in %s, and lets Select follow them as in MUI', (mode) => {
+    const { components } = createInflowTheme(mode);
     expect(components?.MuiTextField?.defaultProps?.size).toBe('small');
     expect(components?.MuiFormControl?.defaultProps?.size).toBe('small');
+    // A size default on Select would override the size passed down by its FormControl or TextField.
+    expect(components?.MuiSelect?.defaultProps).not.toHaveProperty('size');
   });
 });

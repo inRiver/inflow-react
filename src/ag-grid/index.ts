@@ -1,4 +1,4 @@
-import { lightTokens } from '../theme/inflow-tokens';
+import { darkTokens, lightTokens } from '../theme/inflow-tokens';
 import { inflowTokens } from '../theme/tokens';
 
 /**
@@ -75,6 +75,47 @@ export const inflowGridThemeParams = {
   checkboxIndeterminateBackgroundColor: lightTokens.navy700,
   checkboxIndeterminateBorderColor: lightTokens.navy700,
   checkboxIndeterminateShapeColor: lightTokens.white,
+  fontFamily: inflowTokens.typography.fontFamily,
+  fontSize: inflowTokens.grid.fontSize,
+  headerHeight: inflowTokens.grid.headerHeight,
+  rowHeight: inflowTokens.grid.rowHeight,
+  cellHorizontalPadding: inflowTokens.spacing.s,
+  cellWidgetSpacing: inflowTokens.grid.cellWidgetSpacing,
+  wrapperBorderRadius: inflowTokens.radius.xs,
+} as const satisfies InflowGridThemeParams;
+
+/**
+ * Dark-mode counterpart of {@link inflowGridThemeParams}, built from the Inflow dark tokens.
+ *
+ * Use it together with AG Grid's dark color scheme part so the parts Inflow does not set
+ * (menus, filters, tooltips) also render dark. The light params are unchanged.
+ */
+export const inflowGridThemeParamsDark = {
+  accentColor: darkTokens.navy700,
+  backgroundColor: darkTokens.surfaceLowest,
+  foregroundColor: darkTokens.onSurface,
+  cellTextColor: darkTokens.onSurfaceVariant,
+  oddRowBackgroundColor: darkTokens.surfaceLowest,
+  headerBackgroundColor: darkTokens.surfaceLowest,
+  headerTextColor: darkTokens.onSurface,
+  borderColor: darkTokens.outlineVariant,
+  rowHoverColor: darkTokens.rowHover,
+  selectedRowBackgroundColor: darkTokens.rowSelected,
+  rangeSelectionBorderColor: darkTokens.navy700,
+  rangeSelectionBackgroundColor: darkTokens.rowSelected,
+  inputFocusBorder: `1px solid ${darkTokens.navy700}`,
+  rowBorder: `1px solid ${darkTokens.outlineVariant}`,
+  pinnedColumnBorder: false,
+  checkboxBorderRadius: 2,
+  checkboxBorderWidth: 2,
+  checkboxCheckedBackgroundColor: darkTokens.navy700,
+  checkboxCheckedBorderColor: darkTokens.navy700,
+  checkboxCheckedShapeColor: darkTokens.navy900,
+  checkboxUncheckedBackgroundColor: darkTokens.surfaceLowest,
+  checkboxUncheckedBorderColor: darkTokens.outline,
+  checkboxIndeterminateBackgroundColor: darkTokens.navy700,
+  checkboxIndeterminateBorderColor: darkTokens.navy700,
+  checkboxIndeterminateShapeColor: darkTokens.navy900,
   fontFamily: inflowTokens.typography.fontFamily,
   fontSize: inflowTokens.grid.fontSize,
   headerHeight: inflowTokens.grid.headerHeight,
