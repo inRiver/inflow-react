@@ -35,7 +35,7 @@ export function StepperDemo() {
   const [props, setProps] = useState<Record<string, any>>({
     activeStep: 1,
   });
-  // State for clickable demos. `*CompletedStep` is the furthest reached step (checkmarks).
+  // State for clickable demos. `*CompletedStep` is the furthest reached step (solid circles).
   // `*ActiveStep` is the currently viewed step (ring + inner dot, no underline).
   const [themedClickableCompletedStep, setThemedClickableCompletedStep] = useState(1);
   const [themedClickableActiveStep, setThemedClickableActiveStep] = useState(1);
@@ -120,7 +120,7 @@ const [activeStep, setActiveStep] = useState(${muiClickableActiveStep});
 
 <Stepper nonLinear activeStep={activeStep}>
   {steps.map((label, index) => (
-    // mark previous steps as completed so the icon shows a checkmark
+    // mark previous steps as completed so the icon shows a solid circle
     <Step key={label} completed={index < activeStep}>
       <StepButton disableRipple onClick={() => setActiveStep(index)}>
         {label}
