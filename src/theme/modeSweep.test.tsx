@@ -119,5 +119,5 @@ describe.each([
     const keys = new Set(failures.map(withoutRatio));
     expect(failures.filter((issue) => !(withoutRatio(issue) in KNOWN_LIGHT))).toEqual([]);
     expect(Object.keys(KNOWN_LIGHT).filter((known) => !keys.has(known))).toEqual([]);
-  }, 120000);
+  }, 600000); // Renders ~70 demos and pages in one test; the CI runner needs well over the local 2 minutes.
 });
