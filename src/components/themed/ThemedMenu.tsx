@@ -45,7 +45,12 @@ export const ThemedMenu = forwardRef<HTMLDivElement, ThemedMenuProps>(
       slotProps={{
         list: { dense },
         paper: {
-          sx: { minWidth: 200 },
+          elevation: 0,
+          sx: {
+            minWidth: 200,
+            borderRadius: 0,
+            boxShadow: 'none',
+          },
         },
       }}
     >

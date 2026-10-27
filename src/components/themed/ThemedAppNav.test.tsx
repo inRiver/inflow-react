@@ -30,15 +30,6 @@ describe('ThemedAppNav', () => {
     expect(getComputedStyle(indicator!).backgroundColor).toBe('rgb(255, 255, 255)');
   });
 
-  it('highlights the active item with a brand-blue pill and navy icon in dark mode', () => {
-    renderWithInflow(<ThemedAppNav items={items} />, { providerProps: { mode: 'dark' } });
-
-    const indicator = screen.getByRole('button', { name: 'Products' }).querySelector('.ThemedAppNav-indicator');
-
-    expect(getComputedStyle(indicator!).backgroundColor).toBe('rgb(145, 194, 253)');
-    expect(getComputedStyle(screen.getByText('inventory_2')).color).toBe('rgb(16, 26, 43)');
-  });
-
   it('invokes an item callback and renders href items as links', () => {
     const onClick = vi.fn();
     renderWithInflow(

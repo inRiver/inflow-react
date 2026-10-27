@@ -46,7 +46,7 @@ import { Container } from '@mui/material';
 >
   <Box
     sx={{
-      bgcolor: 'inflow.surfaceHighest',
+      bgcolor: '#e3e9f8',
       border: '1px dashed',
       borderColor: 'primary.main',
       borderRadius: 1,
@@ -66,7 +66,7 @@ import { Container } from '@mui/material';
         <Container {...props}>
           <Box
             sx={{
-              bgcolor: 'inflow.surfaceHighest',
+              bgcolor: '#e3e9f8',
               border: '1px dashed',
               borderColor: 'primary.main',
               borderRadius: 1,
@@ -96,7 +96,7 @@ import { Container } from '@mui/material';
             <Container maxWidth="sm">
               <Box
                 sx={{
-                  bgcolor: 'inflow.surfaceHighest',
+                  bgcolor: '#e3e9f8',
                   border: '1px dashed',
                   borderColor: 'primary.main',
                   borderRadius: 1,
@@ -110,7 +110,7 @@ import { Container } from '@mui/material';
             <Container disableGutters>
               <Box
                 sx={{
-                  bgcolor: 'inflow.surfaceHighest',
+                  bgcolor: '#e3e9f8',
                   border: '1px dashed',
                   borderColor: 'primary.main',
                   borderRadius: 1,

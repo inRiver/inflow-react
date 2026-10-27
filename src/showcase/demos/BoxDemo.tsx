@@ -22,7 +22,7 @@ export function BoxDemo() {
 import { Box, Typography } from '@mui/material';
 
 // <InflowProvider> only needs to be declared once at your app root - see Guidelines
-<Box sx={{ display: props.display, bgcolor: 'primary.main', color: 'primary.contrastText', p: 2, borderRadius: 1 }}>
+<Box sx={{ display: props.display, bgcolor: 'primary.main', color: 'white', p: 2, borderRadius: 1 }}>
   <Typography>Box with theme colors</Typography>
 </Box>`;
 
@@ -33,7 +33,7 @@ import { Box, Typography } from '@mui/material';
           sx={{
             display: props.display,
             bgcolor: 'primary.main',
-            color: 'primary.contrastText',
+            color: 'white',
             p: 2,
             borderRadius: 1,
             gap: 2,
@@ -55,13 +55,13 @@ import { Box, Typography } from '@mui/material';
       <DemoFrame title="All States">
         <Stack spacing={2} direction="column">
           <Stack spacing={2}>
-            <Box sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', p: 2, borderRadius: 1 }}>
+            <Box sx={{ bgcolor: 'primary.main', color: 'white', p: 2, borderRadius: 1 }}>
               <Typography>Primary Box</Typography>
             </Box>
-            <Box sx={{ bgcolor: 'secondary.main', color: 'secondary.contrastText', p: 2, borderRadius: 1 }}>
+            <Box sx={{ bgcolor: 'secondary.main', color: 'white', p: 2, borderRadius: 1 }}>
               <Typography>Secondary Box</Typography>
             </Box>
-            <Box sx={{ bgcolor: (t) => (t.palette.mode === 'dark' ? t.palette.inflow.surfaceContainer : t.palette.grey[100]), p: 2, borderRadius: 1, border: 1, borderColor: (t) => (t.palette.mode === 'dark' ? t.palette.divider : t.palette.grey[300]) }}>
+            <Box sx={{ bgcolor: 'grey.100', p: 2, borderRadius: 1, border: 1, borderColor: 'grey.300' }}>
               <Typography>Grey Box with Border</Typography>
             </Box>
           </Stack>

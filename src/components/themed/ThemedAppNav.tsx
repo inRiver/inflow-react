@@ -56,21 +56,13 @@ function NavItem({ item }: NavItemProps) {
     width: 56,
     height: 32,
     borderRadius: inflowTokens.radius.full,
-    backgroundColor: item.active
-      ? theme.palette.mode === 'dark'
-        ? theme.palette.primary.main
-        : theme.palette.common.white
-      : 'transparent',
+    backgroundColor: item.active ? theme.palette.common.white : 'transparent',
     transition: 'background 0.15s ease',
   });
 
   const iconSx = (theme: Theme) => ({
     fontSize: 24,
-    color: item.active
-      ? theme.palette.mode === 'dark'
-        ? theme.palette.primary.contrastText
-        : theme.palette.primary.main
-      : alpha(theme.palette.common.white, 0.85),
+    color: item.active ? theme.palette.primary.main : alpha(theme.palette.common.white, 0.85),
   });
 
   const labelSx = (theme: Theme) => ({

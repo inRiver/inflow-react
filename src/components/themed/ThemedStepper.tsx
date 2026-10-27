@@ -29,7 +29,7 @@ export interface ThemedStepperProps extends Omit<StepperProps, "children"> {
   /** Renders read-only labels even when onStepClick is supplied. */
   disableStepClick?: boolean;
   /**
-   * Furthest step that has been completed. Steps before this index show a solid circle.
+   * Furthest step that has been completed. Steps before this index show a checkmark.
    * Defaults to `activeStep`, which gives standard linear stepper behavior.
    */
   completedStep?: number;
@@ -56,7 +56,11 @@ const StepIconRoot = styled("span")<{ ownerState: ThemedStepIconProps }>(
     boxSizing: "border-box",
     border: `2px solid ${ownerState.active ? theme.palette.primary.main : "transparent"}`,
     backgroundColor: "transparent",
-    color: ownerState.active ? theme.palette.primary.main : theme.palette.text.secondary,
+    color: ownerState.completed
+      ? theme.palette.common.white
+      : ownerState.active
+        ? theme.palette.primary.main
+        : theme.palette.text.secondary,
   }),
 );
 
@@ -86,6 +90,24 @@ const InnerDot = styled("span")(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,
 }));
 
+function StepIconCheckmark() {
+  return (
+    <svg
+      width="10"
+      height="10"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="3"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <polyline points="20 6 9 17 4 12" />
+    </svg>
+  );
+}
+
 function ThemedStepIcon(props: ThemedStepIconProps) {
   const { active, completed, className } = props;
 
@@ -98,7 +120,9 @@ function ThemedStepIcon(props: ThemedStepIconProps) {
       {active ? (
         <InnerDot />
       ) : (
-        <InnerCircle ownerState={props} />
+        <InnerCircle ownerState={props}>
+          {completed ? <StepIconCheckmark /> : null}
+        </InnerCircle>
       )}
     </StepIconRoot>
   );

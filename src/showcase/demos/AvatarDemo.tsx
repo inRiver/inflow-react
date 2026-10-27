@@ -99,8 +99,8 @@ import { ThemedAvatar } from '@inriver/inflow-react';
             <Stack spacing={2} direction="column">
               <Stack direction="row" spacing={2}>
                 <Avatar>H</Avatar>
-                <Avatar sx={{ bgcolor: 'secondary.main', color: 'secondary.contrastText' }}>N</Avatar>
-                <Avatar sx={{ bgcolor: 'error.main', color: 'error.contrastText' }}>
+                <Avatar sx={{ bgcolor: 'secondary.main' }}>N</Avatar>
+                <Avatar sx={{ bgcolor: 'error.main' }}>
                   <FolderIcon />
                 </Avatar>
                 <Avatar variant="rounded" sx={{ bgcolor: 'success.main' }}>

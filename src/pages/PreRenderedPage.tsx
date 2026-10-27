@@ -128,7 +128,7 @@ export const PreRenderedPage: React.FC = () => {
             <Typography variant="h5" gutterBottom>{comp.name}</Typography>
             <Typography variant="body2" color="text.secondary" component="p" sx={{ mb: 2 }}>{comp.description}</Typography>
             
-            <Paper variant="outlined" sx={{ p: 3, mb: 2, backgroundColor: (t) => (t.palette.mode === 'dark' ? t.palette.inflow.surfaceLow : '#f9f9fa') }}>
+            <Paper variant="outlined" sx={{ p: 3, mb: 2, backgroundColor: '#f9f9fa' }}>
               {comp.component}
             </Paper>
 
@@ -163,7 +163,7 @@ export const PreRenderedPage: React.FC = () => {
              A dialog component with Inflow tokens.
            </Typography>
           
-          <Paper variant="outlined" sx={{ p: 3, mb: 2, backgroundColor: (t) => (t.palette.mode === 'dark' ? t.palette.inflow.surfaceLow : '#f9f9fa') }}>
+          <Paper variant="outlined" sx={{ p: 3, mb: 2, backgroundColor: '#f9f9fa' }}>
             <Button onClick={() => setDialogOpen(true)}>Open Dialog</Button>
             
              <ThemedDialog
@@ -222,7 +222,7 @@ export const PreRenderedPage: React.FC = () => {
 >
   <Typography>Dialog content goes here.</Typography>
 </ThemedDialog>`)}
-              sx={{ position: 'absolute', top: 8, right: 8, color: 'inflow.codeTextAlt' }}
+              sx={{ position: 'absolute', top: 8, right: 8, color: '#abb2bf' }}
               aria-label="copy code"
             >
               <ContentCopyIcon fontSize="small" />

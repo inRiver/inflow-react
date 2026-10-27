@@ -82,7 +82,7 @@ export const ThemedTabs = forwardRef<HTMLDivElement, ThemedTabsProps>(
     };
 
     return (
-      <Box ref={ref} role="tablist" aria-label={ariaLabel} style={style} sx={{ display: 'flex', gap: 1 }}>
+      <Box ref={ref} role="tablist" aria-label={ariaLabel} style={style} sx={{ display: 'flex' }}>
         {tabs.map((tab, index) => {
           const isActive = index === active;
           const id = tab.id ?? `themed-tab-${index}`;

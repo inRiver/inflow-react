@@ -10,12 +10,10 @@ import {
   Tabs,
   Tooltip,
   Typography,
-  useTheme,
 } from '@mui/material';
 import {
   AllCommunityModule,
   ModuleRegistry,
-  colorSchemeDark,
   themeQuartz,
   type CellFocusedEvent,
   type CellValueChangedEvent,
@@ -28,7 +26,6 @@ import {
   inflowGridHeaderActionsSx,
   inflowGridSelectionSx,
   inflowGridThemeParams,
-  inflowGridThemeParamsDark,
 } from '../ag-grid';
 import {
   createDataTableCellContext,
@@ -41,17 +38,13 @@ import {
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
-const gridDimensionParams = {
+const gridTheme = themeQuartz.withParams({
+  ...inflowGridThemeParams,
   headerHeight: 40,
   rowHeight: 44,
   wrapperBorder: false,
   wrapperBorderRadius: 0,
-} as const;
-
-const lightGridTheme = themeQuartz.withParams({ ...inflowGridThemeParams, ...gridDimensionParams });
-const darkGridTheme = themeQuartz
-  .withPart(colorSchemeDark)
-  .withParams({ ...inflowGridThemeParamsDark, ...gridDimensionParams });
+});
 
 const rowSelection = {
   mode: 'multiRow',
@@ -132,7 +125,6 @@ export interface DataTableProps {
 }
 
 export function DataTable({ onFocusedCellChange }: DataTableProps) {
-  const gridTheme = useTheme().palette.mode === 'dark' ? darkGridTheme : lightGridTheme;
   const [tab, setTab] = useState(0);
   const [selectedCount, setSelectedCount] = useState(0);
   const rowData = useMemo(

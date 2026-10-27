@@ -119,10 +119,10 @@ const ThemedTableBase = <T extends TableRowData = TableRowData>(
                     backgroundColor: theme.palette.inflow.rowHover,
                   },
                   '&.Mui-selected': {
-                    backgroundColor: theme.palette.inflow.rowSelected,
+                    backgroundColor: 'rgba(11, 45, 110, 0.08)',
                   },
                   '&.Mui-selected:hover': {
-                    backgroundColor: theme.palette.inflow.rowSelectedHover,
+                    backgroundColor: 'rgba(11, 45, 110, 0.14)',
                   },
                   ...(onRowClick && { cursor: 'pointer' }),
                   height: 52,

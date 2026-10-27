@@ -15,7 +15,6 @@ import {
   TableRow,
   useTheme,
 } from '@mui/material';
-import { INFLOW_DARK_MODE_ENABLED } from '../theme/featureFlags';
 import { inflowTokens } from '../theme/tokens';
 
 // Density values are theme.spacing() units (8px each): #4 = 32px, #9.5 = 76px.
@@ -192,8 +191,7 @@ export function TokensPage() {
         <Box>
           <Typography variant="h5" gutterBottom>Palette</Typography>
           <Typography variant="body1" sx={{ mb: 2 }}>
-            {theme.palette.mode === 'dark' ? 'Dark' : 'Light'} mode values, read from <code>theme.palette</code>.
-            {INFLOW_DARK_MODE_ENABLED && ' Use the Light / Dark switch in the header to compare the two.'}
+            Light mode values, read from <code>theme.palette</code>. Dark mode is not documented yet.
           </Typography>
           <Stack spacing={3}>
             <Box>

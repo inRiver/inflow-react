@@ -14,7 +14,7 @@ export interface ThemedAlertProps {
 const iconMap: Record<AlertSeverity, string> = {
   error: 'error_outline',
   warning: 'warning_amber',
-  info: 'info',
+  info: 'info_outline',
   success: 'check_circle_outline',
 };
 

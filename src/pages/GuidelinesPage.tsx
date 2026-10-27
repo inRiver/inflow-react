@@ -289,14 +289,6 @@ export function GuidelinesPage() {
                   </Typography>
                 </>
               )}
-              <Typography variant="subtitle2">Designing for dark</Typography>
-              <Typography variant="body2" color="text.secondary" component="ul" sx={{ pl: 3, m: 0 }}>
-                <li>Keep the brand hue. Dark changes lightness and saturation, never the blue.</li>
-                <li>Surfaces get lighter as they rise (page, then panels, then raised areas). Use these steps instead of shadows.</li>
-                <li>Avoid pure black and pure white. Use the theme text colors.</li>
-                <li>Accents are lighter in dark. Text on a filled color uses that color&apos;s contrast text, not white.</li>
-                <li>Read colors from the theme so they follow the mode. Both modes meet WCAG AA: 4.5:1 for text, 3:1 for borders and icons.</li>
-              </Typography>
               <Typography variant="body2" color="text.secondary">
                 Consuming apps can read the live package status directly:
               </Typography>
@@ -620,9 +612,7 @@ export function GuidelinesPage() {
                 The <code>@inriver/inflow-react/ag-grid</code> subpath exports{' '}
                 <code>inflowGridThemeParams</code>, a dependency-free parameter object for AG Grid
                 Theming API (v33+). Apply it with <code>themeQuartz.withParams</code>. See the{' '}
-                <Box component={Link} to="/publishers/ag-grid" sx={(t) => ({ color: t.palette.mode === 'dark' ? t.palette.primary.main : undefined })}>
-                  AG Grid showcase
-                </Box> for a live demo and usage
+                <Link to="/publishers/ag-grid">AG Grid showcase</Link> for a live demo and usage
                 snippet.
               </Typography>
             </Stack>

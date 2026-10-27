@@ -843,7 +843,7 @@ html, body {
   margin: 0;
 }
 
-h1,h2,h3,h4,h5,h6 { margin: 0; color: var(--infl-on-surface-color, var(--color-on-surface)); font-family: var(--font-family-base); }
+h1,h2,h3,h4,h5,h6 { margin: 0; color: var(--color-on-surface); font-family: var(--font-family-base); }
 h1 { font: 300 6rem/1.167 var(--font-family-base); letter-spacing: -0.09375rem; }
 h2 { font: 300 3.75rem/1.2   var(--font-family-base); letter-spacing: -0.03125rem; }
 h3 { font: 400 3rem/1.167 var(--font-family-base); }

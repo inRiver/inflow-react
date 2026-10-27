@@ -1,7 +1,6 @@
 import { forwardRef } from 'react';
 import { Box, Icon, IconButton } from '@mui/material';
 import type { ReactNode } from 'react';
-import { darkSeverityTint } from '../../theme/inflow';
 
 export type ThemedToastSeverity = 'error' | 'info' | 'success' | 'warning';
 
@@ -15,7 +14,7 @@ export interface ThemedToastProps {
 
 const iconNames: Record<ThemedToastSeverity, string> = {
   error: 'error_outline',
-  info: 'info',
+  info: 'info_outline',
   success: 'check_circle_outline',
   warning: 'warning_amber',
 };
@@ -36,15 +35,12 @@ export const ThemedToast = forwardRef<HTMLDivElement, ThemedToastProps>(
         height: 39,
         padding: theme.spacing(0, 2.5),
         borderRadius: `${theme.shape.borderRadius}px`,
-        backgroundColor:
-          theme.palette.mode === 'dark'
-            ? darkSeverityTint(severity)
-            : {
-                error: theme.palette.inflow.highlightRed,
-                info: theme.palette.inflow.toastInfoBg,
-                success: theme.palette.inflow.highlightGreen,
-                warning: theme.palette.inflow.highlightYellow,
-              }[severity],
+        backgroundColor: {
+          error: theme.palette.inflow.highlightRed,
+          info: theme.palette.inflow.toastInfoBg,
+          success: theme.palette.inflow.highlightGreen,
+          warning: theme.palette.inflow.highlightYellow,
+        }[severity],
         color: theme.palette.text.primary,
         width: '100%',
         maxWidth: 389,

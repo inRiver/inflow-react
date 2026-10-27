@@ -45,11 +45,7 @@ import { Skeleton } from '@mui/material';
   return (
     <>
       <DemoFrame title="Skeleton - Interactive">
-        <Skeleton
-          {...props}
-          width={props.variant === 'circular' ? 60 : 210}
-          height={props.variant === 'text' ? undefined : 60}
-        />
+        <Skeleton {...props} width={210} height={props.variant === 'circular' ? 60 : 60} />
       </DemoFrame>
 
       <PropsPlayground 

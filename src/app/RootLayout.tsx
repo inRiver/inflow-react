@@ -10,14 +10,13 @@ import {
   useTheme,
   ButtonBase,
   Stack,
-  ToggleButton,
-  ToggleButtonGroup,
   alpha,
   Tooltip,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
+import SettingsBrightnessOutlinedIcon from '@mui/icons-material/SettingsBrightnessOutlined';
 import PaletteOutlinedIcon from '@mui/icons-material/PaletteOutlined';
 import { ComponentSidebar } from '../components/navigation/ComponentSidebar';
 import { ComponentSearchDialog } from '../components/navigation/ComponentSearchDialog';
@@ -27,15 +26,24 @@ export function RootLayout() {
   const theme = useTheme();
   const navigate = useNavigate();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const { currentTheme, toggleTheme, resolvedColorMode, setColorModePreference } = useShowcaseTheme();
+  const { currentTheme, toggleTheme, colorModePreference, resolvedColorMode, cycleColorMode } = useShowcaseTheme();
   const [sidebarOpen, setSidebarOpen] = useState(!isMobile);
   const [componentSearchQuery, setComponentSearchQuery] = useState('');
   const [searchDialogOpen, setSearchDialogOpen] = useState(false);
 
-  const nextColorMode = resolvedColorMode === 'dark' ? 'light' : 'dark';
+  const nextColorModePreference =
+    colorModePreference === 'system' ? 'light' : colorModePreference === 'light' ? 'dark' : 'system';
+  const colorModeLabel = colorModePreference === 'system'
+    ? `System (${resolvedColorMode})`
+    : colorModePreference.charAt(0).toUpperCase() + colorModePreference.slice(1);
   const themeVariantLabel = currentTheme === 'inflow' ? 'Inflow' : 'MUI default';
   const nextThemeVariantLabel = currentTheme === 'inflow' ? 'MUI default' : 'Inflow';
-  const ColorModeIcon = resolvedColorMode === 'dark' ? DarkModeOutlinedIcon : LightModeOutlinedIcon;
+  const ColorModeIcon =
+    colorModePreference === 'system'
+      ? SettingsBrightnessOutlinedIcon
+      : resolvedColorMode === 'dark'
+        ? DarkModeOutlinedIcon
+        : LightModeOutlinedIcon;
 
   useEffect(() => {
     const handleShortcut = (event: KeyboardEvent) => {
@@ -176,41 +184,32 @@ export function RootLayout() {
                 </ButtonBase>
 
                 {DARK_MODE_ENABLED && (
-                  <ToggleButtonGroup
-                    exclusive
-                    size="small"
-                    value={resolvedColorMode}
-                    onChange={(_, mode: 'light' | 'dark' | null) => {
-                      if (mode) setColorModePreference(mode);
-                    }}
-                    aria-label="Color mode"
-                    sx={{
-                      '& .MuiToggleButton-root': {
-                        gap: 0.75,
+                  <Tooltip title={`Color mode: ${colorModeLabel}. Click to switch to ${nextColorModePreference}.`}>
+                    <ButtonBase
+                      onClick={cycleColorMode}
+                      aria-label={`Color mode: ${colorModeLabel}. Click to switch to ${nextColorModePreference}.`}
+                      sx={{
+                        borderRadius: 2.5,
+                        border: `1px solid ${alpha(theme.palette.common.white, 0.18)}`,
+                        bgcolor: alpha(theme.palette.common.white, 0.08),
                         px: 1.5,
                         py: 1,
-                        color: alpha(theme.palette.common.white, 0.72),
-                        borderColor: alpha(theme.palette.common.white, 0.18),
-                        bgcolor: alpha(theme.palette.common.white, 0.08),
-                        '&:hover': { bgcolor: alpha(theme.palette.common.white, 0.14) },
-                        '&.Mui-selected': {
-                          color: theme.palette.common.white,
-                          bgcolor: alpha(theme.palette.common.white, 0.24),
-                          boxShadow: 'none',
-                          '&:hover': { bgcolor: alpha(theme.palette.common.white, 0.3) },
+                        color: 'inherit',
+                        gap: 1,
+                        transition: theme.transitions.create(['background-color', 'border-color', 'transform']),
+                        '&:hover': {
+                          bgcolor: alpha(theme.palette.common.white, 0.12),
+                          borderColor: alpha(theme.palette.common.white, 0.28),
+                          transform: 'translateY(-1px)',
                         },
-                      },
-                    }}
-                  >
-                    <ToggleButton value="light" aria-label="Light mode">
-                      <LightModeOutlinedIcon fontSize="small" />
-                      <Typography variant="body2" sx={{ fontWeight: 700 }}>Light</Typography>
-                    </ToggleButton>
-                    <ToggleButton value="dark" aria-label="Dark mode">
-                      <DarkModeOutlinedIcon fontSize="small" />
-                      <Typography variant="body2" sx={{ fontWeight: 700 }}>Dark</Typography>
-                    </ToggleButton>
-                  </ToggleButtonGroup>
+                      }}
+                    >
+                      <ColorModeIcon fontSize="small" />
+                      <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                        {colorModePreference === 'system' ? 'System' : colorModeLabel}
+                      </Typography>
+                    </ButtonBase>
+                  </Tooltip>
                 )}
 
                 <Tooltip title={`Theme variant: ${themeVariantLabel}. Click to switch to ${nextThemeVariantLabel}.`}>
@@ -259,11 +258,11 @@ export function RootLayout() {
              )}
 
             {isMobile && DARK_MODE_ENABLED && (
-              <Tooltip title={`Switch to ${nextColorMode} mode`}>
+              <Tooltip title={`Color mode: ${colorModeLabel}. Click to switch to ${nextColorModePreference}.`}>
                 <IconButton
                   color="inherit"
-                  aria-label={`Switch to ${nextColorMode} mode`}
-                  onClick={() => setColorModePreference(nextColorMode)}
+                  aria-label={`Color mode: ${colorModeLabel}. Click to switch to ${nextColorModePreference}.`}
+                  onClick={cycleColorMode}
                   sx={{
                     border: `1px solid ${alpha(theme.palette.common.white, 0.24)}`,
                     borderRadius: 2,

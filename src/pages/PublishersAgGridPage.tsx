@@ -1,12 +1,11 @@
-import { Box, Container, Stack, Typography, useTheme } from '@mui/material';
-import { AllCommunityModule, ModuleRegistry, colorSchemeDark, themeQuartz } from 'ag-grid-community';
+import { Box, Container, Stack, Typography } from '@mui/material';
+import { AllCommunityModule, ModuleRegistry, themeQuartz } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import { CodeBlock } from '../showcase/CodeBlock';
 import {
   publisherColumnDefs,
   publisherGridSx,
   publisherGridThemeParams,
-  publisherGridThemeParamsDark,
   publisherRowData,
   publisherRowSelection,
   publisherSelectionColumnDef,
@@ -16,11 +15,9 @@ import {
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
-const lightGridTheme = themeQuartz.withParams(publisherGridThemeParams);
-const darkGridTheme = themeQuartz.withPart(colorSchemeDark).withParams(publisherGridThemeParamsDark);
+const gridTheme = themeQuartz.withParams(publisherGridThemeParams);
 
 export function PublishersAgGridPage() {
-  const gridTheme = useTheme().palette.mode === 'dark' ? darkGridTheme : lightGridTheme;
   return (
     <Container maxWidth="lg">
       <Stack spacing={6} sx={{ py: 4 }}>

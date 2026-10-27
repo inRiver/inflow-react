@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { createInflowTheme, inflowTheme } from '../../theme';
-import { darkTokens } from '../../theme/inflow-tokens';
+import { inflowTheme } from '../../theme';
 import { renderWithInflow } from '../../test/renderWithInflow';
 import { ThemedMenu } from './ThemedMenu';
 import type { ThemedMenuItemDef } from './ThemedMenu';
@@ -105,38 +104,12 @@ describe('ThemedMenu', () => {
     expect(getComputedStyle(screen.getByRole('menuitem', { name: /Edit profile/ })).minHeight).toBe('32px');
   });
 
-  it.each(['light', 'dark'] as const)('draws the %s menu as a raised surface with MUI\'s elevation shadow and rounded corners', (mode) => {
-    renderWithInflow(<MenuHarness />, { providerProps: { mode } });
+  it('uses the square, shadowless design-system menu surface', () => {
+    renderWithInflow(<MenuHarness />);
 
     const paper = screen.getByRole('menu').closest<HTMLElement>('.MuiPaper-root');
     expect(paper).not.toBeNull();
-    const style = getComputedStyle(paper as HTMLElement);
-    expect(style.boxShadow).not.toBe('none');
-    // MUI 9 applies the Paper shadow through --paper-shadow, which jsdom cannot resolve; the value comes from the theme.
-    expect(createInflowTheme(mode).shadows[8]).not.toBe('none');
-    expect(style.borderRadius).toBe('5px');
-  });
-
-  it('draws no border on the light menu, and a 1px outline edge on the dark one', () => {
-    const { unmount } = renderWithInflow(<MenuHarness />);
-    const light = getComputedStyle(screen.getByRole('menu').closest('.MuiPaper-root') as HTMLElement);
-    expect(light.borderTopStyle).toBe('none');
-    unmount();
-
-    renderWithInflow(<MenuHarness />, { providerProps: { mode: 'dark' } });
-    const dark = getComputedStyle(screen.getByRole('menu').closest('.MuiPaper-root') as HTMLElement);
-    const swatch = document.createElement('div');
-    swatch.style.borderColor = darkTokens.outline;
-    expect(dark.borderTopWidth).toBe('1px');
-    expect(dark.borderTopColor).toBe(swatch.style.borderColor);
-  });
-
-  it('steps the dark menu up to a lighter surface than the page, since a shadow alone cannot show on dark', () => {
-    renderWithInflow(<MenuHarness />, { providerProps: { mode: 'dark' } });
-
-    const paper = screen.getByRole('menu').closest<HTMLElement>('.MuiPaper-root') as HTMLElement;
-    const swatch = document.createElement('div');
-    swatch.style.backgroundColor = darkTokens.surfaceContainer;
-    expect(getComputedStyle(paper).backgroundColor).toBe(swatch.style.backgroundColor);
+    expect(getComputedStyle(paper as HTMLElement).borderRadius).toBe('0px');
+    expect(getComputedStyle(paper as HTMLElement).boxShadow).toBe('none');
   });
 });

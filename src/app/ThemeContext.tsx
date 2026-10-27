@@ -7,7 +7,6 @@ import {
   type InflowColorMode,
 } from '../theme';
 import { InflowProvider } from '../providers';
-import { darkTokens } from '../theme/inflow-tokens';
 
 type ThemeType = 'inflow' | 'default';
 type ColorModePreference = InflowColorMode | 'system';
@@ -112,18 +111,6 @@ export const CustomThemeProvider: React.FC<{ children: React.ReactNode }> = ({ c
       ? systemColorMode
       : colorModePreference
     : 'light'; // Always light when dark mode is disabled
-
-  // The scoped baseline only paints the app area. Tell the browser about the mode too, so the page
-  // edge, overscroll and native scrollbars are dark instead of white. Light keeps its original styles.
-  useEffect(() => {
-    const root = document.documentElement;
-    root.style.colorScheme = resolvedColorMode;
-    root.style.backgroundColor = resolvedColorMode === 'dark' ? darkTokens.appBackground : '';
-    return () => {
-      root.style.colorScheme = '';
-      root.style.backgroundColor = '';
-    };
-  }, [resolvedColorMode]);
 
   // Only the 'default' comparison branch needs a locally-created theme;
   // the 'inflow' branch's theme is created internally by InflowProvider
