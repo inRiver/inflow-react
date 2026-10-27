@@ -12,7 +12,7 @@ import {
 
 export function GlobalHeader() {
   return (
-    <AppBar position="static" elevation={0} sx={{ bgcolor: '#fff', color: 'text.primary', borderBottom: '1px solid', borderColor: 'divider' }}>
+    <AppBar position="static" elevation={0} sx={{ bgcolor: 'background.paper', color: 'text.primary', borderBottom: '1px solid', borderColor: 'divider' }}>
       <Toolbar sx={{ gap: 2 }}>
         <Box sx={{ flex: 1 }} />
         <Paper sx={{ width: 400, display: 'flex', alignItems: 'center', px: 1.5, py: 0.25, bgcolor: 'inflow.navy100', boxShadow: 'none', borderRadius: '4px' }}>

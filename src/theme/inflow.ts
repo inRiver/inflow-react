@@ -5,7 +5,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import type { Shadows } from '@mui/material/styles';
 import type {} from '@mui/x-date-pickers/themeAugmentation';
 import { resolveInflowColorMode } from './featureFlags';
-import { darkTokens, lightTokens, type InflowThemeTokens } from './inflow-tokens';
+import { darkOnlyTokens, darkTokens, lightTokens, type InflowThemeTokens } from './inflow-tokens';
 
 export type InflowColorMode = 'light' | 'dark';
 
@@ -55,6 +55,18 @@ declare module '@mui/material/styles' {
     inflow?: InflowPalette;
   }
 }
+
+// Dark alert and toast surfaces: a severity color blended into the dark paper. Strong enough to read as that
+// severity, still dark enough that on-surface text stays above 6.5:1 and the icon above 3:1. Warning blends a
+// golden amber instead of the orange status color, because dark orange turns brown.
+export const darkSeverityBase = {
+  error: darkTokens.error.main,
+  warning: darkOnlyTokens.warningAmber,
+  info: darkTokens.info.main,
+  success: darkTokens.success.main,
+} as const;
+export const darkSeverityTint = (severity: keyof typeof darkSeverityBase): string =>
+  `color-mix(in srgb, ${darkSeverityBase[severity]} ${severity === 'warning' ? 36 : 34}%, ${darkTokens.surfaceLowest})`;
 
 const E1 = '0 1px 3px 1px rgba(0,0,0,0.15), 0 1px 2px 0 rgba(0,0,0,0.30)';
 const E2 = '0 2px 6px 2px rgba(0,0,0,0.15), 0 1px 2px 0 rgba(0,0,0,0.30)';
@@ -114,6 +126,8 @@ export const getInflowPalette = (mode: InflowColorMode): InflowPalette => {
 export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
   const mode = resolveInflowColorMode(requestedMode);
   const T = getInflowTokensForMode(mode);
+  // Dark status colors are light tints, so they take dark text instead of white.
+  const statusContrastText = mode === 'dark' ? T.navy900 : '#ffffff';
 
   return createTheme({
     shape: { borderRadius: T.radiusSm },
@@ -129,15 +143,17 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
         contrastText: mode === 'dark' ? T.navy900 : '#ffffff',
       },
       secondary: {
-        main: mode === 'dark' ? T.surfaceHighest : T.navy800,
-        dark: mode === 'dark' ? T.surfaceContainerHigh : '#000000',
-        light: mode === 'dark' ? T.surfaceVariant : T.navy800,
-        contrastText: mode === 'dark' ? T.onSurface : '#ffffff',
+        // Dark secondary is a light neutral so it reads as a checkbox, link, outline or text color on dark
+        // surfaces; filled secondary buttons carry navy text. Light keeps its dark navy.
+        main: mode === 'dark' ? T.onSurfaceVariant : T.navy800,
+        dark: mode === 'dark' ? T.outline : '#000000',
+        light: mode === 'dark' ? T.onSurface : T.navy800,
+        contrastText: mode === 'dark' ? T.navy900 : '#ffffff',
       },
-      error: { ...T.error, contrastText: '#ffffff' },
-      warning: { ...T.warning, contrastText: '#ffffff' },
-      info: { ...T.info, contrastText: '#ffffff' },
-      success: { ...T.success, contrastText: '#ffffff' },
+      error: { ...T.error, contrastText: statusContrastText },
+      warning: { ...T.warning, contrastText: statusContrastText },
+      info: { ...T.info, contrastText: statusContrastText },
+      success: { ...T.success, contrastText: statusContrastText },
       text: {
         primary: T.onSurface,
         secondary: T.onSurfaceVariant,
@@ -220,7 +236,14 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
         },
       },
       MuiIconButton: {
-        styleOverrides: { root: { color: T.onSurfaceVariant, borderRadius: T.radiusFull } },
+        styleOverrides: {
+          // Only the default button is grey. primary, secondary, error and the rest keep MUI's palette color, and
+          // inherit takes its parent's color (white inside the navy AppBar).
+          root: ({ ownerState }) => ({
+            ...((ownerState.color ?? 'default') === 'default' && { color: T.onSurfaceVariant }),
+            borderRadius: T.radiusFull,
+          }),
+        },
       },
       MuiButtonGroup: {
         defaultProps: { disableElevation: true },
@@ -237,7 +260,6 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
               backgroundColor: T.primaryTab,
               color: T.navy700,
               fontWeight: 700,
-              boxShadow: `inset 0 0 0 1px ${T.navy700}`,
               '&:hover': { backgroundColor: T.primaryTab },
             },
           },
@@ -254,7 +276,9 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
       },
 
       MuiTextField: { defaultProps: { variant: 'outlined', size: 'small' } },
-      MuiSelect: { defaultProps: { size: 'small', IconComponent: ExpandMoreIcon } },
+      // No size default on Select, as in MUI: it takes the size of its FormControl or TextField (small by default here),
+      // so size="medium" on a FormControl or TextField reaches the Select instead of being overridden.
+      MuiSelect: { defaultProps: { IconComponent: ExpandMoreIcon } },
       MuiFormControl: { defaultProps: { size: 'small' } },
       MuiInputBase: {
         styleOverrides: {
@@ -267,8 +291,9 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
         styleOverrides: {
           root: {
             borderRadius: T.radiusXs,
-            '& .MuiOutlinedInput-notchedOutline': { borderColor: T.outlineVariant },
-            '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: T.outline },
+            // Dark fields use the stronger `outline` tone so the border clears the 3:1 minimum for UI shapes.
+            '& .MuiOutlinedInput-notchedOutline': { borderColor: mode === 'dark' ? T.outline : T.outlineVariant },
+            '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: mode === 'dark' ? T.onSurface : T.outline },
             '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: T.navy700, borderWidth: 2 },
           },
         },
@@ -341,6 +366,8 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
       },
       MuiSwitch: {
         styleOverrides: {
+          // Off-state track: MUI's default (white at 30%) is about 2.8:1 on dark paper, under the 3:1 minimum.
+          ...(mode === 'dark' && { track: { backgroundColor: T.onSurface, opacity: 0.4 } }),
           switchBase: ({ ownerState, theme }) => {
             if (ownerState.disabled) return {};
             const colorKey = ownerState.color;
@@ -360,8 +387,13 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
                           : T.navy700;
             return {
               '&.Mui-checked': {
-                color: '#fff',
-                '& + .MuiSwitch-track': { backgroundColor: trackColor, opacity: 1 },
+                // Light: white thumb on the accent track. Dark mirrors it with a light thumb on a deeper accent
+                // track (accent blended with navy), because a drop shadow cannot separate the thumb on a dark page.
+                color: mode === 'dark' ? T.onSurface : '#fff',
+                '& + .MuiSwitch-track': {
+                  backgroundColor: mode === 'dark' ? `color-mix(in srgb, ${trackColor} 65%, ${T.navy900})` : trackColor,
+                  opacity: 1,
+                },
               },
             };
           },
@@ -401,13 +433,42 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
       MuiPaper: {
         styleOverrides: {
           rounded: { borderRadius: T.radiusSm },
-          root: {
+          root: ({ ownerState }) => ({
             backgroundImage: 'none',
-          },
+            // Dark: shadows cannot show on dark surfaces, so raised Paper (cards, menus, dialogs) steps up a lighter surface.
+            ...(mode === 'dark' &&
+              ownerState.variant !== 'outlined' && {
+                backgroundColor:
+                  (ownerState.elevation ?? 1) >= 9
+                    ? T.surfaceContainerHigh
+                    : (ownerState.elevation ?? 1) >= 3
+                      ? T.surfaceContainer
+                      : (ownerState.elevation ?? 1) >= 1
+                        ? T.surfaceLow
+                        : undefined,
+              }),
+          }),
         },
         defaultProps: { elevation: 1 },
       },
-      MuiCard: { styleOverrides: { root: { borderRadius: T.radiusSm } }, defaultProps: { elevation: 1 } },
+      MuiCard: {
+        styleOverrides: {
+          root: ({ ownerState }) => ({
+            borderRadius: T.radiusSm,
+            // Dark: a shadow cannot show, so a raised card gets a soft 1px surfaceVariant hairline (1.8:1 on the page), and sits
+            // on the paper surface like flat and outlined cards (as in light, where every card is white) instead of
+            // stepping up a lighter surface the way other raised Paper does. The Outlined card keeps its defined
+            // outlineVariant line (3:1), so the two still read differently, as shadow against line does in light.
+            ...(mode === 'dark' &&
+              ownerState.variant !== 'outlined' &&
+              (ownerState.elevation ?? 1) >= 1 && {
+                border: `1px solid ${T.surfaceVariant}`,
+                backgroundColor: T.surfaceLowest,
+              }),
+          }),
+        },
+        defaultProps: { elevation: 1 },
+      },
       MuiDialog: { defaultProps: { maxWidth: 'xs' }, styleOverrides: { paper: { borderRadius: T.radiusXl, width: 'min(444px, calc(100vw - 32px))' } } },
       MuiDialogTitle: {
         styleOverrides: {
@@ -436,7 +497,6 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
           }),
         },
       },
-      MuiMenu: { styleOverrides: { paper: { borderRadius: 0, boxShadow: 'none' } } },
       MuiPickerDay: {
         styleOverrides: {
           root: ({ theme }) => ({
@@ -490,11 +550,13 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
       MuiTooltip: {
         styleOverrides: {
           tooltip: {
-            backgroundColor: mode === 'dark' ? T.surfaceHighest : '#616161',
+            // Dark tooltips are a muted blue-gray chip (brand hue, low saturation, so it sits calmly next to the bright
+            // primary blue) with light text. It is lighter than the page surfaces, so no outline is needed.
+            backgroundColor: mode === 'dark' ? darkOnlyTokens.tooltipBg : '#616161',
             color: mode === 'dark' ? T.onSurface : '#ffffff',
             fontSize: '0.75rem',
             borderRadius: T.radiusXs,
-            border: `1px solid ${mode === 'dark' ? T.outlineVariant : 'transparent'}`,
+            border: '1px solid transparent',
           },
         },
       },
@@ -519,7 +581,7 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
 
             return {
               backgroundColor,
-              color: colorKey === 'secondary' && mode === 'dark' ? T.onSurface : T.white,
+              color: mode === 'dark' ? T.navy900 : T.white,
               ...(ownerState.variant === 'dot'
                 ? {
                     minWidth: 8,
@@ -557,6 +619,11 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
             fontWeight: 500,
             letterSpacing: '0.00625rem',
             maxWidth: '100%',
+            ...(mode === 'dark' && {
+              '&.MuiChip-colorDefault .MuiChip-deleteIcon': { color: T.onSurfaceVariant, '&:hover': { color: T.onSurface } },
+              '&.MuiChip-filled:not(.MuiChip-colorDefault) .MuiChip-deleteIcon': { color: 'inherit', opacity: 0.8, '&:hover': { opacity: 1 } },
+              '& .MuiChip-avatar': { color: T.navy900 },
+            }),
             '&.MuiChip-sizeSmall': {
               height: 24,
               fontSize: '0.75rem',
@@ -605,7 +672,7 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
         styleOverrides: {
           root: ({ theme }) => ({
             backgroundColor: theme.palette.grey[400],
-            color: T.white,
+            color: mode === 'dark' ? T.navy900 : T.white,
             fontSize: '1.25rem',
             fontWeight: 400,
             letterSpacing: '0.00875rem',
@@ -630,7 +697,7 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
         },
       },
 
-      MuiTabs: { styleOverrides: { indicator: { backgroundColor: T.navy700, height: 2 } } },
+      MuiTabs: { styleOverrides: { indicator: { backgroundColor: T.navy700, height: 2 }, list: { gap: 8 } } },
       MuiTab: {
         styleOverrides: {
           root: {
@@ -678,42 +745,31 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
           iconMapping: {
             error: createElement('span', { className: 'material-icons-outlined' }, 'error_outline'),
             warning: createElement('span', { className: 'material-icons-outlined' }, 'warning_amber'),
-            info: createElement('span', { className: 'material-icons-outlined' }, 'info_outline'),
+            info: createElement('span', { className: 'material-icons-outlined' }, 'info'),
             success: createElement('span', { className: 'material-icons-outlined' }, 'check_circle_outline'),
           },
         },
         styleOverrides: {
+          // Standard alerts use the same surfaces as ThemedToast. MUI 9 matches alerts on `colorSeverity`.
           root: {
-            variants: [
-              {
-                props: { variant: 'standard', color: 'error' },
+            variants: (['error', 'warning', 'info', 'success'] as const).map((severity) => {
+              const lightSurface = {
+                error: T.highlightRed,
+                warning: T.highlightYellow,
+                info: T.toastInfoBg,
+                success: T.highlightGreen,
+              }[severity];
+              // Light icons use the darker status shade where the main color is under 3:1 on its surface.
+              const lightIcon = severity === 'warning' || severity === 'success' ? T[severity].dark : T[severity].main;
+              return {
+                props: { variant: 'standard' as const, colorSeverity: severity },
                 style: {
-                  backgroundColor: mode === 'dark' ? T.diffRemovedBg : '#fdeded',
-                  color: mode === 'dark' ? T.diffRemovedText : '#5f2120',
+                  backgroundColor: mode === 'dark' ? darkSeverityTint(severity) : lightSurface,
+                  color: T.onSurface,
+                  '& .MuiAlert-icon': { color: mode === 'dark' ? darkSeverityBase[severity] : lightIcon },
                 },
-              },
-              {
-                props: { variant: 'standard', color: 'warning' },
-                style: {
-                  backgroundColor: mode === 'dark' ? T.highlightYellow : '#fff4e5',
-                  color: mode === 'dark' ? T.onSurface : '#663c00',
-                },
-              },
-              {
-                props: { variant: 'standard', color: 'info' },
-                style: {
-                  backgroundColor: mode === 'dark' ? T.rowSelected : '#e5f6fd',
-                  color: mode === 'dark' ? T.onSurface : '#014361',
-                },
-              },
-              {
-                props: { variant: 'standard', color: 'success' },
-                style: {
-                  backgroundColor: mode === 'dark' ? T.diffAddedBg : '#edf7ed',
-                  color: mode === 'dark' ? T.diffAddedText : '#1e4620',
-                },
-              },
-            ],
+              };
+            }),
           },
         },
       },
@@ -749,6 +805,19 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
         },
       },
       MuiLinearProgress: { styleOverrides: { root: { borderRadius: T.radiusFull } } },
+      // The showcase stylesheet gives inline <code> a light cream chip; dark mode needs its own.
+      ...(mode === 'dark' && {
+        // A shadow cannot show on dark, so the raised menu surface gets a 1px edge (outline is 5.7:1 on the menu, 7.3:1 on the page).
+        MuiMenu: { styleOverrides: { paper: { border: `1px solid ${T.outline}` } } },
+        MuiScopedCssBaseline: {
+          styleOverrides: {
+            root: {
+              '& code': { backgroundColor: T.surfaceHighest, color: T.onSurface },
+              '& pre code': { backgroundColor: 'transparent' },
+            },
+          },
+        },
+      }),
       MuiAccordion: { styleOverrides: { root: { borderRadius: 0, '&:before': { display: 'none' } } } },
     },
   });
