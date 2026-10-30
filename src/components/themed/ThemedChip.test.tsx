@@ -1,6 +1,7 @@
 import { screen } from '@testing-library/react';
+import { Chip } from '@mui/material';
 import { describe, expect, it } from 'vitest';
-import { inflowTheme } from '../../theme';
+import { createInflowTheme, inflowTheme } from '../../theme';
 import { renderWithInflow } from '../../test/renderWithInflow';
 import { ThemedChip } from './ThemedChip';
 
@@ -18,6 +19,62 @@ function toCssColor(color: string) {
   element.remove();
   return resolvedColor;
 }
+
+// jsdom cannot simulate :hover, so read the :hover rule the styles generate for this chip.
+function hoverBackgrounds(chip: HTMLElement): string[] {
+  const classes = Array.from(chip.classList).map((name) => `.${name}`);
+  const found: string[] = [];
+  for (const sheet of Array.from(document.styleSheets)) {
+    for (const rule of Array.from(sheet.cssRules)) {
+      const { selectorText, style } = rule as CSSStyleRule;
+      if (!selectorText?.includes(':hover') || !style?.backgroundColor) continue;
+      if (selectorText.split(',').some((part) => classes.some((c) => part.includes(c)) && part.trim().endsWith(':hover'))) {
+        found.push(style.backgroundColor);
+      }
+    }
+  }
+  return found;
+}
+
+const isGrey = (color: string) => {
+  const [r, g, b] = (color.match(/\d+(\.\d+)?/g) ?? []).slice(0, 3).map(Number);
+  return Math.max(r, g, b) - Math.min(r, g, b) < 12;
+};
+
+describe('ThemedChip hover color', () => {
+  describe.each(['light', 'dark'] as const)('in %s mode', (mode) => {
+    const inflow = () => createInflowTheme(mode).palette.inflow;
+
+    it('tints a default filled chip toward the brand blue, not grey', () => {
+      renderWithInflow(<ThemedChip label="Default" onClick={() => undefined} />, { providerProps: { mode } });
+
+      const expected = toCssColor(mode === 'dark' ? inflow().primaryFixed : inflow().primaryTab);
+      expect(hoverBackgrounds(getChip('Default'))).toContain(expected);
+      expect(isGrey(expected)).toBe(false);
+    });
+
+    it('tints a default outlined chip with the pale blue row hover, not grey', () => {
+      renderWithInflow(<ThemedChip label="Outlined" variant="outlined" onClick={() => undefined} />, { providerProps: { mode } });
+
+      expect(hoverBackgrounds(getChip('Outlined'))).toContain(toCssColor(inflow().rowHover));
+    });
+  });
+});
+
+describe('MUI Chip hover color (theme override)', () => {
+  describe.each(['light', 'dark'] as const)('in %s mode', (mode) => {
+    it.each([
+      ['filled', 'Plain filled'],
+      ['outlined', 'Plain outlined'],
+    ] as const)('tints a clickable default %s chip toward blue, not grey', (variant, label) => {
+      renderWithInflow(<Chip label={label} variant={variant} onClick={() => undefined} />, { providerProps: { mode } });
+
+      const inflow = createInflowTheme(mode).palette.inflow;
+      const expected = variant === 'outlined' ? inflow.rowHover : mode === 'dark' ? inflow.primaryFixed : inflow.primaryTab;
+      expect(hoverBackgrounds(getChip(label))).toContain(toCssColor(expected));
+    });
+  });
+});
 
 describe('ThemedChip', () => {
   it('keeps the existing default MUI chip behavior', () => {
@@ -52,7 +109,7 @@ describe('ThemedChip', () => {
     expect(style.borderTopColor).toBe(toCssColor(inflowTheme.palette.primary.main));
   });
 
-  it('uses the design-system surface, text, and outline-icon tokens for outlined chips', () => {
+  it('uses the design-system surface and text tokens for outlined chips, with the delete icon matching the text', () => {
     renderWithInflow(<ThemedChip label="Nike" variant="outlined" onDelete={() => undefined} />);
 
     const chip = getChip('Nike');
@@ -62,7 +119,26 @@ describe('ThemedChip', () => {
       toCssColor(inflowTheme.palette.inflow.surfaceLowest),
     );
     expect(getComputedStyle(chip).color).toBe(toCssColor(inflowTheme.palette.text.primary));
-    expect(getComputedStyle(deleteIcon).color).toBe(toCssColor(inflowTheme.palette.inflow.outline));
+    expect(getComputedStyle(deleteIcon).color).toBe(getComputedStyle(chip).color);
+  });
+
+  describe.each(['light', 'dark'] as const)('delete icon in %s mode', (mode) => {
+    it.each([
+      ['default', undefined, 'filled'],
+      ['outlined', undefined, 'outlined'],
+      ['primary', 'primary', 'filled'],
+      ['error', 'error', 'filled'],
+      ['success', 'success', 'filled'],
+    ] as const)('matches the text color of the %s chip at full opacity', (label, color, variant) => {
+      renderWithInflow(
+        <ThemedChip label={label} color={color} variant={variant} onDelete={() => undefined} />,
+        { providerProps: { mode } },
+      );
+
+      const deleteIcon = screen.getByText('close');
+      expect(getComputedStyle(deleteIcon).color).toBe(getComputedStyle(getChip(label)).color);
+      expect(getComputedStyle(deleteIcon).opacity).toBe('1');
+    });
   });
 
   it.each([

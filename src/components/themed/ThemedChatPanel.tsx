@@ -706,7 +706,7 @@ function ChatMessage({
             p: 1.25,
             maxWidth: '75%',
             minWidth: 0,
-            textAlign: 'right',
+            textAlign: 'left',
           }}
         >
           <Typography

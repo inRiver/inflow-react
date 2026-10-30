@@ -72,18 +72,6 @@ const lowContrast = (root: Element, page: string) => {
 // their cause. Dark mode has none and must stay at none. A NEW light finding fails the test; so does a listed one that
 // no longer occurs (remove it from the list then).
 const KNOWN_LIGHT: Record<string, string> = {
-  // Identical to a stock MUI theme (measured with createTheme()).
-  'AvatarDemo: "H"': 'Same in stock MUI (1.88:1): white initials on grey',
-  'AvatarDemo: "R"': 'Same in stock MUI (1.88:1): white initials on grey',
-  'ChipDemo: "M"': 'Same in stock MUI (3.30:1): white initials on grey',
-  'StepperDemo: icon': 'Same in stock MUI (2.68:1): inactive step number icon',
-  // Weak in stock MUI too.
-  'AutocompleteDemo: icon': 'Chip delete icon: 1.86:1 in stock MUI, 1.72:1 here',
-  'ChipDemo: icon': 'Chip delete icon: 1.86:1 in stock MUI, 1.72:1 here',
-  // Inflow's own choices, not MUI defaults.
-  'RatingDemo: icon': 'Empty star: 2.68:1 here, already better than stock MUI (1.88:1)',
-  'ChangelogPage: "Added"': 'Inflow palette: white on success green, 3.6:1 (documented on the Accessibility page)',
-  'ChangelogPage: "Fixed"': 'Inflow palette: white on warning orange, 3.0:1 (documented; stock MUI uses dark text on warning)',
   // Not a real finding.
   'PreRenderedPage: icon': 'Measurement artifact: copy icon is overlaid on the code block but sits outside it in the DOM',
 };

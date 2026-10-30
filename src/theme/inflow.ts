@@ -265,6 +265,22 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
           },
         },
       },
+      // Dark: a shadow alone cannot lift the small action buttons off the page, so they step up a lighter surface with the
+      // same surfaceVariant hairline as raised cards, plus the existing shadow token. Light keeps its white circles.
+      ...(mode === 'dark' && {
+        MuiSpeedDialAction: {
+          styleOverrides: {
+            fab: {
+              backgroundColor: T.surfaceContainerHigh,
+              color: T.onSurface,
+              border: `1px solid ${T.surfaceVariant}`,
+              boxShadow: E2,
+              '&:hover': { backgroundColor: T.surfaceHighest },
+              '&.Mui-focusVisible': { outline: `2px solid ${T.navy700}`, outlineOffset: 2 },
+            },
+          },
+        },
+      }),
       MuiFab: {
         styleOverrides: {
           root: {
@@ -409,6 +425,7 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
       },
       MuiRating: {
         styleOverrides: {
+          iconEmpty: { color: T.outline },
           iconFilled: { color: T.ratingActive },
           iconHover: { color: T.ratingActive },
         },
@@ -619,11 +636,17 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
             fontWeight: 500,
             letterSpacing: '0.00625rem',
             maxWidth: '100%',
-            ...(mode === 'dark' && {
-              '&.MuiChip-colorDefault .MuiChip-deleteIcon': { color: T.onSurfaceVariant, '&:hover': { color: T.onSurface } },
-              '&.MuiChip-filled:not(.MuiChip-colorDefault) .MuiChip-deleteIcon': { color: 'inherit', opacity: 0.8, '&:hover': { opacity: 1 } },
-              '& .MuiChip-avatar': { color: T.navy900 },
-            }),
+            // Hover tints toward the brand blue, never a grey: default filled chips use the primary tab tint (light) or
+            // primaryFixed (dark); default outlined chips use the pale blue row hover.
+            '&.MuiChip-colorDefault.MuiChip-filled.MuiChip-clickable:hover, &.MuiChip-colorDefault.MuiChip-filled.MuiChip-deletable:hover': {
+              backgroundColor: mode === 'dark' ? T.primaryFixed : T.primaryTab,
+            },
+            '&.MuiChip-colorDefault.MuiChip-outlined.MuiChip-clickable:hover, &.MuiChip-colorDefault.MuiChip-outlined.MuiChip-deletable:hover': {
+              backgroundColor: T.rowHover,
+            },
+            // The delete "x" matches the chip text color in both modes (MUI defaults to a faint 26% tint).
+            '& .MuiChip-deleteIcon': { color: 'inherit', opacity: 1, '&:hover': { color: 'inherit', opacity: 1 } },
+            '& .MuiChip-avatar': { color: T.navy900 },
             '&.MuiChip-sizeSmall': {
               height: 24,
               fontSize: '0.75rem',
@@ -672,7 +695,7 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
         styleOverrides: {
           root: ({ theme }) => ({
             backgroundColor: theme.palette.grey[400],
-            color: mode === 'dark' ? T.navy900 : T.white,
+            color: T.navy900,
             fontSize: '1.25rem',
             fontWeight: 400,
             letterSpacing: '0.00875rem',
@@ -725,7 +748,7 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
       MuiLink: { defaultProps: { color: 'primary' }, styleOverrides: { root: { textDecorationColor: 'inherit' } } },
       MuiStepIcon: {
         styleOverrides: {
-          root: { '&.Mui-active': { color: T.navy700 }, '&.Mui-completed': { color: T.navy700 } },
+          root: { color: T.outline, '&.Mui-active': { color: T.navy700 }, '&.Mui-completed': { color: T.navy700 } },
         },
       },
       MuiBottomNavigationAction: {

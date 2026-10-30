@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Slider, Box, Stack } from '@mui/material';
+import { Slider, Box, Stack, Typography } from '@mui/material';
 import { DemoFrame } from '../DemoFrame';
 import { CodeBlock } from '../CodeBlock';
 import { PropsPlayground } from '../PropsPlayground';
@@ -74,10 +74,22 @@ import { Slider } from '@mui/material';
         <Stack spacing={2} direction="column">
           
           <Stack spacing={4} sx={{ width: 300, px: 2 }}>
-            <Slider defaultValue={30} />
-            <Slider defaultValue={30} disabled />
-            <Slider defaultValue={30} color="secondary" />
-            <Slider defaultValue={[20, 37]} marks />
+            <Box>
+              <Typography variant="caption" color="text.secondary">Volume: starts at 30</Typography>
+              <Slider aria-label="Volume" defaultValue={30} />
+            </Box>
+            <Box>
+              <Typography variant="caption" color="text.secondary">Brightness: 30, disabled (cannot change)</Typography>
+              <Slider aria-label="Brightness" defaultValue={30} disabled />
+            </Box>
+            <Box>
+              <Typography variant="caption" color="text.secondary">Contrast (secondary color): starts at 30</Typography>
+              <Slider aria-label="Contrast" defaultValue={30} color="secondary" />
+            </Box>
+            <Box>
+              <Typography variant="caption" color="text.secondary">Price range with marks: 20 to 37</Typography>
+              <Slider aria-label="Price range" getAriaLabel={(index) => (index === 0 ? 'Minimum price' : 'Maximum price')} defaultValue={[20, 37]} marks />
+            </Box>
           </Stack>
         </Stack>
       </DemoFrame>

@@ -23,6 +23,17 @@ All notable changes to `@inriver/inflow-react` are documented here. This project
 - Standard `Alert` / `ThemedAlert` now use the same severity surfaces as `ThemedToast` in light (pink, yellow, blue, green tints with on-surface text); the warning and success icons use the darker status shade so they stay above 3:1 (library-facing, visible in light).
 - Selected `ToggleButton` no longer draws an extra 1px accent ring in light or dark; selection reads from the tinted fill and bold label (library-facing, visible in light).
 - Dark-mode-only styling for inline code chips, the active navigation pill, switch thumbs, chip icons and avatars. Light styles are unchanged.
+- `ThemedAvatar` and the MUI `Avatar` use dark navy initials on the grey fill instead of white (1.88:1 contrast before, about 8:1 now), in light and dark, including the person icon and the group overflow count (library-facing, visible in light).
+- `ThemedBadge` count text uses the contrast color of its fill (dark on the pale blue in dark mode, white in light) instead of always white (library-facing, dark only).
+- `Chip` and `ThemedChip` delete icons match the chip's text color at full opacity in every variant, in light and dark, instead of a faint tint or the outline grey (library-facing, visible in light).
+- Dark mode (pre-release): the `SpeedDial` action buttons sit on a raised surface with a `surfaceVariant` hairline, a shadow and a focus ring so they no longer blend into the page (library-facing, dark only).
+- `Chip` and `ThemedChip` hover tint toward the brand blue instead of a darker grey: default filled chips use the primary tab tint (light) or `primaryFixed` (dark), default outlined chips use the pale blue row hover (library-facing, visible in light).
+- Avatar initials inside a `Chip`, the inactive `Stepper` step icon and the empty `Rating` star now meet contrast in light (dark initials, and the `outline` token for the two icons) (library-facing, visible in light).
+- Showcase-only: the success avatar in the Avatar demo and the Added / Fixed chips on the Changelog page use black text, which passes 4.5:1 on the success green and warning orange.
+- `ThemedChatPanel` user message text is left-aligned inside its bubble; the bubble stays on the right (library-facing, visible in light and dark).
+- Showcase-only: the AG Grid demo keeps the same header and row height in light and dark (32px / 40px); the dark params had been overriding them with the 48px / 52px library defaults.
+- Showcase-only: the header color mode switch offers System, Light and Dark and shows the saved choice and the active mode; the Guidelines page has a complete setup example (follow the system, save a choice, return to System, style own panels).
+- Showcase-only: the Linear Progress, Circular Progress, Rating, Slider and Badge demos label each example with its task, value and status, and name each control for screen readers.
 
 ## [3.10.3] - 2026-10-22
 

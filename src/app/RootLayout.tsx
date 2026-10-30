@@ -18,6 +18,7 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
+import SettingsBrightnessOutlinedIcon from '@mui/icons-material/SettingsBrightnessOutlined';
 import PaletteOutlinedIcon from '@mui/icons-material/PaletteOutlined';
 import { ComponentSidebar } from '../components/navigation/ComponentSidebar';
 import { ComponentSearchDialog } from '../components/navigation/ComponentSearchDialog';
@@ -27,15 +28,23 @@ export function RootLayout() {
   const theme = useTheme();
   const navigate = useNavigate();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const { currentTheme, toggleTheme, resolvedColorMode, setColorModePreference } = useShowcaseTheme();
+  const { currentTheme, toggleTheme, resolvedColorMode, colorModePreference, setColorModePreference, cycleColorMode } = useShowcaseTheme();
   const [sidebarOpen, setSidebarOpen] = useState(!isMobile);
   const [componentSearchQuery, setComponentSearchQuery] = useState('');
   const [searchDialogOpen, setSearchDialogOpen] = useState(false);
 
-  const nextColorMode = resolvedColorMode === 'dark' ? 'light' : 'dark';
+  const nextColorMode: 'system' | 'light' | 'dark' =
+    colorModePreference === 'system' ? 'light' : colorModePreference === 'light' ? 'dark' : 'system';
+  const colorModeLabel =
+    colorModePreference === 'system' ? `System (${resolvedColorMode})` : colorModePreference;
   const themeVariantLabel = currentTheme === 'inflow' ? 'Inflow' : 'MUI default';
   const nextThemeVariantLabel = currentTheme === 'inflow' ? 'MUI default' : 'Inflow';
-  const ColorModeIcon = resolvedColorMode === 'dark' ? DarkModeOutlinedIcon : LightModeOutlinedIcon;
+  const ColorModeIcon =
+    colorModePreference === 'system'
+      ? SettingsBrightnessOutlinedIcon
+      : colorModePreference === 'dark'
+        ? DarkModeOutlinedIcon
+        : LightModeOutlinedIcon;
 
   useEffect(() => {
     const handleShortcut = (event: KeyboardEvent) => {
@@ -179,8 +188,8 @@ export function RootLayout() {
                   <ToggleButtonGroup
                     exclusive
                     size="small"
-                    value={resolvedColorMode}
-                    onChange={(_, mode: 'light' | 'dark' | null) => {
+                    value={colorModePreference}
+                    onChange={(_, mode: 'system' | 'light' | 'dark' | null) => {
                       if (mode) setColorModePreference(mode);
                     }}
                     aria-label="Color mode"
@@ -202,6 +211,12 @@ export function RootLayout() {
                       },
                     }}
                   >
+                    <ToggleButton value="system" aria-label={`System mode, currently ${resolvedColorMode}`}>
+                      <SettingsBrightnessOutlinedIcon fontSize="small" />
+                      <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                        System{colorModePreference === 'system' ? ` (${resolvedColorMode})` : ''}
+                      </Typography>
+                    </ToggleButton>
                     <ToggleButton value="light" aria-label="Light mode">
                       <LightModeOutlinedIcon fontSize="small" />
                       <Typography variant="body2" sx={{ fontWeight: 700 }}>Light</Typography>
@@ -259,11 +274,11 @@ export function RootLayout() {
              )}
 
             {isMobile && DARK_MODE_ENABLED && (
-              <Tooltip title={`Switch to ${nextColorMode} mode`}>
+              <Tooltip title={`Color mode: ${colorModeLabel}. Click for ${nextColorMode}.`}>
                 <IconButton
                   color="inherit"
-                  aria-label={`Switch to ${nextColorMode} mode`}
-                  onClick={() => setColorModePreference(nextColorMode)}
+                  aria-label={`Color mode: ${colorModeLabel}. Click for ${nextColorMode}.`}
+                  onClick={cycleColorMode}
                   sx={{
                     border: `1px solid ${alpha(theme.palette.common.white, 0.24)}`,
                     borderRadius: 2,

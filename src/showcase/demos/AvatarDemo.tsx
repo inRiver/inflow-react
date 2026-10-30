@@ -103,10 +103,10 @@ import { ThemedAvatar } from '@inriver/inflow-react';
                 <Avatar sx={{ bgcolor: 'error.main', color: 'error.contrastText' }}>
                   <FolderIcon />
                 </Avatar>
-                <Avatar variant="rounded" sx={{ bgcolor: 'success.main' }}>
+                <Avatar variant="rounded" sx={{ bgcolor: 'success.main', color: 'common.black' }}>
                   R
                 </Avatar>
-                <Avatar variant="square" sx={{ bgcolor: 'info.main' }}>
+                <Avatar variant="square" sx={{ bgcolor: 'info.main', color: 'info.contrastText' }}>
                   S
                 </Avatar>
               </Stack>

@@ -21,7 +21,7 @@ const StyledBadge = styled(MuiBadge, {
   return {
     '& .MuiBadge-badge': {
       backgroundColor: colorMap[$badgecolor],
-      color: theme.palette.common.white,
+      color: theme.palette[$badgecolor].contrastText,
       fontWeight: 500,
       fontSize: '0.6875rem',
       lineHeight: '16px',

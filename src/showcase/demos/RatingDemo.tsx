@@ -64,10 +64,22 @@ import { Rating } from '@mui/material';
       <DemoFrame title="All States">
         <Stack spacing={2} direction="column">
           <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap' }}>
-            <Rating value={value} onChange={(_event, newValue) => setValue(newValue)} />
-            <Rating value={4} readOnly />
-            <Rating value={3} disabled />
-            <Rating defaultValue={2} precision={0.5} />
+            <Stack spacing={0.5}>
+              <Rating name="rating-interactive" value={value} onChange={(_event, newValue) => setValue(newValue)} />
+              <Typography variant="caption" color="text.secondary">Interactive: click to rate</Typography>
+            </Stack>
+            <Stack spacing={0.5}>
+              <Rating value={4} readOnly />
+              <Typography variant="caption" color="text.secondary">Read-only: 4 out of 5</Typography>
+            </Stack>
+            <Stack spacing={0.5}>
+              <Rating value={3} disabled />
+              <Typography variant="caption" color="text.secondary">Disabled: 3 out of 5</Typography>
+            </Stack>
+            <Stack spacing={0.5}>
+              <Rating name="rating-half" defaultValue={2} precision={0.5} />
+              <Typography variant="caption" color="text.secondary">Half-star precision: starts at 2</Typography>
+            </Stack>
           </Stack>
         </Stack>
       </DemoFrame>

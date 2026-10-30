@@ -84,6 +84,51 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
 
 const colorModeFlagCode = `import { INFLOW_DARK_MODE_ENABLED } from '@inriver/inflow-react';`;
 
+const colorModeSetupCode = `import { useEffect, useState, type ReactNode } from 'react';
+import { Box } from '@mui/material';
+import { InflowProvider, INFLOW_DARK_MODE_ENABLED } from '@inriver/inflow-react';
+
+type Preference = 'system' | 'light' | 'dark';
+const KEY = 'color-mode';
+
+export function App({ children }: { children: ReactNode }) {
+  // 1. The saved choice. 'system' means follow the OS.
+  const [preference, setPreference] = useState<Preference>(
+    () => (localStorage.getItem(KEY) as Preference) ?? 'system',
+  );
+  const [system, setSystem] = useState<'light' | 'dark'>(
+    () => (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'),
+  );
+
+  // 2. Keep following the OS while the preference is 'system'.
+  useEffect(() => {
+    const mq = matchMedia('(prefers-color-scheme: dark)');
+    const onChange = (e: MediaQueryListEvent) => setSystem(e.matches ? 'dark' : 'light');
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+
+  // 3. Save manual choices. Choosing 'system' again goes back to following the OS.
+  const choose = (next: Preference) => {
+    setPreference(next);
+    localStorage.setItem(KEY, next);
+  };
+
+  const mode = !INFLOW_DARK_MODE_ENABLED ? 'light' : preference === 'system' ? system : preference;
+
+  return (
+    <InflowProvider mode={mode}>
+      {/* Show the saved choice and the active mode, for example "System (dark)". */}
+      <button onClick={() => choose('system')}>System ({system})</button>
+      <button onClick={() => choose('light')}>Light</button>
+      <button onClick={() => choose('dark')}>Dark</button>
+
+      {/* 4. Style your own panels from the theme so they follow the mode. */}
+      <Box sx={{ bgcolor: 'background.paper', color: 'text.primary', p: 2 }}>{children}</Box>
+    </InflowProvider>
+  );
+}`;
+
 const componentCode = `import { Stack, Button, TextField } from '@mui/material';
 import { ThemedChip } from '@inriver/inflow-react';
 
@@ -301,6 +346,11 @@ export function GuidelinesPage() {
                 Consuming apps can read the live package status directly:
               </Typography>
               <CodeBlock code={colorModeFlagCode} language="tsx" />
+              <Typography variant="body2" color="text.secondary">
+                A complete setup: follow the system, save a manual choice, return to System, and
+                style your own panels in each mode.
+              </Typography>
+              <CodeBlock code={colorModeSetupCode} language="tsx" />
             </Stack>
           </CardContent>
         </Card>
