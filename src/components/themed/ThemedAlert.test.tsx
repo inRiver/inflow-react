@@ -7,7 +7,7 @@ describe('ThemedAlert', () => {
   it.each([
     ['error', 'error_outline'],
     ['warning', 'warning_amber'],
-    ['info', 'info_outline'],
+    ['info', 'info'],
     ['success', 'check_circle_outline'],
   ] as const)('renders the %s outlined icon', (severity, icon) => {
     renderWithInflow(<ThemedAlert severity={severity}>Alert message</ThemedAlert>);

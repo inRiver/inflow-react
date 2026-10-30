@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { LinearProgress, Stack, Box } from '@mui/material';
+import { LinearProgress, Stack, Box, Typography } from '@mui/material';
 import { DemoFrame } from '../DemoFrame';
 import { CodeBlock } from '../CodeBlock';
 import { PropsPlayground } from '../PropsPlayground';
@@ -65,10 +65,30 @@ import { LinearProgress } from '@mui/material';
         <Stack spacing={2} direction="column">
           
           <Stack spacing={4} sx={{ width: '100%' }}>
-            <LinearProgress />
-            <LinearProgress variant="determinate" value={50} />
-            <LinearProgress color="secondary" />
-            <LinearProgress color="error" variant="determinate" value={70} />
+            <Box>
+              <Typography id="lp-sync" variant="caption" color="text.secondary">
+                Syncing products: ongoing loading animation, no percentage yet
+              </Typography>
+              <LinearProgress aria-labelledby="lp-sync" />
+            </Box>
+            <Box>
+              <Typography id="lp-import" variant="caption" color="text.secondary">
+                Importing catalog: 50% complete
+              </Typography>
+              <LinearProgress aria-labelledby="lp-import" variant="determinate" value={50} />
+            </Box>
+            <Box>
+              <Typography id="lp-export" variant="caption" color="text.secondary">
+                Exporting assets (secondary color): ongoing loading animation
+              </Typography>
+              <LinearProgress aria-labelledby="lp-export" color="secondary" />
+            </Box>
+            <Box>
+              <Typography id="lp-upload" variant="caption" color="text.secondary">
+                Uploading media: 70% complete, error. The upload failed, retry it
+              </Typography>
+              <LinearProgress aria-labelledby="lp-upload" color="error" variant="determinate" value={70} />
+            </Box>
           </Stack>
         </Stack>
       </DemoFrame>

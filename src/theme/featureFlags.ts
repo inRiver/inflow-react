@@ -1,4 +1,7 @@
-export const INFLOW_DARK_MODE_ENABLED = false;
+// Dark mode is on only in the local dev server (`npm run dev`) so it can be reviewed in the
+// showcase. Vite replaces `import.meta.env.DEV` with `false` in production builds, so the
+// published library and the deployed showcase stay light-only until this is flipped on purpose.
+export const INFLOW_DARK_MODE_ENABLED: boolean = import.meta.env.DEV;
 
 type PublishedInflowColorMode = 'light' | 'dark';
 

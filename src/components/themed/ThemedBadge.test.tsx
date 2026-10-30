@@ -1,7 +1,7 @@
 import { createRef } from 'react';
 import { screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import { inflowTheme } from '../../theme';
+import { createInflowTheme, inflowTheme } from '../../theme';
 import { renderWithInflow } from '../../test/renderWithInflow';
 import { ThemedBadge } from './ThemedBadge';
 
@@ -90,6 +90,24 @@ describe('ThemedBadge', () => {
       );
     },
   );
+
+  describe.each(['light', 'dark'] as const)('count text in %s mode', (mode) => {
+    it.each(['error', 'primary', 'success'] as const)(
+      'uses the contrast text of the %s fill',
+      (color) => {
+        const { container } = renderWithInflow(
+          <ThemedBadge color={color} badgeContent={4}>
+            <span>Inbox</span>
+          </ThemedBadge>,
+          { providerProps: { mode } },
+        );
+
+        expect(getComputedStyle(getBadge(container)).color).toBe(
+          toRgb(createInflowTheme(mode).palette[color].contrastText),
+        );
+      },
+    );
+  });
 
   it('forwards its ref to the badge root', () => {
     const ref = createRef<HTMLSpanElement>();

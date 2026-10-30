@@ -566,7 +566,11 @@ describe('ThemedChatPanel', () => {
         padding: '10px',
         maxWidth: '75%',
         minWidth: '0',
-        textAlign: 'right',
+        // The text inside the bubble is left-aligned; the bubble itself stays on the right (see the placement check below).
+        textAlign: 'left',
+      });
+      expect(screen.getByText('Summarize this product.').closest('[data-chat-role="user"]')).toHaveStyle({
+        alignItems: 'flex-end',
       });
       expect(screen.getByText('Summarize this product.')).toHaveStyle({ overflowWrap: 'anywhere' });
     });

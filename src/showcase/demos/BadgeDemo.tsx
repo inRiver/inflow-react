@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Badge, Stack } from '@mui/material';
+import { Badge, Stack, Typography } from '@mui/material';
 import type { BadgeProps } from '@mui/material';
 import MailIcon from '@mui/icons-material/Mail';
 import { ThemedBadge } from '../../components/themed/ThemedBadge';
@@ -113,10 +113,22 @@ import { ThemedBadge } from '@inriver/inflow-react';
           <DemoFrame title="All States">
             <Stack spacing={2} direction="column">
               <Stack direction="row" spacing={4}>
-                <Badge badgeContent={4} color="primary"><MailIcon color="action" /></Badge>
-                <Badge badgeContent={100} color="secondary"><MailIcon color="action" /></Badge>
-                <Badge variant="dot" color="error"><MailIcon color="action" /></Badge>
-                <Badge invisible badgeContent={4}><MailIcon color="action" /></Badge>
+                <Stack spacing={0.75} sx={{ alignItems: 'center' }}>
+                  <Badge badgeContent={4} color="primary"><MailIcon color="action" titleAccess="Mail, 4 unread" /></Badge>
+                  <Typography variant="caption" color="text.secondary">Count: 4 unread</Typography>
+                </Stack>
+                <Stack spacing={0.75} sx={{ alignItems: 'center' }}>
+                  <Badge badgeContent={100} color="secondary"><MailIcon color="action" titleAccess="Mail, over 99 unread" /></Badge>
+                  <Typography variant="caption" color="text.secondary">Overflow: 99+</Typography>
+                </Stack>
+                <Stack spacing={0.75} sx={{ alignItems: 'center' }}>
+                  <Badge variant="dot" color="error"><MailIcon color="action" titleAccess="Mail, has new items" /></Badge>
+                  <Typography variant="caption" color="text.secondary">Dot: something new</Typography>
+                </Stack>
+                <Stack spacing={0.75} sx={{ alignItems: 'center' }}>
+                  <Badge invisible badgeContent={4}><MailIcon color="action" titleAccess="Mail" /></Badge>
+                  <Typography variant="caption" color="text.secondary">Hidden: nothing to show</Typography>
+                </Stack>
               </Stack>
             </Stack>
           </DemoFrame>
@@ -141,9 +153,19 @@ import { ThemedBadge } from '@inriver/inflow-react';
             <Stack spacing={3}>
               {(['error', 'primary', 'success'] as const).map((color) => (
                 <Stack key={color} direction="row" spacing={4} sx={{ alignItems: 'center' }}>
-                  <ThemedBadge color={color} badgeContent={4}><MailIcon color="action" /></ThemedBadge>
-                  <ThemedBadge color={color} variant="dot"><MailIcon color="action" /></ThemedBadge>
-                  <ThemedBadge color={color} badgeContent={120} max={99}><MailIcon color="action" /></ThemedBadge>
+                  <Typography variant="caption" color="text.secondary" sx={{ width: 64 }}>{color}</Typography>
+                  <Stack spacing={0.75} sx={{ alignItems: 'center' }}>
+                    <ThemedBadge color={color} badgeContent={4}><MailIcon color="action" titleAccess={`Mail, 4 ${color}`} /></ThemedBadge>
+                    <Typography variant="caption" color="text.secondary">Count: 4</Typography>
+                  </Stack>
+                  <Stack spacing={0.75} sx={{ alignItems: 'center' }}>
+                    <ThemedBadge color={color} variant="dot"><MailIcon color="action" titleAccess={`Mail, ${color} dot`} /></ThemedBadge>
+                    <Typography variant="caption" color="text.secondary">Dot</Typography>
+                  </Stack>
+                  <Stack spacing={0.75} sx={{ alignItems: 'center' }}>
+                    <ThemedBadge color={color} badgeContent={120} max={99}><MailIcon color="action" titleAccess={`Mail, over 99 ${color}`} /></ThemedBadge>
+                    <Typography variant="caption" color="text.secondary">Overflow: 99+</Typography>
+                  </Stack>
                 </Stack>
               ))}
             </Stack>

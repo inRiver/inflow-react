@@ -3,7 +3,9 @@ import {
   inflowGridHeaderActionsSx,
   inflowGridSelectionSx,
   inflowGridThemeParams,
+  inflowGridThemeParamsDark,
 } from '../ag-grid';
+import { darkTokens } from '../theme/inflow-tokens';
 import { tableReferenceRows, type TableReferenceRow } from '../showcase/tableReferenceData';
 import { EntityCell, MediaCell } from './PublishersAgGridCells';
 
@@ -21,6 +23,18 @@ export const publisherGridThemeParams = {
   selectedRowBackgroundColor: 'rgba(11, 45, 110, 0.08)',
   wrapperBorder: false,
   wrapperBorderRadius: 0,
+};
+
+export const publisherGridThemeParamsDark = {
+  ...publisherGridThemeParams,
+  ...inflowGridThemeParamsDark,
+  // Color mode must not change density: keep the light dimensions.
+  headerHeight: publisherGridThemeParams.headerHeight,
+  rowHeight: publisherGridThemeParams.rowHeight,
+  headerFontSize: publisherGridThemeParams.headerFontSize,
+  headerFontWeight: publisherGridThemeParams.headerFontWeight,
+  headerColumnBorder: `1px solid ${inflowGridThemeParamsDark.borderColor}`,
+  selectedRowBackgroundColor: darkTokens.rowSelected,
 };
 
 export const publisherColumnDefs: ColDef<PublisherRowData>[] = [

@@ -70,7 +70,7 @@ export function InlineCustomizationPlayground({ excludedControls = [] }: InlineC
             letterSpacing: '1px',
             fontSize: 13,
             fontWeight: 600,
-            color: 'var(--iv-fg-2)',
+            color: 'text.secondary',
           }}
         >
           Customization Playground
