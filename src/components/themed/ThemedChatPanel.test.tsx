@@ -685,32 +685,44 @@ describe('ThemedChatPanel', () => {
       expect(await screen.findByTestId('chat-composer')).toHaveStyle({
         backgroundColor: 'rgb(235, 241, 252)',
         borderRadius: '5px',
-        padding: '8px 4px 8px 12px',
-        gap: '8px',
+        padding: '0px 12px',
+        gap: '12px',
         minHeight: '56px',
-        alignItems: 'center',
+        alignItems: 'flex-start',
       });
     });
 
-    it('renders the leading attach control and the 16px composer input', async () => {
+    it('pins the add control to a 56px rail and renders the 14px/28px composer input', async () => {
       renderChatPanel({ onAttachFile: vi.fn() });
 
       const attach = await screen.findByRole('button', { name: 'Attach files' });
-      expect(attach).toHaveStyle({ width: '32px', height: '32px' });
+      expect(attach).toHaveStyle({ width: '34px', height: '34px', borderRadius: '50%' });
       expect(within(attach).getByText('add')).toHaveStyle({ fontSize: '24px' });
+      expect(attach.parentElement).toHaveStyle({ height: '56px', display: 'flex', alignItems: 'center' });
 
       expect(screen.getByRole('textbox', { name: 'How can I help?' })).toHaveStyle({
-        fontSize: '1rem',
-        letterSpacing: '0.15px',
-        padding: '4px 0px',
+        fontSize: '0.875rem',
+        lineHeight: '28px',
+        letterSpacing: '0.00937em',
+        padding: '19px 0px 8px',
       });
     });
 
-    it('renders 48px circular send and stop controls with hover feedback', async () => {
+    it('gives a multiline composer the 14px/28px textarea with no root padding', async () => {
+      renderChatPanel({ multiline: true });
+
+      const textbox = await screen.findByRole('textbox', { name: 'How can I help?' });
+      expect(textbox.tagName).toBe('TEXTAREA');
+      expect(textbox).toHaveStyle({ lineHeight: '28px', padding: '19px 0px 8px' });
+      expect(textbox.closest('.MuiInputBase-root')).toHaveStyle({ padding: '0px' });
+    });
+
+    it('renders 34px circular send and stop controls on the same rail, stop as stop_circle', async () => {
       const { rerender } = renderChatPanel({ inputValue: 'ready' });
 
       const send = await screen.findByRole('button', { name: 'Send message' });
-      expect(send).toHaveStyle({ width: '48px', height: '48px', borderRadius: '50%' });
+      expect(send).toHaveStyle({ width: '34px', height: '34px', borderRadius: '50%' });
+      expect(send.parentElement).toHaveStyle({ height: '56px', display: 'flex', alignItems: 'center' });
       expect(cssRulesFor(send).join(' ')).toContain(':hover');
 
       rerender(
@@ -719,11 +731,11 @@ describe('ThemedChatPanel', () => {
         </ThemedRightPanel>,
       );
 
-      expect(screen.getByRole('button', { name: 'Stop generating' })).toHaveStyle({
-        width: '48px',
-        height: '48px',
-        borderRadius: '50%',
-      });
+      const stop = screen.getByRole('button', { name: 'Stop generating' });
+      expect(stop).toHaveStyle({ width: '34px', height: '34px', borderRadius: '50%' });
+      expect(stop.parentElement).toHaveStyle({ height: '56px' });
+      expect(within(stop).getByText('stop_circle')).toHaveStyle({ fontSize: '24px' });
+      expect(within(stop).queryByText('stop')).not.toBeInTheDocument();
     });
 
     it('keeps the send control focusable when enabled and disabled when it cannot send', async () => {

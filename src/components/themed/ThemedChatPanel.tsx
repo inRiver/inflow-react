@@ -115,6 +115,7 @@ export interface ThemedChatPanelProps {
   isInputDisabled?: boolean;
   isSendDisabled?: boolean;
   multiline?: boolean;
+  /** Max visible rows before the multiline composer scrolls. Default 2.75 (a 104px cap matching the reference composer). Fractions are allowed. */
   maxRows?: number;
 }
 
@@ -152,12 +153,31 @@ const iconButtonSx = {
   '&:hover': { backgroundColor: 'action.hover' },
 } as const;
 
-const sendButtonSx = {
+/** Reference composer metrics (agent chat): 34px round controls on a 56px rail, 14px text on a 28px line. */
+const COMPOSER_CONTROL_SIZE = 34;
+const COMPOSER_RAIL_HEIGHT = 56;
+const COMPOSER_LINE_HEIGHT = 28;
+/** 19px top + 8px bottom input padding. */
+const COMPOSER_INPUT_PADDING_Y = 27;
+/** Multiline cap: a 100px textarea plus the 2px top/bottom container inset of the reference composer. */
+const COMPOSER_MAX_HEIGHT = 104;
+const DEFAULT_MAX_ROWS = (COMPOSER_MAX_HEIGHT - COMPOSER_INPUT_PADDING_Y) / COMPOSER_LINE_HEIGHT;
+
+/** Shared by the leading `+` and the trailing send/stop so swapping them never shifts the layout. */
+const composerActionSx = {
   color: 'text.secondary',
-  width: 48,
-  height: 48,
+  width: COMPOSER_CONTROL_SIZE,
+  height: COMPOSER_CONTROL_SIZE,
   borderRadius: '50%',
   '&:hover': { backgroundColor: 'action.hover' },
+} as const;
+
+/** Keeps composer controls in the first-line band while the multiline input grows. */
+const composerRailSx = {
+  height: COMPOSER_RAIL_HEIGHT,
+  display: 'flex',
+  alignItems: 'center',
+  flexShrink: 0,
 } as const;
 
 const selectedSurfaceSx = {
@@ -252,7 +272,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
       isInputDisabled = false,
       isSendDisabled = false,
       multiline = false,
-      maxRows = 4,
+      maxRows = DEFAULT_MAX_ROWS,
     },
     ref,
   ) {
@@ -548,11 +568,11 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
             sx={{
               bgcolor: 'inflow.navy100',
               borderRadius: `${inflowTokens.radius.sm}px`,
-              p: (theme) => theme.spacing(1, 0.5, 1, 1.5),
+              p: (theme) => theme.spacing(0, 1.5),
               display: 'flex',
-              alignItems: 'center',
-              gap: 1,
-              minHeight: 56,
+              alignItems: 'flex-start',
+              gap: 1.5,
+              minHeight: COMPOSER_RAIL_HEIGHT,
             }}
           >
             {showAttach && (
@@ -566,17 +586,19 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
               // A single leading `+` opens one menu; when attach is also enabled it
               // becomes the menu's first item so the composer never shows two `+`.
               <>
-                <IconButton
-                  id={toolsTriggerId}
-                  aria-label={toolsAriaLabel}
-                  aria-haspopup="menu"
-                  aria-expanded={Boolean(toolsAnchorEl)}
-                  aria-controls={toolsAnchorEl ? toolsMenuId : undefined}
-                  onClick={(event) => setToolsAnchorEl(event.currentTarget)}
-                  sx={{ color: 'text.secondary', width: 32, height: 32 }}
-                >
-                  <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24 }}>add</Icon>
-                </IconButton>
+                <Box sx={composerRailSx}>
+                  <IconButton
+                    id={toolsTriggerId}
+                    aria-label={toolsAriaLabel}
+                    aria-haspopup="menu"
+                    aria-expanded={Boolean(toolsAnchorEl)}
+                    aria-controls={toolsAnchorEl ? toolsMenuId : undefined}
+                    onClick={(event) => setToolsAnchorEl(event.currentTarget)}
+                    sx={composerActionSx}
+                  >
+                    <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24 }}>add</Icon>
+                  </IconButton>
+                </Box>
                 <Menu
                   anchorEl={toolsAnchorEl}
                   open={Boolean(toolsAnchorEl)}
@@ -602,9 +624,11 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
                 </Menu>
               </>
             ) : showAttach ? (
-              <IconButton aria-label={attachAriaLabel} onClick={() => fileInputRef.current?.click()} sx={{ color: 'text.secondary', width: 32, height: 32 }}>
-                <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24 }}>add</Icon>
-              </IconButton>
+              <Box sx={composerRailSx}>
+                <IconButton aria-label={attachAriaLabel} onClick={() => fileInputRef.current?.click()} sx={composerActionSx}>
+                  <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24 }}>add</Icon>
+                </IconButton>
+              </Box>
             ) : null}
             <Box sx={{ flex: '1 1 auto', minWidth: 0 }}>
               <InputBase
@@ -619,7 +643,12 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
                 sx={{
                   color: 'text.primary',
                   width: '100%',
-                  '& .MuiInputBase-input': { fontSize: '1rem', lineHeight: 1.5, letterSpacing: '0.15px', p: '4px 0' },
+                  p: 0,
+                  // Type sits on the root: MUI's input uses `font: inherit`, so it picks these up.
+                  fontSize: '0.875rem',
+                  lineHeight: `${COMPOSER_LINE_HEIGHT}px`,
+                  letterSpacing: '0.00937em',
+                  '& .MuiInputBase-input': { height: 'auto', p: '19px 0 8px' },
                 }}
               />
               {showInputHint && inputHint && (
@@ -628,15 +657,17 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
                 </Typography>
               )}
             </Box>
-            {isStreaming && onStop ? (
-              <IconButton aria-label={stopAriaLabel} onClick={onStop} sx={sendButtonSx}>
-                <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24 }}>stop</Icon>
-              </IconButton>
-            ) : (
-              <IconButton aria-label={sendAriaLabel} onClick={handleSend} disabled={sendDisabled} sx={sendButtonSx}>
-                <SendIcon />
-              </IconButton>
-            )}
+            <Box sx={composerRailSx}>
+              {isStreaming && onStop ? (
+                <IconButton aria-label={stopAriaLabel} onClick={onStop} sx={composerActionSx}>
+                  <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24 }}>stop_circle</Icon>
+                </IconButton>
+              ) : (
+                <IconButton aria-label={sendAriaLabel} onClick={handleSend} disabled={sendDisabled} sx={composerActionSx}>
+                  <SendIcon />
+                </IconButton>
+              )}
+            </Box>
           </Box>
 
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pt: 1, px: 1.5 }}>
