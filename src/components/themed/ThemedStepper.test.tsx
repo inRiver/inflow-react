@@ -29,7 +29,7 @@ describe('ThemedStepper', () => {
     steps.forEach(({ label }) => expect(screen.getByText(label)).toBeInTheDocument());
   });
 
-  it('shows completed steps with a checkmark, solid navy circle, and navy label', () => {
+  it('shows completed steps with a solid navy circle and no checkmark, and navy label', () => {
     const { container } = renderStepper(1, 2);
     const completedLabels = Array.from(
       container.querySelectorAll('.MuiStep-root.Mui-completed .MuiStepLabel-label'),
@@ -43,6 +43,7 @@ describe('ThemedStepper', () => {
       expect(completedIcon).not.toBeNull();
       const completedInner = completedIcon?.querySelector('span');
       expect(getComputedStyle(completedInner as Element).backgroundColor).toBe(navy);
+      expect(completedIcon?.querySelector('svg')).toBeNull();
       expect(getComputedColor(completedLabel)).toBe(navy);
     });
   });

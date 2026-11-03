@@ -17,4 +17,16 @@ describe('GuidelinesPage', () => {
     expect(guidance).toHaveTextContent('This repo is package-ready, not publish-by-default.');
     expect(within(guidance).queryByRole('button')).not.toBeInTheDocument();
   });
+
+  it('shows a complete color mode setup example', () => {
+    renderWithInflow(
+      <MemoryRouter>
+        <GuidelinesPage />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText(/A complete setup: follow the system/)).toBeInTheDocument();
+    expect(screen.getAllByText(/prefers-color-scheme: dark/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/goes back to following the OS/).length).toBeGreaterThan(0);
+  });
 });

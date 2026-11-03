@@ -64,10 +64,22 @@ import { CircularProgress } from '@mui/material';
         <Stack spacing={2} direction="column">
           
           <Stack direction="row" spacing={4} sx={{ alignItems: 'center' }}>
-            <CircularProgress />
-            <CircularProgress variant="determinate" value={75} />
-            <CircularProgress color="secondary" />
-            <CircularProgress color="error" />
+            <Stack spacing={0.75} sx={{ alignItems: 'center' }}>
+              <CircularProgress aria-label="Loading products" />
+              <Typography variant="caption" color="text.secondary">Loading products (ongoing)</Typography>
+            </Stack>
+            <Stack spacing={0.75} sx={{ alignItems: 'center' }}>
+              <CircularProgress aria-label="Import progress" variant="determinate" value={75} />
+              <Typography variant="caption" color="text.secondary">Import: 75% complete</Typography>
+            </Stack>
+            <Stack spacing={0.75} sx={{ alignItems: 'center' }}>
+              <CircularProgress aria-label="Exporting assets" color="secondary" />
+              <Typography variant="caption" color="text.secondary">Exporting (secondary, ongoing)</Typography>
+            </Stack>
+            <Stack spacing={0.75} sx={{ alignItems: 'center' }}>
+              <CircularProgress aria-label="Upload failed, retry" color="error" />
+              <Typography variant="caption" color="text.secondary">Upload failed: retry</Typography>
+            </Stack>
             <Stack spacing={0.75} sx={{ alignItems: 'center' }}>
               <CircularProgress size={20} />
               <Typography variant="caption" color="text.secondary">

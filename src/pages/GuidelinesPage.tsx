@@ -84,6 +84,51 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
 
 const colorModeFlagCode = `import { INFLOW_DARK_MODE_ENABLED } from '@inriver/inflow-react';`;
 
+const colorModeSetupCode = `import { useEffect, useState, type ReactNode } from 'react';
+import { Box } from '@mui/material';
+import { InflowProvider, INFLOW_DARK_MODE_ENABLED } from '@inriver/inflow-react';
+
+type Preference = 'system' | 'light' | 'dark';
+const KEY = 'color-mode';
+
+export function App({ children }: { children: ReactNode }) {
+  // 1. The saved choice. 'system' means follow the OS.
+  const [preference, setPreference] = useState<Preference>(
+    () => (localStorage.getItem(KEY) as Preference) ?? 'system',
+  );
+  const [system, setSystem] = useState<'light' | 'dark'>(
+    () => (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'),
+  );
+
+  // 2. Keep following the OS while the preference is 'system'.
+  useEffect(() => {
+    const mq = matchMedia('(prefers-color-scheme: dark)');
+    const onChange = (e: MediaQueryListEvent) => setSystem(e.matches ? 'dark' : 'light');
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+
+  // 3. Save manual choices. Choosing 'system' again goes back to following the OS.
+  const choose = (next: Preference) => {
+    setPreference(next);
+    localStorage.setItem(KEY, next);
+  };
+
+  const mode = !INFLOW_DARK_MODE_ENABLED ? 'light' : preference === 'system' ? system : preference;
+
+  return (
+    <InflowProvider mode={mode}>
+      {/* Show the saved choice and the active mode, for example "System (dark)". */}
+      <button onClick={() => choose('system')}>System ({system})</button>
+      <button onClick={() => choose('light')}>Light</button>
+      <button onClick={() => choose('dark')}>Dark</button>
+
+      {/* 4. Style your own panels from the theme so they follow the mode. */}
+      <Box sx={{ bgcolor: 'background.paper', color: 'text.primary', p: 2 }}>{children}</Box>
+    </InflowProvider>
+  );
+}`;
+
 const componentCode = `import { Stack, Button, TextField } from '@mui/material';
 import { ThemedChip } from '@inriver/inflow-react';
 
@@ -289,10 +334,23 @@ export function GuidelinesPage() {
                   </Typography>
                 </>
               )}
+              <Typography variant="subtitle2">Designing for dark</Typography>
+              <Typography variant="body2" color="text.secondary" component="ul" sx={{ pl: 3, m: 0 }}>
+                <li>Keep the brand hue. Dark changes lightness and saturation, never the blue.</li>
+                <li>Surfaces get lighter as they rise (page, then panels, then raised areas). Use these steps instead of shadows.</li>
+                <li>Avoid pure black and pure white. Use the theme text colors.</li>
+                <li>Accents are lighter in dark. Text on a filled color uses that color&apos;s contrast text, not white.</li>
+                <li>Read colors from the theme so they follow the mode. Both modes meet WCAG AA: 4.5:1 for text, 3:1 for borders and icons.</li>
+              </Typography>
               <Typography variant="body2" color="text.secondary">
                 Consuming apps can read the live package status directly:
               </Typography>
               <CodeBlock code={colorModeFlagCode} language="tsx" />
+              <Typography variant="body2" color="text.secondary">
+                A complete setup: follow the system, save a manual choice, return to System, and
+                style your own panels in each mode.
+              </Typography>
+              <CodeBlock code={colorModeSetupCode} language="tsx" />
             </Stack>
           </CardContent>
         </Card>
@@ -612,7 +670,9 @@ export function GuidelinesPage() {
                 The <code>@inriver/inflow-react/ag-grid</code> subpath exports{' '}
                 <code>inflowGridThemeParams</code>, a dependency-free parameter object for AG Grid
                 Theming API (v33+). Apply it with <code>themeQuartz.withParams</code>. See the{' '}
-                <Link to="/publishers/ag-grid">AG Grid showcase</Link> for a live demo and usage
+                <Box component={Link} to="/publishers/ag-grid" sx={(t) => ({ color: t.palette.mode === 'dark' ? t.palette.primary.main : undefined })}>
+                  AG Grid showcase
+                </Box> for a live demo and usage
                 snippet.
               </Typography>
             </Stack>

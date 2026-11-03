@@ -257,7 +257,13 @@ export function ChangelogPage() {
                           spacing={1}
                           sx={{ alignItems: 'center', flexWrap: 'wrap', rowGap: 0.5 }}
                         >
-                          <Chip size="small" label={label} color={subsectionColor(label)} />
+                          <Chip
+                            size="small"
+                            label={label}
+                            color={subsectionColor(label)}
+                            // White on the success green / warning orange fails 4.5:1 in light; black text passes in both modes.
+                            sx={['success', 'warning'].includes(subsectionColor(label)) ? { color: 'common.black' } : undefined}
+                          />
                           {suffix && (
                             <Typography variant="body2" color="text.secondary">
                               {suffix}

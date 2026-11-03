@@ -60,7 +60,7 @@ export function App() {
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `children` | `ReactNode` | Required | React content rendered inside the scoped Inflow root. |
-| `mode` | `InflowColorMode` | `'light'` | Color mode used to create the theme. Only light mode is currently enabled; dark mode is still feature-flagged off. |
+| `mode` | `InflowColorMode` | `'light'` | Color mode used to create the theme. Dark mode is built but feature-flagged off in published builds, so `'dark'` resolves to light until the flag is enabled. See [Color modes](#color-modes). |
 | `className` | `string` | `undefined` | Class name applied to the scoped Inflow root. |
 | `sx` | `SxProps<Theme>` | `undefined` | Additional styles for the scoped Inflow root. |
 | `cacheKey` | `string` | `'inflow'` | Key for the provider-created Emotion cache. Use a distinct key for independently deployed roots sharing a page. |
@@ -78,7 +78,7 @@ Most public exports are available from `@inriver/inflow-react`; AG Grid theme pa
 | Theme tokens | `inflowTokens`, `inflowCustomColors`, `inflowSpacing` | `@inriver/inflow-react` |
 | Theme flags & types | `INFLOW_DARK_MODE_ENABLED`, `InflowColorMode` | `@inriver/inflow-react` |
 | Components | `ThemedAccordion`, `ThemedAlert`, `ThemedAppNav` (+ `ThemedAppNavPlaceholder`), `ThemedAvatar` (+ `ThemedAvatarGroup`), `ThemedBadge`, `ThemedBreadcrumbs`, `ThemedButton`, `ThemedCard`, `ThemedChatPanel`, `ThemedChip`, `ThemedDetailPanel` (+ `ThemedDetailPanelSection`), `ThemedDialog`, `ThemedFileTypeIcon`, `ThemedMenu`, `ThemedPageHeader`, `ThemedRightPanel`, `ThemedStepper`, `ThemedTable`, `ThemedTabs` (+ `ThemedTabPanel`), `ThemedTextField`, `ThemedToast`, plus their prop types and `Column` | `@inriver/inflow-react` |
-| AG Grid theme params | `inflowGridThemeParams`, `InflowGridThemeParams` | `@inriver/inflow-react/ag-grid` |
+| AG Grid theme params | `inflowGridThemeParams`, `inflowGridThemeParamsDark`, `InflowGridThemeParams` | `@inriver/inflow-react/ag-grid` |
 
 The components are thin MUI wrappers. See the [live showcase](https://inriver.github.io/inflow-react/) for behavior and props.
 
@@ -94,6 +94,31 @@ const customSurface = {
   borderRadius: inflowTokens.radius.md,
 };
 ```
+
+## Color modes
+
+Inflow has a light and a dark theme. Light is the shipped look. Dark keeps the same navy brand hue and changes only lightness and saturation; it is **pre-release**: available in local development, and disabled in published builds behind `INFLOW_DARK_MODE_ENABLED` until it is released. While the flag is off, requesting `'dark'` resolves to light (development builds log a `console.warn`).
+
+```tsx
+import { InflowProvider, INFLOW_DARK_MODE_ENABLED } from '@inriver/inflow-react';
+
+// Safe to pass 'dark' at any time: it falls back to light while the flag is off.
+<InflowProvider mode={prefersDark ? 'dark' : 'light'}>{children}</InflowProvider>;
+```
+
+- **Scope:** `InflowProvider` colors only its own container. Set `color-scheme` and the page background on `html` yourself if you want the page edge and native scrollbars to follow the mode.
+- **AG Grid:** pick the grid params by mode and add AG Grid's dark scheme part for dark:
+
+```tsx
+import { colorSchemeDark, themeQuartz } from 'ag-grid-community';
+import { inflowGridThemeParams, inflowGridThemeParamsDark } from '@inriver/inflow-react/ag-grid';
+
+const lightTheme = themeQuartz.withParams(inflowGridThemeParams);
+const darkTheme = themeQuartz.withPart(colorSchemeDark).withParams(inflowGridThemeParamsDark);
+```
+
+- **Accessibility:** both modes target WCAG 2.2 AA (4.5:1 text, 3:1 meaningful UI); disabled controls are exempt. Dark values are listed in `DESIGN.md`.
+- **Your own colors:** read colors from the theme (`theme.palette`, `theme.palette.inflow`) instead of hard-coding hex values, so they follow the active mode. Text placed on a filled color should use that color's `contrastText`.
 
 ## AG Grid theme
 

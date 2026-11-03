@@ -69,7 +69,7 @@ export const ThemedAvatar = forwardRef<HTMLDivElement, ThemedAvatarProps>(
           alignItems: 'center',
           justifyContent: 'center',
           background: palette.grey[400],
-          color: palette.common.white,
+          color: palette.inflow.navy900,
           fontFamily: typography.fontFamily,
           fontWeight: 400,
           letterSpacing: '0.14px',
@@ -100,7 +100,7 @@ export const ThemedAvatar = forwardRef<HTMLDivElement, ThemedAvatarProps>(
           ) : children ? (
             children
           ) : (
-            <span className="material-icons-outlined" style={{ fontSize: '60%', color: palette.common.white }}>
+            <span className="material-icons-outlined" style={{ fontSize: '60%', color: palette.inflow.navy900 }}>
               person
             </span>
           )}
@@ -161,7 +161,7 @@ export const ThemedAvatarGroup = forwardRef<HTMLDivElement, ThemedAvatarGroupPro
               border: `2px solid ${palette.background.paper}`,
               borderRadius: '100px',
               background: palette.grey[400],
-              color: palette.common.white,
+              color: palette.inflow.navy900,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',

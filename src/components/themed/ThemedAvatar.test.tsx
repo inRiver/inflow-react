@@ -1,5 +1,6 @@
 import { screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
+import { createInflowTheme } from '../../theme';
 import { renderWithInflow } from '../../test/renderWithInflow';
 import {
   ThemedAvatar,
@@ -11,6 +12,39 @@ function getRoot(container: HTMLElement): HTMLElement {
   if (!root) throw new Error('ThemedAvatar root was not rendered.');
   return root;
 }
+
+function toRgb(color: string) {
+  const element = document.createElement('span');
+  element.style.color = color;
+  document.body.appendChild(element);
+  const rgb = getComputedStyle(element).color;
+  element.remove();
+  return rgb;
+}
+
+describe('ThemedAvatar initials contrast', () => {
+  it.each(['light', 'dark'] as const)('uses dark initials on the grey fill in %s mode', (mode) => {
+    const { container } = renderWithInflow(<ThemedAvatar>IR</ThemedAvatar>, { providerProps: { mode } });
+
+    expect(getComputedStyle(getRoot(container)).color).toBe(
+      toRgb(createInflowTheme(mode).palette.inflow.navy900),
+    );
+  });
+
+  it.each(['light', 'dark'] as const)('uses dark text on the group overflow count in %s mode', (mode) => {
+    renderWithInflow(
+      <ThemedAvatarGroup max={1}>
+        <ThemedAvatar>AL</ThemedAvatar>
+        <ThemedAvatar>BM</ThemedAvatar>
+      </ThemedAvatarGroup>,
+      { providerProps: { mode } },
+    );
+
+    expect(getComputedStyle(screen.getByText('+1')).color).toBe(
+      toRgb(createInflowTheme(mode).palette.inflow.navy900),
+    );
+  });
+});
 
 describe('ThemedAvatar', () => {
   it.each([

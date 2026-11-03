@@ -82,7 +82,8 @@ export const ThemedChip = forwardRef<HTMLDivElement, ThemedChipProps>(
       },
       '&& .MuiChip-label': { paddingLeft: 0, paddingRight: 0 },
       '&& .MuiChip-icon': { marginLeft: 0, marginRight: 0, color: 'inherit' },
-      '&& .MuiChip-deleteIcon': { marginRight: 0 },
+      // The delete "x" always matches the chip's own text color (no tint or opacity), in every variant and mode.
+      '&& .MuiChip-deleteIcon': { marginRight: 0, color: 'inherit', opacity: 1, '&:hover': { color: 'inherit', opacity: 1 } },
     };
     const customStyles = inflowVariant
       ? (theme: Theme) => ({
@@ -97,58 +98,27 @@ export const ThemedChip = forwardRef<HTMLDivElement, ThemedChipProps>(
             color: color === 'primary'
               ? theme.palette.primary.main
               : theme.palette.text.primary,
-            '& .MuiChip-deleteIcon': {
-              color: color === 'primary'
-                ? theme.palette.primary.main
-                : theme.palette.inflow.outline,
-              opacity: 1,
-              '&:hover': {
-                color: color === 'primary'
-                  ? theme.palette.primary.dark
-                  : theme.palette.text.primary,
-              },
-            },
+            '&:hover': { backgroundColor: theme.palette.inflow.rowHover },
           }),
           ...(variant !== 'outlined' && isDefaultColor && {
             backgroundColor: theme.palette.mode === 'dark'
               ? theme.palette.grey[700]
               : theme.palette.grey[300],
             color: theme.palette.text.primary,
+            // Hover tints toward the brand blue instead of a darker grey.
             '&:hover': {
               backgroundColor: theme.palette.mode === 'dark'
-                ? theme.palette.grey[600]
-                : theme.palette.grey[400],
-            },
-            '& .MuiChip-deleteIcon': {
-              color: theme.palette.inflow.outline,
-              opacity: 1,
-              '&:hover': {
-                color: theme.palette.text.primary,
-              },
+                ? theme.palette.inflow.primaryFixed
+                : theme.palette.inflow.primaryTab,
             },
           }),
           ...(variant !== 'outlined' && color === 'primary' && {
             backgroundColor: theme.palette.inflow.primaryTab,
             color: theme.palette.primary.main,
-            '& .MuiChip-deleteIcon': {
-              color: theme.palette.primary.main,
-              opacity: 0.7,
-              '&:hover': {
-                opacity: 1,
-                color: theme.palette.primary.dark,
-              },
-            },
           }),
           ...(variant !== 'outlined' && color === 'error' && {
             backgroundColor: theme.palette.inflow.diffRemovedBg,
             color: theme.palette.inflow.diffRemovedText,
-            '& .MuiChip-deleteIcon': {
-              color: theme.palette.inflow.diffRemovedText,
-              opacity: 0.7,
-              '&:hover': {
-                opacity: 1,
-              },
-            },
           }),
           ...(variant !== 'outlined' && color === 'success' && {
             backgroundColor: theme.palette.inflow.diffAddedBg,

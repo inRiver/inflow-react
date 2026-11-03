@@ -24,7 +24,7 @@ describe('ThemedToast', () => {
   it.each([
     ['error', 'alert', 'error_outline'],
     ['warning', 'alert', 'warning_amber'],
-    ['info', 'status', 'info_outline'],
+    ['info', 'status', 'info'],
     ['success', 'status', 'check_circle_outline'],
   ] as const)('renders the %s severity with the %s role, background, and outlined icon', (severity, role, icon) => {
     renderWithInflow(<ThemedToast severity={severity} message={`${severity} message`} />);

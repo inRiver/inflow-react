@@ -58,6 +58,11 @@ export const lightTokens = {
 
 export const darkTokens = {
   ...baseTokens,
+  // Same hues as the light status colors, lifted in lightness so they read on dark surfaces.
+  error: { main: '#f2685f', dark: '#e85b53', light: '#ffb4ab' },
+  warning: { main: '#ff8a50', dark: '#f07a3c', light: '#ffb280' },
+  info: { main: '#7db3ff', dark: '#6aa6f8', light: '#a8cdff' },
+  success: { main: '#6fcf8a', dark: '#5cc07a', light: '#9ae6b4' },
   navy900: '#101a2b',
   navy800: '#16243d',
   navy700: '#91c2fd',
@@ -68,13 +73,13 @@ export const darkTokens = {
   onSurface: '#f0f4fb',
   onSurfaceVariant: '#c2cad8',
   surfaceVariant: '#33415c',
-  surfaceLowest: '#0b1220',
-  surfaceContainer: '#162033',
-  surfaceContainerHigh: '#1e2b43',
-  surfaceLow: '#132038',
-  surfaceHighest: '#24314a',
+  surfaceLowest: '#111a2c',
+  surfaceContainer: '#1b2842',
+  surfaceContainerHigh: '#21314f',
+  surfaceLow: '#162036',
+  surfaceHighest: '#283a5c',
   outline: '#98a2b8',
-  outlineVariant: '#3b4a66',
+  outlineVariant: '#4f6089',
   primaryTab: 'rgba(145,194,253,0.18)',
   primaryFixed: '#405d92',
   secondaryFixed: '#404a68',
@@ -99,6 +104,13 @@ export const darkTokens = {
   diffAddedText: '#9ae6b4',
   appBackground: '#0b1220',
   navSurface: '#16243d',
+} as const;
+
+// Dark-only values with no light counterpart (light keeps MUI's own tooltip and the status orange).
+// Kept out of darkTokens so lightTokens and darkTokens always have the same keys.
+export const darkOnlyTokens = {
+  warningAmber: '#ffb81c',
+  tooltipBg: '#475266',
 } as const;
 
 export type InflowThemeTokens = typeof lightTokens | typeof darkTokens;

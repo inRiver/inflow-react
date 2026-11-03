@@ -3,6 +3,7 @@ import {
   publisherColumnDefs,
   publisherGridSx,
   publisherGridThemeParams,
+  publisherGridThemeParamsDark,
   publisherRowData,
   publisherRowSelection,
   publisherSelectionColumnDef,
@@ -10,6 +11,13 @@ import {
 } from './PublishersAgGridPage.data';
 
 describe('PublishersAgGridPage reference table', () => {
+  it('keeps the same density in light and dark', () => {
+    expect(publisherGridThemeParamsDark.headerHeight).toBe(publisherGridThemeParams.headerHeight);
+    expect(publisherGridThemeParamsDark.rowHeight).toBe(publisherGridThemeParams.rowHeight);
+    expect(publisherGridThemeParamsDark.headerFontSize).toBe(publisherGridThemeParams.headerFontSize);
+    expect(publisherGridThemeParamsDark.headerFontWeight).toBe(publisherGridThemeParams.headerFontWeight);
+  });
+
   it('uses the reference table columns and comfortable density', () => {
     expect(publisherColumnDefs.map(({ headerName }) => headerName)).toEqual([
       'Entity',

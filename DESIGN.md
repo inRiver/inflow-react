@@ -8,27 +8,41 @@ Inflow is a calm, operational product-information workspace: dense enough for ca
 
 ### Palette
 
-| Role | Source token | Light value | Usage |
-|---|---|---:|---|
-| Application background | `theme.palette.inflow.appBackground` | Inflow surface token | Page canvas and structural headers |
-| Navigation surface | `theme.palette.inflow.navSurface` | Inflow navy token | Primary application rail |
-| Primary action | `theme.palette.primary.main` | `#0b2d6e` | Buttons, links, active navigation, focus |
-| Primary hover | `theme.palette.primary.dark` | `#003687` | Primary-action hover |
-| Surface | `theme.palette.background.paper` | `#ffffff` | Grids, cards, panels, inputs |
-| Surface low | `theme.palette.inflow.surfaceLow` | `#f1f6fe` | Quiet contextual regions and hover |
-| Text primary | `theme.palette.text.primary` | `#191b24` | Headings and values |
-| Text secondary | `theme.palette.text.secondary` | `#424655` | Supporting copy and metadata |
-| Outline | `theme.palette.inflow.outlineVariant` | `#c2c6d8` | Dividers, fields, grid rows |
-| Selection | `theme.palette.inflow.rowSelected` | `rgba(11,45,110,0.08)` | Selected rows and focused context |
-| Success | `theme.palette.success.main` | `#2c9b4b` | Confirmed/active state |
-| Warning | `theme.palette.warning.main` | `#ff6424` | Pending/caution state |
-| Error | `theme.palette.error.main` | `#ba1a1a` | Destructive and error state |
+| Role | Source token | Light value | Dark value | Usage |
+|---|---|---:|---:|---|
+| Application background | `theme.palette.inflow.appBackground` | `#ebf1fc` | `#0b1220` | Page canvas and structural headers |
+| Navigation surface | `theme.palette.inflow.navSurface` | `#0b2d6e` | `#16243d` | Primary application rail |
+| Primary action | `theme.palette.primary.main` | `#0b2d6e` | `#91c2fd` | Buttons, links, active navigation, focus |
+| Primary hover | `theme.palette.primary.dark` | `#003687` | `#6fa8ff` | Primary-action hover |
+| Surface | `theme.palette.background.paper` | `#ffffff` | `#111a2c` | Grids, cards, panels, inputs |
+| Surface low | `theme.palette.inflow.surfaceLow` | `#f1f6fe` | `#162036` | Quiet contextual regions and hover |
+| Surface highest | `theme.palette.inflow.surfaceHighest` | `#e3e9f8` | `#283a5c` | Inline code chips, strongest tonal step |
+| Text primary | `theme.palette.text.primary` | `#191b24` | `#f0f4fb` | Headings and values |
+| Text secondary | `theme.palette.text.secondary` | `#424655` | `#c2cad8` | Supporting copy and metadata |
+| Outline | `theme.palette.inflow.outlineVariant` | `#c2c6d8` | `#4f6089` | Dividers, card borders, grid rows |
+| Field border | `theme.palette.inflow.outline` (dark) | `#c2c6d8` | `#98a2b8` | Input borders; dark uses the stronger tone to clear 3:1 |
+| Selection | `theme.palette.inflow.rowSelected` | `rgba(11,45,110,0.08)` | `rgba(145,194,253,0.16)` | Selected rows and focused context |
+| Success | `theme.palette.success.main` | `#2c9b4b` | `#6fcf8a` | Confirmed/active state |
+| Warning | `theme.palette.warning.main` | `#ff6424` | `#ff8a50` | Pending/caution state |
+| Info | `theme.palette.info.main` | `#0057cf` | `#7db3ff` | Informational state |
+| Error | `theme.palette.error.main` | `#ba1a1a` | `#f2685f` | Destructive and error state |
+
+### Dark mode
+
+Dark mode keeps the brand's navy hue (about 219°) and changes only lightness and saturation. It is in development: it is on in the local dev server and off in the published package and deployed showcase until the `INFLOW_DARK_MODE_ENABLED` flag is flipped deliberately. Light values are the shipped look and are locked by `lightModeGuard.test.ts`.
+
+- Surfaces get lighter as they rise: app background `#0b1220`, then surface low, paper, container, container high and highest. Elevation is expressed by these tonal steps, not shadows.
+- Avoid pure black and pure white. Text is `#f0f4fb` and `#c2cad8`.
+- Accents are lifted and slightly desaturated so they read on dark surfaces. Primary becomes `#91c2fd` and carries navy (`#101a2b`) text. Status colors keep their hue and carry navy text when filled.
+- AG Grid receives `inflowGridThemeParamsDark` with the dark color scheme part; consumers pick it by mode.
+- Alerts and toasts blend the status color 34% into the dark surface, with on-surface text and a status-colored icon (at least 3:1).
+- `darkContrast.test.ts` fails if text, filled-status text or field borders fall below AA on any dark surface.
 
 ### Rules
 
 - React components consume semantic MUI/Inflow theme tokens; raw colors remain confined to token-definition files.
 - The navy accent communicates action, active navigation, focus, and selection, not decoration.
-- AG Grid receives the dependency-free `inflowGridThemeParams` values and optional selection/header-action recipes from `@inriver/inflow-react/ag-grid`.
+- AG Grid receives the dependency-free `inflowGridThemeParams` values (light) or `inflowGridThemeParamsDark` (dark) and optional selection/header-action recipes from `@inriver/inflow-react/ag-grid`.
 
 ## 3. Typography
 
@@ -151,13 +165,13 @@ All spacing is derived from the existing 4px Inflow scale and MUI `theme.spacing
 
 ## 7. Depth & Surface
 
-The existing system uses a mixed but restrained strategy: tonal surface shifts and 1px outlines separate most work areas; shadows are reserved for overlays, menus, dialogs, and elevated transient UI. Do not add shadows to static grid or navigation surfaces.
+The existing system uses a mixed but restrained strategy: tonal surface shifts and 1px outlines separate most work areas; shadows are reserved for overlays, menus, dialogs, and elevated transient UI. Do not add shadows to static grid or navigation surfaces. In dark mode, shadows cannot show, so raised surfaces step lighter: elevation 1–2 uses surface low, 3–8 (menus, popovers) surface container, and 9 and above (dialogs) surface container high. Outlined papers keep the base surface. Cards are the exception: in dark they sit on the base surface, as in light, and a raised card gets a soft 1px `surfaceVariant` hairline (the outlined card keeps its defined `outlineVariant` line) instead of a lighter surface; menus get a 1px `outline` edge.
 
 ## 8. Accessibility Constraints & Accepted Debt
 
 ### Constraints
 
-- Target WCAG 2.2 AA: 4.5:1 body-text contrast, 3:1 large text and meaningful non-text UI.
+- Target WCAG 2.2 AA: 4.5:1 body-text contrast, 3:1 large text and meaningful non-text UI. This holds in both modes, except the item under Accepted Debt below; disabled controls are exempt.
 - Every control is keyboard reachable and has a visible focus state and accessible name.
 - AG Grid remains the semantic and keyboard owner for all data-table examples.
 - The focused-cell assistant context must be visible in text, not conveyed by color alone.
@@ -167,4 +181,5 @@ The existing system uses a mixed but restrained strategy: tonal surface shifts a
 
 | Item | Location | Why accepted | Owner / Exit |
 |---|---|---|---|
-| None | — | — | — |
+| Light outlined field border is 1.70:1 on white, under the 3:1 non-text guideline (dark is 6.8:1) | `outlineVariant` (`#c2c6d8`) on `OutlinedInput`, light mode | Matches stock MUI's own default (`rgba(0,0,0,0.23)`, 1.74:1) and the shipped light look, which is not being reworked | Design. Exit: switch the light field border to `outline` (`#727787`, 4.46:1), a visible change to every field |
+| Outlined button border is 1.70:1 on white (light) and 2.79:1 on dark paper (dark), under the 3:1 non-text guideline; the label passes AA in both modes | `outlineVariant` on the outlined `Button` variants, light and dark | The label identifies the control, so the border is decorative under the stricter reading of WCAG 1.4.11; matches the shipped look | Design. Exit: switch the border to `outline` (`#727787` light, 4.46:1; `#98a2b8` dark, 6.8:1), a visible change to every outlined button |

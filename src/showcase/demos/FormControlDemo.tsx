@@ -1,9 +1,30 @@
-import { useState } from 'react';
-import { FormControl, FormHelperText, FormLabel, Stack, TextField } from '@mui/material';
+import { useId, useState } from 'react';
+import { FormControl, FormHelperText, InputLabel, OutlinedInput, Stack } from '@mui/material';
 import { DemoFrame } from '../DemoFrame';
 import { CodeBlock } from '../CodeBlock';
 import { PropsPlayground } from '../PropsPlayground';
 import type { PropSchema } from '../PropsPlayground';
+
+type FieldState = { disabled?: boolean; error?: boolean; required?: boolean; size?: 'small' | 'medium' };
+
+// FormControl shares disabled, error, required and size with the label, input and helper text, so they are set once
+// here. InputLabel and OutlinedInput are what TextField is built from, so the label floats in the border the same way,
+// and the label is tied to the input through htmlFor and id.
+function EmailField({
+  helper,
+  placeholder,
+  width,
+  ...state
+}: FieldState & { helper: string; placeholder: string; width: number }) {
+  const id = useId();
+  return (
+    <FormControl {...state} sx={{ width }}>
+      <InputLabel htmlFor={`${id}-input`}>Email</InputLabel>
+      <OutlinedInput id={`${id}-input`} label="Email" placeholder={placeholder} aria-describedby={`${id}-helper`} />
+      <FormHelperText id={`${id}-helper`}>{helper}</FormHelperText>
+    </FormControl>
+  );
+}
 
 export function FormControlDemo() {
   const [props, setProps] = useState<Record<string, any>>({
@@ -34,46 +55,33 @@ export function FormControlDemo() {
   ];
 
   const codeExample = `
-import { FormControl, FormHelperText, FormLabel, TextField } from '@mui/material';
+import { FormControl, FormHelperText, InputLabel, OutlinedInput } from '@mui/material';
 
 // <InflowProvider> only needs to be declared once at your app root - see Guidelines
+// FormControl shares disabled, error, required and size with everything inside it.
 <FormControl
   disabled={props.disabled}
   error={props.error}
   required={props.required}
   size={props.size}
 >
-  <FormLabel>Email</FormLabel>
-  <TextField
-    size={props.size}
-    disabled={props.disabled}
-    error={props.error}
-    required={props.required}
-  />
-  <FormHelperText>Enter your email</FormHelperText>
+  <InputLabel htmlFor="email">Email</InputLabel>
+  <OutlinedInput id="email" label="Email" aria-describedby="email-helper" />
+  <FormHelperText id="email-helper">Enter your email</FormHelperText>
 </FormControl>`;
 
   return (
     <>
       <DemoFrame title="Form Control - Interactive">
-        <FormControl
+        <EmailField
           disabled={props.disabled}
           error={props.error}
           required={props.required}
           size={props.size}
-          sx={{ width: 320 }}
-        >
-          <FormLabel>Email</FormLabel>
-          <TextField
-            variant="outlined"
-            size={props.size}
-            disabled={props.disabled}
-            error={props.error}
-            required={props.required}
-            placeholder="user@example.com"
-          />
-          <FormHelperText>We'll never share your email.</FormHelperText>
-        </FormControl>
+          width={320}
+          placeholder="user@example.com"
+          helper="We'll never share your email."
+        />
       </DemoFrame>
 
       <PropsPlayground schema={schema} values={props} onChange={setProps} />
@@ -82,27 +90,11 @@ import { FormControl, FormHelperText, FormLabel, TextField } from '@mui/material
 
       <DemoFrame title="All States">
         <Stack spacing={2} direction="column">
-          <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap' }}>
-            <FormControl sx={{ width: 280 }}>
-              <FormLabel>Email</FormLabel>
-              <TextField variant="outlined" placeholder="user@example.com" />
-              <FormHelperText>We'll never share your email.</FormHelperText>
-            </FormControl>
-            <FormControl required sx={{ width: 280 }}>
-              <FormLabel>Email</FormLabel>
-              <TextField required variant="outlined" placeholder="required@example.com" />
-              <FormHelperText>Required field.</FormHelperText>
-            </FormControl>
-            <FormControl error sx={{ width: 280 }}>
-              <FormLabel>Email</FormLabel>
-              <TextField error variant="outlined" placeholder="invalid@example.com" />
-              <FormHelperText>Please enter a valid email.</FormHelperText>
-            </FormControl>
-            <FormControl disabled sx={{ width: 280 }}>
-              <FormLabel>Email</FormLabel>
-              <TextField disabled variant="outlined" placeholder="disabled@example.com" />
-              <FormHelperText>Unavailable right now.</FormHelperText>
-            </FormControl>
+          <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap', rowGap: 2 }}>
+            <EmailField width={280} placeholder="user@example.com" helper="We'll never share your email." />
+            <EmailField required width={280} placeholder="required@example.com" helper="Required field." />
+            <EmailField error width={280} placeholder="invalid@example.com" helper="Please enter a valid email." />
+            <EmailField disabled width={280} placeholder="disabled@example.com" helper="Unavailable right now." />
           </Stack>
         </Stack>
       </DemoFrame>

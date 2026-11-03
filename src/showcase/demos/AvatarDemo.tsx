@@ -99,14 +99,14 @@ import { ThemedAvatar } from '@inriver/inflow-react';
             <Stack spacing={2} direction="column">
               <Stack direction="row" spacing={2}>
                 <Avatar>H</Avatar>
-                <Avatar sx={{ bgcolor: 'secondary.main' }}>N</Avatar>
-                <Avatar sx={{ bgcolor: 'error.main' }}>
+                <Avatar sx={{ bgcolor: 'secondary.main', color: 'secondary.contrastText' }}>N</Avatar>
+                <Avatar sx={{ bgcolor: 'error.main', color: 'error.contrastText' }}>
                   <FolderIcon />
                 </Avatar>
-                <Avatar variant="rounded" sx={{ bgcolor: 'success.main' }}>
+                <Avatar variant="rounded" sx={{ bgcolor: 'success.main', color: 'common.black' }}>
                   R
                 </Avatar>
-                <Avatar variant="square" sx={{ bgcolor: 'info.main' }}>
+                <Avatar variant="square" sx={{ bgcolor: 'info.main', color: 'info.contrastText' }}>
                   S
                 </Avatar>
               </Stack>

@@ -2,6 +2,39 @@
 
 All notable changes to `@inriver/inflow-react` are documented here. This project follows [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+- Dark mode (pre-release, behind `INFLOW_DARK_MODE_ENABLED`, off in published builds): same navy brand hue, tonal surface steps instead of shadows, adapted status colors, and WCAG AA contrast for text and field borders. Light mode is unchanged and locked by a guard test.
+- `inflowGridThemeParamsDark` from `@inriver/inflow-react/ag-grid` for a dark AG Grid (library-facing).
+- Showcase-only: Light | Dark switch in the header (local development only) and mode-aware Design Tokens and Guidelines pages.
+- Tests: `lightModeGuard` (light values must not change), `darkContrast` (dark AA ratios) and flag tests.
+
+### Changed
+- Showcase-only: the Skeleton demo's interactive skeleton is sized per variant. The text skeleton is a thin line (210x14) instead of a 36px bar (it passed `height={60}` to every variant, and MUI scales a text skeleton to 60% of that), and the circular skeleton is a 60px circle instead of a 210x60 oval; rectangular and rounded stay 210x60.
+- `Select` no longer forces `size: 'small'`; it follows the size of its `FormControl` or `TextField` as in MUI, so `size="medium"` gives the same 56px as a text field instead of staying at 37px (library-facing). `TextField` and `FormControl` still default to small. A bare `<Select>` outside a `FormControl` or `TextField` is now MUI's medium (56px) instead of 37px, so give it `size="small"` to keep the old height (visible in light).
+- Dark mode (pre-release): raised `Card` and `ThemedCard` sit on the paper surface like flat and outlined cards (as in light, where every card is white) and get a soft 1px `surfaceVariant` hairline, because a shadow cannot show on dark. The outlined card keeps its defined `outlineVariant` line, so the two still differ. Light is unchanged (library-facing).
+- Showcase-only: the Form Control demo now uses `InputLabel` + `OutlinedInput` inside `FormControl`, so its label floats in the border like `TextField` instead of sitting above as a separate `FormLabel`; the label is linked to the input and the state props are set once on the `FormControl`.
+- Menus (`Menu`, `ThemedMenu` and the `Select` dropdown) use MUI's default elevation shadow and the theme's rounded corners again, in light and dark, and dark menus get a 1px `outline` edge because a shadow cannot show on dark. They had been square and shadowless with no border, so a menu over same-colored content (white on white in light) had no visible edge (library-facing, visible in light).
+- `IconButton` colors work again: `primary`, `secondary` and `error` take their palette color, and `inherit` takes its parent's (white inside the AppBar). The theme had forced every icon button to the default grey (library-facing, visible in light only for icon buttons that set `color`).
+- Tabs (`Tabs`/`Tab` and `ThemedTabs`) have an 8px gap between tabs in light and dark (library-facing, visible in light).
+- `ThemedStepper` completed steps show a solid circle without the checkmark, in light and dark (library-facing, visible in light).
+- Fixed the info icon in `Alert`, `ThemedAlert` and `ThemedToast`: it used `info_outline`, which is not a Material Icons Outlined ligature, so it rendered as 180px+ of raw text and pushed the message sideways (library-facing, visible in light).
+- Standard `Alert` / `ThemedAlert` now use the same severity surfaces as `ThemedToast` in light (pink, yellow, blue, green tints with on-surface text); the warning and success icons use the darker status shade so they stay above 3:1 (library-facing, visible in light).
+- Selected `ToggleButton` no longer draws an extra 1px accent ring in light or dark; selection reads from the tinted fill and bold label (library-facing, visible in light).
+- Dark-mode-only styling for inline code chips, the active navigation pill, switch thumbs, chip icons and avatars. Light styles are unchanged.
+- `ThemedAvatar` and the MUI `Avatar` use dark navy initials on the grey fill instead of white (1.88:1 contrast before, about 8:1 now), in light and dark, including the person icon and the group overflow count (library-facing, visible in light).
+- `ThemedBadge` count text uses the contrast color of its fill (dark on the pale blue in dark mode, white in light) instead of always white (library-facing, dark only).
+- `Chip` and `ThemedChip` delete icons match the chip's text color at full opacity in every variant, in light and dark, instead of a faint tint or the outline grey (library-facing, visible in light).
+- Dark mode (pre-release): the `SpeedDial` action buttons sit on a raised surface with a `surfaceVariant` hairline, a shadow and a focus ring so they no longer blend into the page (library-facing, dark only).
+- `Chip` and `ThemedChip` hover tint toward the brand blue instead of a darker grey: default filled chips use the primary tab tint (light) or `primaryFixed` (dark), default outlined chips use the pale blue row hover (library-facing, visible in light).
+- Avatar initials inside a `Chip`, the inactive `Stepper` step icon and the empty `Rating` star now meet contrast in light (dark initials, and the `outline` token for the two icons) (library-facing, visible in light).
+- Showcase-only: the success avatar in the Avatar demo and the Added / Fixed chips on the Changelog page use black text, which passes 4.5:1 on the success green and warning orange.
+- `ThemedChatPanel` user message text is left-aligned inside its bubble; the bubble stays on the right (library-facing, visible in light and dark).
+- Showcase-only: the AG Grid demo keeps the same header and row height in light and dark (32px / 40px); the dark params had been overriding them with the 48px / 52px library defaults.
+- Showcase-only: the header color mode switch offers System, Light and Dark and shows the saved choice and the active mode; the Guidelines page has a complete setup example (follow the system, save a choice, return to System, style own panels).
+- Showcase-only: the Linear Progress, Circular Progress, Rating, Slider and Badge demos label each example with its task, value and status, and name each control for screen readers.
+
 ## [3.10.3] - 2026-10-22
 
 ### Added
