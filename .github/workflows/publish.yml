@@ -42,7 +42,8 @@ jobs:
       - name: Ensure npm supports Trusted Publishing (OIDC)
         run: |
           echo "Bundled npm: $(npm --version)"
-          npm install -g npm@11.13.0
+          # 11.21.0+ adds Trusted Publishing auth for npm dist-tag.
+          npm install -g npm@11.21.1
           echo "Upgraded npm: $(npm --version)"
 
       - name: Derive checkpoint tag and verify version
@@ -94,13 +95,12 @@ jobs:
           INFLOW_THEME_RELEASE_TAG: ${{ steps.tagcheck.outputs.checkpoint }}
         run: npm publish --tag "${{ steps.tagcheck.outputs.checkpoint }}" --access public --provenance
 
+      # dist-tag commands authenticate via Trusted Publishing (OIDC); the
+      # package's trusted publisher must have the "Allow npm dist-tag"
+      # permission enabled on npmjs.com. No stored npm token is used.
       - name: Set checkpoint dist-tag
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
         run: npm dist-tag add "@inriver/inflow-react@${{ steps.tagcheck.outputs.version }}" "${{ steps.tagcheck.outputs.checkpoint }}"
 
       - name: Promote to latest
         if: ${{ !inputs.skip_latest }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
         run: npm dist-tag add "@inriver/inflow-react@${{ steps.tagcheck.outputs.version }}" latest
