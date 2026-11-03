@@ -704,7 +704,7 @@ describe('ThemedChatPanel', () => {
         fontSize: '0.875rem',
         lineHeight: '28px',
         letterSpacing: '0.00937em',
-        padding: '19px 0px 8px',
+        padding: '14px 0px 14px',
       });
     });
 
@@ -713,7 +713,7 @@ describe('ThemedChatPanel', () => {
 
       const textbox = await screen.findByRole('textbox', { name: 'How can I help?' });
       expect(textbox.tagName).toBe('TEXTAREA');
-      expect(textbox).toHaveStyle({ lineHeight: '28px', padding: '19px 0px 8px' });
+      expect(textbox).toHaveStyle({ lineHeight: '28px', padding: '14px 0px 14px' });
       expect(textbox.closest('.MuiInputBase-root')).toHaveStyle({ padding: '0px' });
     });
 
@@ -824,7 +824,7 @@ describe('ThemedChatPanel', () => {
       expect(await screen.findByText('Type / to switch assistants')).toHaveStyle({
         color: 'rgb(66, 70, 85)',
         display: 'block',
-        marginTop: '-8px',
+        marginTop: '-14px',
         paddingBottom: '8px',
       });
     });
@@ -844,13 +844,13 @@ describe('ThemedChatPanel', () => {
       });
     }
 
-    it('caps the default multiline composer at 2.75 rows (77px content, 104px with padding) and lets it scroll', async () => {
+    it('caps the default multiline composer at 104px with padding (76px content) and lets it scroll', async () => {
       const spy = stubScrollHeight();
       try {
         renderChatPanel({ multiline: true, inputValue: 'long\ncontent\nthat\nwraps\npast\nthe\ncap' });
 
         const textarea = await screen.findByRole('textbox', { name: 'How can I help?' });
-        expect(textarea.style.height).toBe('77px');
+        expect(textarea.style.height).toBe('76px');
         expect(textarea.style.overflow).toBe('');
       } finally {
         spy.mockRestore();

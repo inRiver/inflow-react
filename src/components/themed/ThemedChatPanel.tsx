@@ -115,7 +115,7 @@ export interface ThemedChatPanelProps {
   isInputDisabled?: boolean;
   isSendDisabled?: boolean;
   multiline?: boolean;
-  /** Max visible rows before the multiline composer scrolls. Default 2.75 (a 104px cap matching the reference composer). Fractions are allowed. */
+  /** Max visible rows before the multiline composer scrolls. Default is about 2.71 (a 104px cap matching the reference composer). Fractions are allowed. */
   maxRows?: number;
 }
 
@@ -157,9 +157,9 @@ const iconButtonSx = {
 const COMPOSER_CONTROL_SIZE = 34;
 const COMPOSER_RAIL_HEIGHT = 56;
 const COMPOSER_LINE_HEIGHT = 28;
-/** Input padding: the reference's 17px/6px plus its 2px container inset, folded into the input. */
-const COMPOSER_INPUT_PADDING_TOP = 19;
-const COMPOSER_INPUT_PADDING_BOTTOM = 8;
+/** Even input padding: centers the 28px line in the 56px rail, level with the controls. */
+const COMPOSER_INPUT_PADDING_TOP = 14;
+const COMPOSER_INPUT_PADDING_BOTTOM = 14;
 /**
  * Multiline cap for the whole textarea box (padding included). Matches the reference's
  * 100px textarea plus its 2px top and bottom container inset.
@@ -661,7 +661,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
               />
               {showInputHint && inputHint && (
                 // Pulled up into the input's bottom padding: the 28px line already leaves a gap under
-                // the text, so the hint adds 16px + 8px instead of 24px + 8px to the composer.
+                // the text, so the hint adds 16px + 8px instead of 30px + 8px to the composer.
                 <Typography variant="caption" sx={{ display: 'block', mt: `-${COMPOSER_INPUT_PADDING_BOTTOM}px`, pb: 1, color: 'text.secondary', lineHeight: '16px', letterSpacing: '0.4px' }}>
                   {inputHint}
                 </Typography>
