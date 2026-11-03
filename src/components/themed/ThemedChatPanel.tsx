@@ -660,7 +660,9 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
                 }}
               />
               {showInputHint && inputHint && (
-                <Typography variant="caption" sx={{ display: 'block', pb: 1, color: 'text.secondary', lineHeight: '16px', letterSpacing: '0.4px' }}>
+                // Pulled up into the input's bottom padding: the 28px line already leaves a gap under
+                // the text, so the hint adds 16px + 8px instead of 24px + 8px to the composer.
+                <Typography variant="caption" sx={{ display: 'block', mt: `-${COMPOSER_INPUT_PADDING_BOTTOM}px`, pb: 1, color: 'text.secondary', lineHeight: '16px', letterSpacing: '0.4px' }}>
                   {inputHint}
                 </Typography>
               )}

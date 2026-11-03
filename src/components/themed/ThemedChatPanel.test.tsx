@@ -818,12 +818,13 @@ describe('ThemedChatPanel', () => {
       expect(await screen.findByText('Credits 8/10')).toHaveStyle({ color: 'rgba(0, 0, 0, 0.38)' });
     });
 
-    it('renders the input hint as a block in the secondary text color with 8px below it', async () => {
+    it('renders the input hint as a block in the secondary text color, tucked into the input bottom padding', async () => {
       renderChatPanel();
 
       expect(await screen.findByText('Type / to switch assistants')).toHaveStyle({
         color: 'rgb(66, 70, 85)',
         display: 'block',
+        marginTop: '-8px',
         paddingBottom: '8px',
       });
     });
