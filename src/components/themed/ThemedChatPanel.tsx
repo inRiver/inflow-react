@@ -688,7 +688,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
             )}
           </Box>
 
-          {/* text.disabled on the white panel equals the reference's opaque #9e9e9e and keeps a dark-mode value. */}
+          {/* text.disabled on the white panel renders the same pixel as the reference's opaque grey, and keeps a dark-mode value. */}
           <Typography
             variant="body2"
             sx={{ display: 'block', textAlign: 'center', color: 'text.disabled', mt: 1 }}
