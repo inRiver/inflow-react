@@ -811,6 +811,64 @@ describe('ThemedChatPanel', () => {
     }
   });
 
+  describe('footer secondary text colors', () => {
+    it('renders credits in the disabled text color', async () => {
+      renderChatPanel({ credits: { used: 8, total: 10 } });
+
+      expect(await screen.findByText('Credits 8/10')).toHaveStyle({ color: 'rgba(0, 0, 0, 0.38)' });
+    });
+
+    it('renders the input hint as a block in the secondary text color with 8px below it', async () => {
+      renderChatPanel();
+
+      expect(await screen.findByText('Type / to switch assistants')).toHaveStyle({
+        color: 'rgb(66, 70, 85)',
+        display: 'block',
+        paddingBottom: '8px',
+      });
+    });
+
+    it('renders the upload progress label in the secondary text color', async () => {
+      renderChatPanel({ uploadProgress: 40, uploadProgressLabel: 'Uploading 40%' });
+
+      expect(await screen.findByText('Uploading 40%')).toHaveStyle({ color: 'rgb(66, 70, 85)' });
+    });
+  });
+
+  describe('multiline cap', () => {
+    // jsdom has no layout: fake the autosize probe so a single row measures 28px and the content 200px.
+    function stubScrollHeight() {
+      return vi.spyOn(HTMLTextAreaElement.prototype, 'scrollHeight', 'get').mockImplementation(function (this: HTMLTextAreaElement) {
+        return this.value === 'x' ? 28 : 200;
+      });
+    }
+
+    it('caps the default multiline composer at 2.75 rows (77px content, 104px with padding) and lets it scroll', async () => {
+      const spy = stubScrollHeight();
+      try {
+        renderChatPanel({ multiline: true, inputValue: 'long\ncontent\nthat\nwraps\npast\nthe\ncap' });
+
+        const textarea = await screen.findByRole('textbox', { name: 'How can I help?' });
+        expect(textarea.style.height).toBe('77px');
+        expect(textarea.style.overflow).toBe('');
+      } finally {
+        spy.mockRestore();
+      }
+    });
+
+    it('honors an explicit maxRows', async () => {
+      const spy = stubScrollHeight();
+      try {
+        renderChatPanel({ multiline: true, maxRows: 4, inputValue: 'long\ncontent\nthat\nwraps\npast\nthe\ncap' });
+
+        const textarea = await screen.findByRole('textbox', { name: 'How can I help?' });
+        expect(textarea.style.height).toBe('112px');
+      } finally {
+        spy.mockRestore();
+      }
+    });
+  });
+
   describe('character counter', () => {
     it('appends the default chars label', async () => {
       renderChatPanel({ charCount: 124, charLimit: 2000 });

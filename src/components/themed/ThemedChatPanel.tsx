@@ -558,7 +558,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
         {uploadProgress !== undefined && (
           <Box sx={{ flexShrink: 0, px: 2, pb: 0.5 }}>
             <LinearProgress variant="determinate" value={Math.min(uploadProgress, 100)} sx={{ borderRadius: 999 }} />
-            {uploadProgressLabel && <Typography variant="caption" color="text.secondary">{uploadProgressLabel}</Typography>}
+            {uploadProgressLabel && <Typography variant="caption" sx={{ color: 'text.secondary' }}>{uploadProgressLabel}</Typography>}
           </Box>
         )}
 
@@ -652,7 +652,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
                 }}
               />
               {showInputHint && inputHint && (
-                <Typography variant="caption" color="text.secondary" sx={{ lineHeight: '16px', letterSpacing: '0.4px' }}>
+                <Typography variant="caption" sx={{ display: 'block', pb: 1, color: 'text.secondary', lineHeight: '16px', letterSpacing: '0.4px' }}>
                   {inputHint}
                 </Typography>
               )}
@@ -673,7 +673,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pt: 1, px: 1.5 }}>
             {showCredits && credits ? (
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                <Typography variant="caption" color="text.disabled" sx={{ fontSize: '0.75rem', lineHeight: '16px', letterSpacing: '0.4px' }}>
+                <Typography variant="caption" sx={{ color: 'text.disabled', fontSize: '0.75rem', lineHeight: '16px', letterSpacing: '0.4px' }}>
                   {typeof creditsLabel === 'function'
                     ? creditsLabel(credits.used, credits.total)
                     : `${creditsLabel} ${credits.used}/${credits.total}`}
