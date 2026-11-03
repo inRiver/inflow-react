@@ -183,7 +183,7 @@ describe('ThemedChatPanel', () => {
 
     expect(onRemoveAttachment).toHaveBeenCalledOnce();
     expect(screen.getByText('Credits 8/10')).toBeInTheDocument();
-    expect(screen.getByText('120 / 2000')).toBeInTheDocument();
+    expect(screen.getByText('120 / 2000 chars')).toBeInTheDocument();
   });
 
   it('uses a controlled composer and sends its exact text', async () => {
@@ -745,18 +745,20 @@ describe('ThemedChatPanel', () => {
       expect(disabledSend).toHaveClass('Mui-disabled');
     });
 
-    it('aligns the metadata row and keeps the existing count wording', async () => {
+    it('aligns the metadata row and styles the counter like the reference composer', async () => {
       renderChatPanel({ credits: { used: 8, total: 10 }, charCount: 124, charLimit: 2000 });
 
-      const count = await screen.findByText('124 / 2000');
+      const count = await screen.findByText('124 / 2000 chars');
       const metadataRow = count.parentElement as HTMLElement;
       expect(metadataRow).toHaveStyle({
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingTop: '4px',
+        paddingTop: '8px',
+        paddingLeft: '12px',
+        paddingRight: '12px',
       });
-      expect(count).toHaveStyle({ fontSize: '0.75rem', lineHeight: '16px', letterSpacing: '0.4px' });
+      expect(count).toHaveStyle({ fontSize: '0.75rem', lineHeight: '1', letterSpacing: 'normal', color: 'rgb(66, 70, 85)' });
 
       const credits = screen.getByText('Credits 8/10');
       expect(credits).toHaveStyle({ fontSize: '0.75rem', lineHeight: '16px', letterSpacing: '0.4px' });
@@ -796,6 +798,26 @@ describe('ThemedChatPanel', () => {
     }
   });
 
+  describe('character counter', () => {
+    it('appends the default chars label', async () => {
+      renderChatPanel({ charCount: 124, charLimit: 2000 });
+
+      expect((await screen.findByText('124 / 2000 chars')).textContent).toBe('124 / 2000 chars');
+    });
+
+    it('uses a localized charCountLabel', async () => {
+      renderChatPanel({ charCount: 124, charLimit: 2000, charCountLabel: 'tecken' });
+
+      expect((await screen.findByText('124 / 2000 tecken')).textContent).toBe('124 / 2000 tecken');
+    });
+
+    it('omits the label and trailing space when charCountLabel is empty', async () => {
+      renderChatPanel({ charCount: 124, charLimit: 2000, charCountLabel: '' });
+
+      expect((await screen.findByText('124 / 2000')).textContent).toBe('124 / 2000');
+    });
+  });
+
   describe('composer metadata visibility', () => {
     it('shows the credits block when credits are supplied and showCredits is not set', async () => {
       renderChatPanel({ credits: { used: 8, total: 10 } });
@@ -820,20 +842,20 @@ describe('ThemedChatPanel', () => {
     it('shows the character counter by default', async () => {
       renderChatPanel({ charCount: 124, charLimit: 2000 });
 
-      expect(await screen.findByText('124 / 2000')).toBeInTheDocument();
+      expect(await screen.findByText('124 / 2000 chars')).toBeInTheDocument();
     });
 
     it('hides the character counter when showCharCount is false', async () => {
       renderChatPanel({ charCount: 124, charLimit: 2000, showCharCount: false });
 
       await screen.findByTestId('themed-chat-panel');
-      expect(screen.queryByText('124 / 2000')).not.toBeInTheDocument();
+      expect(screen.queryByText(/124 \/ 2000/)).not.toBeInTheDocument();
     });
 
     it('extends the character limit via charLimit', async () => {
       renderChatPanel({ charCount: 124, charLimit: 8000 });
 
-      expect(await screen.findByText('124 / 8000')).toBeInTheDocument();
+      expect(await screen.findByText('124 / 8000 chars')).toBeInTheDocument();
     });
 
     it('shows the input hint by default', async () => {

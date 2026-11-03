@@ -11,6 +11,7 @@ All notable changes to `@inriver/inflow-react` are documented here. This project
 - `inflowGridThemeParamsDark` from `@inriver/inflow-react/ag-grid` for a dark AG Grid (library-facing).
 - Showcase-only: Light | Dark switch in the header (local development only) and mode-aware Design Tokens and Guidelines pages.
 - Tests: `lightModeGuard` (light values must not change), `darkContrast` (dark AA ratios) and flag tests.
+- `ThemedChatPanel` `charCountLabel` prop: unit word after the character count, default `chars` (library-facing).
 
 ### Changed
 - Showcase-only: the Skeleton demo's interactive skeleton is sized per variant. The text skeleton is a thin line (210x14) instead of a 36px bar (it passed `height={60}` to every variant, and MUI scales a text skeleton to 60% of that), and the circular skeleton is a 60px circle instead of a 210x60 oval; rectangular and rounded stay 210x60.
@@ -36,6 +37,7 @@ All notable changes to `@inriver/inflow-react` are documented here. This project
 - Showcase-only: the AG Grid demo keeps the same header and row height in light and dark (32px / 40px); the dark params had been overriding them with the 48px / 52px library defaults.
 - Showcase-only: the header color mode switch offers System, Light and Dark and shows the saved choice and the active mode; the Guidelines page has a complete setup example (follow the system, save a choice, return to System, style own panels).
 - Showcase-only: the Linear Progress, Circular Progress, Rating, Slider and Badge demos label each example with its task, value and status, and name each control for screen readers.
+- `ThemedChatPanel` character counter reads `124 / 2000 chars`, uses the secondary text color instead of primary, and sits 8px below the composer, inset 12px (library-facing, visible in light and dark).
 
 ### Changed
 - Updated dependencies and tooling: `@mui/x-date-pickers` 9.17.0, Vite 8.3.5, Vitest and `@vitest/coverage-v8` 5.1.0, `@vitejs/plugin-react` 6.2.1, `react-router-dom` 7.18.5, `@types/node` 26.6.6, `globals` 17.14.0, and refreshed minimums for Emotion 11.14.x, ESLint 10.14.0, typescript-eslint 8.72.1 and TypeScript 6.0.3. TypeScript 7 and jsdom 30 are intentionally held back (typescript-eslint peer range and Node baseline, respectively).

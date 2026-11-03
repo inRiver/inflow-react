@@ -104,6 +104,8 @@ export interface ThemedChatPanelProps {
   showCredits?: boolean;
   charCount?: number;
   charLimit?: number;
+  /** Unit word after the character count (e.g. a translated `chars`). Defaults to `'chars'`; pass `''` to omit. */
+  charCountLabel?: string;
   /** Visibility of the "count / limit" footer text. */
   showCharCount?: boolean;
   /** Visibility of the small hint line under the input (e.g. "Type / to switch assistants"). */
@@ -139,6 +141,7 @@ const DEFAULT_STRINGS = {
   stopAriaLabel: 'Stop generating',
   attachAriaLabel: 'Attach files',
   toolsAriaLabel: 'Add tools',
+  charCountLabel: 'chars',
 } as const;
 
 const iconButtonSx = {
@@ -242,6 +245,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
       showCredits = Boolean(credits),
       charCount = 0,
       charLimit = 2000,
+      charCountLabel = DEFAULT_STRINGS.charCountLabel,
       showCharCount = true,
       showInputHint = true,
       isRunning = false,
@@ -635,7 +639,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
             )}
           </Box>
 
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pt: 0.5 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pt: 1, px: 1.5 }}>
             {showCredits && credits ? (
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                 <Typography variant="caption" color="text.disabled" sx={{ fontSize: '0.75rem', lineHeight: '16px', letterSpacing: '0.4px' }}>
@@ -647,8 +651,8 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
               </Box>
             ) : <span />}
             {showCharCount && (
-              <Typography variant="caption" color="primary" sx={{ fontSize: '0.75rem', lineHeight: '16px', letterSpacing: '0.4px' }}>
-                {charCount} / {charLimit}
+              <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.75rem', lineHeight: 1, letterSpacing: 'normal' }}>
+                {`${charCount} / ${charLimit}${charCountLabel ? ` ${charCountLabel}` : ''}`}
               </Typography>
             )}
           </Box>
