@@ -778,16 +778,17 @@ describe('ThemedChatPanel', () => {
       expect(within(credits.parentElement as HTMLElement).getByText('info')).toHaveStyle({ fontSize: '16px' });
     });
 
-    it('centers the disclaimer 4px below the metadata row', async () => {
+    it('renders the disclaimer as centered body2 in the disabled text color, 8px below the counter', async () => {
       renderChatPanel();
 
       expect(await screen.findByText('AI can make mistakes. Check important info.')).toHaveStyle({
         textAlign: 'center',
-        fontSize: '0.6875rem',
-        fontWeight: '500',
-        lineHeight: '16px',
-        letterSpacing: '0.5px',
-        marginTop: '4px',
+        fontSize: '0.875rem',
+        fontWeight: '400',
+        lineHeight: '1.25rem',
+        letterSpacing: '0.015625rem',
+        marginTop: '8px',
+        color: 'rgba(0, 0, 0, 0.38)',
       });
     });
   });
