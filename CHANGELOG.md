@@ -11,7 +11,7 @@ All notable changes to `@inriver/inflow-react` are documented here. This project
 - `inflowGridThemeParamsDark` from `@inriver/inflow-react/ag-grid` for a dark AG Grid (library-facing).
 - Showcase-only: Light | Dark switch in the header (local development only) and mode-aware Design Tokens and Guidelines pages.
 - Tests: `lightModeGuard` (light values must not change), `darkContrast` (dark AA ratios) and flag tests.
-- `ThemedChatPanel` `charCountLabel` prop: unit word after the character count, default `chars` (library-facing).
+- `ThemedChatPanel` `charCountLabel` prop: unit word after the character count, default `chars`. Localized apps should pass a translated label, or `''` to keep the old `124 / 2000` text (library-facing).
 
 ### Changed
 - Showcase-only: the Skeleton demo's interactive skeleton is sized per variant. The text skeleton is a thin line (210x14) instead of a 36px bar (it passed `height={60}` to every variant, and MUI scales a text skeleton to 60% of that), and the circular skeleton is a 60px circle instead of a 210x60 oval; rectangular and rounded stay 210x60.
@@ -38,7 +38,7 @@ All notable changes to `@inriver/inflow-react` are documented here. This project
 - Showcase-only: the header color mode switch offers System, Light and Dark and shows the saved choice and the active mode; the Guidelines page has a complete setup example (follow the system, save a choice, return to System, style own panels).
 - Showcase-only: the Linear Progress, Circular Progress, Rating, Slider and Badge demos label each example with its task, value and status, and name each control for screen readers.
 - `ThemedChatPanel` character counter reads `124 / 2000 chars`, uses the secondary text color instead of primary, and sits 8px below the composer, inset 12px (library-facing, visible in light and dark).
-- `ThemedChatPanel` composer matches the reference chat: 14px input on a 28px line with 56px single-line height (without the input hint), multiline grows to a 104px cap (default `maxRows` 2.75, was 4), 34px round `+`/send/stop controls pinned to the first line, and Stop uses the `stop_circle` icon (library-facing, visible in light and dark).
+- `ThemedChatPanel` composer matches the reference chat: 14px input on a 28px line with 56px single-line height (without the input hint), multiline grows to a 104px cap (default `maxRows` 2.75, was 4; rows are now taller, so an explicit `maxRows` gives a taller cap than before, e.g. `maxRows={4}` is 139px instead of 104px, and `maxRows={2.75}` keeps 104px), 34px round `+`/send/stop controls pinned to the first line, and Stop uses the `stop_circle` icon (library-facing, visible in light and dark).
 - `ThemedChatPanel` AI disclaimer is grey (`text.disabled`, the same grey as the reference chat on the white panel) instead of near-black, and uses `body2` (14px, regular) with 8px top spacing. It had been asking for `text.disabled` through the `Typography` `color` prop, which MUI 9 ignores for palette paths, so it inherited the primary text color (library-facing, visible in light and dark).
 - `ThemedChatPanel` credits label is grey (`text.disabled`), and the input hint and upload progress label use the secondary text color, for the same reason: their colors had been ignored and they rendered near-black (library-facing, visible in light and dark).
 - `ThemedChatPanel` input hint is a block with 8px below it, so it no longer touches the bottom edge of the composer (library-facing, visible in light and dark).

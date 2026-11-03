@@ -157,11 +157,16 @@ const iconButtonSx = {
 const COMPOSER_CONTROL_SIZE = 34;
 const COMPOSER_RAIL_HEIGHT = 56;
 const COMPOSER_LINE_HEIGHT = 28;
-/** 19px top + 8px bottom input padding. */
-const COMPOSER_INPUT_PADDING_Y = 27;
-/** Multiline cap: a 100px textarea plus the 2px top/bottom container inset of the reference composer. */
+/** Input padding: the reference's 17px/6px plus its 2px container inset, folded into the input. */
+const COMPOSER_INPUT_PADDING_TOP = 19;
+const COMPOSER_INPUT_PADDING_BOTTOM = 8;
+/**
+ * Multiline cap for the whole textarea box (padding included). Matches the reference's
+ * 100px textarea plus its 2px top and bottom container inset.
+ */
 const COMPOSER_MAX_HEIGHT = 104;
-const DEFAULT_MAX_ROWS = (COMPOSER_MAX_HEIGHT - COMPOSER_INPUT_PADDING_Y) / COMPOSER_LINE_HEIGHT;
+const DEFAULT_MAX_ROWS =
+  (COMPOSER_MAX_HEIGHT - COMPOSER_INPUT_PADDING_TOP - COMPOSER_INPUT_PADDING_BOTTOM) / COMPOSER_LINE_HEIGHT;
 
 /** Shared by the leading `+` and the trailing send/stop so swapping them never shifts the layout. */
 const composerActionSx = {
@@ -648,7 +653,10 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
                   fontSize: '0.875rem',
                   lineHeight: `${COMPOSER_LINE_HEIGHT}px`,
                   letterSpacing: '0.00937em',
-                  '& .MuiInputBase-input': { height: 'auto', p: '19px 0 8px' },
+                  '& .MuiInputBase-input': {
+                    height: 'auto',
+                    p: `${COMPOSER_INPUT_PADDING_TOP}px 0 ${COMPOSER_INPUT_PADDING_BOTTOM}px`,
+                  },
                 }}
               />
               {showInputHint && inputHint && (
