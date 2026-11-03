@@ -4,6 +4,8 @@ All notable changes to `@inriver/inflow-react` are documented here. This project
 
 ## [Unreleased]
 
+## [3.11.0] - 2026-11-03
+
 ### Added
 - Dark mode (pre-release, behind `INFLOW_DARK_MODE_ENABLED`, off in published builds): same navy brand hue, tonal surface steps instead of shadows, adapted status colors, and WCAG AA contrast for text and field borders. Light mode is unchanged and locked by a guard test.
 - `inflowGridThemeParamsDark` from `@inriver/inflow-react/ag-grid` for a dark AG Grid (library-facing).
@@ -34,6 +36,10 @@ All notable changes to `@inriver/inflow-react` are documented here. This project
 - Showcase-only: the AG Grid demo keeps the same header and row height in light and dark (32px / 40px); the dark params had been overriding them with the 48px / 52px library defaults.
 - Showcase-only: the header color mode switch offers System, Light and Dark and shows the saved choice and the active mode; the Guidelines page has a complete setup example (follow the system, save a choice, return to System, style own panels).
 - Showcase-only: the Linear Progress, Circular Progress, Rating, Slider and Badge demos label each example with its task, value and status, and name each control for screen readers.
+
+### Changed
+- Updated dependencies and tooling: `@mui/x-date-pickers` 9.17.0, Vite 8.3.5, Vitest and `@vitest/coverage-v8` 5.1.0, `@vitejs/plugin-react` 6.2.1, `react-router-dom` 7.18.5, `@types/node` 26.6.6, `globals` 17.14.0, and refreshed minimums for Emotion 11.14.x, ESLint 10.14.0, typescript-eslint 8.72.1 and TypeScript 6.0.3. TypeScript 7 and jsdom 30 are intentionally held back (typescript-eslint peer range and Node baseline, respectively).
+- Security-floor overrides for `react-router` and `postcss` are now bounded ranges (`^7.18.5`, `^8.5.30`) so future re-resolution cannot pull an incompatible major.
 
 ## [3.10.3] - 2026-10-22
 
