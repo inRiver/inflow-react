@@ -23,6 +23,19 @@ describe('ChatPanelDemo', { timeout: 20000 }, () => {
     expect(screen.getByRole('checkbox', { name: 'Show input hint' })).toBeChecked();
   });
 
+  it('shows the chars counter and a multiline composer toggle', () => {
+    renderWithInflow(<ChatPanelDemo />);
+    openPanel();
+
+    expect(screen.getByText('124 / 2000 chars')).toBeInTheDocument();
+    selectOption('Character limit', '8000');
+    expect(screen.getByText('124 / 8000 chars')).toBeInTheDocument();
+
+    expect(screen.getByRole('textbox', { name: 'How can I help?' }).tagName).toBe('INPUT');
+    toggle('Multiline composer');
+    expect(screen.getByRole('textbox', { name: 'How can I help?' }).tagName).toBe('TEXTAREA');
+  });
+
   it('documents active and completed assistant reasoning states', () => {
     renderWithInflow(<ChatPanelDemo />);
 

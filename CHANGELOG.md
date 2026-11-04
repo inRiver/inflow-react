@@ -4,6 +4,16 @@ All notable changes to `@inriver/inflow-react` are documented here. This project
 
 ## [Unreleased]
 
+### Added
+- `ThemedChatPanel` `charCountLabel` prop: unit word after the character count, default `chars`. Localized apps should pass a translated label, or `''` to keep the old `124 / 2000` text (library-facing).
+
+### Changed
+- `ThemedChatPanel` character counter reads `124 / 2000 chars`, uses the secondary text color instead of primary, and sits 8px below the composer, inset 12px (library-facing, visible in light and dark).
+- `ThemedChatPanel` composer matches the reference chat: 14px input on a 28px line, vertically centered with 14px above and below for a 56px single-line height (without the input hint), multiline grows to a 104px cap (default `maxRows` about 2.71, was 4; rows are now taller, so an explicit `maxRows` gives a taller cap than before, e.g. `maxRows={4}` is 140px instead of 104px), 34px round `+`/send/stop controls pinned to the first line, and Stop uses the `stop_circle` icon (library-facing, visible in light and dark).
+- `ThemedChatPanel` AI disclaimer is grey (`text.disabled`, the same grey as the reference chat on the white panel) instead of near-black, and uses `body2` (14px, regular) with 8px top spacing. It had been asking for `text.disabled` through the `Typography` `color` prop, which MUI 9 ignores for palette paths, so it inherited the primary text color (library-facing, visible in light and dark).
+- `ThemedChatPanel` credits label is grey (`text.disabled`), and the input hint and upload progress label use the secondary text color, for the same reason: their colors had been ignored and they rendered near-black (library-facing, visible in light and dark).
+- `ThemedChatPanel` input hint is a block that sits just under the input text with 8px below it, so it no longer touches the bottom edge of the composer and the composer is 66px tall with the hint shown (library-facing, visible in light and dark).
+
 ## [3.11.1] - 2026-11-03
 
 ### Added

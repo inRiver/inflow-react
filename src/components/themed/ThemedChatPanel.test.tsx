@@ -183,7 +183,7 @@ describe('ThemedChatPanel', () => {
 
     expect(onRemoveAttachment).toHaveBeenCalledOnce();
     expect(screen.getByText('Credits 8/10')).toBeInTheDocument();
-    expect(screen.getByText('120 / 2000')).toBeInTheDocument();
+    expect(screen.getByText('120 / 2000 chars')).toBeInTheDocument();
   });
 
   it('uses a controlled composer and sends its exact text', async () => {
@@ -685,32 +685,44 @@ describe('ThemedChatPanel', () => {
       expect(await screen.findByTestId('chat-composer')).toHaveStyle({
         backgroundColor: 'rgb(235, 241, 252)',
         borderRadius: '5px',
-        padding: '8px 4px 8px 12px',
-        gap: '8px',
+        padding: '0px 12px',
+        gap: '12px',
         minHeight: '56px',
-        alignItems: 'center',
+        alignItems: 'flex-start',
       });
     });
 
-    it('renders the leading attach control and the 16px composer input', async () => {
+    it('pins the add control to a 56px rail and renders the 14px/28px composer input', async () => {
       renderChatPanel({ onAttachFile: vi.fn() });
 
       const attach = await screen.findByRole('button', { name: 'Attach files' });
-      expect(attach).toHaveStyle({ width: '32px', height: '32px' });
+      expect(attach).toHaveStyle({ width: '34px', height: '34px', borderRadius: '50%' });
       expect(within(attach).getByText('add')).toHaveStyle({ fontSize: '24px' });
+      expect(attach.parentElement).toHaveStyle({ height: '56px', display: 'flex', alignItems: 'center' });
 
       expect(screen.getByRole('textbox', { name: 'How can I help?' })).toHaveStyle({
-        fontSize: '1rem',
-        letterSpacing: '0.15px',
-        padding: '4px 0px',
+        fontSize: '0.875rem',
+        lineHeight: '28px',
+        letterSpacing: '0.00937em',
+        padding: '14px 0px 14px',
       });
     });
 
-    it('renders 48px circular send and stop controls with hover feedback', async () => {
+    it('gives a multiline composer the 14px/28px textarea with no root padding', async () => {
+      renderChatPanel({ multiline: true });
+
+      const textbox = await screen.findByRole('textbox', { name: 'How can I help?' });
+      expect(textbox.tagName).toBe('TEXTAREA');
+      expect(textbox).toHaveStyle({ lineHeight: '28px', padding: '14px 0px 14px' });
+      expect(textbox.closest('.MuiInputBase-root')).toHaveStyle({ padding: '0px' });
+    });
+
+    it('renders 34px circular send and stop controls on the same rail, stop as stop_circle', async () => {
       const { rerender } = renderChatPanel({ inputValue: 'ready' });
 
       const send = await screen.findByRole('button', { name: 'Send message' });
-      expect(send).toHaveStyle({ width: '48px', height: '48px', borderRadius: '50%' });
+      expect(send).toHaveStyle({ width: '34px', height: '34px', borderRadius: '50%' });
+      expect(send.parentElement).toHaveStyle({ height: '56px', display: 'flex', alignItems: 'center' });
       expect(cssRulesFor(send).join(' ')).toContain(':hover');
 
       rerender(
@@ -719,11 +731,11 @@ describe('ThemedChatPanel', () => {
         </ThemedRightPanel>,
       );
 
-      expect(screen.getByRole('button', { name: 'Stop generating' })).toHaveStyle({
-        width: '48px',
-        height: '48px',
-        borderRadius: '50%',
-      });
+      const stop = screen.getByRole('button', { name: 'Stop generating' });
+      expect(stop).toHaveStyle({ width: '34px', height: '34px', borderRadius: '50%' });
+      expect(stop.parentElement).toHaveStyle({ height: '56px' });
+      expect(within(stop).getByText('stop_circle')).toHaveStyle({ fontSize: '24px' });
+      expect(within(stop).queryByText('stop')).not.toBeInTheDocument();
     });
 
     it('keeps the send control focusable when enabled and disabled when it cannot send', async () => {
@@ -745,18 +757,20 @@ describe('ThemedChatPanel', () => {
       expect(disabledSend).toHaveClass('Mui-disabled');
     });
 
-    it('aligns the metadata row and keeps the existing count wording', async () => {
+    it('aligns the metadata row and styles the counter like the reference composer', async () => {
       renderChatPanel({ credits: { used: 8, total: 10 }, charCount: 124, charLimit: 2000 });
 
-      const count = await screen.findByText('124 / 2000');
+      const count = await screen.findByText('124 / 2000 chars');
       const metadataRow = count.parentElement as HTMLElement;
       expect(metadataRow).toHaveStyle({
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingTop: '4px',
+        paddingTop: '8px',
+        paddingLeft: '12px',
+        paddingRight: '12px',
       });
-      expect(count).toHaveStyle({ fontSize: '0.75rem', lineHeight: '16px', letterSpacing: '0.4px' });
+      expect(count).toHaveStyle({ fontSize: '0.75rem', lineHeight: '1', letterSpacing: 'normal', color: 'rgb(66, 70, 85)' });
 
       const credits = screen.getByText('Credits 8/10');
       expect(credits).toHaveStyle({ fontSize: '0.75rem', lineHeight: '16px', letterSpacing: '0.4px' });
@@ -764,16 +778,17 @@ describe('ThemedChatPanel', () => {
       expect(within(credits.parentElement as HTMLElement).getByText('info')).toHaveStyle({ fontSize: '16px' });
     });
 
-    it('centers the disclaimer 4px below the metadata row', async () => {
+    it('renders the disclaimer as centered body2 in the disabled text color, 8px below the counter', async () => {
       renderChatPanel();
 
       expect(await screen.findByText('AI can make mistakes. Check important info.')).toHaveStyle({
         textAlign: 'center',
-        fontSize: '0.6875rem',
-        fontWeight: '500',
-        lineHeight: '16px',
-        letterSpacing: '0.5px',
-        marginTop: '4px',
+        fontSize: '0.875rem',
+        fontWeight: '400',
+        lineHeight: '1.25rem',
+        letterSpacing: '0.015625rem',
+        marginTop: '8px',
+        color: 'rgba(0, 0, 0, 0.38)',
       });
     });
   });
@@ -794,6 +809,85 @@ describe('ThemedChatPanel', () => {
     } finally {
       errorSpy.mockRestore();
     }
+  });
+
+  describe('footer secondary text colors', () => {
+    it('renders credits in the disabled text color', async () => {
+      renderChatPanel({ credits: { used: 8, total: 10 } });
+
+      expect(await screen.findByText('Credits 8/10')).toHaveStyle({ color: 'rgba(0, 0, 0, 0.38)' });
+    });
+
+    it('renders the input hint as a block in the secondary text color, tucked into the input bottom padding', async () => {
+      renderChatPanel();
+
+      expect(await screen.findByText('Type / to switch assistants')).toHaveStyle({
+        color: 'rgb(66, 70, 85)',
+        display: 'block',
+        marginTop: '-14px',
+        paddingBottom: '8px',
+      });
+    });
+
+    it('renders the upload progress label in the secondary text color', async () => {
+      renderChatPanel({ uploadProgress: 40, uploadProgressLabel: 'Uploading 40%' });
+
+      expect(await screen.findByText('Uploading 40%')).toHaveStyle({ color: 'rgb(66, 70, 85)' });
+    });
+  });
+
+  describe('multiline cap', () => {
+    // jsdom has no layout: fake the autosize probe so a single row measures 28px and the content 200px.
+    function stubScrollHeight() {
+      return vi.spyOn(HTMLTextAreaElement.prototype, 'scrollHeight', 'get').mockImplementation(function (this: HTMLTextAreaElement) {
+        return this.value === 'x' ? 28 : 200;
+      });
+    }
+
+    it('caps the default multiline composer at 104px with padding (76px content) and lets it scroll', async () => {
+      const spy = stubScrollHeight();
+      try {
+        renderChatPanel({ multiline: true, inputValue: 'long\ncontent\nthat\nwraps\npast\nthe\ncap' });
+
+        const textarea = await screen.findByRole('textbox', { name: 'How can I help?' });
+        expect(textarea.style.height).toBe('76px');
+        expect(textarea.style.overflow).toBe('');
+      } finally {
+        spy.mockRestore();
+      }
+    });
+
+    it('honors an explicit maxRows', async () => {
+      const spy = stubScrollHeight();
+      try {
+        renderChatPanel({ multiline: true, maxRows: 4, inputValue: 'long\ncontent\nthat\nwraps\npast\nthe\ncap' });
+
+        const textarea = await screen.findByRole('textbox', { name: 'How can I help?' });
+        expect(textarea.style.height).toBe('112px');
+      } finally {
+        spy.mockRestore();
+      }
+    });
+  });
+
+  describe('character counter', () => {
+    it('appends the default chars label', async () => {
+      renderChatPanel({ charCount: 124, charLimit: 2000 });
+
+      expect((await screen.findByText('124 / 2000 chars')).textContent).toBe('124 / 2000 chars');
+    });
+
+    it('uses a localized charCountLabel', async () => {
+      renderChatPanel({ charCount: 124, charLimit: 2000, charCountLabel: 'tecken' });
+
+      expect((await screen.findByText('124 / 2000 tecken')).textContent).toBe('124 / 2000 tecken');
+    });
+
+    it('omits the label and trailing space when charCountLabel is empty', async () => {
+      renderChatPanel({ charCount: 124, charLimit: 2000, charCountLabel: '' });
+
+      expect((await screen.findByText('124 / 2000')).textContent).toBe('124 / 2000');
+    });
   });
 
   describe('composer metadata visibility', () => {
@@ -820,20 +914,20 @@ describe('ThemedChatPanel', () => {
     it('shows the character counter by default', async () => {
       renderChatPanel({ charCount: 124, charLimit: 2000 });
 
-      expect(await screen.findByText('124 / 2000')).toBeInTheDocument();
+      expect(await screen.findByText('124 / 2000 chars')).toBeInTheDocument();
     });
 
     it('hides the character counter when showCharCount is false', async () => {
       renderChatPanel({ charCount: 124, charLimit: 2000, showCharCount: false });
 
       await screen.findByTestId('themed-chat-panel');
-      expect(screen.queryByText('124 / 2000')).not.toBeInTheDocument();
+      expect(screen.queryByText(/124 \/ 2000/)).not.toBeInTheDocument();
     });
 
     it('extends the character limit via charLimit', async () => {
       renderChatPanel({ charCount: 124, charLimit: 8000 });
 
-      expect(await screen.findByText('124 / 8000')).toBeInTheDocument();
+      expect(await screen.findByText('124 / 8000 chars')).toBeInTheDocument();
     });
 
     it('shows the input hint by default', async () => {

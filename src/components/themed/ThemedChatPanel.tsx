@@ -104,6 +104,8 @@ export interface ThemedChatPanelProps {
   showCredits?: boolean;
   charCount?: number;
   charLimit?: number;
+  /** Unit word after the character count (e.g. a translated `chars`). Defaults to `'chars'`; pass `''` to omit. */
+  charCountLabel?: string;
   /** Visibility of the "count / limit" footer text. */
   showCharCount?: boolean;
   /** Visibility of the small hint line under the input (e.g. "Type / to switch assistants"). */
@@ -113,6 +115,7 @@ export interface ThemedChatPanelProps {
   isInputDisabled?: boolean;
   isSendDisabled?: boolean;
   multiline?: boolean;
+  /** Max visible rows before the multiline composer scrolls. Default is about 2.71 (a 104px cap matching the reference composer). Fractions are allowed. */
   maxRows?: number;
 }
 
@@ -139,6 +142,7 @@ const DEFAULT_STRINGS = {
   stopAriaLabel: 'Stop generating',
   attachAriaLabel: 'Attach files',
   toolsAriaLabel: 'Add tools',
+  charCountLabel: 'chars',
 } as const;
 
 const iconButtonSx = {
@@ -149,12 +153,36 @@ const iconButtonSx = {
   '&:hover': { backgroundColor: 'action.hover' },
 } as const;
 
-const sendButtonSx = {
+/** Reference composer metrics (agent chat): 34px round controls on a 56px rail, 14px text on a 28px line. */
+const COMPOSER_CONTROL_SIZE = 34;
+const COMPOSER_RAIL_HEIGHT = 56;
+const COMPOSER_LINE_HEIGHT = 28;
+/** Even input padding: centers the 28px line in the 56px rail, level with the controls. */
+const COMPOSER_INPUT_PADDING_TOP = 14;
+const COMPOSER_INPUT_PADDING_BOTTOM = 14;
+/**
+ * Multiline cap for the whole textarea box (padding included). Matches the reference's
+ * 100px textarea plus its 2px top and bottom container inset.
+ */
+const COMPOSER_MAX_HEIGHT = 104;
+const DEFAULT_MAX_ROWS =
+  (COMPOSER_MAX_HEIGHT - COMPOSER_INPUT_PADDING_TOP - COMPOSER_INPUT_PADDING_BOTTOM) / COMPOSER_LINE_HEIGHT;
+
+/** Shared by the leading `+` and the trailing send/stop so swapping them never shifts the layout. */
+const composerActionSx = {
   color: 'text.secondary',
-  width: 48,
-  height: 48,
+  width: COMPOSER_CONTROL_SIZE,
+  height: COMPOSER_CONTROL_SIZE,
   borderRadius: '50%',
   '&:hover': { backgroundColor: 'action.hover' },
+} as const;
+
+/** Keeps composer controls in the first-line band while the multiline input grows. */
+const composerRailSx = {
+  height: COMPOSER_RAIL_HEIGHT,
+  display: 'flex',
+  alignItems: 'center',
+  flexShrink: 0,
 } as const;
 
 const selectedSurfaceSx = {
@@ -242,13 +270,14 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
       showCredits = Boolean(credits),
       charCount = 0,
       charLimit = 2000,
+      charCountLabel = DEFAULT_STRINGS.charCountLabel,
       showCharCount = true,
       showInputHint = true,
       isRunning = false,
       isInputDisabled = false,
       isSendDisabled = false,
       multiline = false,
-      maxRows = 4,
+      maxRows = DEFAULT_MAX_ROWS,
     },
     ref,
   ) {
@@ -534,7 +563,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
         {uploadProgress !== undefined && (
           <Box sx={{ flexShrink: 0, px: 2, pb: 0.5 }}>
             <LinearProgress variant="determinate" value={Math.min(uploadProgress, 100)} sx={{ borderRadius: 999 }} />
-            {uploadProgressLabel && <Typography variant="caption" color="text.secondary">{uploadProgressLabel}</Typography>}
+            {uploadProgressLabel && <Typography variant="caption" sx={{ color: 'text.secondary' }}>{uploadProgressLabel}</Typography>}
           </Box>
         )}
 
@@ -544,11 +573,11 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
             sx={{
               bgcolor: 'inflow.navy100',
               borderRadius: `${inflowTokens.radius.sm}px`,
-              p: (theme) => theme.spacing(1, 0.5, 1, 1.5),
+              p: (theme) => theme.spacing(0, 1.5),
               display: 'flex',
-              alignItems: 'center',
-              gap: 1,
-              minHeight: 56,
+              alignItems: 'flex-start',
+              gap: 1.5,
+              minHeight: COMPOSER_RAIL_HEIGHT,
             }}
           >
             {showAttach && (
@@ -562,17 +591,19 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
               // A single leading `+` opens one menu; when attach is also enabled it
               // becomes the menu's first item so the composer never shows two `+`.
               <>
-                <IconButton
-                  id={toolsTriggerId}
-                  aria-label={toolsAriaLabel}
-                  aria-haspopup="menu"
-                  aria-expanded={Boolean(toolsAnchorEl)}
-                  aria-controls={toolsAnchorEl ? toolsMenuId : undefined}
-                  onClick={(event) => setToolsAnchorEl(event.currentTarget)}
-                  sx={{ color: 'text.secondary', width: 32, height: 32 }}
-                >
-                  <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24 }}>add</Icon>
-                </IconButton>
+                <Box sx={composerRailSx}>
+                  <IconButton
+                    id={toolsTriggerId}
+                    aria-label={toolsAriaLabel}
+                    aria-haspopup="menu"
+                    aria-expanded={Boolean(toolsAnchorEl)}
+                    aria-controls={toolsAnchorEl ? toolsMenuId : undefined}
+                    onClick={(event) => setToolsAnchorEl(event.currentTarget)}
+                    sx={composerActionSx}
+                  >
+                    <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24 }}>add</Icon>
+                  </IconButton>
+                </Box>
                 <Menu
                   anchorEl={toolsAnchorEl}
                   open={Boolean(toolsAnchorEl)}
@@ -598,9 +629,11 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
                 </Menu>
               </>
             ) : showAttach ? (
-              <IconButton aria-label={attachAriaLabel} onClick={() => fileInputRef.current?.click()} sx={{ color: 'text.secondary', width: 32, height: 32 }}>
-                <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24 }}>add</Icon>
-              </IconButton>
+              <Box sx={composerRailSx}>
+                <IconButton aria-label={attachAriaLabel} onClick={() => fileInputRef.current?.click()} sx={composerActionSx}>
+                  <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24 }}>add</Icon>
+                </IconButton>
+              </Box>
             ) : null}
             <Box sx={{ flex: '1 1 auto', minWidth: 0 }}>
               <InputBase
@@ -615,30 +648,42 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
                 sx={{
                   color: 'text.primary',
                   width: '100%',
-                  '& .MuiInputBase-input': { fontSize: '1rem', lineHeight: 1.5, letterSpacing: '0.15px', p: '4px 0' },
+                  p: 0,
+                  // Type sits on the root: MUI's input uses `font: inherit`, so it picks these up.
+                  fontSize: '0.875rem',
+                  lineHeight: `${COMPOSER_LINE_HEIGHT}px`,
+                  letterSpacing: '0.00937em',
+                  '& .MuiInputBase-input': {
+                    height: 'auto',
+                    p: `${COMPOSER_INPUT_PADDING_TOP}px 0 ${COMPOSER_INPUT_PADDING_BOTTOM}px`,
+                  },
                 }}
               />
               {showInputHint && inputHint && (
-                <Typography variant="caption" color="text.secondary" sx={{ lineHeight: '16px', letterSpacing: '0.4px' }}>
+                // Pulled up into the input's bottom padding: the 28px line already leaves a gap under
+                // the text, so the hint adds 16px + 8px instead of 30px + 8px to the composer.
+                <Typography variant="caption" sx={{ display: 'block', mt: `-${COMPOSER_INPUT_PADDING_BOTTOM}px`, pb: 1, color: 'text.secondary', lineHeight: '16px', letterSpacing: '0.4px' }}>
                   {inputHint}
                 </Typography>
               )}
             </Box>
-            {isStreaming && onStop ? (
-              <IconButton aria-label={stopAriaLabel} onClick={onStop} sx={sendButtonSx}>
-                <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24 }}>stop</Icon>
-              </IconButton>
-            ) : (
-              <IconButton aria-label={sendAriaLabel} onClick={handleSend} disabled={sendDisabled} sx={sendButtonSx}>
-                <SendIcon />
-              </IconButton>
-            )}
+            <Box sx={composerRailSx}>
+              {isStreaming && onStop ? (
+                <IconButton aria-label={stopAriaLabel} onClick={onStop} sx={composerActionSx}>
+                  <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24 }}>stop_circle</Icon>
+                </IconButton>
+              ) : (
+                <IconButton aria-label={sendAriaLabel} onClick={handleSend} disabled={sendDisabled} sx={composerActionSx}>
+                  <SendIcon />
+                </IconButton>
+              )}
+            </Box>
           </Box>
 
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pt: 0.5 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pt: 1, px: 1.5 }}>
             {showCredits && credits ? (
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                <Typography variant="caption" color="text.disabled" sx={{ fontSize: '0.75rem', lineHeight: '16px', letterSpacing: '0.4px' }}>
+                <Typography variant="caption" sx={{ color: 'text.disabled', fontSize: '0.75rem', lineHeight: '16px', letterSpacing: '0.4px' }}>
                   {typeof creditsLabel === 'function'
                     ? creditsLabel(credits.used, credits.total)
                     : `${creditsLabel} ${credits.used}/${credits.total}`}
@@ -647,16 +692,16 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
               </Box>
             ) : <span />}
             {showCharCount && (
-              <Typography variant="caption" color="primary" sx={{ fontSize: '0.75rem', lineHeight: '16px', letterSpacing: '0.4px' }}>
-                {charCount} / {charLimit}
+              <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.75rem', lineHeight: 1, letterSpacing: 'normal' }}>
+                {`${charCount} / ${charLimit}${charCountLabel ? ` ${charCountLabel}` : ''}`}
               </Typography>
             )}
           </Box>
 
+          {/* text.disabled on the white panel renders the same pixel as the reference's opaque grey, and keeps a dark-mode value. */}
           <Typography
-            variant="caption"
-            color="text.disabled"
-            sx={{ display: 'block', textAlign: 'center', fontSize: '0.6875rem', fontWeight: 500, lineHeight: '16px', letterSpacing: '0.5px', mt: 0.5 }}
+            variant="body2"
+            sx={{ display: 'block', textAlign: 'center', color: 'text.disabled', mt: 1 }}
           >
             {aiDisclaimer}
           </Typography>

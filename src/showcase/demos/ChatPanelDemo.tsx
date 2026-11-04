@@ -215,6 +215,7 @@ const chatPanelSchema: PropSchema[] = [
   { name: 'isStreaming', type: 'boolean', label: 'Show streaming stop control' },
   { name: 'isTyping', type: 'boolean', label: 'Show typing indicator' },
   { name: 'isInputDisabled', type: 'boolean', label: 'Disable composer input' },
+  { name: 'multiline', type: 'boolean', label: 'Multiline composer' },
   { name: 'useLongAssistantLabel', type: 'boolean', label: 'Use long assistant label' },
   { name: 'showCredits', type: 'boolean', label: 'Show credits' },
   { name: 'showCharCount', type: 'boolean', label: 'Show character counter' },
@@ -241,6 +242,7 @@ export function ChatPanelDemo() {
   const [isStreaming, setIsStreaming] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [isInputDisabled, setIsInputDisabled] = useState(false);
+  const [multiline, setMultiline] = useState(false);
   const [useLongAssistantLabel, setUseLongAssistantLabel] = useState(false);
   const [showCredits, setShowCredits] = useState(true);
   const [showCharCount, setShowCharCount] = useState(true);
@@ -290,7 +292,7 @@ export function ChatPanelDemo() {
 
       <PropsPlayground
         schema={chatPanelSchema}
-        values={{ assistant, conversation, attachmentState, isStreaming, isTyping, isInputDisabled, useLongAssistantLabel, showCredits, showCharCount, showInputHint, charLimit: String(charLimit), stepStatusIcons }}
+        values={{ assistant, conversation, attachmentState, isStreaming, isTyping, isInputDisabled, multiline, useLongAssistantLabel, showCredits, showCharCount, showInputHint, charLimit: String(charLimit), stepStatusIcons }}
         onChange={(values) => {
           setAssistant(typeof values.assistant === 'string' && ASSISTANTS.includes(values.assistant) ? values.assistant : CUSTOM_ASSISTANT);
           if (isConversationName(values.conversation)) setConversation(values.conversation);
@@ -302,6 +304,7 @@ export function ChatPanelDemo() {
           setIsStreaming(values.isStreaming === true);
           setIsTyping(values.isTyping === true);
           setIsInputDisabled(values.isInputDisabled === true);
+          setMultiline(values.multiline === true);
           setUseLongAssistantLabel(values.useLongAssistantLabel === true);
           setShowCredits(values.showCredits === true);
           setShowCharCount(values.showCharCount === true);
@@ -323,6 +326,7 @@ export function ChatPanelDemo() {
     isStreaming={isStreaming}
     onStop={() => setIsStreaming(false)}
     isTyping={isTyping}
+    multiline={multiline}
     renderTypingIndicator={() => <span>Assistant is thinking…</span>}
     renderToolMessage={(message) => <span>Tool: {message.id}</span>}
     attachments={attachments}
@@ -332,6 +336,7 @@ export function ChatPanelDemo() {
     showCredits={showCredits}
     charCount={124}
     charLimit={charLimit}
+    charCountLabel="chars"
     showCharCount={showCharCount}
     showInputHint={showInputHint}
     onClose={handleClose}
@@ -358,6 +363,7 @@ export function ChatPanelDemo() {
           onStop={() => setIsStreaming(false)}
           isTyping={isTyping}
           isInputDisabled={isInputDisabled}
+          multiline={multiline}
           assistantLabel={useLongAssistantLabel ? LONG_ASSISTANT_LABEL : undefined}
           tools={chatTools}
           renderToolMessage={(message) => <Typography variant="caption" color="text.secondary">Tool output: {message.id}</Typography>}
