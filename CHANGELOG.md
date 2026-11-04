@@ -4,6 +4,16 @@ All notable changes to `@inriver/inflow-react` are documented here. This project
 
 ## [Unreleased]
 
+## [3.11.1] - 2026-11-03
+
+### Added
+- Dark mode is now generally available and enabled in published builds: `INFLOW_DARK_MODE_ENABLED` is always `true`, so `InflowProvider mode="dark"`, `createInflowTheme('dark')` and `createDefaultTheme('dark')` resolve to dark instead of falling back to light. The consumer controls the mode through the existing `mode` prop. (library-facing)
+- Showcase-only: the System / Light / Dark color-mode selector in the header now appears in the deployed showcase (it was previously dev-only), so dark mode can be reviewed on the live site.
+
+### Changed
+- `resolveInflowColorMode` no longer warns or falls back to light when `'dark'` is requested; it returns the requested mode, since dark mode is always enabled. (library-facing)
+- Removed the obsolete `ThemeContext.flagOff` test suite that pinned the now-removed disabled-dark behavior; the always-on color-mode behavior remains covered by `ThemeContext.test.tsx` and `modeRender.test.tsx`.
+
 ## [3.11.0] - 2026-11-03
 
 ### Added

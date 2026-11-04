@@ -6,7 +6,7 @@ Shared Inflow React and MUI theme, design tokens, and themed components for Inri
 
 [Live showcase](https://inriver.github.io/inflow-react/) · [npm package](https://www.npmjs.com/package/@inriver/inflow-react)
 
-> **Beta:** Public APIs follow Semantic Versioning: backward-compatible fixes use patch releases, backward-compatible additions use minor releases, and breaking API or peer-baseline changes require a major release. Only light mode is currently enabled; dark mode is still feature-flagged off. Report bugs, rough edges, and requests through [GitHub Issues](https://github.com/inRiver/inflow-react/issues).
+> **Beta:** Public APIs follow Semantic Versioning: backward-compatible fixes use patch releases, backward-compatible additions use minor releases, and breaking API or peer-baseline changes require a major release. Light and dark modes are both enabled. Report bugs, rough edges, and requests through [GitHub Issues](https://github.com/inRiver/inflow-react/issues).
 
 ## Requirements and compatibility
 
@@ -60,7 +60,7 @@ export function App() {
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `children` | `ReactNode` | Required | React content rendered inside the scoped Inflow root. |
-| `mode` | `InflowColorMode` | `'light'` | Color mode used to create the theme. Dark mode is built but feature-flagged off in published builds, so `'dark'` resolves to light until the flag is enabled. See [Color modes](#color-modes). |
+| `mode` | `InflowColorMode` | `'light'` | Color mode used to create the theme. Pass `'dark'` for dark mode; the consumer controls the mode. See [Color modes](#color-modes). |
 | `className` | `string` | `undefined` | Class name applied to the scoped Inflow root. |
 | `sx` | `SxProps<Theme>` | `undefined` | Additional styles for the scoped Inflow root. |
 | `cacheKey` | `string` | `'inflow'` | Key for the provider-created Emotion cache. Use a distinct key for independently deployed roots sharing a page. |
@@ -97,12 +97,12 @@ const customSurface = {
 
 ## Color modes
 
-Inflow has a light and a dark theme. Light is the shipped look. Dark keeps the same navy brand hue and changes only lightness and saturation; it is **pre-release**: available in local development, and disabled in published builds behind `INFLOW_DARK_MODE_ENABLED` until it is released. While the flag is off, requesting `'dark'` resolves to light (development builds log a `console.warn`).
+Inflow has a light and a dark theme. Dark keeps the same navy brand hue and changes only lightness and saturation. Both modes ship enabled in the published package; the consumer chooses the mode through `InflowProvider`'s `mode` prop.
 
 ```tsx
-import { InflowProvider, INFLOW_DARK_MODE_ENABLED } from '@inriver/inflow-react';
+import { InflowProvider } from '@inriver/inflow-react';
 
-// Safe to pass 'dark' at any time: it falls back to light while the flag is off.
+// The consumer controls the mode (own toggle, system preference, or fixed).
 <InflowProvider mode={prefersDark ? 'dark' : 'light'}>{children}</InflowProvider>;
 ```
 
