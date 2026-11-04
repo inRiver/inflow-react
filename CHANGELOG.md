@@ -4,6 +4,8 @@ All notable changes to `@inriver/inflow-react` are documented here. This project
 
 ## [Unreleased]
 
+## [3.11.2] - 2026-11-04
+
 ### Added
 - `ThemedChatPanel` `charCountLabel` prop: unit word after the character count, default `chars`. Localized apps should pass a translated label, or `''` to keep the old `124 / 2000` text (library-facing).
 
