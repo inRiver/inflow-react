@@ -11,6 +11,7 @@ import {
   SvgIcon,
   Typography,
 } from '@mui/material';
+import type { MenuProps } from '@mui/material';
 import { forwardRef, useCallback, useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
 import { inflowTokens } from '../../theme';
 import { ThemedChip } from './ThemedChip';
@@ -50,6 +51,13 @@ export interface ThemedChatTool {
   disabledLabel?: string;
 }
 
+/**
+ * Props passed through to the composer's tools `Menu`. The panel owns opening, closing and the
+ * menu's accessible wiring, so `open`, `anchorEl`, `onClose` and `children` are not accepted.
+ * `slotProps.list` must be an object (the panel adds its `id` and `aria-labelledby` to it).
+ */
+export type ThemedChatToolsMenuProps = Omit<MenuProps, 'open' | 'anchorEl' | 'onClose' | 'children'>;
+
 export interface ThemedChatPanelProps {
   /** Currently selected assistant name shown in the header pill. */
   title?: string;
@@ -73,6 +81,11 @@ export interface ThemedChatPanelProps {
   toolsAriaLabel?: string;
   tools?: ThemedChatTool[];
   onToolSelect?: (toolId: string) => void;
+  /**
+   * Overrides for the tools menu, such as `anchorOrigin`/`transformOrigin` to place it, or
+   * `slotProps.paper` to style it. Defaults open the menu above the `+` button, left-aligned.
+   */
+  toolsMenuProps?: ThemedChatToolsMenuProps;
   /** Aggregate host-owned upload progress, paired with attachment status/progress. */
   uploadProgress?: number;
   uploadProgressLabel?: ReactNode;
@@ -243,6 +256,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
       toolsAriaLabel = DEFAULT_STRINGS.toolsAriaLabel,
       tools,
       onToolSelect,
+      toolsMenuProps,
       uploadProgress,
       uploadProgressLabel,
       onSend,
@@ -287,6 +301,9 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
     const assistantTriggerId = useId();
     const toolsMenuId = useId();
     const toolsTriggerId = useId();
+    const { slotProps: toolsMenuSlotProps, ...toolsMenuRest } = toolsMenuProps ?? {};
+    // A function-form `list` slot can't be merged with the panel's menu wiring, so only objects pass through.
+    const toolsMenuListProps = typeof toolsMenuSlotProps?.list === 'object' ? toolsMenuSlotProps.list : undefined;
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
     const [toolsAnchorEl, setToolsAnchorEl] = useState<HTMLElement | null>(null);
     const [selected, setSelected] = useState(title);
@@ -605,15 +622,20 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
                   </IconButton>
                 </Box>
                 <Menu
+                  // Opens upward like the reference chat, so it never covers the input (MUI's default drops
+                  // it down over the input). Left-aligned rather than centered: the trigger sits at the
+                  // panel's left edge, and a centered menu would hang out of the panel. Hosts can
+                  // override both through toolsMenuProps.
+                  anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+                  transformOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+                  {...toolsMenuRest}
                   anchorEl={toolsAnchorEl}
                   open={Boolean(toolsAnchorEl)}
                   onClose={() => setToolsAnchorEl(null)}
-                  // Opens upward like the reference chat, so it never covers the input (MUI's default drops
-                  // it down over the input). Left-aligned rather than centered: the trigger sits at the
-                  // panel's left edge, and a centered menu would hang out of the panel.
-                  anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-                  transformOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-                  slotProps={{ list: { id: toolsMenuId, 'aria-labelledby': toolsTriggerId } }}
+                  slotProps={{
+                    ...toolsMenuSlotProps,
+                    list: { ...toolsMenuListProps, id: toolsMenuId, 'aria-labelledby': toolsTriggerId },
+                  }}
                 >
                   {showAttach && (
                     <MenuItem key="__attach" onClick={() => {

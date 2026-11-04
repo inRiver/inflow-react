@@ -384,6 +384,56 @@ describe('ThemedChatPanel', () => {
     }
   });
 
+  it('lets the host override the tools menu placement through toolsMenuProps', async () => {
+    const heightSpy = vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(120);
+    const widthSpy = vi.spyOn(HTMLElement.prototype, 'offsetWidth', 'get').mockReturnValue(200);
+    try {
+      renderChatPanel({
+        showAttach: false,
+        tools: [{ id: 'report_issue', label: 'Report an issue' }],
+        toolsMenuProps: {
+          anchorOrigin: { vertical: 'top', horizontal: 'center' },
+          transformOrigin: { vertical: 'bottom', horizontal: 'center' },
+        },
+      });
+
+      const trigger = await screen.findByRole('button', { name: 'Add tools' });
+      trigger.getBoundingClientRect = () =>
+        ({ top: 500, left: 100, bottom: 534, right: 134, width: 34, height: 34, x: 100, y: 500, toJSON: () => ({}) }) as DOMRect;
+      fireEvent.click(trigger);
+
+      const paper = screen.getByRole('menu').closest('.MuiPaper-root') as HTMLElement;
+      await waitFor(() => expect(paper.style.top).toBe('380px'));
+      // Centered on the trigger: 100 + 34 / 2 - 200 / 2.
+      expect(paper.style.left).toBe('17px');
+    } finally {
+      heightSpy.mockRestore();
+      widthSpy.mockRestore();
+    }
+  });
+
+  it('merges host slotProps into the tools menu without dropping its menu wiring', async () => {
+    renderChatPanel({
+      showAttach: false,
+      tools: [{ id: 'report_issue', label: 'Report an issue' }],
+      toolsMenuProps: {
+        slotProps: {
+          paper: { className: 'app-tools-menu' },
+          list: { dense: true },
+        },
+      },
+    });
+
+    const trigger = await screen.findByRole('button', { name: 'Add tools' });
+    fireEvent.click(trigger);
+
+    const menu = screen.getByRole('menu');
+    expect(menu.closest('.MuiPaper-root')).toHaveClass('app-tools-menu');
+    expect(menu).toHaveClass('MuiList-dense');
+    expect(trigger).toHaveAttribute('aria-controls', menu.id);
+    expect(menu).toHaveAttribute('aria-labelledby', trigger.id);
+  });
+
   it('merges attach into the tools menu instead of rendering a second add button', async () => {
     const onAttachFile = vi.fn();
     const onToolSelect = vi.fn();
