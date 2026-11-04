@@ -608,6 +608,11 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
                   anchorEl={toolsAnchorEl}
                   open={Boolean(toolsAnchorEl)}
                   onClose={() => setToolsAnchorEl(null)}
+                  // Opens upward like the reference chat, so it never covers the input (MUI's default drops
+                  // it down over the input). Left-aligned rather than centered: the trigger sits at the
+                  // panel's left edge, and a centered menu would hang out of the panel.
+                  anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+                  transformOrigin={{ vertical: 'bottom', horizontal: 'left' }}
                   slotProps={{ list: { id: toolsMenuId, 'aria-labelledby': toolsTriggerId } }}
                 >
                   {showAttach && (

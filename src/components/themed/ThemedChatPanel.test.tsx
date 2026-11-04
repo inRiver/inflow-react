@@ -1,4 +1,4 @@
-import { fireEvent, screen, within } from '@testing-library/react';
+import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { renderWithInflow } from '../../test/renderWithInflow';
 import { ThemedChatPanel, type ThemedChatMessageDef } from './ThemedChatPanel';
@@ -359,6 +359,29 @@ describe('ThemedChatPanel', () => {
     fireEvent.click(await screen.findByRole('menuitem', { name: 'Report an issue' }));
     expect(onToolSelect).toHaveBeenCalledWith('report_issue');
     expect(toolsTrigger).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('opens the tools menu above the add button, left-aligned with it, so it never covers the input', async () => {
+    // jsdom has no layout: place the trigger at (100, 500), 34px square, and give the menu a 200x120 box.
+    const heightSpy = vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(120);
+    const widthSpy = vi.spyOn(HTMLElement.prototype, 'offsetWidth', 'get').mockReturnValue(200);
+    try {
+      renderChatPanel({ showAttach: false, tools: [{ id: 'report_issue', label: 'Report an issue' }] });
+
+      const trigger = await screen.findByRole('button', { name: 'Add tools' });
+      trigger.getBoundingClientRect = () =>
+        ({ top: 500, left: 100, bottom: 534, right: 134, width: 34, height: 34, x: 100, y: 500, toJSON: () => ({}) }) as DOMRect;
+      fireEvent.click(trigger);
+
+      const paper = screen.getByRole('menu').closest('.MuiPaper-root') as HTMLElement;
+      await waitFor(() => expect(paper.style.top).toBe('380px'));
+      // Menu bottom sits on the trigger top (500 - 120) and its left edge on the trigger's left edge.
+      expect(paper.style.left).toBe('100px');
+      expect(paper.style.transformOrigin).toBe('0px 120px');
+    } finally {
+      heightSpy.mockRestore();
+      widthSpy.mockRestore();
+    }
   });
 
   it('merges attach into the tools menu instead of rendering a second add button', async () => {

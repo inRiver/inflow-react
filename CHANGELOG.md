@@ -4,6 +4,9 @@ All notable changes to `@inriver/inflow-react` are documented here. This project
 
 ## [Unreleased]
 
+### Fixed
+- `ThemedChatPanel` tools menu (the composer `+`) opens above the button, left-aligned with it so it stays inside the panel, like the reference chat's upward menu. It used MUI's default placement and dropped down over the message input, and apps could not override it because the menu takes no placement props (library-facing, visible in light and dark).
+
 ## [3.11.2] - 2026-11-04
 
 ### Added
