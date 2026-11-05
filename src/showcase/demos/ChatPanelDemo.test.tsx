@@ -23,6 +23,21 @@ describe('ChatPanelDemo', { timeout: 20000 }, () => {
     expect(screen.getByRole('checkbox', { name: 'Show input hint' })).toBeChecked();
   });
 
+  it('switches the tools menu placement and shows it in the code example', () => {
+    renderWithInflow(<ChatPanelDemo />);
+
+    // The code example is syntax-highlighted into many spans, so read its full text.
+    const codeText = () => document.querySelector('pre')?.textContent ?? '';
+    expect(codeText()).toContain("horizontal: 'left'");
+    selectOption('Tools menu placement', 'Above, centered');
+    expect(codeText()).toContain("horizontal: 'center'");
+    expect(codeText()).not.toContain("horizontal: 'left'");
+
+    openPanel();
+    fireEvent.click(screen.getByRole('button', { name: 'Add tools' }));
+    expect(screen.getByRole('menu')).toBeInTheDocument();
+  });
+
   it('shows the chars counter and a multiline composer toggle', () => {
     renderWithInflow(<ChatPanelDemo />);
     openPanel();
