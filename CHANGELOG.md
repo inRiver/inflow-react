@@ -4,6 +4,8 @@ All notable changes to `@inriver/inflow-react` are documented here. This project
 
 ## [Unreleased]
 
+## [3.12.0] - 2026-11-05
+
 ### Added
 - `ThemedChatPanel` `toolsMenuProps` prop: passes MUI `Menu` props to the composer tools menu, so apps can place it (`anchorOrigin`/`transformOrigin`, e.g. centered above the `+`) or style it (`slotProps.paper`, such as a `className` to target it). The panel keeps control of opening, closing and the menu's accessible wiring (library-facing).
 - Showcase-only: the Chat Panel demo has a "Tools menu placement" control (above, left / centered / right), and its code example shows `toolsMenuProps`.
