@@ -99,6 +99,68 @@ describe('ThemedMenu', () => {
     expect(onClose).not.toHaveBeenCalled();
   });
 
+  it('shows a locked item with a lock icon, full-strength text and no selection', () => {
+    const onSelect = vi.fn();
+    const onClose = vi.fn();
+    renderWithInflow(
+      <ThemedMenu
+        anchorEl={document.body}
+        open
+        onClose={onClose}
+        onSelect={onSelect}
+        items={[{ id: 'projects', label: 'Projects', locked: true, lockedTooltip: 'Enable Orchestrate.' }]}
+      />,
+    );
+
+    const item = screen.getByText('Projects').closest<HTMLElement>('[role="menuitem"]') as HTMLElement;
+    expect(screen.getByText('lock')).toBeInTheDocument();
+    expect(item).toHaveAttribute('aria-disabled', 'true');
+    expect(getComputedStyle(screen.getByText('Projects')).color).not.toBe(toRgb(inflowTheme.palette.text.disabled));
+    fireEvent.click(item);
+    expect(onSelect).not.toHaveBeenCalled();
+    expect(onClose).not.toHaveBeenCalled();
+  });
+
+  it('reveals the locked tooltip on hover', async () => {
+    renderWithInflow(
+      <ThemedMenu
+        anchorEl={document.body}
+        open
+        onClose={vi.fn()}
+        items={[{ id: 'projects', label: 'Projects', locked: true, lockedTooltip: 'Enable Orchestrate.' }]}
+      />,
+    );
+
+    fireEvent.mouseOver(screen.getByText('Projects').closest('[role="menuitem"]') as HTMLElement);
+    expect(await screen.findByText('Enable Orchestrate.')).toBeInTheDocument();
+  });
+
+  it('renders a header row and a CTA that fires onClick and closes the menu', () => {
+    const onCta = vi.fn();
+    const onClose = vi.fn();
+    renderWithInflow(
+      <ThemedMenu
+        anchorEl={document.body}
+        open
+        onClose={onClose}
+        header="Orchestrate"
+        items={[{ id: 'projects', label: 'Projects', locked: true }]}
+        cta={{ label: 'Enable Orchestrate', onClick: onCta }}
+      />,
+    );
+
+    expect(screen.getByText('Orchestrate')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Enable Orchestrate' }));
+    expect(onCta).toHaveBeenCalledOnce();
+    expect(onClose).toHaveBeenCalledOnce();
+  });
+
+  it('keeps MUI\'s 36px row height when not dense', () => {
+    renderWithInflow(<MenuHarness />);
+
+    expect(getComputedStyle(screen.getByRole('menuitem', { name: /Edit profile/ })).minHeight).toBe('36px');
+  });
+
   it('reduces menu item minHeight when dense', () => {
     renderWithInflow(<MenuHarness dense />);
 

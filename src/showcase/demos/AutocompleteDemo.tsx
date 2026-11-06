@@ -17,6 +17,7 @@ export function AutocompleteDemo() {
     size: 'small',
     disabled: false,
     multiple: false,
+    disableClearable: false,
   });
   const [singleValue, setSingleValue] = useState<(typeof topFilms)[number] | null>(topFilms[0]);
   const [multipleValue, setMultipleValue] = useState<(typeof topFilms)>([topFilms[0], topFilms[2]]);
@@ -35,6 +36,10 @@ export function AutocompleteDemo() {
       name: 'multiple',
       type: 'boolean',
     },
+    {
+      name: 'disableClearable',
+      type: 'boolean',
+    },
   ];
 
   const codeExample = `
@@ -46,6 +51,8 @@ import { Autocomplete, TextField } from '@mui/material';
   size={props.size}
   disabled={props.disabled}
   multiple={props.multiple}
+  // Hides the clear (X) icon and its functionality. Chips in multiple mode can still be removed individually.
+  disableClearable={props.disableClearable}
   renderInput={(params) => <TextField {...params} label="Movie" />}
 />`;
 
@@ -58,6 +65,7 @@ import { Autocomplete, TextField } from '@mui/material';
             options={topFilms}
             value={multipleValue}
             disabled={props.disabled}
+            disableClearable={props.disableClearable}
             size={props.size}
             sx={{ width: 360 }}
             onChange={(_event, newValue) => setMultipleValue(newValue)}
@@ -68,6 +76,7 @@ import { Autocomplete, TextField } from '@mui/material';
             options={topFilms}
             value={singleValue}
             disabled={props.disabled}
+            disableClearable={props.disableClearable}
             size={props.size}
             sx={{ width: 360 }}
             onChange={(_event, newValue) => setSingleValue(newValue)}
@@ -105,6 +114,15 @@ import { Autocomplete, TextField } from '@mui/material';
                 defaultValue={[topFilms[1]]}
                 sx={{ width: '100%' }}
                 renderInput={(params) => <TextField {...params} label="Multiple" />}
+              />
+            </Box>
+            <Box sx={{ width: 240 }}>
+              <Autocomplete
+                disableClearable
+                options={topFilms}
+                defaultValue={topFilms[0]}
+                sx={{ width: '100%' }}
+                renderInput={(params) => <TextField {...params} label="No clear icon" />}
               />
             </Box>
             <Box sx={{ width: 240 }}>

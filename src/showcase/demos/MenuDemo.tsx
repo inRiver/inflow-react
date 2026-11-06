@@ -28,6 +28,11 @@ const incompleteItems: ThemedMenuItemDef[] = [
   { id: 'compliance', label: 'Compliance', locked: true, lockedTooltip: 'Already assigned to another signal.' },
 ];
 
+const upsellItems: ThemedMenuItemDef[] = [
+  { id: 'signal-center', label: 'Signal Center', locked: true, lockedTooltip: 'Enable Orchestrate to get access to Projects and Signals.' },
+  { id: 'projects', label: 'Projects', locked: true, lockedTooltip: 'Enable Orchestrate to get access to Projects and Signals.' },
+];
+
 const schema: PropSchema[] = [{ name: 'dense', type: 'boolean' }];
 
 const muiCodeExample = `
@@ -51,6 +56,8 @@ const items = [
   open={Boolean(anchorEl)}
   onClose={() => setAnchorEl(null)}
   items={items}
+  header="Orchestrate"
+  cta={{ label: 'Enable Orchestrate', onClick: handleEnable }}
   dense={dense}
 />`;
 
@@ -59,6 +66,7 @@ export function MenuDemo() {
   const [props, setProps] = useState<Record<string, unknown>>({ dense: false });
   const [themedAnchorEl, setThemedAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [incompleteAnchorEl, setIncompleteAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [upsellAnchorEl, setUpsellAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [denseAnchorEl, setDenseAnchorEl] = useState<HTMLButtonElement | null>(null);
   const dense = props.dense === true;
 
@@ -140,6 +148,29 @@ export function MenuDemo() {
               open={Boolean(incompleteAnchorEl)}
               onClose={() => setIncompleteAnchorEl(null)}
               items={incompleteItems}
+              dense={dense}
+            />
+          </DemoFrame>
+
+          <DemoFrame title="Example: Upsell navigation menu">
+            <Button
+              variant="outlined"
+              onClick={(event) => {
+                setThemedAnchorEl(null);
+                setIncompleteAnchorEl(null);
+                setDenseAnchorEl(null);
+                setUpsellAnchorEl(event.currentTarget);
+              }}
+            >
+              Open upsell menu
+            </Button>
+            <ThemedMenu
+              anchorEl={upsellAnchorEl}
+              open={Boolean(upsellAnchorEl)}
+              onClose={() => setUpsellAnchorEl(null)}
+              header="Orchestrate"
+              items={upsellItems}
+              cta={{ label: 'Enable Orchestrate', onClick: () => undefined }}
               dense={dense}
             />
           </DemoFrame>
