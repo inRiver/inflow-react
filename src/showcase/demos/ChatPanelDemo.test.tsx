@@ -63,7 +63,8 @@ describe('ChatPanelDemo', { timeout: 20000 }, () => {
       .map((rule) => rule.cssText)
       .filter((text) => Array.from(screen.getByTestId('chat-message-thread').classList).some((className) => text.includes(`.${className}`)))
       .join('\n');
-    expect(threadRules).toContain('padding-left: 8px');
+    // Emotion merges base+override into one rule: 8px left/right (override) over the base 16px sides.
+    expect(threadRules).toContain('padding: 8px 8px 16px');
   });
 
   it('shows the chars counter and a multiline composer toggle', () => {

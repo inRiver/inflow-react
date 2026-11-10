@@ -533,16 +533,19 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
         <Box
           ref={scrollRef}
           data-testid="chat-message-thread"
-          sx={{
-            flex: '1 1 auto',
-            minHeight: 0,
-            overflowY: 'auto',
-            p: (theme) => theme.spacing(1, 2, 2),
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 2,
+          sx={[
+            {
+              flex: '1 1 auto',
+              minHeight: 0,
+              overflowY: 'auto',
+              p: (theme) => theme.spacing(1, 2, 2),
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 2,
+            },
+            // Array form: overrides merge after the base instead of landing on numeric keys.
             ...(Array.isArray(threadSx) ? threadSx : [threadSx].filter(Boolean)),
-          }}
+          ]}
         >
           {renderMessageThread ? renderMessageThread({
             renderToolMessage: renderToolMessageSlot,
