@@ -209,11 +209,6 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
                   backgroundColor: T.navy700,
                   color: mode === 'dark' ? T.navy900 : '#ffffff',
                   '&:hover': { backgroundColor: T.navyDark },
-                  // Keep contained-button contrast when composed with a focusable MenuItem.
-                  '&.Mui-focusVisible:not(.Mui-disabled)': {
-                    backgroundColor: T.navy700,
-                    '&:hover': { backgroundColor: T.navyDark },
-                  },
                 },
               },
               {
@@ -238,6 +233,25 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
           sizeMedium: ({ theme }) => ({ height: 40, padding: theme.spacing(0, 3), fontSize: '0.875rem' }),
           sizeLarge: ({ theme }) => ({ height: 48, padding: theme.spacing(0, 4), fontSize: '1rem' }),
           outlined: { borderColor: T.outlineVariant },
+          contained: ({ theme, ownerState }) => {
+            const color = ownerState.color ?? 'primary';
+            const backgroundColor = color === 'primary' ? T.navy700
+              : color === 'inherit' ? theme.palette.grey[mode === 'light' ? 300 : 800]
+                : theme.palette[color].main;
+            const hoverBackground = color === 'primary' ? T.navyDark
+              : color === 'inherit' ? theme.palette.grey[mode === 'light' ? 'A100' : 700]
+                : theme.palette[color].dark;
+            return {
+              // Protect only the composed CTA from MenuItem's hover and focus tints.
+              // Ordinary Buttons must retain consumer sx backgrounds on keyboard focus.
+              '&.MuiMenuItem-root:not(.Mui-disabled)': {
+                backgroundColor,
+                ...(color === 'primary'
+                  ? { '&:hover': { backgroundColor: hoverBackground } }
+                  : { '@media (hover: hover)': { '&:hover': { backgroundColor: hoverBackground } } }),
+              },
+            };
+          },
         },
       },
       MuiIconButton: {

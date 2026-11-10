@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Button } from '@mui/material';
+import { Button, ThemeProvider, createTheme } from '@mui/material';
 import { describe, expect, it, vi } from 'vitest';
 import { createInflowTheme, inflowTheme } from '../../theme';
 import { darkTokens } from '../../theme/inflow-tokens';
@@ -383,6 +383,43 @@ describe('ThemedMenu', () => {
     expect(screen.getByRole('menuitem', { name: 'Alpha' })).toHaveFocus();
     await user.keyboard('{ArrowUp}');
     expect(screen.getByRole('menuitem', { name: 'Omega' })).toHaveFocus();
+  });
+
+  it.each(['light', 'dark'] as const)('does not override an ordinary %s Button custom background on focus', (mode) => {
+    renderWithInflow(
+      <Button variant="contained" sx={{ backgroundColor: 'success.main' }}>Custom button</Button>,
+      { providerProps: { mode } },
+    );
+    const button = screen.getByRole('button', { name: 'Custom button' });
+    const restingBackground = getComputedStyle(button).backgroundColor;
+    expect(button).not.toHaveClass('MuiMenuItem-root');
+    button.classList.add('Mui-focusVisible');
+    expect(getComputedStyle(button).backgroundColor).toBe(restingBackground);
+  });
+
+  it.each((['light', 'dark'] as const).flatMap((mode) =>
+    (['primary', 'secondary', 'success', 'error', 'warning', 'info', 'inherit'] as const).map((color) => ({ mode, color })),
+  ))('preserves CTA background with $mode default Button color=$color', ({ mode, color }) => {
+    const theme = createTheme(createInflowTheme(mode), {
+      components: { MuiButton: { defaultProps: { color } } },
+    });
+    renderWithInflow(
+      <ThemeProvider theme={theme}>
+        <ThemedMenu anchorEl={document.body} open onClose={vi.fn()} items={[]}
+          cta={{ label: 'Color CTA', onClick: vi.fn() }} />
+      </ThemeProvider>,
+      { providerProps: { mode } },
+    );
+    const cta = screen.getByRole('menuitem', { name: 'Color CTA' });
+    // jsdom does not reliably resolve MUI's CSS-variable colors on a reference Button.
+    // Assert the public palette contract here; real-browser checks compare both controls.
+    const expectedBackground = color === 'inherit'
+      ? theme.palette.grey[mode === 'light' ? 300 : 800]
+      : theme.palette[color].main;
+    for (const focusVisible of [false, true]) {
+      cta.classList.toggle('Mui-focusVisible', focusVisible);
+      expect(cta).toHaveStyle({ backgroundColor: expectedBackground });
+    }
   });
 
   it.each([
