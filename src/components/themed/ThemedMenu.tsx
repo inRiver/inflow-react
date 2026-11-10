@@ -12,6 +12,15 @@ import {
   Tooltip,
 } from '@mui/material';
 import type { ReactNode } from 'react';
+import type { MenuItemProps } from '@mui/material';
+
+// Keep Button's visual styling while registering its single native button with MenuList.
+// Both ButtonBase layers must use native keyboard behavior to avoid duplicate activation.
+// Leave tabIndex to MenuItem's roving focus instead of forwarding Button's default of zero.
+const MenuCtaButton = forwardRef<HTMLButtonElement, MenuItemProps<'button'>>((props, ref) => (
+  <MenuItem {...props} component="button" nativeButton tabIndex={undefined} ref={ref} />
+));
+MenuCtaButton.displayName = 'MenuCtaButton';
 
 export interface ThemedMenuItemDef {
   id: string;
@@ -27,7 +36,7 @@ export interface ThemedMenuItemDef {
    * selected and shows a lock icon; unlike `disabled`, it keeps full-strength text so the option stays discoverable.
    */
   locked?: boolean;
-  /** Tooltip shown on hover when the item is locked. Use it to explain what the user gets by unlocking. */
+  /** Tooltip shown on hover or keyboard focus when locked. Use it to explain what the user gets by unlocking. */
   lockedTooltip?: string;
 }
 
@@ -64,6 +73,10 @@ export const ThemedMenu = forwardRef<HTMLDivElement, ThemedMenuProps>(
       slotProps={{
         list: {
           dense,
+          // Locked options must remain discoverable by keyboard so their explanation can be read.
+          // MUI applies this to the whole menu: disabled options can receive focus in these menus,
+          // but retain their disabled behavior. Menus without locked options keep MUI's default.
+          disabledItemsFocusable: items.some((item) => item.locked),
           subheader: header ? (
             <ListSubheader
               color="primary"
@@ -83,6 +96,7 @@ export const ThemedMenu = forwardRef<HTMLDivElement, ThemedMenuProps>(
           {item.dividerBefore && <Divider />}
           <Tooltip
             title={item.locked ? (item.lockedTooltip ?? '') : ''}
+            describeChild
             placement="right-start"
             disableHoverListener={!item.locked}
             disableFocusListener={!item.locked}
@@ -148,11 +162,16 @@ export const ThemedMenu = forwardRef<HTMLDivElement, ThemedMenuProps>(
         </Fragment>
       ))}
       {cta && (
-        <Box key="cta" sx={{ px: 2, py: 1 }}>
+        <Box key="cta" component="li" role="presentation" sx={{ px: 2, py: 1 }}>
           <Button
+            component={MenuCtaButton}
+            role="menuitem"
+            nativeButton
             fullWidth
             variant="contained"
+            sx={{ minHeight: 'auto' }}
             disabled={cta.disabled}
+            aria-disabled={cta.disabled || undefined}
             onClick={() => {
               cta.onClick();
               onClose();

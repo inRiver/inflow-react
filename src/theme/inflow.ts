@@ -1,4 +1,4 @@
-// Canonical source: docs/mui/inflow-theme.js
+// Canonical Inflow theme definition; see docs/ARCHITECTURE.md.
 import { createElement } from 'react';
 import { createTheme } from '@mui/material/styles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';

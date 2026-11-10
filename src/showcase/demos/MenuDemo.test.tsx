@@ -20,7 +20,7 @@ describe('MenuDemo', () => {
     const menu = within(screen.getByRole('menu').closest<HTMLElement>('.MuiPaper-root') as HTMLElement);
     expect(menu.getByText('Orchestrate')).toBeInTheDocument();
     expect(menu.getAllByText('lock')).toHaveLength(2);
-    expect(menu.getByRole('button', { name: 'Enable Orchestrate' })).toBeInTheDocument();
+    expect(menu.getByRole('menuitem', { name: 'Enable Orchestrate' })).toBeInTheDocument();
   });
 
   it('opens the regular and work area menus', () => {

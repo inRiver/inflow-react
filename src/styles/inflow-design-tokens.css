@@ -1,10 +1,13 @@
 /* =============================================================
-   Inflow Design Tokens
-   Generated from: Figma – MUI for Figma v6.1.0 - Material UI
+   Showcase legacy CSS tokens (imported by src/main.tsx only)
+   Historical source: Figma – MUI for Figma v6.1.0 - Material UI
    Combined from: breakpoints, material-colors, metadata,
                   palette-light, shape, spacing, typography
 
-   SINGLE SOURCE OF TRUTH. Merged in (June 2026): base element
+   Not the published library's source of truth or MUI baseline.
+   Library theme ownership: src/theme/inflow.ts, backed by the
+   exported src/theme/inflow-tokens.ts and src/theme/tokens.ts.
+   Merged in (June 2026): base element
    styles and legacy --iv-* aliases formerly held in
    colors_and_type.css (now deleted). Inter is loaded by index.html.
    ============================================================= */
