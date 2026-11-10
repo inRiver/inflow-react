@@ -648,6 +648,27 @@ describe('ThemedChatPanel', () => {
       expect(screen.getByText('Summarize this product.')).toHaveStyle({ overflowWrap: 'anywhere' });
     });
 
+    it('lets the host widen the user bubble cap through messageMaxWidth', async () => {
+      renderChatPanel({ messageMaxWidth: '90%' });
+
+      expect(await screen.findByTestId('chat-user-bubble')).toHaveStyle({ maxWidth: '90%' });
+    });
+
+    it('lets the host override thread layout (e.g. padding) through threadSx', async () => {
+      renderChatPanel({ threadSx: { px: 1, gap: 3 } });
+
+      const thread = await screen.findByTestId('chat-message-thread');
+      // jsdom can't resolve later-merged sx through `toHaveStyle`; assert on the emitted class rules (as the composer tests do).
+      const ruleTexts = Array.from(document.querySelectorAll('style'))
+        .flatMap((style) => Array.from(style.sheet?.cssRules ?? []))
+        .map((rule) => rule.cssText)
+        .filter((text) => Array.from(thread.classList).some((className) => text.includes(`.${className}`)))
+        .join('\n');
+      expect(ruleTexts).toContain('padding-left: 8px');
+      expect(ruleTexts).toContain('padding-right: 8px');
+      expect(ruleTexts).toContain('gap: 24px');
+    });
+
     it('marks a selected suggestion chip with the navy-100 selected treatment', async () => {
       renderChatPanel();
 

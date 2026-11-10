@@ -38,6 +38,34 @@ describe('ChatPanelDemo', { timeout: 20000 }, () => {
     expect(screen.getByRole('menu')).toBeInTheDocument();
   });
 
+  it('exercises the bubble width and thread padding overrides and shows them in the code example', () => {
+    renderWithInflow(<ChatPanelDemo />);
+
+    const codeText = () => document.querySelector('pre')?.textContent ?? '';
+    expect(codeText()).toContain('messageMaxWidth="75%"');
+    expect(codeText()).not.toContain('threadSx');
+
+    openPanel();
+    for (const bubble of screen.getAllByTestId('chat-user-bubble')) {
+      expect(bubble).toHaveStyle({ maxWidth: '75%' });
+    }
+
+    selectOption('Bubble max width', '90%');
+    expect(codeText()).toContain('messageMaxWidth="90%"');
+    for (const bubble of screen.getAllByTestId('chat-user-bubble')) {
+      expect(bubble).toHaveStyle({ maxWidth: '90%' });
+    }
+
+    toggle('Tight thread padding');
+    expect(codeText()).toContain('threadSx={{ px: 1 }}');
+    const threadRules = Array.from(document.querySelectorAll('style'))
+      .flatMap((style) => Array.from(style.sheet?.cssRules ?? []))
+      .map((rule) => rule.cssText)
+      .filter((text) => Array.from(screen.getByTestId('chat-message-thread').classList).some((className) => text.includes(`.${className}`)))
+      .join('\n');
+    expect(threadRules).toContain('padding-left: 8px');
+  });
+
   it('shows the chars counter and a multiline composer toggle', () => {
     renderWithInflow(<ChatPanelDemo />);
     openPanel();
