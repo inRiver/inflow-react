@@ -15,6 +15,7 @@ All notable changes to `@inriver/inflow-react` are documented here. This project
 
 ### Fixed
 - `ThemedMenu` keyboard navigation reaches locked options and the CTA, whose contained-button presentation now has `menuitem` semantics. Locked tooltips describe the visible label instead of replacing its accessible name. Menus containing locked options also allow focus on disabled options, but still prevent their activation; menus without locked options keep skipping disabled items (library-facing).
+- `ThemedMenu` disabled CTAs no longer stall Home/End or arrow-key wrapping. The CTA remains a single focusable menu item when disabled in a locked menu and retains focus if its disabled state changes while open. Its contained Button presentation preserves disabled colors without extra opacity, centered wrapping labels, and primary-button contrast during keyboard focus (library-facing).
 - `ThemedDialog` preserves consumer `slotProps`, including non-paper slots, callback paper props, refs, and object/callback/array `sx`. Consumer paper styling composes after the wrapper defaults (library-facing).
 
 ## [3.12.0] - 2026-11-05

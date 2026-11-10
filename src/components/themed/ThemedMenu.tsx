@@ -14,13 +14,21 @@ import {
 import type { ReactNode } from 'react';
 import type { MenuItemProps } from '@mui/material';
 
-// Keep Button's visual styling while registering its single native button with MenuList.
-// Both ButtonBase layers must use native keyboard behavior to avoid duplicate activation.
-// Leave tabIndex to MenuItem's roving focus instead of forwarding Button's default of zero.
-const MenuCtaButton = forwardRef<HTMLButtonElement, MenuItemProps<'button'>>((props, ref) => (
-  <MenuItem {...props} component="button" nativeButton tabIndex={undefined} ref={ref} />
+// Keep Button's visual styling while MenuItem owns roving focus and keyboard activation.
+// A non-native root stays focusable when aria-disabled, unlike a native disabled button.
+// Clear Button's forwarded keyboard handlers so Enter/Space are synthesized only once.
+const MenuCtaItem = forwardRef<HTMLDivElement, MenuItemProps<'div'>>((props, ref) => (
+  <MenuItem
+    {...props}
+    component="div"
+    nativeButton={false}
+    tabIndex={undefined}
+    onKeyDown={undefined}
+    onKeyUp={undefined}
+    ref={ref}
+  />
 ));
-MenuCtaButton.displayName = 'MenuCtaButton';
+MenuCtaItem.displayName = 'MenuCtaItem';
 
 export interface ThemedMenuItemDef {
   id: string;
@@ -164,12 +172,18 @@ export const ThemedMenu = forwardRef<HTMLDivElement, ThemedMenuProps>(
       {cta && (
         <Box key="cta" component="li" role="presentation" sx={{ px: 2, py: 1 }}>
           <Button
-            component={MenuCtaButton}
+            component={MenuCtaItem}
             role="menuitem"
-            nativeButton
+            nativeButton={false}
             fullWidth
             variant="contained"
-            sx={{ minHeight: 'auto' }}
+            sx={{
+              minHeight: 'auto',
+              whiteSpace: 'normal',
+              textAlign: 'center',
+              // Button already supplies disabled colors; do not also fade them as a MenuItem.
+              '&.Mui-disabled': { opacity: 'initial' },
+            }}
             disabled={cta.disabled}
             aria-disabled={cta.disabled || undefined}
             onClick={() => {

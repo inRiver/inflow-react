@@ -236,7 +236,7 @@ describe('ThemedMenu', () => {
     expect(alpha).toHaveFocus();
     await user.keyboard('{End}');
     expect(cta).toHaveFocus();
-    expect(cta.tagName).toBe('BUTTON');
+    expect(cta.tagName).toBe('DIV');
     expect(cta.querySelector('button, [role="menuitem"]')).toBeNull();
     expect(cta.parentElement).toHaveAttribute('role', 'presentation');
   });
@@ -308,7 +308,7 @@ describe('ThemedMenu', () => {
     expect(screen.getByRole('button', { name: 'Open keyboard menu' })).toHaveFocus();
   });
 
-  it('does not activate a disabled CTA with Enter, Space or a click', async () => {
+  it('keeps a disabled CTA focusable and wraps without activating it', async () => {
     const user = userEvent.setup();
     const onCta = vi.fn();
     const onClose = vi.fn();
@@ -316,12 +316,59 @@ describe('ThemedMenu', () => {
     await user.tab();
     await user.keyboard('{Enter}{End}');
     const cta = screen.getByRole('menuitem', { name: 'Upgrade account' });
+    // jsdom allows focusing disabled native buttons, unlike browsers. Pin the DOM
+    // contract as well as focus assertions so this regression cannot pass silently.
+    expect(cta.tagName).toBe('DIV');
+    expect(cta).not.toHaveAttribute('disabled');
     expect(cta).toHaveFocus();
     expect(cta).toHaveAttribute('aria-disabled', 'true');
     await user.keyboard('{Enter} ');
     fireEvent.click(cta);
     expect(onCta).not.toHaveBeenCalled();
     expect(onClose).not.toHaveBeenCalled();
+    await user.keyboard('{ArrowDown}');
+    expect(screen.getByRole('menuitem', { name: 'Alpha' })).toHaveFocus();
+    await user.keyboard('{ArrowUp}');
+    expect(cta).toHaveFocus();
+    await user.keyboard('{Home}');
+    expect(screen.getByRole('menuitem', { name: 'Alpha' })).toHaveFocus();
+    await user.keyboard('{End}');
+    expect(cta).toHaveFocus();
+  });
+
+  it('preserves the focused CTA when it becomes disabled and can enable it again', async () => {
+    const user = userEvent.setup();
+    const onCta = vi.fn();
+    const onClose = vi.fn();
+    const { rerender } = renderWithInflow(<InteractiveMenuHarness onCta={onCta} onClose={onClose} />);
+    await user.tab();
+    await user.keyboard('{Enter}{End}');
+    const cta = screen.getByRole('menuitem', { name: 'Upgrade account' });
+    expect(cta).toHaveFocus();
+
+    rerender(<InteractiveMenuHarness ctaDisabled onCta={onCta} onClose={onClose} />);
+    expect(screen.getByRole('menuitem', { name: 'Upgrade account' })).toBe(cta);
+    expect(cta).toHaveFocus();
+    expect(cta).toHaveAttribute('aria-disabled', 'true');
+    expect(cta).not.toHaveAttribute('disabled');
+    await user.keyboard('{Enter} ');
+    fireEvent.click(cta);
+    expect(onCta).not.toHaveBeenCalled();
+    expect(onClose).not.toHaveBeenCalled();
+    await user.keyboard('{ArrowDown}');
+    expect(screen.getByRole('menuitem', { name: 'Alpha' })).toHaveFocus();
+    await user.keyboard('{ArrowUp}');
+    expect(cta).toHaveFocus();
+
+    rerender(<InteractiveMenuHarness onCta={onCta} onClose={onClose} />);
+    expect(screen.getByRole('menuitem', { name: 'Upgrade account' })).toBe(cta);
+    expect(cta).toHaveFocus();
+    expect(cta).not.toHaveAttribute('aria-disabled');
+    await user.keyboard('{Enter}');
+    await waitFor(() => expect(screen.queryByRole('menu')).not.toBeInTheDocument());
+    expect(onCta).toHaveBeenCalledOnce();
+    expect(onClose).toHaveBeenCalledOnce();
+    expect(screen.getByRole('button', { name: 'Open keyboard menu' })).toHaveFocus();
   });
 
   it('keeps disabled items out of keyboard navigation in menus without locked options', async () => {
@@ -332,20 +379,34 @@ describe('ThemedMenu', () => {
     expect(screen.getByRole('menuitem', { name: 'Omega' })).toHaveFocus();
     await user.keyboard('{End}');
     expect(screen.getByRole('menuitem', { name: 'Omega' })).toHaveFocus();
+    await user.keyboard('{ArrowDown}');
+    expect(screen.getByRole('menuitem', { name: 'Alpha' })).toHaveFocus();
+    await user.keyboard('{ArrowUp}');
+    expect(screen.getByRole('menuitem', { name: 'Omega' })).toHaveFocus();
   });
 
-  it.each(['light', 'dark'] as const)('preserves the contained Button appearance of the %s CTA', (mode) => {
+  it.each([
+    ['light', false], ['dark', false], ['light', true], ['dark', true],
+  ] as const)('preserves the contained Button appearance of the %s CTA (disabled=%s)', (mode, disabled) => {
     renderWithInflow(
       <>
-        <Button fullWidth variant="contained">Reference CTA</Button>
-        <ThemedMenu anchorEl={document.body} open onClose={vi.fn()} items={[]} cta={{ label: 'Menu CTA', onClick: vi.fn() }} />
+        <Button fullWidth variant="contained" disabled={disabled}>Reference CTA</Button>
+        <ThemedMenu anchorEl={document.body} open onClose={vi.fn()} items={[]} cta={{ label: 'Menu CTA', onClick: vi.fn(), disabled }} />
       </>,
       { providerProps: { mode } },
     );
-    const reference = getComputedStyle(screen.getByText('Reference CTA'));
-    const cta = getComputedStyle(screen.getByRole('menuitem', { name: 'Menu CTA' }));
-    for (const property of ['backgroundColor', 'color', 'borderRadius', 'fontSize', 'fontWeight', 'lineHeight', 'fontFamily', 'textTransform', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft', 'height', 'minHeight', 'minWidth', 'alignItems', 'justifyContent', 'boxShadow'] as const) {
-      expect(cta[property], property).toBe(reference[property]);
+    const referenceElement = screen.getByText('Reference CTA');
+    const ctaElement = screen.getByRole('menuitem', { name: 'Menu CTA' });
+    for (const focusVisible of [false, true]) {
+      referenceElement.classList.toggle('Mui-focusVisible', focusVisible);
+      ctaElement.classList.toggle('Mui-focusVisible', focusVisible);
+      const reference = getComputedStyle(referenceElement);
+      const cta = getComputedStyle(ctaElement);
+      for (const property of ['backgroundColor', 'color', 'opacity', 'textAlign', 'borderRadius', 'fontSize', 'fontWeight', 'lineHeight', 'fontFamily', 'textTransform', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft', 'height', 'minHeight', 'minWidth', 'alignItems', 'justifyContent', 'boxShadow'] as const) {
+        expect(cta[property], `${property} (focusVisible=${focusVisible})`).toBe(reference[property]);
+      }
+      // jsdom omits the native button's initial white-space value; browsers resolve it to normal.
+      expect(cta.whiteSpace).toBe(reference.whiteSpace || 'normal');
     }
   });
 

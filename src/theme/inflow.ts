@@ -209,6 +209,11 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
                   backgroundColor: T.navy700,
                   color: mode === 'dark' ? T.navy900 : '#ffffff',
                   '&:hover': { backgroundColor: T.navyDark },
+                  // Keep contained-button contrast when composed with a focusable MenuItem.
+                  '&.Mui-focusVisible:not(.Mui-disabled)': {
+                    backgroundColor: T.navy700,
+                    '&:hover': { backgroundColor: T.navyDark },
+                  },
                 },
               },
               {
