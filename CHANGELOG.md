@@ -4,6 +4,11 @@ All notable changes to `@inriver/inflow-react` are documented here. This project
 
 ## [Unreleased]
 
+### Added
+- `ThemedChatPanel` `messageMaxWidth` prop: CSS max-width for the user message bubble (default `'75%'`), so apps matching a wider reference layout (e.g. the legacy agent chat) can widen the message column on narrow panels (library-facing).
+- `ThemedChatPanel` `threadSx` prop: additional `sx` styles merged onto the scrolling message thread (e.g. `px` for horizontal padding); the panel keeps its layout (flex growth, scroll, direction) (library-facing).
+- Showcase-only: the Chat Panel demo has "Bubble max width" and "Tight thread padding" controls, and its code example shows `messageMaxWidth` and `threadSx`.
+
 ## [3.12.0] - 2026-11-05
 
 ### Added

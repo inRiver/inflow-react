@@ -1,4 +1,5 @@
 import { fireEvent, screen, waitFor, within } from '@testing-library/react';
+import type { Theme } from '@mui/material';
 import { describe, expect, it, vi } from 'vitest';
 import { renderWithInflow } from '../../test/renderWithInflow';
 import { ThemedChatPanel, type ThemedChatMessageDef } from './ThemedChatPanel';
@@ -646,6 +647,37 @@ describe('ThemedChatPanel', () => {
         alignItems: 'flex-end',
       });
       expect(screen.getByText('Summarize this product.')).toHaveStyle({ overflowWrap: 'anywhere' });
+    });
+
+    it('lets the host widen the user bubble cap through messageMaxWidth', async () => {
+      renderChatPanel({ messageMaxWidth: '90%' });
+
+      expect(await screen.findByTestId('chat-user-bubble')).toHaveStyle({ maxWidth: '90%' });
+    });
+
+    it.each([
+      ['object', { px: 1, gap: 3 }],
+      ['callback', (theme: Theme) => ({ px: 1, gap: theme.spacing(3) })],
+      ['array', [{ px: 1 }, { gap: 3 }]],
+    ])('applies threadSx overrides after the base styles (%s input)', async (_label, threadSx) => {
+      renderChatPanel({ threadSx });
+
+      const thread = await screen.findByTestId('chat-message-thread');
+      // Assert on the rules Emotion generated for THIS element's classes, in injection order:
+      // the override must be present and the base `gap: 16px` must not be the last word.
+      const matching = Array.from(document.querySelectorAll('style'))
+        .flatMap((style) => Array.from(style.sheet?.cssRules ?? []))
+        .map((rule) => rule.cssText)
+        .filter((text) => Array.from(thread.classList).some((className) => text.includes(`.${className}`)));
+      const joined = matching.join('\n');
+
+      // Emotion merges base+override into one rule: padding shorthand keeps the base's 16px
+      // bottom with the override's 8px left/right; the gap override replaces the base 16px.
+      expect(joined).toContain('padding: 8px 8px 16px');
+      expect(joined).toContain('gap: 24px');
+      expect(joined).not.toContain('gap: 16px');
+      // The numeric-key bug this guards against would drop the overrides entirely.
+      expect(joined).not.toMatch(/^\s*\d+:/m);
     });
 
     it('marks a selected suggestion chip with the navy-100 selected treatment', async () => {

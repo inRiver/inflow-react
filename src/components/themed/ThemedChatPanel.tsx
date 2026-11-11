@@ -11,7 +11,7 @@ import {
   SvgIcon,
   Typography,
 } from '@mui/material';
-import type { MenuProps } from '@mui/material';
+import type { MenuProps, SxProps, Theme } from '@mui/material';
 import { forwardRef, useCallback, useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
 import { inflowTokens } from '../../theme';
 import { ThemedChip } from './ThemedChip';
@@ -86,6 +86,16 @@ export interface ThemedChatPanelProps {
    * `slotProps.paper` to style it. Defaults open the menu above the `+` button, left-aligned.
    */
   toolsMenuProps?: ThemedChatToolsMenuProps;
+  /**
+   * Max width of the user message bubble as a CSS value. Defaults to `'75%'` (the reference cap);
+   * pass a larger value (e.g. `'90%'`) to widen the message column on narrow panels.
+   */
+  messageMaxWidth?: string;
+  /**
+   * Additional styles merged onto the message thread (the scrolling message column), e.g. `px`
+   * to change its horizontal padding. Panel-owned layout (flex growth, scroll, direction) is kept.
+   */
+  threadSx?: SxProps<Theme>;
   /** Aggregate host-owned upload progress, paired with attachment status/progress. */
   uploadProgress?: number;
   uploadProgressLabel?: ReactNode;
@@ -257,6 +267,8 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
       tools,
       onToolSelect,
       toolsMenuProps,
+      messageMaxWidth = '75%',
+      threadSx,
       uploadProgress,
       uploadProgressLabel,
       onSend,
@@ -521,15 +533,19 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
         <Box
           ref={scrollRef}
           data-testid="chat-message-thread"
-          sx={{
-            flex: '1 1 auto',
-            minHeight: 0,
-            overflowY: 'auto',
-            p: (theme) => theme.spacing(1, 2, 2),
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 2,
-          }}
+          sx={[
+            {
+              flex: '1 1 auto',
+              minHeight: 0,
+              overflowY: 'auto',
+              p: (theme) => theme.spacing(1, 2, 2),
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 2,
+            },
+            // Array form: overrides merge after the base instead of landing on numeric keys.
+            ...(Array.isArray(threadSx) ? threadSx : [threadSx].filter(Boolean)),
+          ]}
         >
           {renderMessageThread ? renderMessageThread({
             renderToolMessage: renderToolMessageSlot,
@@ -539,7 +555,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
               return renderToolMessageSlot(message);
             }
 
-            return <ChatMessage key={message.id} message={message} userLabel={userLabel} assistantLabel={assistantLabel} />;
+            return <ChatMessage key={message.id} message={message} userLabel={userLabel} assistantLabel={assistantLabel} messageMaxWidth={messageMaxWidth} />;
           })}
           {!renderMessageThread && renderTypingIndicatorSlot()}
         </Box>
@@ -744,10 +760,12 @@ function ChatMessage({
   message,
   userLabel,
   assistantLabel,
+  messageMaxWidth,
 }: {
   message: ThemedChatMessageDef;
   userLabel: string;
   assistantLabel: string;
+  messageMaxWidth: string;
 }) {
   const [selectedChips, setSelectedChips] = useState<Set<string>>(new Set());
   const isAssistant = message.role === 'assistant';
@@ -776,7 +794,7 @@ function ChatMessage({
             bgcolor: 'inflow.navy100',
             borderRadius: '10px',
             p: 1.25,
-            maxWidth: '75%',
+            maxWidth: messageMaxWidth,
             minWidth: 0,
             textAlign: 'left',
           }}
