@@ -4,6 +4,8 @@ All notable changes to `@inriver/inflow-react` are documented here. This project
 
 ## [Unreleased]
 
+## [3.13.0] - 2026-11-11
+
 ### Added
 - `ThemedMenu` optional `header` and `cta` props for product-scoped menus and upgrade actions (PR #15; library-facing).
 - Showcase-only: the Autocomplete demo exposes `disableClearable` (PR #15).
