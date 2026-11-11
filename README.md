@@ -53,6 +53,26 @@ export function App() {
 }
 ```
 
+## Fonts and icons
+
+The theme names Inter but does not fetch fonts or inject font CSS when you import the JavaScript library. Load the optional local stylesheet once in your application's global CSS entry if you want the bundled font:
+
+```ts
+import '@inriver/inflow-react/fonts/inter.css';
+```
+
+This includes unmodified WOFF2 subsets for Inter normal and italic, variable weights 100–900 and optical sizes 14–32. Latin, Latin Extended, Greek, Greek Extended, Cyrillic, Cyrillic Extended and Vietnamese coverage is retained. Your bundler serves the files with your app; there are no Google Fonts requests. Only subsets/styles used on a page are downloaded. Skip this import if your host already supplies Inter or intentionally uses the theme's system-font fallbacks.
+
+Built-in component icons use SVG and need no icon font. Public string-icon props remain compatible, including `ThemedChip.leadingIcon`, breadcrumb/menu/tab item icons and `ThemedAppNav` item icons. For those legacy strings, load the optional filled and outlined Material Icons font stylesheet, or continue supplying the equivalent fonts yourself:
+
+```ts
+import '@inriver/inflow-react/fonts/material-icons.css';
+```
+
+These CSS exports are optional global font registrations, not provider-scoped styles. Import them once at the host-app boundary, including when several microfrontends share a page. Use your framework's supported global-CSS entry; raw Node.js does not execute CSS imports. The showcase loads both local stylesheets and works without external font servers.
+
+The main package remains MIT-licensed. Bundled font files have their own SIL Open Font License 1.1 notices under `dist/fonts/*/LICENSE`; provenance and checksums are in `dist/fonts/manifest.json`. See [third-party notices](./THIRD_PARTY_NOTICES.md). Built-in icons now render as SVG rather than font spans; consumer CSS targeting their old DOM classes may need to target the documented component slot or `.MuiSvgIcon-root` instead.
+
 ## `InflowProvider` props
 
 `InflowProvider` applies `ScopedCssBaseline` and `--infl-*` CSS variables to a `data-inflow-root` container. It does not apply them to `body` or `:root`.

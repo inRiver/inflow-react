@@ -1,3 +1,4 @@
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { forwardRef, Fragment } from 'react';
 import {
   Box,
@@ -145,12 +146,9 @@ export const ThemedMenu = forwardRef<HTMLDivElement, ThemedMenuProps>(
                 }}
               />
               {item.locked && (
-                <Icon
-                  baseClassName="material-icons-outlined"
+                <LockOutlinedIcon
                   sx={{ fontSize: 18, color: 'text.secondary', flexShrink: 0 }}
-                >
-                  lock
-                </Icon>
+                />
               )}
               {!item.locked && item.shortcut && (
                 <Box

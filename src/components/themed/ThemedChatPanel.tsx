@@ -1,7 +1,15 @@
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import ArrowDropDownOutlinedIcon from '@mui/icons-material/ArrowDropDownOutlined';
+import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined';
+import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
+import SmartToyOutlinedIcon from '@mui/icons-material/SmartToyOutlined';
+import StopCircleOutlinedIcon from '@mui/icons-material/StopCircleOutlined';
 import {
   Box,
   Button,
-  Icon,
   IconButton,
   InputBase,
   ListItemIcon,
@@ -423,7 +431,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
           <Button
             id={assistantTriggerId}
             size="small"
-            endIcon={<Icon baseClassName="material-icons-outlined" sx={{ fontSize: 18 }}>arrow_drop_down</Icon>}
+            endIcon={<ArrowDropDownOutlinedIcon sx={{ fontSize: 18 }} />}
             aria-haspopup="menu"
             aria-expanded={Boolean(anchorEl)}
             aria-controls={anchorEl ? assistantMenuId : undefined}
@@ -494,16 +502,13 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
                 }}
               >
                 <ListItemIcon sx={{ minWidth: 20 }}>
-                  <Icon
-                    baseClassName="material-icons-outlined"
+                  <CheckOutlinedIcon
                     sx={{
                       fontSize: 20,
                       color: 'primary.main',
                       visibility: option === selected ? 'visible' : 'hidden',
                     }}
-                  >
-                    check
-                  </Icon>
+                  />
                 </ListItemIcon>
                 {option}
               </MenuItem>
@@ -518,12 +523,12 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
             )}
             {onMore && (
               <IconButton aria-label={moreAriaLabel} size="small" onClick={onMore} sx={iconButtonSx}>
-                <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 22 }}>more_vert</Icon>
+                <MoreVertOutlinedIcon sx={{ fontSize: 22 }} />
               </IconButton>
             )}
             {onClose && (
               <IconButton aria-label={closeAriaLabel} size="small" onClick={onClose} sx={iconButtonSx}>
-                <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 22 }}>close</Icon>
+                <CloseOutlinedIcon sx={{ fontSize: 22 }} />
               </IconButton>
             )}
           </Box>
@@ -634,7 +639,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
                     onClick={(event) => setToolsAnchorEl(event.currentTarget)}
                     sx={composerActionSx}
                   >
-                    <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24 }}>add</Icon>
+                    <AddOutlinedIcon sx={{ fontSize: 24 }} />
                   </IconButton>
                 </Box>
                 <Menu
@@ -674,7 +679,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
             ) : showAttach ? (
               <Box sx={composerRailSx}>
                 <IconButton aria-label={attachAriaLabel} onClick={() => fileInputRef.current?.click()} sx={composerActionSx}>
-                  <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24 }}>add</Icon>
+                  <AddOutlinedIcon sx={{ fontSize: 24 }} />
                 </IconButton>
               </Box>
             ) : null}
@@ -713,7 +718,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
             <Box sx={composerRailSx}>
               {isStreaming && onStop ? (
                 <IconButton aria-label={stopAriaLabel} onClick={onStop} sx={composerActionSx}>
-                  <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24 }}>stop_circle</Icon>
+                  <StopCircleOutlinedIcon sx={{ fontSize: 24 }} />
                 </IconButton>
               ) : (
                 <IconButton aria-label={sendAriaLabel} onClick={handleSend} disabled={sendDisabled} sx={composerActionSx}>
@@ -731,7 +736,7 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
                     ? creditsLabel(credits.used, credits.total)
                     : `${creditsLabel} ${credits.used}/${credits.total}`}
                 </Typography>
-                <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 16, color: 'text.disabled' }}>info</Icon>
+                <InfoOutlinedIcon sx={{ fontSize: 16, color: 'text.disabled' }} />
               </Box>
             ) : <span />}
             {showCharCount && (
@@ -786,7 +791,7 @@ function ChatMessage({
           <Typography variant="caption" sx={{ fontSize: 12, fontWeight: 500, lineHeight: '20px', letterSpacing: '0.14px', color: 'text.secondary' }}>
             {userLabel}
           </Typography>
-          <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24, color: 'info.main' }}>person</Icon>
+          <PersonOutlinedIcon sx={{ fontSize: 24, color: 'info.main' }} />
         </Box>
         <Box
           data-testid="chat-user-bubble"
@@ -815,7 +820,7 @@ function ChatMessage({
   return (
     <Box data-chat-role="assistant" sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25 }}>
-        <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24, color: 'info.main', flexShrink: 0 }}>smart_toy</Icon>
+        <SmartToyOutlinedIcon sx={{ fontSize: 24, color: 'info.main', flexShrink: 0 }} />
         <Typography variant="caption" sx={{ fontSize: 12, fontWeight: 500, lineHeight: '20px', letterSpacing: '0.14px', color: 'text.secondary' }}>
           {assistantLabel}
         </Typography>

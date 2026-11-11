@@ -249,7 +249,10 @@ describe('ChatPanelDemo', { timeout: 20000 }, () => {
     expect(screen.queryByRole('checkbox', { name: 'Steps as chips' })).not.toBeInTheDocument();
 
     toggle('While-processing status icons');
-    expect(screen.getAllByText('check_circle').length).toBeGreaterThan(0);
+    const icons = screen.getAllByTestId('CheckCircleOutlinedIcon');
+    expect(icons.length).toBeGreaterThan(0);
+    expect(icons[0]).toHaveAttribute('aria-hidden', 'true');
+    expect(icons[0].querySelector('path')).not.toBeNull();
   });
 
   it('applies the while-processing status icons toggle inside the ChatPanel thread', () => {
@@ -259,7 +262,7 @@ describe('ChatPanelDemo', { timeout: 20000 }, () => {
     openPanel();
 
     const thread = screen.getByTestId('chat-message-thread');
-    expect(within(thread).getAllByText('check_circle').length).toBeGreaterThan(0);
+    expect(within(thread).getAllByTestId('CheckCircleOutlinedIcon').length).toBeGreaterThan(0);
   });
 
   it('cycles the panel through three expand widths', () => {

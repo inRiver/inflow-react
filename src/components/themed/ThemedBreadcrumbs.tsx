@@ -1,3 +1,4 @@
+import ChevronRightOutlinedIcon from '@mui/icons-material/ChevronRightOutlined';
 import { forwardRef, useState } from 'react';
 import { Box, Breadcrumbs, Icon, IconButton, Link, Typography } from '@mui/material';
 import type { ReactNode } from 'react';
@@ -22,12 +23,9 @@ export const ThemedBreadcrumbs = forwardRef<HTMLElement, ThemedBreadcrumbsProps>
     const [expanded, setExpanded] = useState(false);
     const breadcrumbSeparator =
       separator === 'chevron' ? (
-        <Icon
-          baseClassName="material-icons-outlined"
+        <ChevronRightOutlinedIcon
           sx={{ fontSize: 18, color: 'text.secondary', verticalAlign: 'middle' }}
-        >
-          chevron_right
-        </Icon>
+        />
       ) : separator === 'bar' ? (
         <Box
           component="span"

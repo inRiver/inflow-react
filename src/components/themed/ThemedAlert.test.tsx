@@ -5,14 +5,15 @@ import { ThemedAlert } from './ThemedAlert';
 
 describe('ThemedAlert', () => {
   it.each([
-    ['error', 'error_outline'],
-    ['warning', 'warning_amber'],
-    ['info', 'info'],
-    ['success', 'check_circle_outline'],
+    ['error', 'ErrorOutlineOutlinedIcon'],
+    ['warning', 'WarningAmberOutlinedIcon'],
+    ['info', 'InfoOutlinedIcon'],
+    ['success', 'CheckCircleOutlineOutlinedIcon'],
   ] as const)('renders the %s outlined icon', (severity, icon) => {
     renderWithInflow(<ThemedAlert severity={severity}>Alert message</ThemedAlert>);
 
-    expect(screen.getByText(icon)).toHaveClass('material-icons-outlined');
+    expect(screen.getByTestId(icon)).toHaveAttribute('aria-hidden', 'true');
+    expect(screen.getByTestId(icon).querySelector('path')).not.toBeNull();
   });
 
   it('renders its title with AlertTitle', () => {

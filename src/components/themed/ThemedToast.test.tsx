@@ -22,17 +22,18 @@ const severityTokens: Record<ThemedToastSeverity, string> = {
 
 describe('ThemedToast', () => {
   it.each([
-    ['error', 'alert', 'error_outline'],
-    ['warning', 'alert', 'warning_amber'],
-    ['info', 'status', 'info'],
-    ['success', 'status', 'check_circle_outline'],
+    ['error', 'alert', 'ErrorOutlineOutlinedIcon'],
+    ['warning', 'alert', 'WarningAmberOutlinedIcon'],
+    ['info', 'status', 'InfoOutlinedIcon'],
+    ['success', 'status', 'CheckCircleOutlineOutlinedIcon'],
   ] as const)('renders the %s severity with the %s role, background, and outlined icon', (severity, role, icon) => {
     renderWithInflow(<ThemedToast severity={severity} message={`${severity} message`} />);
 
     const toast = screen.getByRole(role);
     expect(toast).toHaveTextContent(`${severity} message`);
     expect(getComputedStyle(toast).backgroundColor).toBe(toRgb(severityTokens[severity]));
-    expect(screen.getByText(icon)).toHaveClass('material-icons-outlined');
+    expect(screen.getByTestId(icon)).toHaveAttribute('aria-hidden', 'true');
+    expect(screen.getByTestId(icon).querySelector('path')).not.toBeNull();
   });
 
   it('renders a bold title', () => {

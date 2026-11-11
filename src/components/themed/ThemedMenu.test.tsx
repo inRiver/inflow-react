@@ -154,7 +154,7 @@ describe('ThemedMenu', () => {
     );
 
     const item = screen.getByText('Projects').closest<HTMLElement>('[role="menuitem"]') as HTMLElement;
-    expect(screen.getByText('lock')).toBeInTheDocument();
+    expect(screen.getByTestId('LockOutlinedIcon')).toHaveAttribute('aria-hidden', 'true');
     expect(item).toHaveAttribute('aria-disabled', 'true');
     expect(getComputedStyle(screen.getByText('Projects')).color).not.toBe(toRgb(inflowTheme.palette.text.disabled));
     fireEvent.click(item);

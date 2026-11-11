@@ -47,6 +47,16 @@ describe('ThemedAvatar initials contrast', () => {
 });
 
 describe('ThemedAvatar', () => {
+  it.each(['light', 'dark'] as const)('renders a decorative SVG fallback without an icon font in %s mode', (mode) => {
+    const { container } = renderWithInflow(<ThemedAvatar />, { providerProps: { mode } });
+    const icon = screen.getByTestId('PersonOutlinedIcon');
+    expect(icon.tagName.toLowerCase()).toBe('svg');
+    expect(icon.querySelector('path')).not.toBeNull();
+    expect(icon).toHaveAttribute('aria-hidden', 'true');
+    expect(icon).toHaveStyle({ fontSize: '60%' });
+    expect(container.querySelector('[class*="material-icons"]')).toBeNull();
+  });
+
   it.each([
     [40, '40px'],
     [32, '32px'],

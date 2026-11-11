@@ -1,4 +1,5 @@
-import { Box, Icon, IconButton, Typography } from '@mui/material';
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+import { Box, IconButton, Typography } from '@mui/material';
 import { forwardRef, type ReactNode } from 'react';
 
 export interface ThemedDetailPanelSectionProps {
@@ -47,9 +48,7 @@ export const ThemedDetailPanel = forwardRef<HTMLDivElement, ThemedDetailPanelPro
               onClick={onClose}
               sx={{ color: 'text.secondary', borderRadius: 1 }}
             >
-              <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 24 }}>
-                close
-              </Icon>
+              <CloseOutlinedIcon sx={{ fontSize: 24 }} />
             </IconButton>
           )}
         </Box>

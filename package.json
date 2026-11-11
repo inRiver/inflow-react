@@ -39,7 +39,9 @@
     "dist/ag-grid",
     "dist/components",
     "dist/providers",
-    "dist/theme"
+    "dist/theme",
+    "dist/fonts",
+    "THIRD_PARTY_NOTICES.md"
   ],
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -55,12 +57,14 @@
       "import": "./dist/ag-grid/index.js",
       "require": "./dist/ag-grid/index.cjs"
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./fonts/inter.css": "./dist/fonts/inter.css",
+    "./fonts/material-icons.css": "./dist/fonts/material-icons.css"
   },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build && npm run build:lib",
-    "build:lib": "vite build --config vite.lib.config.ts && tsc -p tsconfig.lib.json",
+    "build:lib": "vite build --config vite.lib.config.ts && tsc -p tsconfig.lib.json && node scripts/copy-font-assets.mjs",
     "lint": "eslint .",
     "test": "vitest",
     "test:run": "vitest --run",

@@ -113,7 +113,7 @@ describe('ThemedChip', () => {
     renderWithInflow(<ThemedChip label="Nike" variant="outlined" onDelete={() => undefined} />);
 
     const chip = getChip('Nike');
-    const deleteIcon = screen.getByText('close');
+    const deleteIcon = screen.getByTestId('CloseOutlinedIcon');
 
     expect(getComputedStyle(chip).backgroundColor).toBe(
       toCssColor(inflowTheme.palette.inflow.surfaceLowest),
@@ -135,7 +135,7 @@ describe('ThemedChip', () => {
         { providerProps: { mode } },
       );
 
-      const deleteIcon = screen.getByText('close');
+      const deleteIcon = screen.getByTestId('CloseOutlinedIcon');
       expect(getComputedStyle(deleteIcon).color).toBe(getComputedStyle(getChip(label)).color);
       expect(getComputedStyle(deleteIcon).opacity).toBe('1');
     });
@@ -178,6 +178,6 @@ describe('ThemedChip', () => {
   it('uses an outlined close icon for deletable chips', () => {
     renderWithInflow(<ThemedChip label="Deletable" onDelete={() => undefined} />);
 
-    expect(screen.getByText('close')).toHaveClass('material-icons-outlined');
+    expect(screen.getByTestId('CloseOutlinedIcon')).toHaveAttribute('aria-hidden', 'true');
   });
 });

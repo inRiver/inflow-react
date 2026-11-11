@@ -1,3 +1,8 @@
+import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
+import ErrorOutlineOutlinedIcon from '@mui/icons-material/ErrorOutlineOutlined';
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 // Canonical Inflow theme definition; see docs/ARCHITECTURE.md.
 import { createElement } from 'react';
 import { createTheme } from '@mui/material/styles';
@@ -643,11 +648,7 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
       MuiChip: {
         defaultProps: {
           size: 'medium',
-          deleteIcon: createElement(
-            'span',
-            { className: 'material-icons-outlined', 'aria-hidden': true },
-            'close',
-          ),
+          deleteIcon: createElement(CloseOutlinedIcon),
         },
         styleOverrides: {
           root: {
@@ -785,10 +786,10 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
       MuiAlert: {
         defaultProps: {
           iconMapping: {
-            error: createElement('span', { className: 'material-icons-outlined' }, 'error_outline'),
-            warning: createElement('span', { className: 'material-icons-outlined' }, 'warning_amber'),
-            info: createElement('span', { className: 'material-icons-outlined' }, 'info'),
-            success: createElement('span', { className: 'material-icons-outlined' }, 'check_circle_outline'),
+            error: createElement(ErrorOutlineOutlinedIcon),
+            warning: createElement(WarningAmberOutlinedIcon),
+            info: createElement(InfoOutlinedIcon),
+            success: createElement(CheckCircleOutlineOutlinedIcon),
           },
         },
         styleOverrides: {

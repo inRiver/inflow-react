@@ -34,7 +34,7 @@ describe('ThemedChatPanel', () => {
 
     expect(await screen.findByText('Assistant')).toBeInTheDocument();
     expect(screen.getByText('Me')).toBeInTheDocument();
-    expect(screen.getByText('smart_toy')).toBeInTheDocument();
+    expect(screen.getByTestId('SmartToyOutlinedIcon')).toBeInTheDocument();
     expect(screen.getByText('Summarize this product.').closest('[data-chat-role="user"]')).toBeInTheDocument();
     expect(screen.getByTestId('chat-user-bubble')).toHaveStyle({ maxWidth: '75%' });
     expect(screen.getByText('How can I help?')).toHaveStyle({
@@ -570,8 +570,8 @@ describe('ThemedChatPanel', () => {
 
       fireEvent.click(await screen.findByRole('button', { name: /query assistant/i }));
 
-      const selectedCheck = within(screen.getByRole('menuitem', { name: /query assistant/i })).getByText('check');
-      const unselectedCheck = within(screen.getByRole('menuitem', { name: /enrich assistant/i })).getByText('check');
+      const selectedCheck = within(screen.getByRole('menuitem', { name: /query assistant/i })).getByTestId('CheckOutlinedIcon');
+      const unselectedCheck = within(screen.getByRole('menuitem', { name: /enrich assistant/i })).getByTestId('CheckOutlinedIcon');
       expect(selectedCheck).toHaveStyle({ visibility: 'visible' });
       expect(unselectedCheck).toHaveStyle({ visibility: 'hidden' });
     });
@@ -619,8 +619,8 @@ describe('ThemedChatPanel', () => {
       const userHead = screen.getByText('Me').parentElement as HTMLElement;
       expect(assistantHead).toHaveStyle({ gap: '10px', alignItems: 'center' });
       expect(userHead).toHaveStyle({ gap: '10px', justifyContent: 'flex-end' });
-      expect(screen.getByText('smart_toy')).toHaveStyle({ fontSize: '24px' });
-      expect(screen.getByText('person')).toHaveStyle({ fontSize: '24px' });
+      expect(screen.getByTestId('SmartToyOutlinedIcon')).toHaveStyle({ fontSize: '24px' });
+      expect(screen.getByTestId('PersonOutlinedIcon')).toHaveStyle({ fontSize: '24px' });
       expect(screen.getByText('Assistant')).toHaveStyle({ fontSize: '12px', fontWeight: '500', lineHeight: '20px' });
     });
 
@@ -802,7 +802,7 @@ describe('ThemedChatPanel', () => {
 
       const attach = await screen.findByRole('button', { name: 'Attach files' });
       expect(attach).toHaveStyle({ width: '34px', height: '34px', borderRadius: '50%' });
-      expect(within(attach).getByText('add')).toHaveStyle({ fontSize: '24px' });
+      expect(within(attach).getByTestId('AddOutlinedIcon')).toHaveStyle({ fontSize: '24px' });
       expect(attach.parentElement).toHaveStyle({ height: '56px', display: 'flex', alignItems: 'center' });
 
       expect(screen.getByRole('textbox', { name: 'How can I help?' })).toHaveStyle({
@@ -839,7 +839,7 @@ describe('ThemedChatPanel', () => {
       const stop = screen.getByRole('button', { name: 'Stop generating' });
       expect(stop).toHaveStyle({ width: '34px', height: '34px', borderRadius: '50%' });
       expect(stop.parentElement).toHaveStyle({ height: '56px' });
-      expect(within(stop).getByText('stop_circle')).toHaveStyle({ fontSize: '24px' });
+      expect(within(stop).getByTestId('StopCircleOutlinedIcon')).toHaveStyle({ fontSize: '24px' });
       expect(within(stop).queryByText('stop')).not.toBeInTheDocument();
     });
 
@@ -880,7 +880,7 @@ describe('ThemedChatPanel', () => {
       const credits = screen.getByText('Credits 8/10');
       expect(credits).toHaveStyle({ fontSize: '0.75rem', lineHeight: '16px', letterSpacing: '0.4px' });
       expect(credits.parentElement).toHaveStyle({ gap: '4px', alignItems: 'center' });
-      expect(within(credits.parentElement as HTMLElement).getByText('info')).toHaveStyle({ fontSize: '16px' });
+      expect(within(credits.parentElement as HTMLElement).getByTestId('InfoOutlinedIcon')).toHaveStyle({ fontSize: '16px' });
     });
 
     it('renders the disclaimer as centered body2 in the disabled text color, 8px below the counter', async () => {

@@ -4,6 +4,13 @@ All notable changes to `@inriver/inflow-react` are documented here. This project
 
 ## [Unreleased]
 
+### Added
+- Optional self-hosted `fonts/inter.css` and `fonts/material-icons.css` exports with local WOFF2 assets, font provenance and SIL OFL notices. Font loading remains opt-in for consuming apps (library-facing).
+
+### Changed
+- Built-in component and theme icons use bundled SVGs instead of requiring a Material Icons web font. Caller-provided string icons remain supported through the optional icon stylesheet; custom React-node icons remain unchanged. Consumers targeting built-in icon span classes should update their selectors for SVG roots (library-facing).
+- Showcase-only: Inter and legacy example icon fonts load from local assets rather than Google Fonts, including normal/italic text and non-Latin subsets.
+
 ## [3.13.0] - 2026-11-11
 
 ### Added

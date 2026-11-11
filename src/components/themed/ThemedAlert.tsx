@@ -1,3 +1,7 @@
+import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
+import ErrorOutlineOutlinedIcon from '@mui/icons-material/ErrorOutlineOutlined';
 import { forwardRef } from 'react';
 import { Alert, AlertTitle } from '@mui/material';
 import type { ReactNode } from 'react';
@@ -11,13 +15,6 @@ export interface ThemedAlertProps {
   onClose?: () => void;
 }
 
-const iconMap: Record<AlertSeverity, string> = {
-  error: 'error_outline',
-  warning: 'warning_amber',
-  info: 'info',
-  success: 'check_circle_outline',
-};
-
 export const ThemedAlert = forwardRef<HTMLDivElement, ThemedAlertProps>(
   ({ severity = 'info', title, children, onClose }, ref) => (
     <Alert
@@ -25,10 +22,10 @@ export const ThemedAlert = forwardRef<HTMLDivElement, ThemedAlertProps>(
       severity={severity}
       onClose={onClose}
       iconMapping={{
-        error: <span className="material-icons-outlined" style={{ fontSize: 20 }}>{iconMap.error}</span>,
-        warning: <span className="material-icons-outlined" style={{ fontSize: 20 }}>{iconMap.warning}</span>,
-        info: <span className="material-icons-outlined" style={{ fontSize: 20 }}>{iconMap.info}</span>,
-        success: <span className="material-icons-outlined" style={{ fontSize: 20 }}>{iconMap.success}</span>,
+        error: <ErrorOutlineOutlinedIcon sx={{ fontSize: 20 }} />,
+        warning: <WarningAmberOutlinedIcon sx={{ fontSize: 20 }} />,
+        info: <InfoOutlinedIcon sx={{ fontSize: 20 }} />,
+        success: <CheckCircleOutlineOutlinedIcon sx={{ fontSize: 20 }} />,
       }}
       sx={(theme) => ({
         borderRadius: `${theme.shape.borderRadius}px`,
