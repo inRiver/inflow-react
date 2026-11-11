@@ -7,6 +7,9 @@ All notable changes to `@inriver/inflow-react` are documented here. This project
 ### Added
 - `ThemedMenu` optional `header` and `cta` props for product-scoped menus and upgrade actions (PR #15; library-facing).
 - Showcase-only: the Autocomplete demo exposes `disableClearable` (PR #15).
+- `ThemedChatPanel` `messageMaxWidth` prop: CSS max-width for the user message bubble (default `'75%'`), so apps matching a wider reference layout (e.g. the legacy agent chat) can widen the message column on narrow panels (library-facing).
+- `ThemedChatPanel` `threadSx` prop: additional `sx` styles merged onto the scrolling message thread (e.g. `px` for horizontal padding); the panel keeps its layout (flex growth, scroll, direction) (library-facing).
+- Showcase-only: the Chat Panel demo has "Bubble max width" and "Tight thread padding" controls, and its code example shows `messageMaxWidth` and `threadSx`.
 
 ### Changed
 - `ThemedMenu` non-dense rows now have a 36px minimum at every breakpoint. This replaces the previous nominal 32px desktop rows and MUI's 48px minimum below `sm`; dense rows are unchanged. Validate compact/touch layouts in consuming apps and make an explicit semver decision before release (PR #15; library-facing).
