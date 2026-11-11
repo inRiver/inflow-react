@@ -5,9 +5,21 @@ All notable changes to `@inriver/inflow-react` are documented here. This project
 ## [Unreleased]
 
 ### Added
+- `ThemedMenu` optional `header` and `cta` props for product-scoped menus and upgrade actions (PR #15; library-facing).
+- Showcase-only: the Autocomplete demo exposes `disableClearable` (PR #15).
 - `ThemedChatPanel` `messageMaxWidth` prop: CSS max-width for the user message bubble (default `'75%'`), so apps matching a wider reference layout (e.g. the legacy agent chat) can widen the message column on narrow panels (library-facing).
 - `ThemedChatPanel` `threadSx` prop: additional `sx` styles merged onto the scrolling message thread (e.g. `px` for horizontal padding); the panel keeps its layout (flex growth, scroll, direction) (library-facing).
 - Showcase-only: the Chat Panel demo has "Bubble max width" and "Tight thread padding" controls, and its code example shows `messageMaxWidth` and `threadSx`.
+
+### Changed
+- `ThemedMenu` non-dense rows now have a 36px minimum at every breakpoint. This replaces the previous nominal 32px desktop rows and MUI's 48px minimum below `sm`; dense rows are unchanged. Validate compact/touch layouts in consuming apps and make an explicit semver decision before release (PR #15; library-facing).
+- `ThemedMenu` locked items keep full-strength text, use the normal hover treatment without a ripple, and place the explanatory tooltip at `right-start` instead of `bottom-end`. Verify tooltip flipping near viewport edges in light and dark modes (PR #15; library-facing).
+- Refreshed documentation to reflect dark mode shipping since 3.11.1, canonical theme ownership, and the showcase-only legacy CSS tokens. Added guidance and a nested-provider regression test for scoped CSS variables in portal content.
+
+### Fixed
+- `ThemedMenu` keyboard navigation reaches locked options and the CTA, whose contained-button presentation now has `menuitem` semantics. Locked tooltips describe the visible label instead of replacing its accessible name. Menus containing locked options also allow focus on disabled options, but still prevent their activation; menus without locked options keep skipping disabled items (library-facing).
+- `ThemedMenu` disabled CTAs no longer stall Home/End or arrow-key wrapping. The CTA remains a single focusable menu item when disabled in a locked menu and retains focus if its disabled state changes while open. Its contained Button presentation preserves disabled colors without extra opacity, centered wrapping labels, and primary-button contrast during keyboard focus (library-facing).
+- `ThemedDialog` preserves consumer `slotProps`, including non-paper slots, callback paper props, refs, and object/callback/array `sx`. Consumer paper styling composes after the wrapper defaults (library-facing).
 
 ## [3.12.0] - 2026-11-05
 

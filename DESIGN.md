@@ -29,7 +29,7 @@ Inflow is a calm, operational product-information workspace: dense enough for ca
 
 ### Dark mode
 
-Dark mode keeps the brand's navy hue (about 219°) and changes only lightness and saturation. It is in development: it is on in the local dev server and off in the published package and deployed showcase until the `INFLOW_DARK_MODE_ENABLED` flag is flipped deliberately. Light values are the shipped look and are locked by `lightModeGuard.test.ts`.
+Dark mode keeps the brand's navy hue (about 219°) and changes only lightness and saturation. It has shipped in the published package and deployed showcase since 3.11.1. `INFLOW_DARK_MODE_ENABLED` is always `true`; consumers select a mode with `InflowProvider` or the theme factories. Light values remain locked by `lightModeGuard.test.ts`, and changes must be validated in both modes.
 
 - Surfaces get lighter as they rise: app background `#0b1220`, then surface low, paper, container, container high and highest. Elevation is expressed by these tonal steps, not shadows.
 - Avoid pure black and pure white. Text is `#f0f4fb` and `#c2cad8`.

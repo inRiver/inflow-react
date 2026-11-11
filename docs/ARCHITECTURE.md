@@ -107,6 +107,37 @@ MUI portal components render outside the provider root by default. Theme values
 continue to flow through React context, but consumer-authored `var(--infl-*)`
 styles in dialog, menu, or tooltip content need a matching portal container.
 
+Prefer MUI palette values such as `sx={{ color: 'text.primary' }}` in portaled
+content; they keep the correct provider theme without depending on DOM ancestry.
+When a consumer needs `var(--infl-*)`, put its portal target **inside** the
+appropriate provider root (especially when providers are nested):
+
+```tsx
+function EmbeddedDialog({ open }: { open: boolean }) {
+  const [portalRoot, setPortalRoot] = React.useState<HTMLDivElement | null>(null);
+  return (
+    <div ref={setPortalRoot}>
+      {portalRoot && <ThemedDialog open={open} container={portalRoot}>
+        <div style={{ color: 'var(--infl-on-surface-color)' }}>Content</div>
+      </ThemedDialog>}
+    </div>
+  );
+}
+
+<InflowProvider cacheKey="catalog-inflow">
+  <EmbeddedDialog open />
+</InflowProvider>
+```
+
+Wait for the target to mount before opening a portal. The same `container`
+prop works on plain MUI `Menu` / `Dialog`; a MUI
+`Tooltip` uses `slotProps.popper.container`. `ThemedMenu` does not currently
+expose a portal container prop. Do not move variables onto the host `:root` to
+work around this: separate embedded apps may use different modes. Use distinct
+Emotion cache keys for independently deployed bundles, and verify their real
+host-page integration; a unit test with nested providers does not prove that
+separate bundled Emotion runtimes cannot collide.
+
 ## Token exports
 
 `src/theme/tokens.ts` exports raw token constants. These are useful when:
@@ -116,6 +147,13 @@ styles in dialog, menu, or tooltip content need a matching portal container.
 - documenting exact design-system values.
 
 Do not reach for tokens first when a normal MUI component under `ThemeProvider` can do the job. Theme-first keeps the design system easier to evolve.
+
+`src/styles/inflow-design-tokens.css` is legacy showcase CSS imported by
+`src/main.tsx`, not an automatically imported part of the published package. Its
+Figma/MUI-v6 provenance is historical, not the current peer dependency baseline.
+Keep theme changes in `src/theme/inflow.ts` and its exported token modules.
+`noHardcodedColors.test.ts` prevents additional color literals outside those
+modules; it retains a counted baseline of existing debt, not a zero-literal guarantee.
 
 ## Themed wrappers
 

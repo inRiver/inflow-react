@@ -8,6 +8,7 @@ import {
 } from '@mui/material';
 import type { DialogProps } from '@mui/material';
 import type { Theme } from '@mui/material/styles';
+import { mergeSlotProps } from '@mui/material/utils';
 
 export interface ThemedDialogProps extends Omit<DialogProps, 'title'> {
   /** The title of the dialog */
@@ -41,7 +42,7 @@ export interface ThemedDialogProps extends Omit<DialogProps, 'title'> {
  * ```
  */
 export const ThemedDialog = forwardRef<HTMLDivElement, ThemedDialogProps>(
-  ({ title, actions, children, onClose, hideCloseButton = false, sx, ...props }, ref) => {
+  ({ title, actions, children, onClose, hideCloseButton = false, sx, slotProps, ...props }, ref) => {
     return (
       <Dialog
         ref={ref}
@@ -49,11 +50,12 @@ export const ThemedDialog = forwardRef<HTMLDivElement, ThemedDialogProps>(
         sx={[...(Array.isArray(sx) ? sx : [sx])]}
         {...props}
         slotProps={{
-          paper: {
+          ...slotProps,
+          paper: mergeSlotProps(slotProps?.paper, {
             sx: (theme: Theme) => ({
               borderRadius: `${Number(theme.shape.borderRadius) * 5.6}px`,
             }),
-          }
+          }),
         }}>
         {title && (
           <DialogTitle

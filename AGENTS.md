@@ -45,7 +45,7 @@ MUI 9 removed system props from `Stack` — it accepts only `direction`, `spacin
 
 - **Do not hardcode visual literals** (colors, shadows, radii, spacing) inside components. If a value isn't in the theme or tokens, add it there first, then reference it. Hardcoded `rgba(...)` literals in a component are a defect, not pragmatism.
 - If a style can be an MUI default or override, put it in the theme rather than repeating `sx` across apps.
-- Dark mode tokens exist but are feature-flagged off. Keep light/dark parity in tokens even when dark is not shipping.
+- Dark mode ships in the published library and showcase. `INFLOW_DARK_MODE_ENABLED` remains a public compatibility export and is always `true`. Validate changes in both light and dark modes.
 - Styling `@mui/x-date-pickers` components through the theme requires the key from **that** package (e.g. `MuiPickerDay`, not `MuiPickersDay`) and a one-time `import type {} from '@mui/x-date-pickers/themeAugmentation'` for the keys to type-check.
 
 ## Component API discipline
