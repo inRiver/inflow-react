@@ -5,6 +5,8 @@ All notable changes to `@inriver/inflow-react` are documented here. This project
 ## [Unreleased]
 
 ### Added
+- A single optional `local-assets.css` export combines the bundled Inter and legacy icon stylesheets without changing the default CSS-free JavaScript/provider behavior (library-facing).
+- Showcase-only: a local-assets setup guide distinguishes the showcase's explicit opt-in from consumer defaults and documents package size, global CSS, SSR, deployment and compatibility tradeoffs.
 - Optional self-hosted `fonts/inter.css` and `fonts/material-icons.css` exports with local WOFF2 assets, font provenance and SIL OFL notices. Font loading remains opt-in for consuming apps (library-facing).
 
 ### Changed

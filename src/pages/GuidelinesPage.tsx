@@ -18,7 +18,7 @@ import { INFLOW_DARK_MODE_ENABLED } from '../theme';
 import { THEMED_COMPONENT_INFO } from '../showcase/themedComponentInfo';
 import { ThemedToast } from '../components/themed';
 
-const installCode = `npm install @inriver/inflow-react@react19-mui6.3 @mui/material@">=6.3.0 <6.4.0" @emotion/react @emotion/styled react@^19 react-dom@^19`;
+const installCode = `npm install @inriver/inflow-react@react19-mui9.5 @mui/material@">=9.0.0 <10.0.0" @emotion/react@^11.13.0 @emotion/styled@^11.13.0 react@^19 react-dom@^19`;
 
 const releaseTagCode = `# Release only after validating this checkpoint against consuming apps.
 # The package is already publish-ready with "private": false.
@@ -300,6 +300,14 @@ export function GuidelinesPage() {
           />
         </Box>
 
+        <Alert severity="info">
+          <Typography component="p" variant="subtitle2">Fonts: default versus optional</Typography>
+          InflowProvider does not load font CSS. Existing host font setup stays unchanged. This showcase
+          explicitly imports bundled local assets; consuming apps can opt in with{' '}
+          <code>@inriver/inflow-react/local-assets.css</code>. Read{' '}
+          <Link to="/local-assets" style={{ color: 'inherit' }}>Local assets setup and tradeoffs</Link> before adopting it.
+        </Alert>
+
         <Card>
           <CardContent>
             <Stack spacing={2}>
@@ -510,8 +518,9 @@ export function GuidelinesPage() {
               <Typography variant="body2" color="text.secondary">
                 Avoid a single rolling design-system package that every UI consumes blindly. Tag
                 each verified React/MUI checkpoint so applications can opt in, test, and roll
-                forward intentionally. This showcase is verified against React 19 and MUI 6.3, so
-                its peer range intentionally stops before MUI 6.4 until that checkpoint is tested.
+                forward intentionally. The current compatibility target is React 19 / MUI 9.5;
+                the package declares MUI &gt;=9.0.0 &lt;10.0.0. Older release-command examples below
+                illustrate historical checkpoints, not current installation instructions.
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 Every published package version should also get a hard source tag. The npm

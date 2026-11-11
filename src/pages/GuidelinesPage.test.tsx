@@ -5,6 +5,14 @@ import { renderWithInflow } from '../test/renderWithInflow';
 import { GuidelinesPage } from './GuidelinesPage';
 
 describe('GuidelinesPage', () => {
+  it('makes optional local assets and current peer setup discoverable', () => {
+    renderWithInflow(<MemoryRouter><GuidelinesPage /></MemoryRouter>);
+    expect(screen.getByRole('link', { name: 'Local assets setup and tradeoffs' })).toHaveAttribute('href', '/local-assets');
+    expect(screen.getByRole('link', { name: 'Local assets setup and tradeoffs' }).style.color).toBe('inherit');
+    expect(screen.getByText(/InflowProvider does not load font CSS/)).toBeInTheDocument();
+    expect(screen.getByText(/npm install @inriver\/inflow-react@react19-mui9.5/)).toBeInTheDocument();
+  });
+
   it('uses persistent themed guidance for the release checkpoint', () => {
     renderWithInflow(
       <MemoryRouter>

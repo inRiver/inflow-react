@@ -3,6 +3,11 @@ import { Link } from 'react-router-dom';
 
 const documented = [
   {
+    label: 'Local assets',
+    to: '/local-assets',
+    description: 'The unchanged default, optional bundled fonts and icons, and deployment tradeoffs.',
+  },
+  {
     label: 'Migration',
     to: '/migration',
     description: 'What to change when upgrading, including deprecated components.',

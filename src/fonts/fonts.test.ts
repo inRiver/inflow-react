@@ -54,11 +54,22 @@ describe('optional self-hosted font assets', () => {
     expect(css.match(/font-feature-settings: 'liga'/g)).toHaveLength(4);
   });
 
+  it('offers one explicit local-assets import without changing narrower exports', () => {
+    const css = read('local-assets.css');
+    expect(css).not.toMatch(/https?:|url\(/);
+    expect([...css.matchAll(/@import '([^']+)'/g)].map(match => match[1])).toEqual([
+      './inter.css', './material-icons.css',
+    ]);
+    const metadata = JSON.parse(read('../../package.json'));
+    expect(metadata.exports['./local-assets.css']).toBe('./dist/fonts/local-assets.css');
+    expect(metadata.exports['./fonts/inter.css']).toBe('./dist/fonts/inter.css');
+    expect(metadata.exports['./fonts/material-icons.css']).toBe('./dist/fonts/material-icons.css');
+  });
+
   it('keeps font loading out of the JS entry and removes external showcase links', () => {
-    expect(read('../index.ts')).not.toMatch(/fonts\//);
-    expect(read('../providers/InflowProvider.tsx')).not.toMatch(/fonts\//);
+    expect(read('../index.ts')).not.toMatch(/fonts\/|local-assets\.css/);
+    expect(read('../providers/InflowProvider.tsx')).not.toMatch(/fonts\/|local-assets\.css/);
     expect(read('../../index.html')).not.toMatch(/fonts\.googleapis|fonts\.gstatic/);
-    expect(read('../main.tsx')).toContain("import './fonts/inter.css'");
-    expect(read('../main.tsx')).toContain("import './fonts/material-icons.css'");
+    expect(read('../main.tsx')).toContain("import './fonts/local-assets.css'");
   });
 });

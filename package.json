@@ -59,7 +59,8 @@
     },
     "./package.json": "./package.json",
     "./fonts/inter.css": "./dist/fonts/inter.css",
-    "./fonts/material-icons.css": "./dist/fonts/material-icons.css"
+    "./fonts/material-icons.css": "./dist/fonts/material-icons.css",
+    "./local-assets.css": "./dist/fonts/local-assets.css"
   },
   "scripts": {
     "dev": "vite",

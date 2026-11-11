@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { createRequire } from 'node:module';
 import { execFileSync } from 'node:child_process';
-import { mkdir, mkdtemp, readFile, realpath, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, readdir, realpath, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { basename, dirname, isAbsolute, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -107,6 +107,7 @@ try {
     'package/README.md',
     'package/LICENSE',
     'package/THIRD_PARTY_NOTICES.md',
+    'package/dist/fonts/local-assets.css',
     'package/dist/fonts/inter.css',
     'package/dist/fonts/material-icons.css',
     'package/dist/fonts/manifest.json',
@@ -169,6 +170,64 @@ try {
     assert.match(await readFile(join(fontRoot, family, 'LICENSE'), 'utf8'), /SIL OPEN FONT LICENSE Version 1.1/);
   }
   assert.throws(() => consumerRequire.resolve('@mui/icons-material'), { code: 'MODULE_NOT_FOUND' }, 'built-in SVG consumers must not require the icons dev dependency');
+  const completeCss = consumerRequire.resolve(`${packageName}/local-assets.css`);
+  assert.equal(completeCss, join(fontRoot, 'local-assets.css'));
+  const completeSource = await readFile(completeCss, 'utf8');
+  assert.doesNotMatch(completeSource, /https?:/);
+  assert.deepEqual([...completeSource.matchAll(/@import '([^']+)'/g)].map(match => match[1]), [
+    './inter.css', './material-icons.css',
+  ]);
+
+  // Use this repo's build tool, but resolve the app and every library import from
+  // the isolated installed consumer. Neither build may reach workspace source.
+  async function outputFiles(directory) {
+    const files = [];
+    for (const entry of await readdir(directory, { withFileTypes: true })) {
+      const path = join(directory, entry.name);
+      files.push(...(entry.isDirectory() ? await outputFiles(path) : [path]));
+    }
+    return files;
+  }
+  const consumerApp = `
+import { createElement } from 'react';
+import { createRoot } from 'react-dom/client';
+import { InflowProvider, ThemedAvatar, ThemedChip } from '${packageName}';
+createRoot(document.getElementById('root')).render(createElement(InflowProvider, null,
+  createElement('h1', null, 'Packed consumer'),
+  createElement(ThemedAvatar),
+  createElement(ThemedChip, { label: 'String icon', leadingIcon: 'home' }),
+));
+`;
+  await writeFile(join(consumerRoot, 'index.html'), '<!doctype html><html><head><meta charset="UTF-8"><title>Packed consumer</title></head><body><div id="root"></div><script type="module" src="/main.js"></script></body></html>');
+  const consumerBuilds = {};
+  for (const setup of ['default', 'local-assets']) {
+    const outDir = join(consumerRoot, `built-${setup}`);
+    const config = join(consumerRoot, 'vite.config.mjs');
+    await writeFile(join(consumerRoot, 'main.js'),
+      (setup === 'local-assets' ? `import '${packageName}/local-assets.css';\n` : '') + consumerApp);
+    await writeFile(config, `export default ${JSON.stringify({
+      root: consumerRoot, base: './', logLevel: 'error',
+      build: { outDir, emptyOutDir: true, assetsInlineLimit: 0 },
+    })};`);
+    run(process.execPath, [join(projectRoot, 'node_modules/vite/bin/vite.js'), 'build', '--config', config], consumerRoot);
+    const files = await outputFiles(outDir);
+    const fonts = files.filter(file => file.endsWith('.woff2'));
+    assert.equal(fonts.length, setup === 'default' ? 0 : 16, `${setup}: unexpected emitted font assets`);
+    const styles = (await Promise.all(files.filter(file => file.endsWith('.css')).map(file => readFile(file, 'utf8')))).join('\n');
+    assert.doesNotMatch(styles, /https?:|@import/, `${setup}: external or unresolved CSS imports`);
+    assert.equal((styles.match(/@font-face/g) ?? []).length, setup === 'default' ? 0 : 16);
+    if (setup === 'local-assets') {
+      const expectedHashes = new Set(fontManifest.files.map(file => file.sha256));
+      for (const font of fonts) {
+        const hash = createHash('sha256').update(await readFile(font)).digest('hex');
+        assert.ok(expectedHashes.has(hash), `bundler altered or introduced a font: ${font}`);
+      }
+      assert.match(styles, /Material Icons Outlined/);
+      assert.match(styles, /Inter/);
+    }
+    consumerBuilds[setup] = { status: 'PASS', emittedFonts: fonts.length };
+  }
+
   const environment = { ...process.env, INFLOW_PACK_SMOKE_CONSUMER: consumerRoot };
   for (const script of ['esm.mjs', 'cjs.cjs']) {
     try {
@@ -190,6 +249,7 @@ try {
     packageFiles: 'PASS',
     isolatedConsumer: 'PASS',
     optionalFonts: 'PASS',
+    consumerBuilds,
     fontFiles: referencedFonts.size,
     packedBytes: packed[0].size,
     unpackedBytes: packed[0].unpackedSize,

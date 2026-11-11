@@ -12,6 +12,7 @@ import { AccessibilityPage } from '../pages/AccessibilityPage';
 import { MigrationPage } from '../pages/MigrationPage';
 import { ChangelogPage } from '../pages/ChangelogPage';
 import { GuidelinesPage } from '../pages/GuidelinesPage';
+import { LocalAssetsPage } from '../pages/LocalAssetsPage';
 import { NotFoundPage } from '../pages/NotFoundPage';
 import LoginScreen from '../pages/screens/LoginScreen';
 import DashboardScreen from '../pages/screens/DashboardScreen';
@@ -33,6 +34,7 @@ export const router = createHashRouter(
           { path: 'migration', element: <MigrationPage /> },
           { path: 'components', element: <ComponentsIndexPage /> },
           { path: 'guidelines', element: <GuidelinesPage /> },
+          { path: 'local-assets', element: <LocalAssetsPage /> },
           { path: 'tokens', element: <TokensPage /> },
           { path: 'publishers/ag-grid', element: <PublishersAgGridPage /> },
           { path: 'pre-rendered', element: <PreRenderedPage /> },
