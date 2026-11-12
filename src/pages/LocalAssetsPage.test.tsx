@@ -15,7 +15,9 @@ describe('LocalAssetsPage', () => {
       'Setup', 'Local intranets', 'Without the import', 'Before you adopt it',
     ]);
     expect(screen.getByText(/The library and InflowProvider do not import these fonts by default/))
-      .toHaveTextContent('This theme showcase does, using the optional stylesheet below.');
+      .toBeInTheDocument();
+    expect(screen.getByText(/This theme showcase imports and uses the bundled local assets by default/))
+      .toHaveTextContent('Exception: This theme showcase imports and uses the bundled local assets by default.');
     expect(within(screen.getByRole('region', { name: 'Setup' })).getByText(/This single import includes both Inter/))
       .toHaveTextContent('filled/outlined Material Icons fonts used by legacy string icons');
     expect(screen.getByText(/Your existing font setup stays in place/)).toHaveTextContent('names appear as text');

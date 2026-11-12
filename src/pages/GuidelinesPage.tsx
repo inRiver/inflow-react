@@ -302,10 +302,16 @@ export function GuidelinesPage() {
 
         <Alert severity="info">
           <Typography component="p" variant="subtitle2">Fonts: default versus optional</Typography>
-          InflowProvider does not load font CSS. Existing host font setup stays unchanged. This showcase
-          explicitly imports bundled local assets; consuming apps can opt in with{' '}
-          <code>@inriver/inflow-react/local-assets.css</code>. Read{' '}
-          <Link to="/local-assets" style={{ color: 'inherit' }}>Local assets setup and tradeoffs</Link> before adopting it.
+          <Typography variant="body2">
+            The library and InflowProvider do not import font CSS by default. Existing host font setup stays unchanged.
+          </Typography>
+          <Typography variant="body2" sx={{ mt: 1 }}>
+            <strong>Exception:</strong> This theme showcase imports and uses the bundled local assets by default.
+          </Typography>
+          <Typography variant="body2" sx={{ mt: 1 }}>
+            Consuming apps can opt in with <code>@inriver/inflow-react/local-assets.css</code>. Read{' '}
+            <Link to="/local-assets" style={{ color: 'inherit' }}>Local assets setup and tradeoffs</Link> before adopting it.
+          </Typography>
         </Alert>
 
         <Card>

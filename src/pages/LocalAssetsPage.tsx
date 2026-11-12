@@ -26,7 +26,9 @@ export function LocalAssetsPage() {
           <Typography component="h1" variant="h3" gutterBottom>Local assets</Typography>
           <Typography>
             The library and InflowProvider do not import these fonts by default.
-            This theme showcase does, using the optional stylesheet below.
+          </Typography>
+          <Typography sx={{ mt: 1 }}>
+            <strong>Exception:</strong> This theme showcase imports and uses the bundled local assets by default.
           </Typography>
         </Box>
 
