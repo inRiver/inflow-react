@@ -24,7 +24,10 @@ export function LocalAssetsPage() {
       <Stack spacing={3} sx={{ maxWidth: '80ch' }}>
         <Box>
           <Typography component="h1" variant="h3" gutterBottom>Local assets</Typography>
-          <Typography>Optional, bundled fonts for apps that don’t already supply them.</Typography>
+          <Typography>
+            The library and InflowProvider do not import these fonts by default.
+            This theme showcase does, using the optional stylesheet below.
+          </Typography>
         </Box>
 
         <Box component="section" aria-labelledby="local-assets-setup">
@@ -32,8 +35,18 @@ export function LocalAssetsPage() {
           <Typography>Add this once in your app’s global CSS entry:</Typography>
           <CodeBlock code={localCode} language="ts" plain />
           <Typography variant="body2" color="text.secondary">
-            Includes Inter (normal and italic, weights 100–900) and filled/outlined Material Icons.
-            This showcase uses the import. The package and InflowProvider do not load fonts automatically.
+            This single import includes both Inter (normal and italic, weights 100–900)
+            and the filled/outlined Material Icons fonts used by legacy string icons.
+          </Typography>
+        </Box>
+
+        <Box component="section" aria-labelledby="local-assets-intranet">
+          <Typography id="local-assets-intranet" component="h2" variant="h5" gutterBottom>Local intranets</Typography>
+          <Typography>
+            Without access to Google Fonts, import both font stylesheets (or the combined import above)
+            if your app needs both Inter and legacy string icons. Serve the font files from your intranet.
+            Skip Material Icons if you use only SVG icons; skip bundled Inter if your host already
+            supplies the text font you want.
           </Typography>
         </Box>
 
@@ -52,9 +65,9 @@ export function LocalAssetsPage() {
             '&:focus-visible': { outline: '2px solid', outlineColor: 'primary.main', outlineOffset: 4 },
           },
         }}>
-          <Box component="summary">Load only one font family</Box>
+          <Box component="summary">Load only the fonts you need</Box>
           <Box sx={{ mt: 2 }}>
-            <Typography>Choose the import you need. Don’t combine these with the all-in-one stylesheet.</Typography>
+            <Typography>Use either import, or both. Don’t add them again if you use the combined stylesheet above.</Typography>
             <CodeBlock code={selectiveCode} language="ts" plain />
           </Box>
         </Box>

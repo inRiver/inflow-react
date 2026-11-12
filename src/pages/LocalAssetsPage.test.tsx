@@ -12,21 +12,34 @@ describe('LocalAssetsPage', () => {
     renderWithInflow(<MemoryRouter><LocalAssetsPage /></MemoryRouter>, { providerProps: { mode } });
     expect(screen.getByRole('heading', { name: 'Local assets', level: 1 })).toBeInTheDocument();
     expect(screen.getAllByRole('heading', { level: 2 }).map(heading => heading.textContent)).toEqual([
-      'Setup', 'Without the import', 'Before you adopt it',
+      'Setup', 'Local intranets', 'Without the import', 'Before you adopt it',
     ]);
-    expect(screen.getByText(/This showcase uses the import/)).toHaveTextContent('InflowProvider do not load fonts automatically');
+    expect(screen.getByText(/The library and InflowProvider do not import these fonts by default/))
+      .toHaveTextContent('This theme showcase does, using the optional stylesheet below.');
+    expect(within(screen.getByRole('region', { name: 'Setup' })).getByText(/This single import includes both Inter/))
+      .toHaveTextContent('filled/outlined Material Icons fonts used by legacy string icons');
     expect(screen.getByText(/Your existing font setup stays in place/)).toHaveTextContent('names appear as text');
     expect(screen.queryByRole('switch')).not.toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Import Guidelines' }).style.color).toBe('inherit');
   });
 
+  it('explains when an intranet app needs both local font stylesheets', () => {
+    renderWithInflow(<MemoryRouter><LocalAssetsPage /></MemoryRouter>);
+    const intranet = screen.getByRole('region', { name: 'Local intranets' });
+    expect(intranet).toHaveTextContent('Without access to Google Fonts, import both font stylesheets (or the combined import above) if your app needs both Inter and legacy string icons.');
+    expect(intranet).toHaveTextContent('Serve the font files from your intranet.');
+    expect(intranet).toHaveTextContent('Skip Material Icons if you use only SVG icons');
+    expect(intranet).toHaveTextContent('skip bundled Inter if your host already supplies the text font you want');
+  });
+
   it('keeps partial setup in an expandable section', () => {
     renderWithInflow(<MemoryRouter><LocalAssetsPage /></MemoryRouter>);
-    const summary = screen.getByText('Load only one font family');
+    const summary = screen.getByText('Load only the fonts you need');
     const details = summary.closest('details');
     expect(details).not.toHaveAttribute('open');
     fireEvent.click(summary);
     expect(details).toHaveAttribute('open');
+    expect(screen.getByText(/Use either import, or both/)).toHaveTextContent('Don’t add them again if you use the combined stylesheet above.');
     expect(screen.getByText(/import '@inriver\/inflow-react\/fonts\/inter.css'/)).toBeVisible();
     expect(screen.getByText(/import '@inriver\/inflow-react\/fonts\/material-icons.css'/)).toBeVisible();
     fireEvent.click(summary);
