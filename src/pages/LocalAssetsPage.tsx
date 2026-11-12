@@ -1,88 +1,86 @@
-import { Alert, Box, Card, CardContent, Chip, Container, List, ListItem, ListItemText, Stack, Typography } from '@mui/material';
+import { Box, Container, Divider, Stack, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { CodeBlock } from '../showcase/CodeBlock';
 
-const defaultCode = `import { InflowProvider } from '@inriver/inflow-react';
-
-// Keep your existing host fonts. No font CSS is loaded by this import.
-<InflowProvider>{children}</InflowProvider>`;
-
-const localCode = `// Add once in your framework's supported global CSS entry.
-import '@inriver/inflow-react/local-assets.css';
-import { InflowProvider } from '@inriver/inflow-react';
-
-<InflowProvider>{children}</InflowProvider>`;
-
-const selectiveCode = `// Prefer only what your host is missing:
+const localCode = `import '@inriver/inflow-react/local-assets.css';`;
+const selectiveCode = `// Inter only
 import '@inriver/inflow-react/fonts/inter.css';
-// Only needed for legacy string-icon props:
+
+// Material Icons only
 import '@inriver/inflow-react/fonts/material-icons.css';`;
 
-const tradeoffs = [
-  { title: 'Package size is not page-download size', text: 'Bundled font binaries total about 994 KB. The earlier font-free package was about 207 KB compressed; the local-assets package is about 1.22 MB compressed. These are measured review-build figures, not a size guarantee. Installing the package includes the assets even when you skip the CSS. Browsers request only the font subsets and styles used on a page after you opt in.' },
-  { title: 'Global registration, not provider-scoped', text: 'Font faces and legacy icon classes are global within the document. Import once at the host boundary, not once per provider. Coordinate font versions across microfrontends; an existing Inter registration may conflict. Separate iframe documents need their own setup.' },
-  { title: 'Bundler and server setup still matter', text: 'Use a bundler that resolves CSS imports and emits relative WOFF2 assets. Serve those files with your app or approved asset CDN. Keep your deployment base path correct, allow that origin in font-src and style-src, and configure CORS when serving fonts cross-origin. Do not weaken your CSP just to load fonts.' },
-  { title: 'SSR and compatibility', text: 'The ordinary JavaScript entry remains free of font CSS for ESM, CommonJS and server rendering. Put the optional stylesheet in your framework’s supported global-CSS entry; raw Node.js cannot execute a CSS import. React, MUI and Emotion peer dependencies are still required. Built-in icons now use SVG, so custom CSS targeting old icon spans may need adjustment.' },
-  { title: 'No Google Fonts dependency is not full offline support', text: 'The optional stylesheet references bundled local assets, not Google font servers. Your app can render them without third-party font access once its own assets are available. Offline installation, app caching, service workers, remote images and API calls remain the host’s responsibility.' },
-  { title: 'Font updates and licenses', text: 'The bundled Inter and Material Icons fonts retain their SIL Open Font License notices. Updates now travel with package versions rather than changing at an external font URL. Preserve the distributed notices when copying or redistributing font files.' },
+const notes = [
+  { label: 'Size', text: 'About 994 KB of font files ship with every install, even without the CSS import. The review package is about 1.22 MB compressed. Browsers download only the font subsets and styles they use.' },
+  { label: 'Shared pages', text: 'Font families and icon classes are global. Import once per host, not per provider. Check for conflicting versions across microfrontends; separate iframe documents need their own CSS.' },
+  { label: 'Deployment', text: 'Your bundler must emit the WOFF2 files. Allow their origin in font-src and configure CORS for a font CDN. For SSR, use your framework’s global CSS entry; raw Node.js cannot import CSS.' },
+  { label: 'Offline use', text: 'These assets make no Google Fonts requests. Offline first loads still need the app and its assets to be cached. Images and API calls remain the host’s responsibility.' },
+  { label: 'Compatibility', text: 'React, MUI and Emotion are still required. Opting in can change text wrapping. Built-in icons use SVG, so CSS targeting their old font spans may need updating.' },
+  { label: 'Licenses', text: 'Keep the bundled SIL Open Font License notices when redistributing the fonts. Font updates ship with package versions.' },
 ];
 
 export function LocalAssetsPage() {
   return (
     <Container maxWidth="lg" sx={{ py: 2 }}>
-      <Stack spacing={3}>
+      <Stack spacing={3} sx={{ maxWidth: '80ch' }}>
         <Box>
-          <Typography variant="overline" color="text.secondary">Consumer setup</Typography>
-          <Typography variant="h3" gutterBottom>Local assets</Typography>
-          <Typography color="text.secondary">Choose who supplies your fonts. Existing consumers keep their current setup unless they explicitly opt in.</Typography>
+          <Typography component="h1" variant="h3" gutterBottom>Local assets</Typography>
+          <Typography>Optional, bundled fonts for apps that don’t already supply them.</Typography>
         </Box>
-        <Alert severity="info">
-          <Typography component="p" variant="subtitle2">This showcase opts in to local assets</Typography>
-          Inter and the legacy example icon fonts on this site are loaded by the showcase entry. This is not the library default, and changing the theme mode does not turn these global fonts off.
-        </Alert>
-        <Stack direction={{ xs: 'column', md: 'row' }} spacing={3} sx={{ alignItems: 'stretch' }}>
-          <Card variant="outlined" sx={{ flex: 1, minWidth: 0 }}>
-            <CardContent>
-              <Stack spacing={2}>
-                <Chip label="Default: unchanged" variant="outlined" sx={{ alignSelf: 'flex-start' }} />
-                <Typography variant="h5">Use host-managed fonts</Typography>
-                <Typography>Importing the JavaScript package or mounting InflowProvider does not load or register fonts. Built-in SVG icons work without an icon font.</Typography>
-                <Typography color="text.secondary">If your host supplies Inter, it is used. Otherwise text falls back to the theme’s system-font stack. Caller-provided string icons still need compatible Material Icons fonts from the host; without them, icon names may appear as text.</Typography>
-                <CodeBlock code={defaultCode} language="tsx" plain />
-              </Stack>
-            </CardContent>
-          </Card>
-          <Card variant="outlined" sx={{ flex: 1, minWidth: 0 }}>
-            <CardContent>
-              <Stack spacing={2}>
-                <Chip label="Optional: explicit import" color="primary" variant="outlined" sx={{ alignSelf: 'flex-start' }} />
-                <Typography variant="h5">Use bundled local assets</Typography>
-                <Typography>One stylesheet registers local Inter and filled/outlined Material Icons for legacy string-icon props. It does not change component APIs or automatically opt in other apps.</Typography>
-                <Typography color="text.secondary">Inter includes normal and italic styles, variable weights 100–900, optical sizes 14–32 and seven script subsets. The same assets support light and dark themes.</Typography>
-                <CodeBlock code={localCode} language="tsx" plain />
-              </Stack>
-            </CardContent>
-          </Card>
-        </Stack>
-        <Card variant="outlined">
-          <CardContent>
-            <Stack spacing={2}>
-              <Typography variant="h5">Already providing some assets?</Typography>
-              <Typography>Keep the narrower imports if the host already supplies Inter or if you do not use string icons. Do not combine the all-in-one stylesheet with the same narrower imports.</Typography>
-              <CodeBlock code={selectiveCode} language="ts" plain />
-              <Typography color="text.secondary">String icons remain supported in Chip leading icons, breadcrumb/menu/tab items and App Nav items. Fixed library-owned glyphs do not need either icon-font stylesheet.</Typography>
-            </Stack>
-          </CardContent>
-        </Card>
-        <Card variant="outlined">
-          <CardContent>
-            <Typography variant="h5" gutterBottom>Tradeoffs and deployment checklist</Typography>
-            <List disablePadding>
-              {tradeoffs.map(item => <ListItem key={item.title} disableGutters sx={{ alignItems: 'flex-start' }}><ListItemText primary={item.title} secondary={item.text} slotProps={{ primary: { sx: { fontWeight: 600 } } }} /></ListItem>)}
-            </List>
-          </CardContent>
-        </Card>
-        <Typography><Link to="/guidelines" style={{ color: 'inherit' }}>Import Guidelines</Link> cover peer dependencies, provider setup and compatibility checkpoints. Adopt this optional export only in a package version that includes it; this page does not change an already installed release.</Typography>
+
+        <Box component="section" aria-labelledby="local-assets-setup">
+          <Typography id="local-assets-setup" component="h2" variant="h5" gutterBottom>Setup</Typography>
+          <Typography>Add this once in your app’s global CSS entry:</Typography>
+          <CodeBlock code={localCode} language="ts" plain />
+          <Typography variant="body2" color="text.secondary">
+            Includes Inter (normal and italic, weights 100–900) and filled/outlined Material Icons.
+            This showcase uses the import. The package and InflowProvider do not load fonts automatically.
+          </Typography>
+        </Box>
+
+        <Box component="section" aria-labelledby="local-assets-default">
+          <Typography id="local-assets-default" component="h2" variant="h5" gutterBottom>Without the import</Typography>
+          <Typography>
+            Your existing font setup stays in place. Text uses host-supplied Inter or system fallbacks;
+            built-in SVG icons work either way. String icons such as <code>home</code> still need
+            Material Icons from the host, otherwise the names appear as text.
+          </Typography>
+        </Box>
+
+        <Box component="details" sx={{
+          '& summary': {
+            cursor: 'pointer', typography: 'subtitle1',
+            '&:focus-visible': { outline: '2px solid', outlineColor: 'primary.main', outlineOffset: 4 },
+          },
+        }}>
+          <Box component="summary">Load only one font family</Box>
+          <Box sx={{ mt: 2 }}>
+            <Typography>Choose the import you need. Don’t combine these with the all-in-one stylesheet.</Typography>
+            <CodeBlock code={selectiveCode} language="ts" plain />
+          </Box>
+        </Box>
+
+        <Divider />
+
+        <Box component="section" aria-labelledby="local-assets-notes">
+          <Typography id="local-assets-notes" component="h2" variant="h5" gutterBottom>Before you adopt it</Typography>
+          <Box component="dl" sx={{ m: 0 }}>
+            {notes.map(({ label, text }) => (
+              <Box key={label} sx={{
+                display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '8rem 1fr' },
+                columnGap: 2, rowGap: 0.5, py: 1.5,
+                '& + &': { borderTop: 1, borderColor: 'divider' },
+              }}>
+                <Typography component="dt" variant="body2" sx={{ fontWeight: 600 }}>{label}</Typography>
+                <Typography component="dd" variant="body2" color="text.secondary" sx={{ m: 0 }}>{text}</Typography>
+              </Box>
+            ))}
+          </Box>
+        </Box>
+
+        <Typography variant="body2">
+          See <Link to="/guidelines" style={{ color: 'inherit' }}>Import Guidelines</Link> for provider and peer-dependency setup.
+          Use a package version that includes these CSS exports.
+        </Typography>
       </Stack>
     </Container>
   );
