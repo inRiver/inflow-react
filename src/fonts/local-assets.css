@@ -1,0 +1,5 @@
+/* Optional complete local font setup. Import once in the host application's global CSS entry.
+ * The JavaScript package and InflowProvider never import this stylesheet automatically.
+ * Includes Inter and the filled/outlined fonts used by legacy string-icon props. */
+@import './inter.css';
+@import './material-icons.css';

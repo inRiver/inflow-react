@@ -21,6 +21,7 @@ describe('ThemedDetailPanel', () => {
     const onClose = vi.fn();
     renderWithInflow(<ThemedDetailPanel title="Edit product" onClose={onClose} />);
 
+    expect(screen.getByTestId('CloseOutlinedIcon')).toHaveAttribute('aria-hidden', 'true');
     fireEvent.click(screen.getByRole('button', { name: 'Close detail panel' }));
 
     expect(onClose).toHaveBeenCalledOnce();

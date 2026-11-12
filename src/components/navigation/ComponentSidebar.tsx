@@ -308,6 +308,18 @@ export const ComponentSidebar: React.FC<ComponentSidebarProps> = ({
           </ListItem>
           <ListItem disablePadding>
             <ListItemButton
+              onClick={() => handleNavigate('/local-assets')}
+              selected={location.pathname === '/local-assets'}
+              sx={{ px: 2.5 }}
+            >
+              <ListItemIcon sx={{ minWidth: 0, mr: 2, justifyContent: 'center' }}>
+                <Icon aria-hidden baseClassName="material-icons-outlined">font_download</Icon>
+              </ListItemIcon>
+              <ListItemText primary="Local assets" slotProps={{ primary: { sx: { fontWeight: 'bold' } } }} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton
               onClick={() => handleNavigate('/tokens')}
               selected={location.pathname === '/tokens'}
               sx={{

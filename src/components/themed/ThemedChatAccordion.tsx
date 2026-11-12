@@ -1,3 +1,8 @@
+import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
+import RadioButtonUncheckedOutlinedIcon from '@mui/icons-material/RadioButtonUncheckedOutlined';
+import ExpandMoreOutlinedIcon from '@mui/icons-material/ExpandMoreOutlined';
+import ChevronRightOutlinedIcon from '@mui/icons-material/ChevronRightOutlined';
+import BuildOutlinedIcon from '@mui/icons-material/BuildOutlined';
 import { forwardRef, useId, useState } from 'react';
 import type { ReactNode, SyntheticEvent } from 'react';
 import {
@@ -6,7 +11,6 @@ import {
   AccordionSummary,
   Box,
   CircularProgress,
-  Icon,
 } from '@mui/material';
 import type { SxProps, Theme } from '@mui/material/styles';
 
@@ -106,18 +110,17 @@ export const ThemedChatAccordion = forwardRef<HTMLDivElement, ThemedChatAccordio
       borderRadius: 2.5,
     } as const;
 
+    const ExpandIcon = open ? ExpandMoreOutlinedIcon : ChevronRightOutlinedIcon;
     const statusLeadingIcon = (status: 'done' | 'active' | 'pending') => {
       if (status === 'active') {
         return <CircularProgress aria-hidden="true" size={16} thickness={5} sx={{ flexShrink: 0 }} />;
       }
+      const StatusIcon = status === 'done' ? CheckCircleOutlinedIcon : RadioButtonUncheckedOutlinedIcon;
       return (
-        <Icon
+        <StatusIcon
           aria-hidden="true"
-          baseClassName="material-icons-outlined"
           sx={{ flexShrink: 0, fontSize: 18, color: status === 'done' ? 'primary.main' : 'text.disabled' }}
-        >
-          {status === 'done' ? 'check_circle' : 'radio_button_unchecked'}
-        </Icon>
+        />
       );
     };
 
@@ -153,13 +156,10 @@ export const ThemedChatAccordion = forwardRef<HTMLDivElement, ThemedChatAccordio
                   sx={isActive ? activePillSx : { display: 'block', mb: 1 }}
                 >
                   {isActive ? (
-                    <Icon
+                    <BuildOutlinedIcon
                       aria-hidden="true"
-                      baseClassName="material-icons-outlined"
                       sx={{ flexShrink: 0, color: 'text.secondary', fontSize: 16 }}
-                    >
-                      build
-                    </Icon>
+                    />
                   ) : null}
                   {stepLabel(step, isActive)}
                   {isActive ? (
@@ -192,9 +192,7 @@ export const ThemedChatAccordion = forwardRef<HTMLDivElement, ThemedChatAccordio
             id={summaryId}
             aria-controls={detailsId}
             expandIcon={
-              <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 18, color: 'text.secondary' }}>
-                {open ? 'expand_more' : 'chevron_right'}
-              </Icon>
+              <ExpandIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
             }
             sx={(theme) => ({
               minHeight: 32,

@@ -23,8 +23,8 @@ describe('ThemedChatAccordion', () => {
 
     const active = screen.getByText('Extracting data').closest('li');
     expect(active).toHaveAttribute('aria-current', 'step');
-    const toolIcon = active?.querySelector('.material-icons-outlined');
-    expect(toolIcon).toHaveTextContent('build');
+    const toolIcon = active?.querySelector('[data-testid="BuildOutlinedIcon"]');
+    expect(toolIcon?.querySelector('path')).not.toBeNull();
     expect(toolIcon).toHaveAttribute('aria-hidden', 'true');
     expect(active?.querySelector('.MuiCircularProgress-root')).not.toBeNull();
     expect(active?.querySelector('.MuiCircularProgress-root')).toHaveAttribute('aria-hidden', 'true');
@@ -53,9 +53,9 @@ describe('ThemedChatAccordion', () => {
     const active = screen.getByText('Second').closest('li') as HTMLElement;
     const pending = screen.getByText('Third').closest('li') as HTMLElement;
 
-    expect(within(done).getByText('check_circle')).toBeInTheDocument();
+    expect(within(done).getByTestId('CheckCircleOutlinedIcon')).toBeInTheDocument();
     expect(active.querySelector('.MuiCircularProgress-root')).not.toBeNull();
-    expect(within(pending).getByText('radio_button_unchecked')).toBeInTheDocument();
+    expect(within(pending).getByTestId('RadioButtonUncheckedOutlinedIcon')).toBeInTheDocument();
   });
 
   it('uses only the latest active step as the current progress row', () => {
@@ -91,12 +91,12 @@ describe('ThemedChatAccordion', () => {
 
     const summary = screen.getByRole('button', { name: 'Reasoning' });
     expect(summary).toHaveStyle({ fontSize: '0.75rem' });
-    expect(within(summary).getByText('chevron_right')).toBeInTheDocument();
-    expect(within(summary).queryByText('expand_more')).not.toBeInTheDocument();
+    expect(within(summary).getByTestId('ChevronRightOutlinedIcon')).toBeInTheDocument();
+    expect(within(summary).queryByTestId('ExpandMoreOutlinedIcon')).not.toBeInTheDocument();
 
     fireEvent.click(summary);
-    expect(within(summary).getByText('expand_more')).toBeInTheDocument();
-    expect(within(summary).queryByText('chevron_right')).not.toBeInTheDocument();
+    expect(within(summary).getByTestId('ExpandMoreOutlinedIcon')).toBeInTheDocument();
+    expect(within(summary).queryByTestId('ChevronRightOutlinedIcon')).not.toBeInTheDocument();
   });
 
   it('toggles expansion and reports state through onChange', () => {

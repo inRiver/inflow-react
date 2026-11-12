@@ -25,7 +25,14 @@ describe('ThemedBreadcrumbs', () => {
   ] as const)('renders the %s separator', (separator, expected) => {
     renderWithInflow(<ThemedBreadcrumbs items={items} separator={separator} />);
 
-    expect(screen.getAllByText(expected).length).toBeGreaterThan(0);
+    const separators = separator === 'chevron'
+      ? screen.getAllByTestId('ChevronRightOutlinedIcon')
+      : screen.getAllByText(expected);
+    expect(separators.length).toBeGreaterThan(0);
+    if (separator === 'chevron') {
+      expect(separators[0]).toHaveAttribute('aria-hidden', 'true');
+      expect(separators[0].querySelector('path')).not.toBeNull();
+    }
   });
 
   it('uses a CSS bar separator by default with correct number of separators', () => {

@@ -1,3 +1,4 @@
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import { forwardRef } from 'react';
 import { Chip, Icon } from '@mui/material';
 import type { ChipProps } from '@mui/material';
@@ -142,9 +143,7 @@ export const ThemedChip = forwardRef<HTMLDivElement, ThemedChipProps>(
             </Icon>
           ) : undefined}
           deleteIcon={deleteIcon ?? (
-            <Icon baseClassName="material-icons-outlined" sx={{ fontSize: `${chipSize.iconSize}px !important` }}>
-              close
-            </Icon>
+            <CloseOutlinedIcon sx={{ fontSize: `${chipSize.iconSize}px !important` }} />
           )}
           sx={[
             customStyles,

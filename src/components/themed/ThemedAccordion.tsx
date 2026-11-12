@@ -1,10 +1,10 @@
+import ExpandMoreOutlinedIcon from '@mui/icons-material/ExpandMoreOutlined';
 import { forwardRef, useId } from 'react';
 import type { ReactNode, SyntheticEvent } from 'react';
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  Icon,
 } from '@mui/material';
 
 export interface ThemedAccordionItem {
@@ -72,9 +72,7 @@ export const ThemedAccordion = forwardRef<HTMLDivElement, ThemedAccordionProps>(
               id={summaryId}
               aria-controls={detailsId}
               expandIcon={
-                <Icon baseClassName="material-icons-outlined" sx={{ fontSize: 20, color: 'text.secondary' }}>
-                  expand_more
-                </Icon>
+                <ExpandMoreOutlinedIcon sx={{ fontSize: 20, color: 'text.secondary' }} />
               }
               sx={(theme) => ({
                 minHeight: 48,

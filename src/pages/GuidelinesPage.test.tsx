@@ -5,6 +5,16 @@ import { renderWithInflow } from '../test/renderWithInflow';
 import { GuidelinesPage } from './GuidelinesPage';
 
 describe('GuidelinesPage', () => {
+  it('makes optional local assets and current peer setup discoverable', () => {
+    renderWithInflow(<MemoryRouter><GuidelinesPage /></MemoryRouter>);
+    expect(screen.getByRole('link', { name: 'Local assets setup and tradeoffs' })).toHaveAttribute('href', '/local-assets');
+    expect(screen.getByRole('link', { name: 'Local assets setup and tradeoffs' }).style.color).toBe('inherit');
+    expect(screen.getByText(/The library and InflowProvider do not import font CSS by default/)).toBeInTheDocument();
+    expect(screen.getByText(/This theme showcase imports and uses the bundled local assets by default/))
+      .toHaveTextContent('Exception: This theme showcase imports and uses the bundled local assets by default.');
+    expect(screen.getByText(/npm install @inriver\/inflow-react@react19-mui9.5/)).toBeInTheDocument();
+  });
+
   it('uses persistent themed guidance for the release checkpoint', () => {
     renderWithInflow(
       <MemoryRouter>

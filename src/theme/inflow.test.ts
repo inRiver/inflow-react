@@ -1,3 +1,5 @@
+import { renderToStaticMarkup } from 'react-dom/server';
+import type { ReactElement } from 'react';
 import { describe, expect, it } from 'vitest';
 import { createInflowTheme } from './inflow';
 import { darkTokens } from './inflow-tokens';
@@ -56,13 +58,18 @@ describe('createInflowTheme', () => {
 
   it('provides outlined stock icons', () => {
     const theme = createInflowTheme('light');
-    const alertIcons = theme.components?.MuiAlert?.defaultProps?.iconMapping as Record<string, { props: { children: string } }>;
-    const chipDeleteIcon = theme.components?.MuiChip?.defaultProps?.deleteIcon as { props: { children: string; className: string } };
-
-    expect(alertIcons.error.props.children).toBe('error_outline');
-    expect(alertIcons.success.props.children).toBe('check_circle_outline');
-    expect(chipDeleteIcon.props.children).toBe('close');
-    expect(chipDeleteIcon.props.className).toBe('material-icons-outlined');
+    const alertIcons = theme.components?.MuiAlert?.defaultProps?.iconMapping as Record<string, ReactElement>;
+    const chipDeleteIcon = theme.components?.MuiChip?.defaultProps?.deleteIcon as ReactElement;
+    for (const icon of [...Object.values(alertIcons), chipDeleteIcon]) {
+      const markup = renderToStaticMarkup(icon);
+      expect(markup).toContain('<svg');
+      expect(markup).toContain('<path');
+      expect(markup).toContain('aria-hidden="true"');
+      expect(markup).not.toContain('material-icons');
+    }
+    expect(renderToStaticMarkup(alertIcons.error)).toContain('ErrorOutlineOutlinedIcon');
+    expect(renderToStaticMarkup(alertIcons.success)).toContain('CheckCircleOutlineOutlinedIcon');
+    expect(renderToStaticMarkup(chipDeleteIcon)).toContain('CloseOutlinedIcon');
   });
 
   it('leaves light menus on MUI defaults, so they keep the elevation shadow and rounded corners', () => {

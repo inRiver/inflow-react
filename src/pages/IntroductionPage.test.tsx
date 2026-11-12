@@ -15,6 +15,7 @@ describe('IntroductionPage', () => {
     expect(screen.getByRole('heading', { name: 'Introduction' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Design Tokens' })).toHaveAttribute('href', '/tokens');
     expect(screen.getByRole('link', { name: 'Components' })).toHaveAttribute('href', '/components');
+    expect(screen.getByRole('link', { name: 'Local assets' })).toHaveAttribute('href', '/local-assets');
     expect(screen.getByRole('link', { name: 'Import Guidelines' })).toHaveAttribute('href', '/guidelines');
   });
 });

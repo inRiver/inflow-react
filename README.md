@@ -39,19 +39,67 @@ npm install react@^19.0.0 react-dom@^19.0.0 @mui/material@">=9.0.0 <10.0.0" @emo
 
 Use the checkpoint tag instead of `latest` so the installed package stays on the validated React 19 and MUI 9 compatibility channel. If you are still on MUI 9.4, use the `react19-mui9.4` checkpoint tag; for MUI 9.3, use `react19-mui9.3`; for MUI 7, use `react19-mui7.3`.
 
-## Quick start
+## Quick start: existing/default setup
+
+The default JavaScript entry does **not** register or download fonts. Existing apps keep their current font setup: the theme uses host-supplied Inter when available and otherwise system fallbacks. Built-in icons are SVG; caller-provided string icons still need a host-supplied Material Icons font or the optional setup below.
 
 ```tsx
-import { InflowProvider, ThemedButton } from '@inriver/inflow-react';
+import { InflowProvider } from '@inriver/inflow-react';
+import { Button } from '@mui/material';
 
 export function App() {
   return (
     <InflowProvider mode="light">
-      <ThemedButton>Save</ThemedButton>
+      <Button variant="contained">Save</Button>
     </InflowProvider>
   );
 }
 ```
+
+## Optional complete local-assets setup
+
+To use the bundled Inter and legacy icon fonts without Google Fonts, add **one explicit import** to your framework's supported global CSS entry:
+
+```ts
+import '@inriver/inflow-react/local-assets.css';
+```
+
+Then use `InflowProvider` exactly as above. The showcase makes this choice explicitly; its appearance is **not** evidence that the library imports fonts by default. Existing consumers do not need to opt in or opt out, and no provider prop or JavaScript import has changed behavior.
+
+| Setup | Inter text | Fixed built-in icons | Public string icons |
+| --- | --- | --- | --- |
+| Default JS entry only | Host Inter, otherwise system fallback | Bundled SVG | Host must supply Material Icons |
+| Optional `local-assets.css` | Bundled, self-hosted Inter | Bundled SVG | Bundled, self-hosted Material Icons |
+| Existing host font setup | Remains host-owned | Bundled SVG | Remains host-owned |
+
+If your host already supplies one font family, use a narrower import instead of the combined one:
+
+```ts
+import '@inriver/inflow-react/fonts/inter.css'; // Text only
+// OR, when you only need legacy string-icon support:
+import '@inriver/inflow-react/fonts/material-icons.css';
+```
+
+The icon stylesheet supports both filled and outlined Material Icons. Public string APIs remain supported, including `ThemedChip.leadingIcon`, breadcrumb/menu/tab item icons and `ThemedAppNav` item icons. Custom React-node icons remain host-owned. Do not import the combined stylesheet and both narrower stylesheets together.
+
+### What is bundled, and what it costs
+
+- Inter ships as unmodified WOFF2 subsets: normal and italic, variable weights 100–900 and optical sizes 14–32; Latin, Latin Extended, Greek, Greek Extended, Cyrillic, Cyrillic Extended and Vietnamese coverage is retained.
+- The font binaries add about **994 KB** to every package installation, even if an app never imports the CSS. In the initial implementation, the compressed npm package grew from about **207 KB to 1.22 MB**. These are package sizes, not automatic browser downloads; build/version changes can alter them.
+- A bundler copies/rebases the referenced WOFF2 files into the app's output. Browsers request only the font subsets/styles used on the page after the relevant stylesheet is loaded. The combined stylesheet registers both icon fonts; unused faces need not download.
+- Fixed icons are bundled SVGs and work without either stylesheet. Their new SVG DOM roots can affect consumer CSS that targeted old built-in font spans; prefer documented component slots or `.MuiSvgIcon-root`.
+
+### Host setup, SSR and compatibility
+
+The CSS registers **global** font families and icon classes, not provider-scoped assets. Import one chosen version at the host boundary, not once per provider or microfrontend. Opting in can change typography metrics and existing `Inter`/Material Icons registrations in a shared document; avoid conflicting versions and validate the host's layouts. Shadow DOM and iframe consumers must arrange styles/assets in the appropriate document or root.
+
+Keep CSS imports in the global-style entry supported by your framework. Raw Node.js does not execute CSS imports; the existing ESM/CommonJS JavaScript entry remains CSS-free and SSR-compatible. A plain `createInflowTheme` plus MUI `ThemeProvider` still requires the host's normal baseline/root setup; font CSS is not a replacement for `InflowProvider` or MUI styling.
+
+Serve the generated font URLs from your app (or your chosen asset CDN), preserve their paths, and allow that origin in your Content Security Policy's `font-src`. Ensure WOFF2 files are deployed with the app; fonts can still fail if the host blocks or omits them. This removes the dependency on external font servers, **not** every network dependency: installation, first app load, custom images/APIs and offline caching remain host responsibilities. A fully offline application still needs its own asset/cache strategy.
+
+React, React DOM, MUI and Emotion remain required peer dependencies; this is not a standalone UI runtime. No `@mui/icons-material` install is required by consumers for the bundled fixed icons.
+
+The main package remains MIT-licensed. Bundled fonts retain SIL Open Font License 1.1 notices under `dist/fonts/*/LICENSE`; provenance and checksums are in `dist/fonts/manifest.json`. See [third-party notices](./THIRD_PARTY_NOTICES.md) and [local-assets integration guide](./docs/LOCAL_ASSETS.md).
 
 ## `InflowProvider` props
 

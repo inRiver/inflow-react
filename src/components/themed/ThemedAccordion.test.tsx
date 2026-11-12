@@ -13,6 +13,10 @@ describe('ThemedAccordion', () => {
   it('renders all items and exposes summary accessibility attributes', () => {
     renderWithInflow(<ThemedAccordion items={items} />);
 
+    for (const icon of screen.getAllByTestId('ExpandMoreOutlinedIcon')) {
+      expect(icon).toHaveAttribute('aria-hidden', 'true');
+      expect(icon.querySelector('path')).not.toBeNull();
+    }
     for (const name of ['Account settings', 'Security settings', 'Disabled settings']) {
       const summary = screen.getByRole('button', { name });
       expect(summary).toHaveAttribute('aria-expanded', 'false');

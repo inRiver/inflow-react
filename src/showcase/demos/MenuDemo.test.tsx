@@ -19,7 +19,7 @@ describe('MenuDemo', () => {
 
     const menu = within(screen.getByRole('menu').closest<HTMLElement>('.MuiPaper-root') as HTMLElement);
     expect(menu.getByText('Orchestrate')).toBeInTheDocument();
-    expect(menu.getAllByText('lock')).toHaveLength(2);
+    expect(menu.getAllByTestId('LockOutlinedIcon')).toHaveLength(2);
     expect(menu.getByRole('menuitem', { name: 'Enable Orchestrate' })).toBeInTheDocument();
   });
 

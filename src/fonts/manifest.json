@@ -1,0 +1,138 @@
+{
+  "sources": [
+    {
+      "package": "@fontsource-variable/inter",
+      "version": "5.3.0",
+      "integrity": "sha512-OupL48va4JNofb97w6NYeF9S7W/kHNKM0Er8Dem5nqi4jeOLrVJDoE8tZEpnMJmtkvNbB1EIPPwHcdkF6b1oUA==",
+      "fontVersion": "v20",
+      "license": {
+        "type": "OFL-1.1",
+        "url": "https://openfontlicense.org",
+        "attribution": "Copyright 2016 The Inter Project Authors (https://github.com/rsms/inter) Inter-Italic[opsz,wght].ttf: Copyright 2016 The Inter Project Authors (https://github.com/rsms/inter)"
+      },
+      "upstream": "https://github.com/google/fonts"
+    },
+    {
+      "package": "@fontsource/material-icons",
+      "version": "5.3.0",
+      "integrity": "sha512-nCpzNTsS5KpIqWijK259rPOTaZXNJlRfTiVRDNguKwfSdoZL/O9zIvPs+3K2eeRrNW+fVJWMO+n3JQoi9DN9Tw==",
+      "fontVersion": "v145",
+      "license": {
+        "type": "OFL-1.1",
+        "url": "http://scripts.sil.org/OFL",
+        "attribution": "Google Inc."
+      },
+      "upstream": "https://github.com/google/fonts"
+    },
+    {
+      "package": "@fontsource/material-icons-outlined",
+      "version": "5.3.0",
+      "integrity": "sha512-nWkOYtPcbStJ2MAfxvhr7r1ry8bRXK4DdKr2rcxnrRs3xjLxHOjPLkfKhF83jCkJTAm2IraFzSjabTpYPqgE3A==",
+      "fontVersion": "v110",
+      "license": {
+        "type": "OFL-1.1",
+        "url": "http://scripts.sil.org/OFL",
+        "attribution": "Google Inc."
+      },
+      "upstream": "https://github.com/google/fonts"
+    }
+  ],
+  "files": [
+    {
+      "path": "inter/inter-cyrillic-ext-standard-normal.woff2",
+      "source": "@fontsource-variable/inter@5.3.0/files/inter-cyrillic-ext-standard-normal.woff2",
+      "sha256": "e3a8d2d7497a325b85c2e0c9d931ba1741415d23d1f828ebc5ce8c116dab44e8",
+      "bytes": 41520
+    },
+    {
+      "path": "inter/inter-cyrillic-standard-normal.woff2",
+      "source": "@fontsource-variable/inter@5.3.0/files/inter-cyrillic-standard-normal.woff2",
+      "sha256": "e1dea13a93c69f52837e370541ffe132508352666e9288ab910f2c422f4b9b50",
+      "bytes": 29636
+    },
+    {
+      "path": "inter/inter-greek-ext-standard-normal.woff2",
+      "source": "@fontsource-variable/inter@5.3.0/files/inter-greek-ext-standard-normal.woff2",
+      "sha256": "e0f32d9ee75a83f4031e1a7bc8926f962278e282d3535be7d8dbeb3bd62914b5",
+      "bytes": 17376
+    },
+    {
+      "path": "inter/inter-greek-standard-normal.woff2",
+      "source": "@fontsource-variable/inter@5.3.0/files/inter-greek-standard-normal.woff2",
+      "sha256": "93c5ac80e25cda1cf289206c724027eeb187c9d398106f0079a912cbe80616ce",
+      "bytes": 30200
+    },
+    {
+      "path": "inter/inter-vietnamese-standard-normal.woff2",
+      "source": "@fontsource-variable/inter@5.3.0/files/inter-vietnamese-standard-normal.woff2",
+      "sha256": "935ab355938e6cd9b5fa39f2c3250ee16f3b08807c65dc4162356b50dbc8c7a2",
+      "bytes": 15268
+    },
+    {
+      "path": "inter/inter-latin-ext-standard-normal.woff2",
+      "source": "@fontsource-variable/inter@5.3.0/files/inter-latin-ext-standard-normal.woff2",
+      "sha256": "5e6d4fe9d9f4bff8b2a2469d25ab19576bb85331e22c6ed51398e16f95d56a9c",
+      "bytes": 133336
+    },
+    {
+      "path": "inter/inter-latin-standard-normal.woff2",
+      "source": "@fontsource-variable/inter@5.3.0/files/inter-latin-standard-normal.woff2",
+      "sha256": "2c295d99e26dcf357d4d01bcf270fd6924b600c9a13dd8c363ef114f4c6976fa",
+      "bytes": 72920
+    },
+    {
+      "path": "inter/inter-cyrillic-ext-standard-italic.woff2",
+      "source": "@fontsource-variable/inter@5.3.0/files/inter-cyrillic-ext-standard-italic.woff2",
+      "sha256": "4ee1c3b9f5a9e1e6d0de25553e221995286c4f414d966ff88b044edbd2e2b44d",
+      "bytes": 43992
+    },
+    {
+      "path": "inter/inter-cyrillic-standard-italic.woff2",
+      "source": "@fontsource-variable/inter@5.3.0/files/inter-cyrillic-standard-italic.woff2",
+      "sha256": "cd3d9beabd6f8b1fe8726281516753faf2b6abbc1b0c22e68d148f81a597d9eb",
+      "bytes": 32196
+    },
+    {
+      "path": "inter/inter-greek-ext-standard-italic.woff2",
+      "source": "@fontsource-variable/inter@5.3.0/files/inter-greek-ext-standard-italic.woff2",
+      "sha256": "f21ed36275ab20b74f0301ca70abf63cc3ab7addd294665486f946a09465e243",
+      "bytes": 18620
+    },
+    {
+      "path": "inter/inter-greek-standard-italic.woff2",
+      "source": "@fontsource-variable/inter@5.3.0/files/inter-greek-standard-italic.woff2",
+      "sha256": "94fd1ce2533a7db49fac13877633836edee820d2af40a0f1929d30c06e9dcacb",
+      "bytes": 33184
+    },
+    {
+      "path": "inter/inter-vietnamese-standard-italic.woff2",
+      "source": "@fontsource-variable/inter@5.3.0/files/inter-vietnamese-standard-italic.woff2",
+      "sha256": "d102ea2c86a59e30a0c647a30791e251bf6701492a50549d1cdcf8a643fbbc98",
+      "bytes": 16216
+    },
+    {
+      "path": "inter/inter-latin-ext-standard-italic.woff2",
+      "source": "@fontsource-variable/inter@5.3.0/files/inter-latin-ext-standard-italic.woff2",
+      "sha256": "cd92c8740f77f482bcd39e831fa7b1445589e9203cc9edb39fd49435d8976257",
+      "bytes": 146460
+    },
+    {
+      "path": "inter/inter-latin-standard-italic.woff2",
+      "source": "@fontsource-variable/inter@5.3.0/files/inter-latin-standard-italic.woff2",
+      "sha256": "c58f9d530baa7e96355f444502eca739d5eefa0f328f3d635b73648373214629",
+      "bytes": 79716
+    },
+    {
+      "path": "material-icons/material-icons-latin-400-normal.woff2",
+      "source": "@fontsource/material-icons@5.3.0/files/material-icons-latin-400-normal.woff2",
+      "sha256": "8265f64786397d6b832d1ca0aafdf149ad84e72759fffa9f7272e91a0fb015d1",
+      "bytes": 128352
+    },
+    {
+      "path": "material-icons-outlined/material-icons-outlined-latin-400-normal.woff2",
+      "source": "@fontsource/material-icons-outlined@5.3.0/files/material-icons-outlined-latin-400-normal.woff2",
+      "sha256": "35dca8a7145a17c8d1306f25a3ca091578e15396f0b22d61eb8e73262ac75577",
+      "bytes": 155276
+    }
+  ]
+}

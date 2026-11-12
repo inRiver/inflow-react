@@ -1,3 +1,4 @@
+import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import { Children, forwardRef } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { useTheme } from '@mui/material/styles';
@@ -100,9 +101,7 @@ export const ThemedAvatar = forwardRef<HTMLDivElement, ThemedAvatarProps>(
           ) : children ? (
             children
           ) : (
-            <span className="material-icons-outlined" style={{ fontSize: '60%', color: palette.inflow.navy900 }}>
-              person
-            </span>
+            <PersonOutlinedIcon sx={{ fontSize: '60%', color: palette.inflow.navy900 }} />
           )}
         </div>
 
