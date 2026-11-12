@@ -49,11 +49,14 @@ const esmSmoke = `
 import assert from 'node:assert/strict';
 import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
+import { realpath } from 'node:fs/promises';
 import * as inflow from '${packageName}';
 import { inflowGridThemeParams } from '${packageName}/ag-grid';
 const entry = fileURLToPath(await import.meta.resolve('${packageName}'));
 const root = process.env.INFLOW_PACK_SMOKE_CONSUMER;
-assert.ok(root && !relative(root, entry).startsWith('..'), 'ESM resolved outside isolated consumer: ' + entry);
+// Windows: realpath expands 8.3 short-name segments; canonicalize both sides.
+const [canonicalRoot, canonicalEntry] = await Promise.all([realpath(root), realpath(entry)]);
+assert.ok(!relative(canonicalRoot, canonicalEntry).startsWith('..'), 'ESM resolved outside isolated consumer: ' + entry);
 assert.equal(inflow.createInflowTheme('light').palette.mode, 'light');
 assert.ok(Object.keys(inflowGridThemeParams).length > 0);
 const markup = renderToString(createElement(inflow.InflowProvider, { mode: 'light' }, [
@@ -72,11 +75,15 @@ const cjsSmoke = `
 const assert = require('node:assert/strict');
 const { createElement } = require('react');
 const { renderToString } = require('react-dom/server');
+const { realpathSync } = require('node:fs');
 const inflow = require('${packageName}');
 const { inflowGridThemeParams } = require('${packageName}/ag-grid');
 const entry = require.resolve('${packageName}');
 const root = process.env.INFLOW_PACK_SMOKE_CONSUMER;
-assert.ok(root && !require('node:path').relative(root, entry).startsWith('..'), 'CommonJS resolved outside isolated consumer: ' + entry);
+// Windows: realpath expands 8.3 short-name segments; canonicalize both sides.
+const canonicalRoot = realpathSync(root);
+const canonicalEntry = realpathSync(entry);
+assert.ok(!require('node:path').relative(canonicalRoot, canonicalEntry).startsWith('..'), 'CommonJS resolved outside isolated consumer: ' + entry);
 assert.equal(inflow.createInflowTheme('light').palette.mode, 'light');
 assert.ok(Object.keys(inflowGridThemeParams).length > 0);
 const markup = renderToString(createElement(inflow.InflowProvider, { mode: 'light' }, [
@@ -141,15 +148,21 @@ try {
   runNpm(['install', '--ignore-scripts', '--no-audit', '--no-fund', '--package-lock=false'], consumerRoot);
 
   const installedRoot = await realpath(join(consumerRoot, 'node_modules', '@inriver', 'inflow-react'));
-  assertInsideConsumer(installedRoot, consumerRoot);
+  // On Windows, realpath expands 8.3 short-name segments (e.g. RICHAR~1) while
+  // consumerRoot retains them from mkdtemp. Canonicalize both sides through
+  // realpath before comparing so the assertion is junction- and short-name-safe.
+  const canonicalConsumerRoot = await realpath(consumerRoot);
+  assertInsideConsumer(installedRoot, canonicalConsumerRoot);
   const consumerRequire = createRequire(join(consumerRoot, 'package.json'));
   const fontRoot = join(installedRoot, 'dist', 'fonts');
   const fontManifest = JSON.parse(await readFile(join(fontRoot, 'manifest.json'), 'utf8'));
   assert.equal(fontManifest.files.length, 16, 'all text subsets/styles and both icon fonts must ship');
   const referencedFonts = new Set();
   for (const stylesheet of ['inter.css', 'material-icons.css']) {
-    const cssPath = consumerRequire.resolve(`${packageName}/fonts/${stylesheet}`);
-    assert.equal(cssPath, join(fontRoot, stylesheet), 'CSS export must resolve inside the installed package');
+    // Windows: realpath expands 8.3 short-name segments in the resolver's return;
+    // canonicalize once so every path derived from cssPath stays comparable.
+    const cssPath = await realpath(consumerRequire.resolve(`${packageName}/fonts/${stylesheet}`));
+    assert.equal(cssPath, await realpath(join(fontRoot, stylesheet)), 'CSS export must resolve inside the installed package');
     const css = await readFile(cssPath, 'utf8');
     assert.doesNotMatch(css, /https?:|@import/, 'optional CSS must not request external assets');
     for (const [, url] of css.matchAll(/url\(['"]?(\.\/[^)'"\s]+)['"]?\)/g)) {
@@ -170,8 +183,8 @@ try {
     assert.match(await readFile(join(fontRoot, family, 'LICENSE'), 'utf8'), /SIL OPEN FONT LICENSE Version 1.1/);
   }
   assert.throws(() => consumerRequire.resolve('@mui/icons-material'), { code: 'MODULE_NOT_FOUND' }, 'built-in SVG consumers must not require the icons dev dependency');
-  const completeCss = consumerRequire.resolve(`${packageName}/local-assets.css`);
-  assert.equal(completeCss, join(fontRoot, 'local-assets.css'));
+  const completeCss = await realpath(consumerRequire.resolve(`${packageName}/local-assets.css`));
+  assert.equal(completeCss, await realpath(join(fontRoot, 'local-assets.css')));
   const completeSource = await readFile(completeCss, 'utf8');
   assert.doesNotMatch(completeSource, /https?:/);
   assert.deepEqual([...completeSource.matchAll(/@import '([^']+)'/g)].map(match => match[1]), [
