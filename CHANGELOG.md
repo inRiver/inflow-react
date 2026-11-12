@@ -2,7 +2,7 @@
 
 All notable changes to `@inriver/inflow-react` are documented here. This project follows [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [3.14.0] - 2026-11-12
 
 ### Added
 - A single optional `local-assets.css` export combines the bundled Inter and legacy icon stylesheets without changing the default CSS-free JavaScript/provider behavior (library-facing).
@@ -15,6 +15,9 @@ All notable changes to `@inriver/inflow-react` are documented here. This project
 - Showcase-only: the local-assets guide uses a single-column setup reference, shorter copy and expandable partial imports instead of comparison cards.
 - Built-in component and theme icons use bundled SVGs instead of requiring a Material Icons web font. Caller-provided string icons remain supported through the optional icon stylesheet; custom React-node icons remain unchanged. Consumers targeting built-in icon span classes should update their selectors for SVG roots (library-facing).
 - Showcase-only: Inter and legacy example icon fonts load from local assets rather than Google Fonts, including normal/italic text and non-Latin subsets.
+
+### Security
+- Override `minimatch` to `^11.0.8` to resolve a moderate-severity DoS advisory (GHSA-g3hv-75wg-m249) in the dev-tooling chain; `npm audit` now reports 0 vulnerabilities. Dev-only — no impact on the published library runtime.
 
 ## [3.13.0] - 2026-11-11
 
