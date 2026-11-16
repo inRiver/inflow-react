@@ -1,5 +1,6 @@
 import { forwardRef } from 'react';
 import { Box, IconButton, Stack, Typography } from '@mui/material';
+import type { SxProps, Theme } from '@mui/material/styles';
 import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
 import type { CSSProperties, ReactNode } from 'react';
 import { ThemedButton } from './ThemedButton';
@@ -15,9 +16,17 @@ export interface PageHeaderProps {
   /** Breadcrumb trail shown above the title in place of the eyebrow, e.g. a `ThemedBreadcrumbs`. */
   breadcrumbs?: ReactNode;
   title?: string;
+  /**
+   * Element used for the title. Defaults to 'h1' for a page header; pass another
+   * heading level or element when the header is not the page's top-level heading
+   * (for example inside a card or embedded surface).
+   */
+  titleComponent?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'span' | 'div';
   onBack?: () => void;
   actions?: PageHeaderAction[];
   style?: CSSProperties;
+  /** Composable MUI system styles, merged after the header's defaults. */
+  sx?: SxProps<Theme>;
 }
 
 export type ThemedPageHeaderProps = PageHeaderProps;
@@ -29,19 +38,22 @@ export type ThemedPageHeaderProps = PageHeaderProps;
  * and page-level actions.
  */
 export const ThemedPageHeader = forwardRef<HTMLDivElement, ThemedPageHeaderProps>(
-  ({ eyebrow, breadcrumbs, title, onBack, actions = [], style }, ref) => (
+  ({ eyebrow, breadcrumbs, title, titleComponent = 'h1', onBack, actions = [], style, sx }, ref) => (
     <Box
       ref={ref}
       style={style}
-      sx={(theme) => ({
-        alignItems: 'center',
-        backgroundColor: theme.palette.inflow.appBackground,
-        boxSizing: 'border-box',
-        display: 'flex',
-        gap: theme.spacing(2),
-        minHeight: 76,
-        padding: theme.spacing(1.25, 3),
-      })}
+      sx={[
+        (theme: Theme) => ({
+          alignItems: 'center',
+          backgroundColor: theme.palette.inflow.appBackground,
+          boxSizing: 'border-box',
+          display: 'flex',
+          gap: theme.spacing(2),
+          minHeight: 76,
+          padding: theme.spacing(1.25, 3),
+        }),
+        ...(Array.isArray(sx) ? sx : sx ? [sx] : []),
+      ]}
     >
       {onBack && (
         <IconButton
@@ -69,7 +81,7 @@ export const ThemedPageHeader = forwardRef<HTMLDivElement, ThemedPageHeaderProps
             </Typography>
           ))}
         {title && (
-          <Typography color="primary" component="h1" variant="h6">
+          <Typography color="primary" component={titleComponent} variant="h6">
             {title}
           </Typography>
         )}

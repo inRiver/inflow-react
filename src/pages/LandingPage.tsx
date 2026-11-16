@@ -30,6 +30,7 @@ import { ThemedChip } from '../components/themed/ThemedChip';
 import { ThemedAlert } from '../components/themed/ThemedAlert';
 import { ThemedTabs, ThemedTabPanel } from '../components/themed/ThemedTabs';
 import { ThemedTable, type Column } from '../components/themed/ThemedTable';
+import { ThemedPageHeader } from '../components/themed/ThemedPageHeader';
 import { ExampleScreensOverview, PopularComponentsOverview } from './LandingOverviewSections';
 
 const muiVersion = (await import('@mui/material/package.json')).version;
@@ -269,31 +270,20 @@ export function LandingPage() {
               boxShadow: theme.shadows[3],
             })}
           >
-            {/* Window chrome */}
-            <Stack
-              direction="row"
-              spacing={2}
+            {/* Window chrome — dogfoods ThemedPageHeader as the surface header */}
+            <ThemedPageHeader
+              eyebrow="InflowProvider"
+              title="Product Enrichment Workspace"
+              titleComponent="p"
               sx={{
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                flexWrap: 'wrap',
-                gap: 1,
-                px: { xs: 2, sm: 3 },
-                py: 1.5,
                 backgroundColor: 'inflow.surfaceContainer',
                 borderBottom: 1,
                 borderColor: 'inflow.outlineVariant',
+                minHeight: 0,
+                px: { xs: 2, sm: 3 },
+                py: 1.5,
               }}
-            >
-              <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', minWidth: 0 }}>
-                <Typography variant="caption" color="text.primary" sx={{ fontWeight: 600 }}>
-                  Product Enrichment Workspace
-                </Typography>
-              </Stack>
-              <Typography variant="caption" color="text.secondary">
-                InflowProvider
-              </Typography>
-            </Stack>
+            />
 
             {/* Interactive surface tabs */}
             <Box
