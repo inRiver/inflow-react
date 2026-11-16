@@ -105,6 +105,9 @@ try {
   const tarball = join(smokeRoot, packed[0].filename);
   const archiveEntries = run(tar, ['-tzf', tarball], smokeRoot).trim().split(/\r?\n/);
   for (const required of [
+    'package/dist/cli/inflow.js',
+    'package/dist/cli/cli.js',
+    'package/dist/cli/manifest.json',
     'package/dist/index.js',
     'package/dist/index.cjs',
     'package/dist/index.d.ts',
@@ -153,6 +156,13 @@ try {
   // realpath before comparing so the assertion is junction- and short-name-safe.
   const canonicalConsumerRoot = await realpath(consumerRoot);
   assertInsideConsumer(installedRoot, canonicalConsumerRoot);
+  const installedMetadata = JSON.parse(await readFile(join(installedRoot, 'package.json'), 'utf8'));
+  assert.equal(installedMetadata.bin.inflow, './dist/cli/inflow.js', 'inflow bin must point to the installed CLI');
+  assert.match(await readFile(join(installedRoot, 'dist/cli/inflow.js'), 'utf8'), /^#!\/usr\/bin\/env node/);
+  const cliOutput = JSON.parse(run(process.execPath, [join(installedRoot, 'dist/cli/inflow.js'), 'component', '--list', '--json'], consumerRoot));
+  assert.equal(cliOutput.ok, true, 'installed CLI must succeed');
+  assert.equal(cliOutput.command, 'component');
+  assert.ok(Array.isArray(cliOutput.data) && cliOutput.data.some(entry => entry.componentName === 'ThemedChip'));
   const consumerRequire = createRequire(join(consumerRoot, 'package.json'));
   const fontRoot = join(installedRoot, 'dist', 'fonts');
   const fontManifest = JSON.parse(await readFile(join(fontRoot, 'manifest.json'), 'utf8'));
@@ -260,6 +270,7 @@ createRoot(document.getElementById('root')).render(createElement(InflowProvider,
     tarball: basename(tarball),
     installedRoot,
     packageFiles: 'PASS',
+    cli: 'PASS',
     isolatedConsumer: 'PASS',
     optionalFonts: 'PASS',
     consumerBuilds,

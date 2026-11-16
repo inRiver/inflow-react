@@ -36,6 +36,7 @@
     "dist/tokens.js.map",
     "dist/tokens.cjs",
     "dist/tokens.cjs.map",
+    "dist/cli",
     "dist/ag-grid",
     "dist/components",
     "dist/providers",
@@ -65,7 +66,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build && npm run build:lib",
-    "build:lib": "vite build --config vite.lib.config.ts && tsc -p tsconfig.lib.json && node scripts/copy-font-assets.mjs",
+    "build:lib": "vite build --config vite.lib.config.ts && tsc -p tsconfig.lib.json && node scripts/copy-font-assets.mjs && tsc -p tsconfig.cli.json && node scripts/generate-cli-manifest.mjs --write",
     "lint": "eslint .",
     "test": "vitest",
     "test:run": "vitest --run",
@@ -99,6 +100,7 @@
     "@vitest/coverage-v8": "^5.1.0",
     "ag-grid-community": "^36.2.0",
     "ag-grid-react": "^36.2.0",
+    "axe-core": "^4.14.0",
     "clipboard-copy": "^4.0.1",
     "eslint": "^10.14.0",
     "eslint-plugin-react-hooks": "^7.1.1",
@@ -127,5 +129,8 @@
     "undici": "^7.29.1",
     "brace-expansion": ">=5.0.12",
     "minimatch": "^11.0.8"
+  },
+  "bin": {
+    "inflow": "./dist/cli/inflow.js"
   }
 }
