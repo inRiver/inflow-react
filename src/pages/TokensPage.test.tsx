@@ -77,3 +77,19 @@ describe('TokensPage typography, palette, and shadows', () => {
     expect(screen.getByText('spacing(0.5)').parentElement).toHaveTextContent('4px');
   });
 });
+
+
+describe('TokensPage scoped CSS variables', () => {
+  it('lists resolved variables and explains overrides and portal boundaries', () => {
+    renderWithInflow(<TokensPage />);
+
+    expect(screen.getByRole('heading', { name: 'Scoped CSS variables' })).toBeInTheDocument();
+    const variables = screen.getByRole('table', { name: 'Scoped CSS variables' });
+    for (const name of ['--infl-primary-color', '--infl-feedback-warning-surface-color', '--infl-toast-surface-color', '--infl-diff-added-bg-color', '--infl-radius-full', '--infl-spacing-xxs', '--infl-grid-row-height', '--infl-shadow-e1', '--infl-font-family']) {
+      expect(within(variables).getByRole('row', { name: new RegExp(`^${name} `) })).toBeInTheDocument();
+    }
+    expect(screen.getByText(/Override a variable with the provider/)).toHaveTextContent('CSS rule');
+    expect(screen.getByText(/Portals normally mount outside/)).toHaveTextContent('do not inherit');
+    expect(screen.getByText(/<InflowProvider sx=/)).toHaveTextContent('[data-inflow-root].my-app');
+  });
+});
