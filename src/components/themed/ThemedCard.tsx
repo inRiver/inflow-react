@@ -49,10 +49,10 @@ export const ThemedCard = forwardRef<HTMLDivElement, ThemedCardProps>(
         {...props}
       >
         {(title || subheader) && (
-          <CardHeader 
-            title={title} 
+          <CardHeader
+            title={title}
             subheader={subheader}
-            titleTypographyProps={{ variant: 'subtitle1' }}
+            slotProps={{ title: { variant: 'subtitle1' } }}
             sx={{ pb: 0 }}
           />
         )}
