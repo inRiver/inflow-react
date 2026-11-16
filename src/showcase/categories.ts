@@ -98,6 +98,12 @@ export const COMPONENT_CATEGORIES: Record<string, Category> = {
     hidden: true,
     components: ['grid', 'stack', 'container', 'box', 'paper', 'appbar'],
   },
+  patterns: {
+    id: 'patterns',
+    label: 'Patterns',
+    icon: 'AccountTree',
+    components: ['tablepagepattern', 'detailpagepattern', 'rightpanelpattern'],
+  },
   other: {
     id: 'other',
     label: 'Other',
@@ -165,6 +171,9 @@ export const COMPONENT_LABELS: Record<string, string> = {
   formcontrol: 'Form Control',
   inputadornment: 'Input Adornment',
   table: 'Table',
+  tablepagepattern: 'Table Page Pattern',
+  detailpagepattern: 'Detail Page Pattern',
+  rightpanelpattern: 'Right Panel Pattern',
   list: 'List',
   chip: 'Chip',
   badge: 'Badge',

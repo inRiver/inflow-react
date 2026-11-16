@@ -57,3 +57,6 @@ export { CheckboxGroupDemo } from './CheckboxGroupDemo';
 export { BoxDemo } from './BoxDemo';
 export { TypographyVariantsDemo } from './TypographyVariantsDemo';
 
+export { TablePagePatternDemo } from './TablePagePatternDemo';
+export { DetailPagePatternDemo } from './DetailPagePatternDemo';
+export { RightPanelPatternDemo } from './RightPanelPatternDemo';
