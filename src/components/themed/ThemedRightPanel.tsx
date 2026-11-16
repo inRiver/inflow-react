@@ -33,6 +33,7 @@ const WIDTH_PX: Record<ThemedRightPanelWidth, number> = {
 const CSS_VAR = '--infl-right-panel-width';
 const MIN_WIDTH = 280;
 const MAX_WIDTH = 720;
+const RESIZE_STEP = 10;
 
 interface ActivePanelRegistration {
   id: symbol;
@@ -242,6 +243,29 @@ export const ThemedRightPanel = forwardRef<HTMLDivElement, ThemedRightPanelProps
       setIsDragging(true);
     };
 
+    const handleResizeKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+      let nextWidth: number;
+      switch (event.key) {
+        case 'ArrowLeft':
+          nextWidth = panelWidth + RESIZE_STEP;
+          break;
+        case 'ArrowRight':
+          nextWidth = panelWidth - RESIZE_STEP;
+          break;
+        case 'Home':
+          nextWidth = MIN_WIDTH;
+          break;
+        case 'End':
+          nextWidth = MAX_WIDTH;
+          break;
+        default:
+          return;
+      }
+      event.preventDefault();
+      event.stopPropagation();
+      setPanelWidth(Math.max(MIN_WIDTH, Math.min(MAX_WIDTH, nextWidth)));
+    };
+
     const isOverlay = mode === 'overlay';
     const canResize = resizable ?? variant !== 'modal';
     const panelContent = typeof children === 'function' ? children({ requestClose }) : children;
@@ -297,7 +321,14 @@ export const ThemedRightPanel = forwardRef<HTMLDivElement, ThemedRightPanelProps
           >
             {canResize && (
               <Box
+                role="separator"
                 aria-label="Resize panel"
+                aria-orientation="vertical"
+                aria-valuemin={MIN_WIDTH}
+                aria-valuemax={MAX_WIDTH}
+                aria-valuenow={panelWidth}
+                tabIndex={0}
+                onKeyDown={handleResizeKeyDown}
                 data-testid="right-panel-resize-handle"
                 onPointerDown={handlePointerDown}
                 sx={{
@@ -309,6 +340,7 @@ export const ThemedRightPanel = forwardRef<HTMLDivElement, ThemedRightPanelProps
                   cursor: 'col-resize',
                   touchAction: 'none',
                   zIndex: 1,
+                  '&:focus-visible::after': { bgcolor: theme.palette.primary.main },
                   '&::after': {
                     content: '""',
                     position: 'absolute',
