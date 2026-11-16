@@ -286,19 +286,6 @@ export function LandingPage() {
               }}
             >
               <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', minWidth: 0 }}>
-                <Stack direction="row" spacing={0.75} aria-hidden="true">
-                  {[0, 1, 2].map((dot) => (
-                    <Box
-                      key={dot}
-                      sx={(theme) => ({
-                        width: theme.spacing(1.25),
-                        height: theme.spacing(1.25),
-                        borderRadius: `${theme.inflow.radius.full}px`,
-                        backgroundColor: 'inflow.outlineVariant',
-                      })}
-                    />
-                  ))}
-                </Stack>
                 <Typography variant="caption" color="text.primary" sx={{ fontWeight: 600 }}>
                   Product Enrichment Workspace
                 </Typography>
