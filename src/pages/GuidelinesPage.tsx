@@ -179,7 +179,7 @@ npm unlink @inriver/inflow-react
 npm install  # Reinstalls from public npm or your normal lockfile source`;
 
 const publicExports = [
-  'inflowTheme and defaultTheme',
+  'inflowTheme (defaultTheme is deprecated)',
   'inflowTokens, inflowCustomColors, and inflowSpacing',
   'ThemedChip, ThemedCard, ThemedDialog, ThemedTable, and other structural themed components',
   'inflowGridThemeParams (via @inriver/inflow-react/ag-grid)',

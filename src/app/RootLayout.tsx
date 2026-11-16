@@ -19,7 +19,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 import SettingsBrightnessOutlinedIcon from '@mui/icons-material/SettingsBrightnessOutlined';
-import PaletteOutlinedIcon from '@mui/icons-material/PaletteOutlined';
 import { ComponentSidebar } from '../components/navigation/ComponentSidebar';
 import { ComponentSearchDialog } from '../components/navigation/ComponentSearchDialog';
 import { useShowcaseTheme, DARK_MODE_ENABLED } from './ThemeContext';
@@ -28,7 +27,7 @@ export function RootLayout() {
   const theme = useTheme();
   const navigate = useNavigate();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const { currentTheme, toggleTheme, resolvedColorMode, colorModePreference, setColorModePreference, cycleColorMode } = useShowcaseTheme();
+  const { resolvedColorMode, colorModePreference, setColorModePreference, cycleColorMode } = useShowcaseTheme();
   const [sidebarOpen, setSidebarOpen] = useState(!isMobile);
   const [componentSearchQuery, setComponentSearchQuery] = useState('');
   const [searchDialogOpen, setSearchDialogOpen] = useState(false);
@@ -37,8 +36,6 @@ export function RootLayout() {
     colorModePreference === 'system' ? 'light' : colorModePreference === 'light' ? 'dark' : 'system';
   const colorModeLabel =
     colorModePreference === 'system' ? `System (${resolvedColorMode})` : colorModePreference;
-  const themeVariantLabel = currentTheme === 'inflow' ? 'Inflow' : 'MUI default';
-  const nextThemeVariantLabel = currentTheme === 'inflow' ? 'MUI default' : 'Inflow';
   const ColorModeIcon =
     colorModePreference === 'system'
       ? SettingsBrightnessOutlinedIcon
@@ -227,51 +224,8 @@ export function RootLayout() {
                     </ToggleButton>
                   </ToggleButtonGroup>
                 )}
-
-                <Tooltip title={`Theme variant: ${themeVariantLabel}. Click to switch to ${nextThemeVariantLabel}.`}>
-                  <ButtonBase
-                    onClick={toggleTheme}
-                    aria-label={`Theme variant: ${themeVariantLabel}. Click to switch to ${nextThemeVariantLabel}.`}
-                    sx={{
-                      borderRadius: 2.5,
-                      border: `1px solid ${alpha(theme.palette.common.white, 0.18)}`,
-                      bgcolor: alpha(theme.palette.common.white, 0.08),
-                      px: 1.5,
-                      py: 1,
-                      color: 'inherit',
-                      gap: 1,
-                      transition: theme.transitions.create(['background-color', 'border-color', 'transform']),
-                      '&:hover': {
-                        bgcolor: alpha(theme.palette.common.white, 0.12),
-                        borderColor: alpha(theme.palette.common.white, 0.28),
-                        transform: 'translateY(-1px)',
-                      },
-                    }}
-                  >
-                    <PaletteOutlinedIcon fontSize="small" />
-                    <Typography variant="body2" sx={{ fontWeight: 700 }}>
-                      {themeVariantLabel}
-                    </Typography>
-                  </ButtonBase>
-                </Tooltip>
               </Stack>
             )}
-
-            {isMobile && (
-              <Tooltip title={`Theme variant: ${themeVariantLabel}. Click to switch to ${nextThemeVariantLabel}.`}>
-                <IconButton
-                  color="inherit"
-                  aria-label={`Theme variant: ${themeVariantLabel}. Click to switch to ${nextThemeVariantLabel}.`}
-                  onClick={toggleTheme}
-                  sx={{
-                    border: `1px solid ${alpha(theme.palette.common.white, 0.24)}`,
-                    borderRadius: 2,
-                  }}
-                >
-                  <PaletteOutlinedIcon fontSize="small" />
-                </IconButton>
-              </Tooltip>
-             )}
 
             {isMobile && DARK_MODE_ENABLED && (
               <Tooltip title={`Color mode: ${colorModeLabel}. Click for ${nextColorMode}.`}>

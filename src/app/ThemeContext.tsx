@@ -1,18 +1,10 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
-import { ScopedCssBaseline } from '@mui/material';
-import {
-  createDefaultTheme,
-  INFLOW_DARK_MODE_ENABLED,
-  type InflowColorMode,
-} from '../theme';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { INFLOW_DARK_MODE_ENABLED, type InflowColorMode } from '../theme';
 import { InflowProvider } from '../providers';
 import { darkTokens } from '../theme/inflow-tokens';
 
-type ThemeType = 'inflow' | 'default';
 type ColorModePreference = InflowColorMode | 'system';
 
-const THEME_STORAGE_KEY = 'showcase-theme';
 const COLOR_MODE_STORAGE_KEY = 'inflow-color-mode';
 
 const getSystemColorMode = (): InflowColorMode => {
@@ -24,8 +16,6 @@ const getSystemColorMode = (): InflowColorMode => {
 };
 
 type ThemeContextType = {
-  currentTheme: ThemeType;
-  toggleTheme: () => void;
   colorModePreference: ColorModePreference;
   resolvedColorMode: InflowColorMode;
   setColorModePreference: (mode: ColorModePreference) => void;
@@ -49,14 +39,6 @@ export const useShowcaseTheme = () => {
 export const useTheme = useShowcaseTheme;
 
 export const CustomThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [currentTheme, setCurrentTheme] = useState<ThemeType>(() => {
-    if (typeof window === 'undefined') {
-      return 'inflow';
-    }
-
-    const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
-    return (savedTheme === 'inflow' || savedTheme === 'default') ? savedTheme : 'inflow';
-  });
   const [colorModePreference, setColorModePreference] = useState<ColorModePreference>(() => {
     if (typeof window === 'undefined') {
       return 'system';
@@ -66,10 +48,6 @@ export const CustomThemeProvider: React.FC<{ children: React.ReactNode }> = ({ c
     return savedMode === 'light' || savedMode === 'dark' || savedMode === 'system' ? savedMode : 'system';
   });
   const [systemColorMode, setSystemColorMode] = useState<InflowColorMode>(getSystemColorMode);
-
-  useEffect(() => {
-    localStorage.setItem(THEME_STORAGE_KEY, currentTheme);
-  }, [currentTheme]);
 
   useEffect(() => {
     localStorage.setItem(COLOR_MODE_STORAGE_KEY, colorModePreference);
@@ -93,10 +71,6 @@ export const CustomThemeProvider: React.FC<{ children: React.ReactNode }> = ({ c
     mediaQuery.addListener(handleChange);
     return () => mediaQuery.removeListener(handleChange);
   }, []);
-
-  const toggleTheme = () => {
-    setCurrentTheme((prev) => (prev === 'inflow' ? 'default' : 'inflow'));
-  };
 
   const cycleColorMode = () => {
     if (!INFLOW_DARK_MODE_ENABLED) return; // No-op when dark mode is disabled
@@ -125,38 +99,18 @@ export const CustomThemeProvider: React.FC<{ children: React.ReactNode }> = ({ c
     };
   }, [resolvedColorMode]);
 
-  // Only the 'default' comparison branch needs a locally-created theme;
-  // the 'inflow' branch's theme is created internally by InflowProvider
-  // (see render below) - this keeps the canonical InflowProvider as the
-  // single source of truth for the Inflow theme, rather than duplicating
-  // createInflowTheme(...) here as well.
-  const defaultThemeToApply = useMemo(
-    () => createDefaultTheme(resolvedColorMode),
-    [resolvedColorMode],
-  );
-
   return (
     <ThemeContext.Provider
       value={{
-        currentTheme,
-        toggleTheme,
         colorModePreference,
         resolvedColorMode,
         setColorModePreference,
         cycleColorMode,
       }}
     >
-      {currentTheme === 'inflow' ? (
-        <InflowProvider mode={resolvedColorMode}>
-          {children}
-        </InflowProvider>
-      ) : (
-        <MuiThemeProvider theme={defaultThemeToApply}>
-          <ScopedCssBaseline>
-            {children}
-          </ScopedCssBaseline>
-        </MuiThemeProvider>
-      )}
+      <InflowProvider mode={resolvedColorMode}>
+        {children}
+      </InflowProvider>
     </ThemeContext.Provider>
   );
 };
