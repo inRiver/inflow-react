@@ -25,6 +25,7 @@ const [muiMajor, muiMinor] = muiVersion.split('.');
 const checkpointTag = `react${reactMajor}-mui${muiMajor}.${muiMinor}`;
 
 const categoryIcons: Readonly<Record<string, SvgIconComponent>> = {
+  AccountTree: Icons.AccountTree,
   Campaign: Icons.Campaign,
   Category: Icons.Category,
   Dashboard: Icons.Dashboard,

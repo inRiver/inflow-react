@@ -13,3 +13,17 @@ describe('ComponentSidebar local assets entry', () => {
     expect(screen.getByLabelText('Current route')).toHaveTextContent('/local-assets');
   });
 });
+
+
+describe('ComponentSidebar documentation entries', () => {
+  it.each([
+    ['Getting started', '/getting-started'],
+    ['Theming', '/theming'],
+    ['CLI reference', '/cli'],
+  ])('navigates from %s to %s', (label, path) => {
+    renderWithInflow(<MemoryRouter><ComponentSidebar open onClose={vi.fn()} searchQuery="" onSearchQueryChange={vi.fn()} /><Location /></MemoryRouter>);
+    fireEvent.click(screen.getByRole('button', { name: label }));
+    expect(screen.getByLabelText('Current route')).toHaveTextContent(path);
+    expect(screen.getByRole('button', { name: label })).toHaveClass('Mui-selected');
+  });
+});

@@ -1,0 +1,32 @@
+# Inflow React
+
+> @inriver/inflow-react is Inriver's React/MUI design-system library: a scoped theme, design tokens, and themed components for product UIs.
+
+## Install and setup
+
+Install `@inriver/inflow-react` with React 19, React DOM 19, MUI 9, @emotion/react and @emotion/styled. Wrap your app in `<InflowProvider>` imported from `@inriver/inflow-react`. Set a distinct `cacheKey` for each independently deployed microfrontend. `mode` is `light` by default; the app controls light or dark mode. Bundled fonts and icons are optional: import `@inriver/inflow-react/local-assets.css` once in your global CSS entry.
+
+## Documentation
+
+- [Introduction](https://inriver.github.io/inflow-react/#/introduction): purpose and audiences.
+- [Getting started](https://inriver.github.io/inflow-react/#/getting-started): install, provider, fonts, and dark mode.
+- [Theming](https://inriver.github.io/inflow-react/#/theming): JavaScript tokens, scoped CSS variables, overrides, and portal caveats.
+- [CLI reference](https://inriver.github.io/inflow-react/#/cli): commands, examples, JSON and exit codes.
+- [Design tokens](https://inriver.github.io/inflow-react/#/tokens): token and CSS variable reference.
+- [Import guidelines](https://inriver.github.io/inflow-react/#/guidelines): integration and versioning.
+- [Local assets](https://inriver.github.io/inflow-react/#/local-assets): font and icon setup.
+- [Migration](https://inriver.github.io/inflow-react/#/migration): upgrading and deprecations.
+- [Accessibility](https://inriver.github.io/inflow-react/#/accessibility): accessibility guidance.
+- [Capitalization](https://inriver.github.io/inflow-react/#/capitalization): interface text casing.
+- [Changelog](https://inriver.github.io/inflow-react/#/changelog): release history.
+- [Components](https://inriver.github.io/inflow-react/#/components): component catalog and demos.
+- [Pre-rendered components](https://inriver.github.io/inflow-react/#/pre-rendered): component examples.
+- [AG Grid](https://inriver.github.io/inflow-react/#/publishers/ag-grid): theme publisher.
+
+## CLI
+
+The package includes the `inflow` binary. Use `inflow --help`, `inflow component --list`, `inflow component ThemedChip`, `inflow tokens`, `inflow search chip`, or `inflow docs setup` (also `theming` and `migration`). Add `--json` for a machine-readable envelope. Unknown input exits 1.
+
+## Token overrides
+
+The provider emits 112 `--infl-*` variables on `[data-inflow-root]`, derived from the resolved theme. Override individual variables with the provider `sx` prop or CSS scoped to that root, not `:root`. Portaled content does not inherit these variables by default. See [Theming](https://inriver.github.io/inflow-react/#/theming) and [Design tokens](https://inriver.github.io/inflow-react/#/tokens).

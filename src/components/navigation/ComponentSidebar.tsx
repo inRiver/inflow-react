@@ -218,6 +218,20 @@ export const ComponentSidebar: React.FC<ComponentSidebarProps> = ({
               }} />
             </ListItemButton>
           </ListItem>
+          {[
+            { path: '/getting-started', label: 'Getting started', icon: 'rocket_launch' },
+            { path: '/theming', label: 'Theming', icon: 'palette' },
+            { path: '/cli', label: 'CLI reference', icon: 'terminal' },
+          ].map(({ path, label, icon }) => (
+            <ListItem key={path} disablePadding>
+              <ListItemButton onClick={() => handleNavigate(path)} selected={location.pathname === path} sx={{ px: 2.5 }}>
+                <ListItemIcon sx={{ minWidth: 0, mr: 2, justifyContent: 'center' }}>
+                  <Icon aria-hidden baseClassName="material-icons-outlined">{icon}</Icon>
+                </ListItemIcon>
+                <ListItemText primary={label} slotProps={{ primary: { sx: { fontWeight: 'bold' } } }} />
+              </ListItemButton>
+            </ListItem>
+          ))}
           <ListItem disablePadding>
             <ListItemButton
               onClick={() => handleNavigate('/capitalization')}
