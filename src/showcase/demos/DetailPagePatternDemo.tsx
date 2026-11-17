@@ -1,4 +1,4 @@
-import { Typography, useTheme } from '@mui/material';
+import { Box, Typography, useTheme } from '@mui/material';
 import { InflowProvider } from '../../providers';
 import { CodeBlock } from '../CodeBlock';
 import { DemoFrame } from '../DemoFrame';
@@ -13,7 +13,15 @@ export function DetailPagePatternDemo() {
       <DemoFrame title="Detail page with a push panel">
         {/* Isolate the demo from the showcase layout, which already consumes the push width. */}
         <InflowProvider mode={mode} cacheKey="recipe">
-          <PublisherDetail />
+          {/* Preview only: the push panel is viewport-fixed and reserves its width inside the
+              content, which would leave almost nothing in a docs-sized frame. Keep a usable
+              content width; the frame scrolls horizontally when it is narrower. */}
+          <Box
+            data-testid="push-preview-stage"
+            sx={(theme) => ({ minWidth: `calc(var(--infl-right-panel-width, 0px) + ${theme.spacing(45)})` })}
+          >
+            <PublisherDetail />
+          </Box>
         </InflowProvider>
       </DemoFrame>
       <CodeBlock code={recipeSource.replace("../../components/themed", "@inriver/inflow-react")} />

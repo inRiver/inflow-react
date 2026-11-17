@@ -21,4 +21,15 @@ describe('DetailPagePatternDemo', () => {
     await waitFor(() => expect(screen.queryByRole('complementary', { name: 'Publisher details panel' })).not.toBeInTheDocument());
     expect(document.querySelector('pre')?.textContent).toContain("from '@inriver/inflow-react'");
   });
+
+  it('reserves room for the viewport-fixed push panel so the preview content never collapses', () => {
+    renderWithInflow(<DetailPagePatternDemo />);
+    const stage = screen.getByTestId('push-preview-stage');
+
+    // Live panel width (CSS var, so it tracks user resizing) plus a 360px usable content width.
+    expect(getComputedStyle(stage).minWidth).toBe('calc(var(--infl-right-panel-width, 0px) + 360px)');
+    // The frame must scroll rather than squeeze the content when it is narrower than the stage.
+    expect(getComputedStyle(stage.closest<HTMLElement>('.MuiPaper-root')!).overflow).toBe('auto');
+    expect(within(stage).getByRole('button', { name: 'Open publisher panel' })).toBeInTheDocument();
+  });
 });
