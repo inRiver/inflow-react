@@ -148,6 +148,33 @@ describe('ThemedRightPanel', () => {
     fireEvent.pointerUp(document, { pointerId: 1 });
 
     await waitFor(() => expect(panel).toHaveStyle({ width: '500px' }));
+    expect(handle).toHaveAttribute('aria-valuenow', '500');
+  });
+
+  it('exposes a keyboard-operable vertical resize separator with bounded width', async () => {
+    renderPanel({ width: 'medium' });
+    const panel = await screen.findByRole('complementary');
+    const handle = screen.getByRole('separator', { name: 'Resize panel' });
+    expect(handle).toHaveAttribute('aria-orientation', 'vertical');
+    expect(handle).toHaveAttribute('aria-valuemin', '280');
+    expect(handle).toHaveAttribute('aria-valuemax', '720');
+    expect(handle).toHaveAttribute('aria-valuenow', '400');
+    handle.focus();
+    expect(handle).toHaveFocus();
+
+    fireEvent.keyDown(handle, { key: 'ArrowLeft' });
+    expect(panel).toHaveStyle({ width: '410px' });
+    expect(handle).toHaveAttribute('aria-valuenow', '410');
+    fireEvent.keyDown(handle, { key: 'ArrowRight' });
+    expect(panel).toHaveStyle({ width: '400px' });
+    fireEvent.keyDown(handle, { key: 'Home' });
+    fireEvent.keyDown(handle, { key: 'ArrowRight' });
+    expect(panel).toHaveStyle({ width: '280px' });
+    expect(handle).toHaveAttribute('aria-valuenow', '280');
+    fireEvent.keyDown(handle, { key: 'End' });
+    fireEvent.keyDown(handle, { key: 'ArrowLeft' });
+    expect(panel).toHaveStyle({ width: '720px' });
+    expect(handle).toHaveAttribute('aria-valuenow', '720');
   });
 
   it('stops resizing when a pointer is cancelled', async () => {

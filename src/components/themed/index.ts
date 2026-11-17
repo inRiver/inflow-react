@@ -20,3 +20,5 @@ export * from './ThemedTable';
 export * from './ThemedTabs';
 export * from './ThemedTextField';
 export * from './ThemedToast';
+export * from './ThemedTablePage';
+export * from './ThemedDetailPageShell';

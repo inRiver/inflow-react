@@ -1,5 +1,5 @@
 import { createRef } from 'react';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { InflowProvider } from '../../providers/InflowProvider';
 import { ThemedStepper } from './ThemedStepper';
@@ -172,6 +172,32 @@ describe('ThemedStepper', () => {
     (buttons[0] as HTMLElement).click();
     expect(handleStepClick).toHaveBeenCalledTimes(1);
     expect(handleStepClick).toHaveBeenCalledWith(0);
+  });
+
+  it('uses MUI tablist semantics and roving keyboard focus for clickable steps', () => {
+    const onStepClick = vi.fn();
+    render(
+      <InflowProvider>
+        <ThemedStepper steps={steps} activeStep={0} nonLinear onStepClick={onStepClick} aria-label="Progress" />
+      </InflowProvider>,
+    );
+    const tablist = screen.getByRole('tablist', { name: 'Progress' });
+    const tabs = within(tablist).getAllByRole('tab');
+    expect(tabs).toHaveLength(steps.length);
+    expect(tabs[0]).toHaveAttribute('aria-selected', 'true');
+    expect(tabs[0]).toHaveAttribute('tabindex', '0');
+    expect(tabs[1]).toHaveAttribute('tabindex', '-1');
+    tabs[0].focus();
+    fireEvent.keyDown(tabs[0], { key: 'ArrowRight' });
+    expect(tabs[1]).toHaveFocus();
+    fireEvent.click(tabs[1]);
+    expect(onStepClick).toHaveBeenCalledWith(1);
+  });
+
+  it('keeps a read-only stepper out of the tablist pattern', () => {
+    renderStepper();
+    expect(screen.queryByRole('tablist')).not.toBeInTheDocument();
+    expect(screen.queryByRole('tab')).not.toBeInTheDocument();
   });
 
   it('underlines completed steps except the active step', () => {

@@ -58,6 +58,10 @@ export const THEMED_COMPONENT_INFO: Record<string, ThemedComponentInfo> = {
     themedName: 'ThemedChatPanel',
     reason: 'Composes the Inflow AI-assistant chat experience into a ThemedRightPanel.',
   },
+  detailpageshell: {
+    themedName: 'ThemedDetailPageShell',
+    reason: 'Composes page content with a controlled Inflow right-side detail panel.',
+  },
   dialog: {
     themedName: 'ThemedDialog',
     reason:
@@ -93,6 +97,10 @@ export const THEMED_COMPONENT_INFO: Record<string, ThemedComponentInfo> = {
   table: {
     themedName: 'ThemedTable',
     reason: 'Replaces manual TableHead/TableBody children with a simple columns/data model.',
+  },
+  tablepage: {
+    themedName: 'ThemedTablePage',
+    reason: 'Composes page chrome, filters, and a data table with loading and empty states.',
   },
   tabs: {
     themedName: 'ThemedTabs',

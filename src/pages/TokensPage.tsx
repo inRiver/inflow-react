@@ -15,6 +15,7 @@ import {
   TableRow,
   useTheme,
 } from '@mui/material';
+import { createInflowVariables } from '../theme/inflow';
 import { INFLOW_DARK_MODE_ENABLED } from '../theme/featureFlags';
 import { inflowTokens } from '../theme/tokens';
 
@@ -160,6 +161,7 @@ const formatLineHeight = (value: string | number | undefined) =>
 
 export function TokensPage() {
   const theme = useTheme();
+  const inflowVariables = createInflowVariables(theme);
   const radiusRows = Object.entries(inflowTokens.radius).map(([name, value]) => [
     name,
     value === 9999 ? 'Full (pill)' : `${value}px`,
@@ -229,6 +231,31 @@ export function TokensPage() {
               </Grid>
             </Box>
           </Stack>
+        </Box>
+
+        <Box>
+          <Typography variant="h5" gutterBottom>Scoped CSS variables</Typography>
+          <Typography variant="body1" sx={{ mb: 2 }}>
+            Each provider puts these resolved theme values on its own <code>[data-inflow-root]</code>.
+            Override a variable with the provider's <code>sx</code> prop, or with a sufficiently specific
+            CSS rule on that root. Use the variables in your own styles; overriding them does not change
+            the MUI theme or component styles that read it directly.
+          </Typography>
+          <Typography component="pre" sx={{ overflowX: 'auto', mb: 2 }}><code>{`<InflowProvider sx={{ '--infl-primary-color': 'var(--brand-primary)' }}>
+  <div style={{ color: 'var(--infl-primary-color)' }}>Content</div>
+</InflowProvider>
+
+/* Or use your own CSS, loaded after the provider styles. */
+[data-inflow-root].my-app { --infl-primary-color: var(--brand-primary); }`}</code></Typography>
+          <Typography variant="body1" sx={{ mb: 2 }}>
+            Portals normally mount outside the root and do not inherit its variables. To use them in
+            portaled content, put the portal container inside the appropriate provider root.
+          </Typography>
+          <ValueTable
+            label="Scoped CSS variables"
+            columns={['Variable', 'Resolved value']}
+            rows={Object.entries(inflowVariables).map(([name, value]) => [name, value])}
+          />
         </Box>
 
         {/* Typography Section */}

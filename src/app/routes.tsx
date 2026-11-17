@@ -7,6 +7,10 @@ import { ComponentPage } from '../pages/ComponentPage';
 import { PreRenderedPage } from '../pages/PreRenderedPage';
 import { PublishersAgGridPage } from '../pages/PublishersAgGridPage';
 import { IntroductionPage } from '../pages/IntroductionPage';
+import { GettingStartedPage } from '../pages/GettingStartedPage';
+import { ThemingPage } from '../pages/ThemingPage';
+import { CliDocsPage } from '../pages/CliDocsPage';
+import { LlmsPage } from '../pages/LlmsPage';
 import { CapitalizationPage } from '../pages/CapitalizationPage';
 import { AccessibilityPage } from '../pages/AccessibilityPage';
 import { MigrationPage } from '../pages/MigrationPage';
@@ -20,6 +24,25 @@ import TableScreen from '../pages/screens/TableScreen';
 import DialogScreen from '../pages/screens/DialogScreen';
 import EmptyStateScreen from '../pages/screens/EmptyStateScreen';
 
+// The narrative/reference documentation routes also drive the llms.txt parity test.
+export const docsRoutes = [
+  { path: 'changelog', element: <ChangelogPage /> },
+  { path: 'introduction', element: <IntroductionPage /> },
+  { path: 'getting-started', element: <GettingStartedPage /> },
+  { path: 'theming', element: <ThemingPage /> },
+  { path: 'cli', element: <CliDocsPage /> },
+  { path: 'llms', element: <LlmsPage /> },
+  { path: 'capitalization', element: <CapitalizationPage /> },
+  { path: 'accessibility', element: <AccessibilityPage /> },
+  { path: 'migration', element: <MigrationPage /> },
+  { path: 'guidelines', element: <GuidelinesPage /> },
+  { path: 'local-assets', element: <LocalAssetsPage /> },
+  { path: 'tokens', element: <TokensPage /> },
+  { path: 'components', element: <ComponentsIndexPage /> },
+  { path: 'publishers/ag-grid', element: <PublishersAgGridPage /> },
+  { path: 'pre-rendered', element: <PreRenderedPage /> },
+];
+
 export const router = createHashRouter(
   [
     {
@@ -27,17 +50,7 @@ export const router = createHashRouter(
       element: <RootLayout />,
         children: [
           { index: true, element: <LandingPage /> },
-          { path: 'changelog', element: <ChangelogPage /> },
-          { path: 'introduction', element: <IntroductionPage /> },
-          { path: 'capitalization', element: <CapitalizationPage /> },
-          { path: 'accessibility', element: <AccessibilityPage /> },
-          { path: 'migration', element: <MigrationPage /> },
-          { path: 'components', element: <ComponentsIndexPage /> },
-          { path: 'guidelines', element: <GuidelinesPage /> },
-          { path: 'local-assets', element: <LocalAssetsPage /> },
-          { path: 'tokens', element: <TokensPage /> },
-          { path: 'publishers/ag-grid', element: <PublishersAgGridPage /> },
-          { path: 'pre-rendered', element: <PreRenderedPage /> },
+          ...docsRoutes,
           { path: 'components/:componentName', element: <ComponentPage /> },
         { path: 'examples/dashboard', element: <DashboardScreen /> },
         { path: 'examples/login', element: <LoginScreen /> },

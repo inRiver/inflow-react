@@ -4,6 +4,7 @@ import * as Icons from '@mui/icons-material';
 import { COMPONENT_CATEGORIES, getAllComponents, getComponentLabel } from '../showcase/categories';
 
 const categoryIcons = {
+  AccountTree: Icons.AccountTree,
   Campaign: Icons.Campaign,
   Category: Icons.Category,
   Dashboard: Icons.Dashboard,

@@ -3,7 +3,7 @@ import { CacheProvider } from '@emotion/react';
 import { ScopedCssBaseline } from '@mui/material';
 import { ThemeProvider, type SxProps, type Theme } from '@mui/material/styles';
 import { useMemo, type ReactNode } from 'react';
-import { createInflowTheme, type InflowColorMode } from '../theme/inflow';
+import { createInflowTheme, createInflowVariables, type InflowColorMode } from '../theme/inflow';
 
 type EmotionCacheFactory = (options: Parameters<typeof createCache>[0]) => EmotionCache;
 type EmotionCacheFactoryModule = { readonly default: EmotionCacheFactory };
@@ -33,33 +33,6 @@ export interface InflowProviderProps {
    */
   emotionCache?: EmotionCache;
 }
-
-const createInflowVariables = (theme: Theme) => ({
-  '--infl-surface-container-lowest-color': theme.palette.inflow.surfaceLowest,
-  '--infl-surface-container-low-color': theme.palette.inflow.surfaceLow,
-  '--infl-surface-container-color': theme.palette.inflow.surfaceContainer,
-  '--infl-surface-container-high-color': theme.palette.inflow.surfaceContainerHigh,
-  '--infl-surface-container-highest-color': theme.palette.inflow.surfaceHighest,
-  '--infl-primary-color': theme.palette.primary.main,
-  '--infl-primary-fixed-color': theme.palette.inflow.primaryFixed,
-  '--infl-secondary-fixed-color': theme.palette.inflow.secondaryFixed,
-  '--infl-tertiary-fixed-color': theme.palette.inflow.tertiaryFixed,
-  '--infl-on-surface-color': theme.palette.text.primary,
-  '--infl-on-surface-variant-color': theme.palette.text.secondary,
-  '--infl-inverse-surface-color': theme.palette.inflow.inverseSurface,
-  '--infl-inverse-on-surface-color': theme.palette.inflow.inverseOnSurface,
-  '--infl-outline-color': theme.palette.inflow.outline,
-  '--infl-outline-variant-color': theme.palette.inflow.outlineVariant,
-  '--infl-certainty-high-color': theme.palette.inflow.certaintyHigh,
-  '--infl-certainty-medium-color': theme.palette.inflow.certaintyMedium,
-  '--infl-highlight-green-color': theme.palette.inflow.highlightGreen,
-  '--infl-highlight-red-color': theme.palette.inflow.highlightRed,
-  '--infl-highlight-yellow-color': theme.palette.inflow.highlightYellow,
-  '--infl-row-hover-color': theme.palette.inflow.rowHover,
-  '--infl-row-selected-color': theme.palette.inflow.rowSelected,
-  '--infl-mandatory-row-color': theme.palette.inflow.mandatoryRow,
-  '--infl-toast-info-bg-color': theme.palette.inflow.toastInfoBg,
-});
 
 /**
  * Provides a scoped Inflow theme for embedded React applications.

@@ -103,6 +103,8 @@ deployed microfrontends sharing a page should supply distinct `cacheKey` values.
 For a Shadow DOM or iframe, consumers can pass an `emotionCache` configured for
 the target container.
 
+The scoped `--infl-*` surface covers palette and Inflow colors (including feedback, diff, and toast colors), radii, named spacing, grid dimensions, shadows, and font family/weights. Every value is derived from the resolved theme for that provider and mode. Consumers can override variables on the provider root via `sx` or a sufficiently specific CSS rule; those overrides affect styles using the variables, not theme values or MUI styles that read the theme directly.
+
 MUI portal components render outside the provider root by default. Theme values
 continue to flow through React context, but consumer-authored `var(--infl-*)`
 styles in dialog, menu, or tooltip content need a matching portal container.
@@ -180,7 +182,7 @@ The showcase app is the documentation and review surface. It is not the package 
 Important paths:
 
 - `src/app/routes.tsx` - routes for `/`, `/components`, `/tokens`, `/guidelines`, and examples.
-- `src/app/ThemeContext.tsx` - wraps the showcase with `ThemeProvider` and allows comparison with the default MUI theme.
+- `src/app/ThemeContext.tsx` - wraps the showcase in `InflowProvider` and manages the light/dark color mode. The showcase always renders the Inflow theme; the deprecated `createDefaultTheme`/`defaultTheme` exports remain for backward compatibility but are no longer used here.
 - `src/showcase/categories.ts` - component catalog metadata.
 - `src/showcase/demos/` - demo implementations for individual MUI components.
 - `src/pages/GuidelinesPage.tsx` - live import/versioning guidance.

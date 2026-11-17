@@ -151,28 +151,6 @@ export const ComponentSidebar: React.FC<ComponentSidebarProps> = ({
     >
       <Box sx={{ width: sidebarWidth, pt: '20px', pb: '12px' }}>
         <List disablePadding>
-          <ListItem disablePadding>
-            <ListItemButton
-              onClick={() => handleNavigate('/changelog')}
-              selected={location.pathname === '/changelog'}
-              sx={{
-                px: 2.5,
-              }}
-            >
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: 2,
-                  justifyContent: 'center',
-                }}
-              >
-                <Icon baseClassName="material-icons-outlined">history</Icon>
-              </ListItemIcon>
-              <ListItemText primary="Changelog" slotProps={{
-                primary: { sx: { fontWeight: 'bold' } }
-              }} />
-            </ListItemButton>
-          </ListItem>
           {/* Home/Overview link */}
           <ListItem disablePadding>
             <ListItemButton
@@ -218,6 +196,43 @@ export const ComponentSidebar: React.FC<ComponentSidebarProps> = ({
               }} />
             </ListItemButton>
           </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton
+              onClick={() => handleNavigate('/changelog')}
+              selected={location.pathname === '/changelog'}
+              sx={{
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: 2,
+                  justifyContent: 'center',
+                }}
+              >
+                <Icon baseClassName="material-icons-outlined">history</Icon>
+              </ListItemIcon>
+              <ListItemText primary="Changelog" slotProps={{
+                primary: { sx: { fontWeight: 'bold' } }
+              }} />
+            </ListItemButton>
+          </ListItem>
+          {[
+            { path: '/getting-started', label: 'Getting started', icon: 'rocket_launch' },
+            { path: '/theming', label: 'Theming', icon: 'palette' },
+            { path: '/cli', label: 'CLI reference', icon: 'terminal' },
+            { path: '/llms', label: 'llms.txt', icon: 'smart_toy' },
+          ].map(({ path, label, icon }) => (
+            <ListItem key={path} disablePadding>
+              <ListItemButton onClick={() => handleNavigate(path)} selected={location.pathname === path} sx={{ px: 2.5 }}>
+                <ListItemIcon sx={{ minWidth: 0, mr: 2, justifyContent: 'center' }}>
+                  <Icon aria-hidden baseClassName="material-icons-outlined">{icon}</Icon>
+                </ListItemIcon>
+                <ListItemText primary={label} slotProps={{ primary: { sx: { fontWeight: 'bold' } } }} />
+              </ListItemButton>
+            </ListItem>
+          ))}
           <ListItem disablePadding>
             <ListItemButton
               onClick={() => handleNavigate('/capitalization')}

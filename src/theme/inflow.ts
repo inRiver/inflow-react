@@ -7,10 +7,11 @@ import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import { createElement } from 'react';
 import { createTheme } from '@mui/material/styles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import type { Shadows } from '@mui/material/styles';
+import type { Shadows, Theme } from '@mui/material/styles';
 import type {} from '@mui/x-date-pickers/themeAugmentation';
 import { resolveInflowColorMode } from './featureFlags';
 import { darkOnlyTokens, darkTokens, lightTokens, type InflowThemeTokens } from './inflow-tokens';
+import { inflowCustomColors, inflowTokens } from './tokens';
 
 export type InflowColorMode = 'light' | 'dark';
 
@@ -51,7 +52,24 @@ interface InflowPalette {
   toastInfoBg: string;
 }
 
+interface InflowThemeExtensions {
+  colors: { navy600: string; navy400: string; navyDark: string; ratingActive: string; white: string; buttonHover: string };
+  feedback: Record<'error' | 'warning' | 'info' | 'success', { surface: string; icon: string }>;
+  toastSurface: string;
+  radius: { xs: number; sm: number; md: number; lg: number; xl: number; full: number };
+  spacing: { xxs: number; xs: number; s: number; m: number; l: number; xl: number };
+  grid: { fontSize: string; headerHeight: number; rowHeight: number; cellWidgetSpacing: number };
+}
+
 declare module '@mui/material/styles' {
+  interface Theme {
+    inflow: InflowThemeExtensions;
+  }
+
+  interface ThemeOptions {
+    inflow?: InflowThemeExtensions;
+  }
+
   interface Palette {
     inflow: InflowPalette;
   }
@@ -60,6 +78,121 @@ declare module '@mui/material/styles' {
     inflow?: InflowPalette;
   }
 }
+
+export const createInflowVariables = (theme: Theme) => ({
+  '--infl-surface-container-lowest-color': theme.palette.inflow.surfaceLowest,
+  '--infl-surface-container-low-color': theme.palette.inflow.surfaceLow,
+  '--infl-surface-container-color': theme.palette.inflow.surfaceContainer,
+  '--infl-surface-container-high-color': theme.palette.inflow.surfaceContainerHigh,
+  '--infl-surface-container-highest-color': theme.palette.inflow.surfaceHighest,
+  '--infl-primary-color': theme.palette.primary.main,
+  '--infl-primary-fixed-color': theme.palette.inflow.primaryFixed,
+  '--infl-secondary-fixed-color': theme.palette.inflow.secondaryFixed,
+  '--infl-tertiary-fixed-color': theme.palette.inflow.tertiaryFixed,
+  '--infl-on-surface-color': theme.palette.text.primary,
+  '--infl-on-surface-variant-color': theme.palette.text.secondary,
+  '--infl-inverse-surface-color': theme.palette.inflow.inverseSurface,
+  '--infl-inverse-on-surface-color': theme.palette.inflow.inverseOnSurface,
+  '--infl-outline-color': theme.palette.inflow.outline,
+  '--infl-outline-variant-color': theme.palette.inflow.outlineVariant,
+  '--infl-certainty-high-color': theme.palette.inflow.certaintyHigh,
+  '--infl-certainty-medium-color': theme.palette.inflow.certaintyMedium,
+  '--infl-highlight-green-color': theme.palette.inflow.highlightGreen,
+  '--infl-highlight-red-color': theme.palette.inflow.highlightRed,
+  '--infl-highlight-yellow-color': theme.palette.inflow.highlightYellow,
+  '--infl-row-hover-color': theme.palette.inflow.rowHover,
+  '--infl-row-selected-color': theme.palette.inflow.rowSelected,
+  '--infl-mandatory-row-color': theme.palette.inflow.mandatoryRow,
+  '--infl-toast-info-bg-color': theme.palette.inflow.toastInfoBg,
+  '--infl-feedback-error-surface-color': theme.inflow.feedback.error.surface,
+  '--infl-feedback-error-icon-color': theme.inflow.feedback.error.icon,
+  '--infl-feedback-warning-surface-color': theme.inflow.feedback.warning.surface,
+  '--infl-feedback-warning-icon-color': theme.inflow.feedback.warning.icon,
+  '--infl-feedback-info-surface-color': theme.inflow.feedback.info.surface,
+  '--infl-feedback-info-icon-color': theme.inflow.feedback.info.icon,
+  '--infl-feedback-success-surface-color': theme.inflow.feedback.success.surface,
+  '--infl-feedback-success-icon-color': theme.inflow.feedback.success.icon,
+  '--infl-toast-surface-color': theme.inflow.toastSurface,
+  '--infl-navy-900-color': theme.palette.inflow.navy900,
+  '--infl-navy-800-color': theme.palette.inflow.navy800,
+  '--infl-navy-700-color': theme.palette.inflow.navy700,
+  '--infl-navy-600-color': theme.inflow.colors.navy600,
+  '--infl-navy-400-color': theme.inflow.colors.navy400,
+  '--infl-navy-dark-color': theme.inflow.colors.navyDark,
+  '--infl-navy-100-color': theme.palette.inflow.navy100,
+  '--infl-white-color': theme.inflow.colors.white,
+  '--infl-surface-variant-color': theme.palette.inflow.surfaceVariant,
+  '--infl-primary-tab-color': theme.palette.inflow.primaryTab,
+  '--infl-rating-active-color': theme.inflow.colors.ratingActive,
+  '--infl-app-background-color': theme.palette.inflow.appBackground,
+  '--infl-nav-surface-color': theme.palette.inflow.navSurface,
+  '--infl-row-selected-hover-color': theme.palette.inflow.rowSelectedHover,
+  '--infl-diff-removed-bg-color': theme.palette.inflow.diffRemovedBg,
+  '--infl-diff-removed-text-color': theme.palette.inflow.diffRemovedText,
+  '--infl-diff-added-bg-color': theme.palette.inflow.diffAddedBg,
+  '--infl-diff-added-text-color': theme.palette.inflow.diffAddedText,
+  '--infl-background-color': theme.palette.inflow.appBackground,
+  '--infl-button-hover-color': theme.inflow.colors.buttonHover,
+  '--infl-dialog-header-color': theme.palette.inflow.surfaceHighest,
+  '--infl-search-color': theme.palette.inflow.appBackground,
+  '--infl-row-mandatory-color': theme.palette.inflow.mandatoryRow,
+  '--infl-text-disabled-color': theme.palette.text.disabled,
+  '--infl-background-default-color': theme.palette.background.default,
+  '--infl-background-paper-color': theme.palette.background.paper,
+  '--infl-divider-color': theme.palette.divider,
+  '--infl-action-hover-color': theme.palette.action.hover,
+  '--infl-action-selected-color': theme.palette.action.selected,
+  '--infl-action-disabled-color': theme.palette.action.disabled,
+  '--infl-action-disabled-background-color': theme.palette.action.disabledBackground,
+  '--infl-primary-main-color': theme.palette.primary.main,
+  '--infl-primary-light-color': theme.palette.primary.light,
+  '--infl-primary-dark-color': theme.palette.primary.dark,
+  '--infl-primary-contrast-text-color': theme.palette.primary.contrastText,
+  '--infl-secondary-main-color': theme.palette.secondary.main,
+  '--infl-secondary-light-color': theme.palette.secondary.light,
+  '--infl-secondary-dark-color': theme.palette.secondary.dark,
+  '--infl-secondary-contrast-text-color': theme.palette.secondary.contrastText,
+  '--infl-error-main-color': theme.palette.error.main,
+  '--infl-error-light-color': theme.palette.error.light,
+  '--infl-error-dark-color': theme.palette.error.dark,
+  '--infl-error-contrast-text-color': theme.palette.error.contrastText,
+  '--infl-warning-main-color': theme.palette.warning.main,
+  '--infl-warning-light-color': theme.palette.warning.light,
+  '--infl-warning-dark-color': theme.palette.warning.dark,
+  '--infl-warning-contrast-text-color': theme.palette.warning.contrastText,
+  '--infl-info-main-color': theme.palette.info.main,
+  '--infl-info-light-color': theme.palette.info.light,
+  '--infl-info-dark-color': theme.palette.info.dark,
+  '--infl-info-contrast-text-color': theme.palette.info.contrastText,
+  '--infl-success-main-color': theme.palette.success.main,
+  '--infl-success-light-color': theme.palette.success.light,
+  '--infl-success-dark-color': theme.palette.success.dark,
+  '--infl-success-contrast-text-color': theme.palette.success.contrastText,
+  '--infl-radius-xs': `${theme.inflow.radius.xs}px`,
+  '--infl-radius-sm': `${theme.inflow.radius.sm}px`,
+  '--infl-radius-md': `${theme.inflow.radius.md}px`,
+  '--infl-radius-lg': `${theme.inflow.radius.lg}px`,
+  '--infl-radius-xl': `${theme.inflow.radius.xl}px`,
+  '--infl-radius-full': `${theme.inflow.radius.full}px`,
+  '--infl-spacing-xxs': `${theme.inflow.spacing.xxs}px`,
+  '--infl-spacing-xs': `${theme.inflow.spacing.xs}px`,
+  '--infl-spacing-s': `${theme.inflow.spacing.s}px`,
+  '--infl-spacing-m': `${theme.inflow.spacing.m}px`,
+  '--infl-spacing-l': `${theme.inflow.spacing.l}px`,
+  '--infl-spacing-xl': `${theme.inflow.spacing.xl}px`,
+  '--infl-grid-font-size': theme.inflow.grid.fontSize,
+  '--infl-grid-header-height': `${theme.inflow.grid.headerHeight}px`,
+  '--infl-grid-row-height': `${theme.inflow.grid.rowHeight}px`,
+  '--infl-grid-cell-widget-spacing': `${theme.inflow.grid.cellWidgetSpacing}px`,
+  '--infl-shadow-e1': theme.shadows[1],
+  '--infl-shadow-e2': theme.shadows[3],
+  '--infl-shadow-e3': theme.shadows[9],
+  '--infl-font-family': theme.typography.fontFamily ?? '',
+  '--infl-font-weight-light': String(theme.typography.fontWeightLight),
+  '--infl-font-weight-regular': String(theme.typography.fontWeightRegular),
+  '--infl-font-weight-medium': String(theme.typography.fontWeightMedium),
+  '--infl-font-weight-bold': String(theme.typography.fontWeightBold),
+});
 
 // Dark alert and toast surfaces: a severity color blended into the dark paper. Strong enough to read as that
 // severity, still dark enough that on-surface text stays above 6.5:1 and the icon above 3:1. Warning blends a
@@ -133,8 +266,39 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
   const T = getInflowTokensForMode(mode);
   // Dark status colors are light tints, so they take dark text instead of white.
   const statusContrastText = mode === 'dark' ? T.navy900 : '#ffffff';
+  const feedbackFor = (severity: keyof typeof darkSeverityBase) => {
+    const lightSurface = {
+      error: T.highlightRed,
+      warning: T.highlightYellow,
+      info: T.toastInfoBg,
+      success: T.highlightGreen,
+    }[severity];
+    // Light icons use the darker status shade where the main color is under 3:1 on its surface.
+    const lightIcon = severity === 'warning' || severity === 'success' ? T[severity].dark : T[severity].main;
+    return {
+      surface: mode === 'dark' ? darkSeverityTint(severity) : lightSurface,
+      icon: mode === 'dark' ? darkSeverityBase[severity] : lightIcon,
+    };
+  };
+  const feedback = {
+    error: feedbackFor('error'), warning: feedbackFor('warning'),
+    info: feedbackFor('info'), success: feedbackFor('success'),
+  };
+  const toastSurface = mode === 'dark' ? T.surfaceHighest : T.mandatoryRow;
 
   return createTheme({
+    inflow: {
+      feedback,
+      toastSurface,
+      colors: {
+        navy600: T.navy600, navy400: T.navy400, navyDark: T.navyDark,
+        ratingActive: T.ratingActive, white: T.white,
+        buttonHover: mode === 'dark' ? T.navy700 : inflowCustomColors.buttonHover,
+      },
+      radius: { xs: T.radiusXs, sm: T.radiusSm, md: T.radiusMd, lg: T.radiusLg, xl: T.radiusXl, full: T.radiusFull },
+      spacing: { ...inflowTokens.spacing },
+      grid: { ...inflowTokens.grid },
+    },
     shape: { borderRadius: T.radiusSm },
     spacing: 8,
     shadows,
@@ -796,20 +960,12 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
           // Standard alerts use the same surfaces as ThemedToast. MUI 9 matches alerts on `colorSeverity`.
           root: {
             variants: (['error', 'warning', 'info', 'success'] as const).map((severity) => {
-              const lightSurface = {
-                error: T.highlightRed,
-                warning: T.highlightYellow,
-                info: T.toastInfoBg,
-                success: T.highlightGreen,
-              }[severity];
-              // Light icons use the darker status shade where the main color is under 3:1 on its surface.
-              const lightIcon = severity === 'warning' || severity === 'success' ? T[severity].dark : T[severity].main;
               return {
                 props: { variant: 'standard' as const, colorSeverity: severity },
                 style: {
-                  backgroundColor: mode === 'dark' ? darkSeverityTint(severity) : lightSurface,
+                  backgroundColor: feedback[severity].surface,
                   color: T.onSurface,
-                  '& .MuiAlert-icon': { color: mode === 'dark' ? darkSeverityBase[severity] : lightIcon },
+                  '& .MuiAlert-icon': { color: feedback[severity].icon },
                 },
               };
             }),
@@ -819,7 +975,7 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
       MuiSnackbarContent: {
         styleOverrides: {
           root: ({ theme }) => ({
-            backgroundColor: mode === 'dark' ? T.surfaceHighest : T.mandatoryRow,
+            backgroundColor: toastSurface,
             color: T.onSurface,
             borderRadius: T.radiusMd,
             boxShadow: 'none',

@@ -166,7 +166,7 @@ const ThemedStepLabel = styled(StepLabel)(({ theme }) => ({
   "&.inflow-selected .MuiStepLabel-label": selectedLabelStyle(theme),
 }));
 
-const StyledStepButton = styled(StepButton)(({ theme }) => ({
+const stepButtonStyle = (theme: Theme) => ({
   "& .MuiStepLabel-label": {
     color: theme.palette.text.secondary,
     fontWeight: theme.typography.fontWeightMedium,
@@ -179,7 +179,7 @@ const StyledStepButton = styled(StepButton)(({ theme }) => ({
     outline: `2px solid ${theme.palette.primary.main}`,
     outlineOffset: 2,
   },
-}));
+});
 
 /**
  * ThemedStepper
@@ -344,7 +344,8 @@ export const ThemedStepper = forwardRef<HTMLDivElement, ThemedStepperProps>(
           return (
             <Step key={index} completed={completed} disabled={step.disabled}>
               {clickable ? (
-                <StyledStepButton
+                <StepButton
+                  sx={stepButtonStyle}
                   disableRipple
                   onClick={() => onStepClick?.(index)}
                   icon={
@@ -358,7 +359,7 @@ export const ThemedStepper = forwardRef<HTMLDivElement, ThemedStepperProps>(
                   className={underline ? "inflow-selected" : undefined}
                 >
                   {step.label}
-                </StyledStepButton>
+                </StepButton>
               ) : (
                 <ThemedStepLabel
                   slots={{ stepIcon: ThemedStepIcon }}
