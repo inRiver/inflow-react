@@ -23,6 +23,10 @@ Install `@inriver/inflow-react` with React 19, React DOM 19, MUI 9, @emotion/rea
 - [Pre-rendered components](https://inriver.github.io/inflow-react/#/pre-rendered): component examples.
 - [AG Grid](https://inriver.github.io/inflow-react/#/publishers/ag-grid): theme publisher.
 
+## Components and patterns
+
+Themed wrappers (for example ThemedCard, ThemedChip, ThemedDialog, ThemedTable, ThemedTabs, ThemedAlert) are thin, composable MUI wrappers exported from the package root. Pattern shells compose them into page shapes: `ThemedTablePage` (list/table pages with toolbar, loading and empty states) and `ThemedDetailPageShell` (detail views with a controlled right panel). Copy-paste page recipes live under the Patterns section of the component catalog. `ThemedButton` and `ThemedTextField` are deprecated — use MUI `Button`/`TextField` inside `InflowProvider`. `createDefaultTheme` and `defaultTheme` are deprecated (the showcase no longer offers an MUI-default comparison); use `createInflowTheme`/`inflowTheme`.
+
 ## CLI
 
 The package includes the `inflow` binary. Use `inflow --help`, `inflow component --list`, `inflow component ThemedChip`, `inflow tokens`, `inflow search chip`, or `inflow docs setup` (also `theming` and `migration`). Add `--json` for a machine-readable envelope. Unknown input exits 1.
