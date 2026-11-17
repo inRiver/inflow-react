@@ -222,6 +222,7 @@ export const ComponentSidebar: React.FC<ComponentSidebarProps> = ({
             { path: '/getting-started', label: 'Getting started', icon: 'rocket_launch' },
             { path: '/theming', label: 'Theming', icon: 'palette' },
             { path: '/cli', label: 'CLI reference', icon: 'terminal' },
+            { path: '/llms', label: 'llms.txt', icon: 'smart_toy' },
           ].map(({ path, label, icon }) => (
             <ListItem key={path} disablePadding>
               <ListItemButton onClick={() => handleNavigate(path)} selected={location.pathname === path} sx={{ px: 2.5 }}>

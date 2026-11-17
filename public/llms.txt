@@ -12,6 +12,7 @@ Install `@inriver/inflow-react` with React 19, React DOM 19, MUI 9, @emotion/rea
 - [Getting started](https://inriver.github.io/inflow-react/#/getting-started): install, provider, fonts, and dark mode.
 - [Theming](https://inriver.github.io/inflow-react/#/theming): JavaScript tokens, scoped CSS variables, overrides, and portal caveats.
 - [CLI reference](https://inriver.github.io/inflow-react/#/cli): commands, examples, JSON and exit codes.
+- [llms.txt](https://inriver.github.io/inflow-react/#/llms): this index, with download.
 - [Design tokens](https://inriver.github.io/inflow-react/#/tokens): token and CSS variable reference.
 - [Import guidelines](https://inriver.github.io/inflow-react/#/guidelines): integration and versioning.
 - [Local assets](https://inriver.github.io/inflow-react/#/local-assets): font and icon setup.

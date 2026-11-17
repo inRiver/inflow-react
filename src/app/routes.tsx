@@ -10,6 +10,7 @@ import { IntroductionPage } from '../pages/IntroductionPage';
 import { GettingStartedPage } from '../pages/GettingStartedPage';
 import { ThemingPage } from '../pages/ThemingPage';
 import { CliDocsPage } from '../pages/CliDocsPage';
+import { LlmsPage } from '../pages/LlmsPage';
 import { CapitalizationPage } from '../pages/CapitalizationPage';
 import { AccessibilityPage } from '../pages/AccessibilityPage';
 import { MigrationPage } from '../pages/MigrationPage';
@@ -30,6 +31,7 @@ export const docsRoutes = [
   { path: 'getting-started', element: <GettingStartedPage /> },
   { path: 'theming', element: <ThemingPage /> },
   { path: 'cli', element: <CliDocsPage /> },
+  { path: 'llms', element: <LlmsPage /> },
   { path: 'capitalization', element: <CapitalizationPage /> },
   { path: 'accessibility', element: <AccessibilityPage /> },
   { path: 'migration', element: <MigrationPage /> },

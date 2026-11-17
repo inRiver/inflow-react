@@ -19,17 +19,9 @@ describe('CliDocsPage', () => {
     expect(screen.getByText(/Unknown commands, components or topics/)).toHaveTextContent('exit 1');
   });
 
-  it('reveals llms.txt with an open and a download link resolved against the base path', () => {
+  it('points agent users to the llms.txt page', () => {
     renderWithInflow(<MemoryRouter><CliDocsPage /></MemoryRouter>);
 
-    expect(screen.getByRole('heading', { name: 'Agent-readable docs (llms.txt)' })).toBeInTheDocument();
-
-    const download = screen.getByRole('link', { name: 'Download llms.txt' });
-    expect(download).toHaveAttribute('href', `${import.meta.env.BASE_URL}llms.txt`);
-    expect(download).toHaveAttribute('download', 'llms.txt');
-
-    const open = screen.getByRole('link', { name: 'Open llms.txt' });
-    expect(open).toHaveAttribute('href', `${import.meta.env.BASE_URL}llms.txt`);
-    expect(open).toHaveAttribute('target', '_blank');
+    expect(screen.getByRole('link', { name: 'llms.txt' })).toHaveAttribute('href', '/llms');
   });
 });

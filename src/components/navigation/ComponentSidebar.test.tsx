@@ -20,6 +20,7 @@ describe('ComponentSidebar documentation entries', () => {
     ['Getting started', '/getting-started'],
     ['Theming', '/theming'],
     ['CLI reference', '/cli'],
+    ['llms.txt', '/llms'],
   ])('navigates from %s to %s', (label, path) => {
     renderWithInflow(<MemoryRouter><ComponentSidebar open onClose={vi.fn()} searchQuery="" onSearchQueryChange={vi.fn()} /><Location /></MemoryRouter>);
     fireEvent.click(screen.getByRole('button', { name: label }));
