@@ -2,6 +2,31 @@
 
 All notable changes to `@inriver/inflow-react` are documented here. This project follows [Semantic Versioning](https://semver.org/).
 
+## [3.15.0] - 2026-11-17
+
+### Added
+- Zero-dependency `inflow` CLI shipped in the package (`bin.inflow`, `dist/cli`): `inflow component --list|<Name>`, `inflow tokens`, `inflow search <query>` and `inflow docs <setup|theming|migration>`, each with `--json` output. Its manifest is generated from the library's exports during `build:lib` and checked by the new `test:scripts` step in `test:run` (library-facing).
+- `InflowProvider` emits the full token surface as scoped `--infl-*` CSS variables instead of a partial subset. The generator is shared with the showcase Tokens page (library-facing).
+- `ThemedTablePage`: a page shell combining an optional `ThemedPageHeader`, an application-owned toolbar and a `ThemedTable`, with built-in loading and empty states (library-facing).
+- `ThemedDetailPageShell`: page content paired with a controlled `ThemedRightPanel` and `ThemedDetailPanel`. In push mode it consumes the provider's `--infl-right-panel-width`, so do not also apply that variable to an ancestor (library-facing).
+- `ThemedPageHeader` `titleComponent` prop (default `h1`) and `sx` prop (library-facing).
+- Showcase-only: the showcase is now a docsite with a CLI reference, copy-paste pattern recipes (table page, detail page, right panel) and an `llms.txt` page with a download.
+- `axe-core` dev dependency and an accessibility ratchet that runs axe across the themed wrappers. Dev-only.
+
+### Changed
+- `ThemedRightPanel` resize handle is keyboard accessible: it exposes `role="separator"` with ARIA value attributes, is focusable, resizes in 10px steps with the arrow keys, jumps to the limits with Home/End, and shows a focus-visible style (library-facing).
+- `ThemedCard` sets its title through `slotProps.title` instead of the deprecated `titleTypographyProps`. No prop changes for consumers (library-facing).
+- `ThemedStepper` clickable step buttons are styled with `sx` instead of a `styled()` wrapper. No prop changes; consumers targeting generated Emotion class names for these buttons should verify their selectors (library-facing).
+- Showcase-only: redesigned landing page built around a product narrative, with `ThemedPageHeader` as its live-proof header; updated Home and Introduction navigation links and icons.
+- Showcase-only: the MUI-default comparison is removed and the showcase always renders Inflow.
+- Showcase-only: refreshed `llms.txt` for the new patterns and deprecations.
+
+### Fixed
+- Showcase-only: push-panel recipe previews stay usable inside the demo frame.
+
+### Deprecated
+- `createDefaultTheme` and `defaultTheme` are marked `@deprecated` and will be removed in the next major release, because the showcase no longer offers an MUI-default comparison. Use `createInflowTheme` and `inflowTheme` (library-facing).
+
 ## [3.14.0] - 2026-11-12
 
 ### Added
