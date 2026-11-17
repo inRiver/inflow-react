@@ -69,7 +69,8 @@
     "build:lib": "vite build --config vite.lib.config.ts && tsc -p tsconfig.lib.json && node scripts/copy-font-assets.mjs && tsc -p tsconfig.cli.json && node scripts/generate-cli-manifest.mjs --write",
     "lint": "eslint .",
     "test": "vitest",
-    "test:run": "vitest --run",
+    "test:run": "vitest --run && npm run test:scripts",
+    "test:scripts": "node --test scripts/generate-cli-manifest.test.mjs",
     "test:pack": "node scripts/pack-smoke.mjs",
     "prepublishOnly": "node scripts/guard-publish.cjs",
     "preview": "vite preview"

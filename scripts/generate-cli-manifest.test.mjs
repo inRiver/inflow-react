@@ -66,7 +66,7 @@ describe('CLI manifest generator', () => {
 
   it('resolves a local props alias, uses JSDoc descriptions and avoids a false memo ref', () => {
     assert.deepEqual(component('ThemedPageHeader').props.map((prop) => prop.name),
-      ['eyebrow', 'breadcrumbs', 'title', 'onBack', 'actions', 'style', 'ref']);
+      ['eyebrow', 'breadcrumbs', 'title', 'titleComponent', 'onBack', 'actions', 'style', 'sx', 'ref']);
     assert.match(component('ThemedChatAccordion').description, /Reasoning/);
     assert.equal(component('ThemedChatAccordion').descriptionSource, 'jsdoc');
     assert.equal(component('ThemedTabPanel').descriptionSource, 'fallback');
