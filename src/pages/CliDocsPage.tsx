@@ -1,7 +1,23 @@
-import { Card, CardContent, Container, Stack, Typography } from '@mui/material';
+import { Button, Card, CardContent, Container, Stack, Typography } from '@mui/material';
+import DownloadOutlinedIcon from '@mui/icons-material/DownloadOutlined';
 import { Link } from 'react-router-dom';
 import { CodeBlock } from '../showcase/CodeBlock';
 import { inflowTokens } from '../theme/tokens';
+
+// Served from public/; resolve against the Vite base so it works on the GitHub
+// Pages subpath (/inflow-react/) as well as locally.
+const llmsTxtUrl = `${import.meta.env.BASE_URL}llms.txt`;
+const llmsPreview = `# Inflow React
+
+> @inriver/inflow-react is Inriver's React/MUI design-system library: a scoped theme, design tokens, and themed components for product UIs.
+
+## Documentation
+- Introduction, Getting started, Theming, CLI reference, Design tokens, and more.
+
+## CLI
+inflow component --list · inflow tokens · inflow search chip · inflow docs setup (add --json for a typed envelope).
+
+…download llms.txt for the full agent-readable index.`;
 
 const help = `$ inflow --help
 Usage:
@@ -76,6 +92,35 @@ export function CliDocsPage() {
           <Typography>Add --json to any command for a JSON envelope on stdout: success has ok, command and data; failure has ok: false, command and error (data is omitted). Errors are also written to stderr. Data varies by command.</Typography>
           <CodeBlock code={json} language="text" plain />
           <Typography>Successful commands exit 0. Unknown commands, components or topics and invalid arguments exit 1. A search with no matches still exits 0.</Typography>
+        </Stack></CardContent></Card>
+        <Card variant="outlined"><CardContent><Stack spacing={2}>
+          <Typography variant="h5">Agent-readable docs (llms.txt)</Typography>
+          <Typography>
+            The showcase publishes an llms.txt index for coding agents and LLM tools — a curated,
+            machine-readable map of the library, CLI, and docs. Preview below; open or download the file
+            to hand it to an agent.
+          </Typography>
+          <CodeBlock code={llmsPreview} language="text" plain />
+          <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap', gap: 1 }}>
+            <Button
+              variant="contained"
+              component="a"
+              href={llmsTxtUrl}
+              download="llms.txt"
+              startIcon={<DownloadOutlinedIcon />}
+            >
+              Download llms.txt
+            </Button>
+            <Button
+              variant="outlined"
+              component="a"
+              href={llmsTxtUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Open llms.txt
+            </Button>
+          </Stack>
         </Stack></CardContent></Card>
       </Stack>
     </Container>
