@@ -23,6 +23,11 @@ const documented = [
     description: 'Which casing to use for buttons, labels, headings, messages, and other interface text.',
   },
   {
+    label: 'Content standards',
+    to: '/content-standards',
+    description: 'How dates, times, and other values are formatted in every Inflow interface.',
+  },
+  {
     label: 'Design Tokens',
     to: '/tokens',
     description: 'Colors, typography, spacing, and radii that define the Inflow visual language.',

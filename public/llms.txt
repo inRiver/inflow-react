@@ -19,6 +19,7 @@ Install `@inriver/inflow-react` with React 19, React DOM 19, MUI 9, @emotion/rea
 - [Migration](https://inriver.github.io/inflow-react/#/migration): upgrading and deprecations.
 - [Accessibility](https://inriver.github.io/inflow-react/#/accessibility): accessibility guidance.
 - [Capitalization](https://inriver.github.io/inflow-react/#/capitalization): interface text casing.
+- [Content standards](https://inriver.github.io/inflow-react/#/content-standards): date and time formats and other value formatting.
 - [Changelog](https://inriver.github.io/inflow-react/#/changelog): release history.
 - [Components](https://inriver.github.io/inflow-react/#/components): component catalog and demos.
 - [Pre-rendered components](https://inriver.github.io/inflow-react/#/pre-rendered): component examples.

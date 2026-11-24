@@ -9,6 +9,9 @@ import { createTheme } from '@mui/material/styles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import type { Shadows, Theme } from '@mui/material/styles';
 import type {} from '@mui/x-date-pickers/themeAugmentation';
+import { InflowPickerActionBar } from '../datetime/InflowPickerActionBar';
+import { InflowPickerPopper } from '../datetime/InflowPickerPopper';
+import { flippedGapModifier } from '../datetime/flippedGapModifier';
 import { resolveInflowColorMode } from './featureFlags';
 import { darkOnlyTokens, darkTokens, lightTokens, type InflowThemeTokens } from './inflow-tokens';
 import { inflowCustomColors, inflowTokens } from './tokens';
@@ -702,6 +705,37 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
           }),
         },
       },
+      MuiDatePicker: { defaultProps: { slots: { actionBar: InflowPickerActionBar, popper: InflowPickerPopper } } },
+      MuiDesktopDatePicker: { defaultProps: { slots: { actionBar: InflowPickerActionBar, popper: InflowPickerPopper } } },
+      MuiMobileDatePicker: { defaultProps: { slots: { actionBar: InflowPickerActionBar } } },
+      MuiTimePicker: { defaultProps: { slots: { actionBar: InflowPickerActionBar, popper: InflowPickerPopper } } },
+      MuiDesktopTimePicker: { defaultProps: { slots: { actionBar: InflowPickerActionBar, popper: InflowPickerPopper } } },
+      MuiMobileTimePicker: { defaultProps: { slots: { actionBar: InflowPickerActionBar } } },
+      MuiDateTimePicker: { defaultProps: { slots: { actionBar: InflowPickerActionBar, popper: InflowPickerPopper } } },
+      MuiDesktopDateTimePicker: { defaultProps: { slots: { actionBar: InflowPickerActionBar, popper: InflowPickerPopper } } },
+      MuiMobileDateTimePicker: { defaultProps: { slots: { actionBar: InflowPickerActionBar } } },
+      // Pickers follow the Inflow text field (small, 14px). The time list keeps MUI's own row sizing: MUI computes its scroll position from it.
+      MuiPickersTextField: { defaultProps: { size: 'small' } },
+      MuiPickersInputBase: {
+        styleOverrides: {
+          root: {
+            '&.MuiPickersInputBase-inputSizeSmall': { fontSize: '0.875rem', lineHeight: '1.429' },
+          },
+        },
+      },
+      // List text matches the field text (14px).
+      // Still the MUI X clock; only its divider lines are removed (no prop exists for this, so it is a theme override).
+      MuiMultiSectionDigitalClock: { styleOverrides: { root: { borderBottom: 'none' } } },
+      MuiMultiSectionDigitalClockSection: {
+        styleOverrides: {
+          // MUI centers the selected time. With 36px row pitch (32px box + 4px margins) a 180px list centers it with
+          // two whole rows above and below, so no number is cut off at the edges.
+          root: { maxHeight: 180, '&:not(:first-of-type)': { borderLeft: 'none' } },
+          // 32px boxes, close to the small button (30px) and field (37px), instead of MUI's 40px.
+          item: { fontSize: '0.875rem', lineHeight: '1.5rem', padding: '4px 8px', borderRadius: T.radiusSm },
+        },
+      },
+      MuiPopper: { defaultProps: { modifiers: [flippedGapModifier] } },
       MuiPickerDay: {
         styleOverrides: {
           root: ({ theme }) => ({

@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { Stack } from '@mui/material';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { type Dayjs } from 'dayjs';
+import { InflowLocalizationProvider } from '../../datetime';
 import { DemoFrame } from '../DemoFrame';
 import { CodeBlock } from '../CodeBlock';
 import { PropsPlayground } from '../PropsPlayground';
@@ -29,23 +28,26 @@ export function DatePickerDemo() {
   ];
 
   const codeExample = `
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { InflowLocalizationProvider } from '@inriver/inflow-react';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 // <InflowProvider> only needs to be declared once at your app root - see Guidelines
-<LocalizationProvider dateAdapter={AdapterDayjs}>
-  <DatePicker label="Birthday" />
-</LocalizationProvider>`;
+// Locale and date order come from configureDateTime(...) or the provider props (see src/datetime).
+<InflowLocalizationProvider>
+  <DatePicker
+    label="Birthday"
+    slotProps={{ field: { shouldRespectLeadingZeros: true } }}
+  />
+</InflowLocalizationProvider>`;
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <InflowLocalizationProvider>
       <DemoFrame title="Date Picker - Interactive">
         <DatePicker
           label="Birthday"
-          value={value}
+                value={value}
           disabled={props.disabled}
-          slotProps={{ textField: { size: props.size } }}
+          slotProps={{ field: { shouldRespectLeadingZeros: true }, textField: { size: props.size } }}
           onChange={(newValue) => setValue(newValue)}
         />
       </DemoFrame>
@@ -56,11 +58,11 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
       <DemoFrame title="All States">
         <Stack spacing={2} direction="row" sx={{ flexWrap: 'wrap' }}>
-          <DatePicker label="Birthday" defaultValue={dayjs('2024-01-01')} />
-          <DatePicker label="Small" defaultValue={dayjs('2024-08-15')} slotProps={{ textField: { size: 'small' } }} />
-          <DatePicker label="Disabled" disabled defaultValue={dayjs('2024-01-01')} />
+          <DatePicker label="Birthday" defaultValue={dayjs('2024-01-01')} slotProps={{ field: { shouldRespectLeadingZeros: true } }} />
+          <DatePicker label="Small" defaultValue={dayjs('2024-08-15')} slotProps={{ field: { shouldRespectLeadingZeros: true }, textField: { size: 'small' } }} />
+          <DatePicker label="Disabled" disabled defaultValue={dayjs('2024-01-01')} slotProps={{ field: { shouldRespectLeadingZeros: true } }} />
         </Stack>
       </DemoFrame>
-    </LocalizationProvider>
+    </InflowLocalizationProvider>
   );
 }

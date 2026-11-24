@@ -100,6 +100,8 @@ function StatusCell({ value }: CustomCellRendererProps<DataTableRow, DataTableSt
   );
 }
 
+import { dateColumn, dateTimeColumn } from '../datetime';
+
 const columnDefs: ColDef<DataTableRow>[] = [
   { field: 'sku', headerName: 'SKU', minWidth: 120, pinned: 'left' },
   { field: 'name', headerName: 'Product', editable: true, minWidth: 180, flex: 1 },
@@ -125,6 +127,8 @@ const columnDefs: ColDef<DataTableRow>[] = [
       return Number.isFinite(parsedValue) ? Math.min(100, Math.max(0, parsedValue)) : oldValue;
     },
   },
+  { field: 'createdAt', headerName: 'Created', minWidth: 170, ...dateTimeColumn },
+  { field: 'createdAt', colId: 'createdDate', headerName: 'Created (date)', minWidth: 150, ...dateColumn },
 ];
 
 export interface DataTableProps {

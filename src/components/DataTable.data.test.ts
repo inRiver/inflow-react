@@ -14,6 +14,7 @@ describe('DataTable focused-cell assistant context', () => {
       channel: 'Amazon',
       status: 'Active',
       completeness: 98,
+      createdAt: '2026-08-04T02:14:00.000Z',
     };
 
     // When
@@ -35,6 +36,7 @@ describe('DataTable focused-cell assistant context', () => {
       channel: 'Shopify',
       status: 'Draft',
       completeness: 76,
+      createdAt: '2026-08-04T02:14:00.000Z',
     };
 
     // When
@@ -42,5 +44,20 @@ describe('DataTable focused-cell assistant context', () => {
 
     // Then
     expect(context.value).toBe('76%');
+  });
+});
+
+describe('DataTable created-at formatting', () => {
+  it('shows a readable date-time instead of the raw ISO string', () => {
+    const row: DataTableRow = {
+      sku: 'ABX-200',
+      name: 'Running shoe',
+      channel: 'Amazon',
+      status: 'Active',
+      completeness: 98,
+      createdAt: '2026-08-04T14:14:00',
+    };
+
+    expect(createDataTableCellContext(row, 'createdAt').value).toBe('8/4/2026 2:14 PM');
   });
 });
