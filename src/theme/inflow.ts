@@ -499,6 +499,35 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
             '& .MuiOutlinedInput-notchedOutline': { borderColor: mode === 'dark' ? T.outline : T.outlineVariant },
             '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: mode === 'dark' ? T.onSurface : T.outline },
             '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: T.navy700, borderWidth: 2 },
+            // Read-only reads as "viewable, not editable" without looking disabled: full-contrast text, a subtle
+            // tint (action.hover) and the soft divider border (the stronger outline tone in dark, like other fields),
+            // no hover border change and a default cursor. Focus keeps
+            // its normal ring. MUI puts the state class on the root as MuiInputBase-readOnly (there is no
+            // Mui-readOnly); Autocomplete's readOnly only sets the attribute on its input, hence the :has() match.
+            '&.MuiInputBase-readOnly, &:has(input[readonly])': {
+              backgroundColor: T.rowHover,
+              cursor: 'default',
+              '& .MuiOutlinedInput-notchedOutline': { borderColor: mode === 'dark' ? T.outline : T.outlineVariant },
+              '&:not(.Mui-focused):hover .MuiOutlinedInput-notchedOutline': {
+                borderColor: mode === 'dark' ? T.outline : T.outlineVariant,
+              },
+              '& .MuiInputBase-input': { cursor: 'default' },
+            },
+          },
+        },
+      },
+      // Date pickers render their own input (not InputBase), so the read-only look is repeated for it.
+      MuiPickersOutlinedInput: {
+        styleOverrides: {
+          root: {
+            '&.Mui-readOnly': {
+              backgroundColor: T.rowHover,
+              cursor: 'default',
+              '& .MuiPickersOutlinedInput-notchedOutline': { borderColor: mode === 'dark' ? T.outline : T.outlineVariant },
+              '&:not(.Mui-focused):hover .MuiPickersOutlinedInput-notchedOutline': {
+                borderColor: mode === 'dark' ? T.outline : T.outlineVariant,
+              },
+            },
           },
         },
       },
@@ -510,6 +539,26 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
             '&:hover': { backgroundColor: T.surfaceContainerHigh },
             '&.Mui-focused': { backgroundColor: T.surfaceHighest },
             '&:after': { borderBottomColor: T.navy700 },
+            // Read-only keeps the fill and drops the hover change and text cursor: nothing to edit.
+            '&.MuiInputBase-readOnly': {
+              cursor: 'default',
+              '&:hover': { backgroundColor: T.surfaceHighest },
+              '& .MuiInputBase-input': { cursor: 'default' },
+            },
+          },
+        },
+      },
+      MuiInput: {
+        styleOverrides: {
+          root: {
+            // Read-only: the underline stays soft on hover and the cursor is the default one. Focus keeps its underline.
+            '&.MuiInputBase-readOnly': {
+              cursor: 'default',
+              '& .MuiInputBase-input': { cursor: 'default' },
+              '&:not(.Mui-focused):not(.Mui-error):hover:before': {
+                borderBottomColor: mode === 'dark' ? T.outline : T.outlineVariant,
+              },
+            },
           },
         },
       },
@@ -718,6 +767,7 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
       MuiAutocomplete: {
         defaultProps: {
           popupIcon: createElement(ExpandMoreIcon),
+          slotProps: { chip: { size: 'small' } },
         },
         styleOverrides: {
           paper: { borderRadius: T.radiusXs },
@@ -727,6 +777,17 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
             '&[aria-selected="true"]': {
               backgroundColor: T.rowSelected,
               '&:hover, &.Mui-focused': { backgroundColor: T.rowSelectedHover },
+            },
+            // Rows that carry their own checkbox or radio stay flat when selected: the control already shows the
+            // state. They also sit a little tighter, with the control and label 10px apart.
+            '&:has(.MuiCheckbox-root), &:has(.MuiRadio-root)': {
+              gap: 10,
+              padding: '6px 12px',
+              '& .MuiCheckbox-root, & .MuiRadio-root': { padding: 0 },
+              '&[aria-selected="true"]': {
+                backgroundColor: 'transparent',
+                '&:hover, &.Mui-focused': { backgroundColor: T.rowHover },
+              },
             },
           },
           groupLabel: { color: T.onSurfaceVariant, fontWeight: 600 },

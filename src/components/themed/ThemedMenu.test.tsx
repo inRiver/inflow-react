@@ -494,3 +494,111 @@ describe('ThemedMenu', () => {
     expect(getComputedStyle(paper).backgroundColor).toBe(swatch.style.backgroundColor);
   });
 });
+
+describe('ThemedMenu multiple', () => {
+  const statuses: ThemedMenuItemDef[] = [
+    { id: 'draft', label: 'Draft' },
+    { id: 'review', label: 'In review' },
+    { id: 'archived', label: 'Archived', disabled: true },
+  ];
+
+  function MultipleHarness({ onClose = vi.fn() }: { onClose?: () => void }) {
+    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+    const [selected, setSelected] = useState<string[]>(['draft']);
+    return (
+      <>
+        <button ref={setAnchorEl} type="button">
+          Open filter
+        </button>
+        <ThemedMenu
+          multiple
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={onClose}
+          items={statuses.map((item) => ({ ...item, selected: selected.includes(item.id) }))}
+          onSelect={(id) => setSelected((ids) => (ids.includes(id) ? ids.filter((value) => value !== id) : [...ids, id]))}
+        />
+      </>
+    );
+  }
+
+  it('exposes each item as a checkbox with its checked state', () => {
+    renderWithInflow(<MultipleHarness />);
+
+    expect(screen.getByRole('menuitemcheckbox', { name: 'Draft' })).toHaveAttribute('aria-checked', 'true');
+    expect(screen.getByRole('menuitemcheckbox', { name: 'In review' })).toHaveAttribute('aria-checked', 'false');
+    expect(screen.getAllByRole('menuitemcheckbox')).toHaveLength(3);
+  });
+
+  it('keeps the menu open and toggles the item when it is chosen', () => {
+    const onClose = vi.fn();
+    renderWithInflow(<MultipleHarness onClose={onClose} />);
+
+    fireEvent.click(screen.getByRole('menuitemcheckbox', { name: 'In review' }));
+
+    expect(onClose).not.toHaveBeenCalled();
+    expect(screen.getByRole('menu')).toBeInTheDocument();
+    expect(screen.getByRole('menuitemcheckbox', { name: 'In review' })).toHaveAttribute('aria-checked', 'true');
+    expect(screen.getByRole('menuitemcheckbox', { name: 'Draft' })).toHaveAttribute('aria-checked', 'true');
+  });
+
+  it('does not toggle a disabled item', () => {
+    renderWithInflow(<MultipleHarness />);
+
+    fireEvent.click(screen.getByRole('menuitemcheckbox', { name: 'Archived' }));
+
+    expect(screen.getByRole('menuitemcheckbox', { name: 'Archived' })).toHaveAttribute('aria-checked', 'false');
+  });
+
+  it('does not highlight checked rows as selected, since the checkbox shows the state', () => {
+    renderWithInflow(<MultipleHarness />);
+
+    expect(screen.getByRole('menuitemcheckbox', { name: 'Draft' })).not.toHaveClass('Mui-selected');
+  });
+});
+
+describe('ThemedMenu radio and groups', () => {
+  const sort: ThemedMenuItemDef[] = [
+    { id: 'name', label: 'Name', selected: true },
+    { id: 'modified', label: 'Last modified' },
+  ];
+
+  it('radio shows a menuitemradio per item with the current choice marked, and closes after choosing', () => {
+    const onSelect = vi.fn();
+    const onClose = vi.fn();
+    renderWithInflow(<ThemedMenu radio anchorEl={document.body} open onClose={onClose} items={sort} onSelect={onSelect} />);
+
+    expect(screen.getByRole('menuitemradio', { name: 'Name' })).toHaveAttribute('aria-checked', 'true');
+    expect(screen.getByRole('menuitemradio', { name: 'Last modified' })).toHaveAttribute('aria-checked', 'false');
+    expect(screen.getByRole('menuitemradio', { name: 'Name' })).not.toHaveClass('Mui-selected');
+
+    fireEvent.click(screen.getByRole('menuitemradio', { name: 'Last modified' }));
+    expect(onSelect).toHaveBeenCalledWith('modified');
+    expect(onClose).toHaveBeenCalled();
+  });
+
+  it('multiple wins over radio', () => {
+    renderWithInflow(<ThemedMenu multiple radio anchorEl={document.body} open onClose={vi.fn()} items={sort} />);
+
+    expect(screen.getAllByRole('menuitemcheckbox')).toHaveLength(2);
+    expect(screen.queryByRole('menuitemradio')).not.toBeInTheDocument();
+  });
+
+  it('renders a group heading before the item that carries groupLabel', () => {
+    renderWithInflow(
+      <ThemedMenu
+        anchorEl={document.body}
+        open
+        onClose={vi.fn()}
+        items={[
+          { id: 'rename', label: 'Rename', groupLabel: 'Edit' },
+          { id: 'csv', label: 'Export as CSV', groupLabel: 'Export', dividerBefore: true },
+        ]}
+      />,
+    );
+
+    expect(screen.getByText('Edit')).toBeInTheDocument();
+    expect(screen.getByText('Export')).toBeInTheDocument();
+    expect(screen.getAllByRole('menuitem')).toHaveLength(2);
+  });
+});

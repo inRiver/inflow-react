@@ -2,6 +2,26 @@
 
 All notable changes to `@inriver/inflow-react` are documented here. This project follows [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- (library-facing) Read-only fields (outlined text fields, selects, Autocomplete and date pickers; filled and standard variants drop their hover change and text cursor) now look distinct without looking disabled: full-contrast text, a subtle tint (`action.hover`), the soft divider border with no hover change, a default cursor and the normal focus ring
+- (library-facing) Autocomplete chips for selected values in multiple mode are now small by default, matching the design spec
+
+### Added
+- Autocomplete rows that contain a `Checkbox` or `Radio` stay flat when selected, since the control already shows the state, and sit tighter (6px 12px padding, 10px between control and label). Use with `multiple` and `disableCloseOnSelect` for checkbox multi-select (library-facing).
+- `renderCheckboxOption` and `renderRadioOption`: `renderOption` helpers for Autocomplete that put a checkbox or radio on each row, e.g. `<Autocomplete multiple disableCloseOnSelect renderOption={renderCheckboxOption} />` (library-facing).
+- `ThemedMenu` `multiple` prop: shows a checkbox on each item from its `selected` value and keeps the menu open while items are toggled; items use `role="menuitemcheckbox"` with `aria-checked` (library-facing).
+- `ThemedMenu` `radio` prop: a pick-one menu with a radio button on each item (`role="menuitemradio"`); choosing an item closes the menu (library-facing).
+- `ThemedMenu` item `groupLabel`: renders a group heading before an item to split a menu into sections (library-facing).
+- Showcase-only: Text Field demo frame "Read only - all inputs" (text, multiline, select, Autocomplete, date picker, filled and standard).
+- Showcase-only: Text Field demo frames for read-only next to disabled, and a readOnly control in the interactive frame.
+- Showcase-only: Text Field demo frame for a character limit (`maxLength` plus a right-aligned `n/100` count in the helper text, Material's pattern); the count only shows when a limit is set.
+- Showcase-only: Menu demo frames for multi-select with checkboxes (MUI `MenuList` and `ThemedMenu`).
+- Showcase-only: Autocomplete demo frames for limit tags, loading (async), disabled options and creatable (free solo), following the MUI Autocomplete docs.
+- Showcase-only: Autocomplete demo frames for multi-select with checkboxes and single-select with radio buttons, with a copy-paste `renderOption` example.
+
 ## [3.15.0] - 2026-11-17
 
 ### Added
