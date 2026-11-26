@@ -1,0 +1,23 @@
+# Who reviews changes to the package boundary: what ships to npm and what consumers install.
+# Review from a code owner is only required once "Require review from Code Owners" is on in the master ruleset.
+# A pattern must be an existing path; scripts/repo-guardrails.test.mjs fails when one stops matching.
+
+/package.json @Shin-Aska
+/package-lock.json @Shin-Aska
+/vite.lib.config.ts @Shin-Aska
+/tsconfig.app.json @Shin-Aska
+/tsconfig.lib.json @Shin-Aska
+/tsconfig.cli.json @Shin-Aska
+/scripts/pack-smoke.mjs @Shin-Aska
+/scripts/copy-font-assets.mjs @Shin-Aska
+/scripts/generate-cli-manifest.mjs @Shin-Aska
+/scripts/guard-publish.cjs @Shin-Aska
+/src/index.ts @Shin-Aska
+/src/ag-grid/ @Shin-Aska
+/src/datetime/ @Shin-Aska
+/src/cli/ @Shin-Aska
+/src/fonts/ @Shin-Aska
+/docs/ARCHITECTURE.md @Shin-Aska
+/docs/VERSIONING.md @Shin-Aska
+/AGENTS.md @Shin-Aska
+/.github/ @Shin-Aska
