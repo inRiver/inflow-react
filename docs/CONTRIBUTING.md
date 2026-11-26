@@ -20,6 +20,7 @@ Every change, no matter how small, is done only when all of these are true:
 4. Behavior changes and their test updates are in the same commit — not a follow-up, not "the old test still passes."
 5. No hardcoded colors, shadows, radii, or spacing in components. Values come from the theme or tokens; if a value doesn't exist there, add it to `src/theme/` first.
 6. `package-lock.json` is only committed when `package.json` actually changed. A big diff of deletions under `node_modules/@esbuild/*` or `node_modules/@rollup/*` is local platform drift — discard it with `git checkout -- package-lock.json`.
+7. A change to the package boundary (`package.json` dependencies, `exports` or `files`, build config, a published entry) also passes `npm run test:pack` after the final build; see "Package boundary changes" in [AGENTS.md](../AGENTS.md).
 
 ## Tests: what to write and when
 
@@ -49,6 +50,7 @@ History follows Conventional Commits: `feat(scope): ...`, `fix(scope): ...`, `te
 - Keep the PR description honest about what changed and what you need reviewed — reviewers respond to specifics.
 - If you used AI assistance heavily, say so; it changes what reviewers look at twice.
 - Questions about scope, versioning, or "does this belong in the package?" belong in the PR description or a Teams message before you write code, not after.
+- Changes to the package boundary are routed to the code owners in `.github/CODEOWNERS`. The PR template has a short checklist for them; delete that section when your change does not touch the boundary.
 
 ## Reference
 
