@@ -73,7 +73,7 @@
     "lint": "eslint .",
     "test": "vitest",
     "test:run": "vitest --run && npm run test:scripts",
-    "test:scripts": "node --test scripts/generate-cli-manifest.test.mjs",
+    "test:scripts": "node --test scripts/generate-cli-manifest.test.mjs scripts/datetime-host-timezones.test.mjs",
     "test:pack": "node scripts/pack-smoke.mjs",
     "prepublishOnly": "node scripts/guard-publish.cjs",
     "preview": "vite preview"
