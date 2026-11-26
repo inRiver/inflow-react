@@ -128,6 +128,7 @@ Most public exports are available from `@inriver/inflow-react`; AG Grid theme pa
 | Theme tokens | `inflowTokens`, `inflowCustomColors`, `inflowSpacing` | `@inriver/inflow-react` |
 | Theme flags & types | `INFLOW_DARK_MODE_ENABLED`, `InflowColorMode` | `@inriver/inflow-react` |
 | Components | `ThemedAccordion`, `ThemedAlert`, `ThemedAppNav` (+ `ThemedAppNavPlaceholder`), `ThemedAvatar` (+ `ThemedAvatarGroup`), `ThemedBadge`, `ThemedBreadcrumbs`, `ThemedButton`, `ThemedCard`, `ThemedChatPanel`, `ThemedChip`, `ThemedDetailPanel` (+ `ThemedDetailPanelSection`), `ThemedDialog`, `ThemedFileTypeIcon`, `ThemedMenu`, `ThemedPageHeader`, `ThemedRightPanel`, `ThemedStepper`, `ThemedTable`, `ThemedTabs` (+ `ThemedTabPanel`), `ThemedTextField`, `ThemedToast`, plus their prop types and `Column` | `@inriver/inflow-react` |
+| Autocomplete helpers | `renderCheckboxOption`, `renderRadioOption` | `@inriver/inflow-react` |
 | AG Grid theme params | `inflowGridThemeParams`, `inflowGridThemeParamsDark`, `InflowGridThemeParams` | `@inriver/inflow-react/ag-grid` |
 | Date and time preferences | `configureDateTime`, `getDateTimeFormats`, `DateTimeOptions`, `DateTimeFormats`, `DateTimeStyle`, `HourCycle` | `@inriver/inflow-react/datetime` |
 | Date and time display | `formatDate`, `formatTime`, `formatDateTime`, `dateColumn`, `dateTimeColumn` | `@inriver/inflow-react/datetime` |
