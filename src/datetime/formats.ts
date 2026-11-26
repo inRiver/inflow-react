@@ -35,8 +35,12 @@ export interface DateTimeOptions {
   /**
    * IANA timezone such as "Europe/Stockholm" that moments in time (values with a "Z" or offset, Dates, timestamps)
    * are shown in. Defaults to the configured value, then the browser timezone. Values without an offset and
-   * date-only values are never converted. It configures the display formatters only: a MUI X picker takes its own
-   * `timezone` prop.
+   * date-only values are never converted.
+   *
+   * It also becomes the default `timezone` of the MUI X time and date-time pickers inside an
+   * `InflowLocalizationProvider`, but only when the app has registered the dayjs `utc` and `timezone` plugins (a picker
+   * cannot use a zone without them) and the name is a zone the runtime knows. Date-only pickers are never converted,
+   * so a date does not move to another day. A picker's own `timezone` prop wins.
    */
   timeZone?: string;
 }

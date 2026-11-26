@@ -26,8 +26,24 @@ const pickerFields: Record<string, string> = {
   MuiMobileDateTimePicker: 'MuiDateTimeField',
 };
 const fields = [...new Set(Object.values(pickerFields))];
+// The pickers that show a time. They take the PIM time zone as their default `timezone`. It is set on the picker, not
+// on the field: MUI X applies a field's own theme default after the picker's zone, which would override it. Date
+// pickers are left out on purpose, because converting a date to another zone can show the day before or after.
+const timePickers = [
+  'MuiDesktopTimePicker',
+  'MuiMobileTimePicker',
+  'MuiStaticTimePicker',
+  'MuiDesktopDateTimePicker',
+  'MuiMobileDateTimePicker',
+  'MuiStaticDateTimePicker',
+];
 
 let defaultTheme: Theme | undefined;
+// Marks a picker default that a provider injected, with the zone it set, so a provider nested below can replace it.
+// A default a consumer set carries no marker and always wins. It is a symbol so that MUI, which only copies string keys
+// into a component's props, never sees it, and it stays on the default when a theme is copied between providers.
+const INJECTED_ZONE = Symbol('inflow.injectedTimeZone');
+type ZoneDefaults = Props & { [INJECTED_ZONE]?: string };
 
 // Adds the defaults a consumer left unset. An explicit `undefined` counts as unset, as it does for MUI's own props.
 function withDefaults(existing: Props | undefined, defaults: Props): Props {
@@ -50,7 +66,7 @@ function withFieldDefaults(existing: SlotProps, defaults: Props): SlotProps {
     : withDefaults(existing, defaults);
 }
 
-function addDefaults(theme: Theme, popperModifiers: readonly PopperModifier[]): Theme {
+function addDefaults(theme: Theme, popperModifiers: readonly PopperModifier[], timeZone?: string): Theme {
   const components = { ...theme.components } as Record<string, ComponentDefaults | undefined>;
   const update = (name: string, change: (existing: Props) => Props) => {
     components[name] = { ...components[name], defaultProps: change(components[name]?.defaultProps ?? {}) };
@@ -103,6 +119,26 @@ function addDefaults(theme: Theme, popperModifiers: readonly PopperModifier[]): 
     }));
   }
 
+  // A zone the caller has already checked (a known name, with the dayjs plugins registered). Without one, MUI X keeps
+  // inferring the zone from the value, so nothing is set. A zone a consumer set on the theme or the picker wins, but
+  // one that an outer Inflow provider injected is replaced, so a nested provider can use a zone of its own.
+  for (const name of timePickers) {
+    const current = components[name]?.defaultProps as ZoneDefaults | undefined;
+    const injected = current?.[INJECTED_ZONE];
+    if (!timeZone && injected === undefined) continue;
+    if (current?.timezone !== undefined && current.timezone !== injected) continue;
+    update(name, (props) => {
+      const next: ZoneDefaults = { ...props };
+      delete next.timezone;
+      delete next[INJECTED_ZONE];
+      if (timeZone) {
+        next.timezone = timeZone;
+        next[INJECTED_ZONE] = timeZone;
+      }
+      return next;
+    });
+  }
+
   return { ...theme, components } as Theme;
 }
 
@@ -113,13 +149,19 @@ function addDefaults(theme: Theme, popperModifiers: readonly PopperModifier[]): 
  *
  * `outer` is the raw value of the theme context: a Material theme, a theme scoped under `THEME_ID`, or an empty
  * object when there is no provider (the MUI default theme is used then). `popperModifiers` are the modifiers that
- * apply to every Popper, resolved by the caller because Material reads them from the default-props context.
+ * apply to every Popper, resolved by the caller because Material reads them from the default-props context. `timeZone`,
+ * when given, is the default `timezone` of the time and date-time pickers; the caller has already checked that it is
+ * usable.
  */
-export function withInflowPickerDefaults(outer: object, popperModifiers: readonly PopperModifier[] = []): object {
+export function withInflowPickerDefaults(
+  outer: object,
+  popperModifiers: readonly PopperModifier[] = [],
+  timeZone?: string,
+): object {
   const base = Object.keys(outer).length === 0 ? (defaultTheme ??= createTheme()) : outer;
   if (THEME_ID in base) {
     const scoped = base as Record<typeof THEME_ID, Theme>;
-    return { ...scoped, [THEME_ID]: addDefaults(scoped[THEME_ID], popperModifiers) };
+    return { ...scoped, [THEME_ID]: addDefaults(scoped[THEME_ID], popperModifiers, timeZone) };
   }
-  return addDefaults(base as Theme, popperModifiers);
+  return addDefaults(base as Theme, popperModifiers, timeZone);
 }

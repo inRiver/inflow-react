@@ -101,11 +101,15 @@ describe('InflowLocalizationProvider and configureDateTime', () => {
     expect(screen.getByDisplayValue('7:30 AM')).toBeInTheDocument();
   });
 
-  it('has no timeZone prop, because it only configures the display formatters', () => {
-    // @ts-expect-error a picker takes its own `timezone` prop
-    const provider = <InflowLocalizationProvider timeZone="UTC">{null}</InflowLocalizationProvider>;
+  it('accepts a timeZone prop and uses it for the time pickers, not for the formatters', () => {
+    renderWithInflow(
+      <InflowLocalizationProvider locale="en" timeZone="UTC">
+        <DesktopTimePicker defaultValue={time} />
+      </InflowLocalizationProvider>,
+    );
 
-    expect(provider).toBeTruthy();
+    // Without the dayjs timezone plugin a zone is not handed to the pickers, so the host-local value shows as it is.
+    expect(screen.getByDisplayValue('7:30 AM')).toBeInTheDocument();
   });
 });
 
