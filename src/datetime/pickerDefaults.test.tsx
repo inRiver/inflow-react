@@ -14,12 +14,13 @@ import { DesktopTimePicker } from '@mui/x-date-pickers/DesktopTimePicker';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
 import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
+import { TimeField } from '@mui/x-date-pickers/TimeField';
 import dayjs from 'dayjs';
 import { describe, expect, it } from 'vitest';
 import { createInflowTheme } from '../theme';
 import { renderWithInflow } from '../test/renderWithInflow';
 import { POPPER_FLIPPED_GAP } from './flippedGapModifier';
-import { InflowLocalizationProvider } from './InflowLocalizationProvider';
+import { InflowLocalizationProvider } from './client';
 
 const value = dayjs('2024-01-01T07:30');
 
@@ -58,6 +59,47 @@ describe('InflowLocalizationProvider field defaults', () => {
 
     expect(screen.getByDisplayValue('1/1/2024 7:30 AM')).toBeInTheDocument();
     expect(screen.getByDisplayValue('1/1/2024 07:30')).toBeInTheDocument();
+  });
+
+  it('shows a standalone time field in the Inflow format in both clocks', () => {
+    renderWithInflow(
+      <>
+        <InflowLocalizationProvider locale="en" hourCycle="12">
+          <TimeField label="12 hour" defaultValue={value} />
+        </InflowLocalizationProvider>
+        <InflowLocalizationProvider locale="en" hourCycle="24">
+          <TimeField label="24 hour" defaultValue={value} />
+        </InflowLocalizationProvider>
+      </>,
+    );
+
+    expect(screen.getByDisplayValue('7:30 AM')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('07:30')).toBeInTheDocument();
+  });
+
+  it('respects consumer defaults and explicit props for a standalone time field', () => {
+    const theme = createTheme({ components: { MuiTimeField: { defaultProps: { shouldRespectLeadingZeros: false } } } });
+    renderWithInflow(
+      <ThemeProvider theme={theme}>
+        <InflowLocalizationProvider locale="en" hourCycle="12">
+          <TimeField label="Consumer default" defaultValue={value} />
+          <TimeField label="Explicit override" defaultValue={value} shouldRespectLeadingZeros />
+        </InflowLocalizationProvider>
+      </ThemeProvider>,
+    );
+
+    expect(screen.getByDisplayValue('07:30 AM')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('7:30 AM')).toBeInTheDocument();
+  });
+
+  it('lets an explicit standalone time field prop turn leading zeros back on', () => {
+    renderWithInflow(
+      <InflowLocalizationProvider locale="en" hourCycle="12">
+        <TimeField defaultValue={value} shouldRespectLeadingZeros={false} />
+      </InflowLocalizationProvider>,
+    );
+
+    expect(screen.getByDisplayValue('07:30 AM')).toBeInTheDocument();
   });
 
   it('lets a picker prop turn leading zeros back on', () => {

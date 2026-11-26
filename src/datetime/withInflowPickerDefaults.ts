@@ -1,7 +1,7 @@
 import { THEME_ID, createTheme, type Theme } from '@mui/material/styles';
 import type {} from '@mui/x-date-pickers/themeAugmentation';
-import { InflowPickerActionBar } from './InflowPickerActionBar';
-import { flippedGapModifier } from './flippedGapModifier';
+import { InflowPickerActionBar } from './InflowPickerActionBar.js';
+import { flippedGapModifier } from './flippedGapModifier.js';
 
 type Props = Record<string, unknown>;
 type SlotProps = Props | ((ownerState: unknown) => Props) | undefined;

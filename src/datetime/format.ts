@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc.js';
-import { getDateTimeConfig, getDateTimeFormats, type DateTimeOptions } from './formats';
+import { getDateTimeConfig, getDateTimeFormats, type DateTimeOptions } from './formats.js';
 
 // Registers the dayjs `utc` plugin, which the formatters use to show wall-clock fields exactly as they are. The
 // formatters never use the `timezone` plugin. An app that wants pickers to follow a time zone registers it itself.

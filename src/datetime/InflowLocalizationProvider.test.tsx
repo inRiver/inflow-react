@@ -7,7 +7,7 @@ import dayjs from 'dayjs';
 import { afterEach, describe, expect, it } from 'vitest';
 import { createInflowTheme } from '../theme';
 import { renderWithInflow } from '../test/renderWithInflow';
-import { InflowLocalizationProvider } from './InflowLocalizationProvider';
+import { InflowLocalizationProvider } from './client';
 
 const value = dayjs('2024-01-01T07:30');
 const openPicker = () => fireEvent.click(screen.getByRole('button', { name: /choose time/i }));

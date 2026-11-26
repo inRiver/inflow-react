@@ -14,7 +14,7 @@ import utc from 'dayjs/plugin/utc';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { renderWithInflow } from '../test/renderWithInflow';
 import { configureDateTime, resetDateTimeConfig } from './formats';
-import { InflowLocalizationProvider } from './InflowLocalizationProvider';
+import { InflowLocalizationProvider } from './client';
 import { withInflowPickerDefaults } from './withInflowPickerDefaults';
 
 // An app registers these itself: a picker cannot use a time zone without them.

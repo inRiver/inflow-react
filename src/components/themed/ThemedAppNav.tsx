@@ -3,7 +3,7 @@ import type { CSSProperties } from 'react';
 import { Box, Icon } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import type { Theme } from '@mui/material/styles';
-import { inflowTokens } from '../../theme';
+import { inflowTokens } from '../../theme/index.js';
 
 export interface ThemedAppNavItem {
   label: string;

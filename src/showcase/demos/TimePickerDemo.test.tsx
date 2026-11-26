@@ -11,6 +11,7 @@ describe('TimePickerDemo', () => {
 
     expect(screen.getByText('Time Picker - Interactive')).toBeInTheDocument();
     expect(screen.getByText('All States')).toBeInTheDocument();
+    expect(codeExample()).toHaveTextContent("import { InflowLocalizationProvider } from '@inriver/inflow-react/datetime/client';");
     expect(screen.getAllByRole('group', { name: /alarm/i }).length).toBeGreaterThan(0);
     expect(screen.getAllByDisplayValue('7:30 AM').length).toBeGreaterThan(0);
     expect(screen.getAllByDisplayValue('2:00 PM').length).toBeGreaterThan(0);

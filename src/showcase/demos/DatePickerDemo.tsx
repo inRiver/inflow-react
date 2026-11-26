@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Stack } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { type Dayjs } from 'dayjs';
-import { InflowLocalizationProvider } from '../../datetime';
+import { InflowLocalizationProvider } from '../../datetime/client';
 import { DemoFrame } from '../DemoFrame';
 import { CodeBlock } from '../CodeBlock';
 import { PropsPlayground } from '../PropsPlayground';
@@ -31,7 +31,7 @@ export function DatePickerDemo() {
 import { useState } from 'react';
 import dayjs, { type Dayjs } from 'dayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { InflowLocalizationProvider } from '@inriver/inflow-react/datetime';
+import { InflowLocalizationProvider } from '@inriver/inflow-react/datetime/client';
 
 // Needs the optional peers @mui/x-date-pickers and dayjs. <InflowProvider> is declared once at your app root.
 // Locale and date order come from configureDateTime(...) or the provider props (props win) - see Content standards.

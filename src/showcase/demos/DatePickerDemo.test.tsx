@@ -11,6 +11,7 @@ describe('DatePickerDemo', () => {
 
     expect(screen.getByText('Date Picker - Interactive')).toBeInTheDocument();
     expect(screen.getByText('All States')).toBeInTheDocument();
+    expect(codeExample()).toHaveTextContent("import { InflowLocalizationProvider } from '@inriver/inflow-react/datetime/client';");
     expect(screen.getAllByDisplayValue('1/1/2024').length).toBeGreaterThan(0);
   });
 

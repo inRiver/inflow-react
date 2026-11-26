@@ -6,9 +6,10 @@ import 'dayjs/locale/de';
 import 'dayjs/locale/zh-tw';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { renderWithInflow } from '../test/renderWithInflow';
-import { configureDateTime, dayjsLocale, resetDateTimeConfig } from './formats';
+import { configureDateTime } from './index';
+import { dayjsLocale, resetDateTimeConfig } from './formats';
 import { formatDate, formatTime } from './format';
-import { InflowLocalizationProvider } from './InflowLocalizationProvider';
+import { InflowLocalizationProvider } from './client';
 
 const time = dayjs('2024-01-01T07:30');
 const january = dayjs('2024-01-15');

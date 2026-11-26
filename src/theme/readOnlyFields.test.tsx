@@ -3,7 +3,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { describe, expect, it } from 'vitest';
-import { InflowLocalizationProvider } from '../datetime';
+import { InflowLocalizationProvider } from '../datetime/client';
 import { renderWithInflow } from '../test/renderWithInflow';
 
 const TINT = 'rgb(241, 246, 254)';

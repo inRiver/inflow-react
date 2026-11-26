@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Alert, Autocomplete, Box, MenuItem, TextField, Stack } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { InflowLocalizationProvider } from '../../datetime';
+import { InflowLocalizationProvider } from '../../datetime/client';
 import { DemoFrame } from '../DemoFrame';
 import { CodeBlock } from '../CodeBlock';
 import { PropsPlayground } from '../PropsPlayground';
@@ -120,9 +120,8 @@ import { TextField } from '@mui/material';
   return (
     <>
       <Alert severity="warning" sx={{ mb: 2 }}>
-        ThemedTextField is deprecated and will be removed in the next major release. The theme
-        already defaults MUI TextField to variant="outlined" and size="small" inside
-        InflowProvider, so a plain TextField from @mui/material looks and behaves the same.
+        ThemedTextField was removed in 4.0.0. Use MUI TextField from @mui/material directly inside
+        InflowProvider; the theme defaults it to variant="outlined" and size="small".
       </Alert>
 
       <DemoFrame title="Text Field - Interactive">

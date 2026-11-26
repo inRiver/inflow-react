@@ -11,9 +11,9 @@ import {
   resolveLocale,
   subscribeDateTimeConfig,
   type DateTimeOptions,
-} from './formats';
-import { isKnownTimeZone } from './format';
-import { withInflowPickerDefaults, type PopperModifier } from './withInflowPickerDefaults';
+} from './formats.js';
+import { isKnownTimeZone } from './format.js';
+import { withInflowPickerDefaults, type PopperModifier } from './withInflowPickerDefaults.js';
 
 export interface InflowLocalizationProviderProps extends DateTimeOptions {
   children: ReactNode;

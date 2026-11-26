@@ -1,6 +1,6 @@
 {
   "name": "@inriver/inflow-react",
-  "version": "3.16.0",
+  "version": "4.0.0",
   "description": "Shared Inflow React/MUI design-system: canonical theme, design tokens, and themed wrapper components for Inriver product UIs.",
   "keywords": [
     "inriver",
@@ -32,6 +32,7 @@
     "dist/index.cjs.map",
     "dist/index.d.ts",
     "dist/index.d.ts.map",
+    "dist/index.d.cts",
     "dist/_chunks",
     "dist/cli",
     "dist/ag-grid",
@@ -47,19 +48,44 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     },
     "./ag-grid": {
-      "types": "./dist/ag-grid/index.d.ts",
-      "import": "./dist/ag-grid/index.js",
-      "require": "./dist/ag-grid/index.cjs"
+      "import": {
+        "types": "./dist/ag-grid/index.d.ts",
+        "default": "./dist/ag-grid/index.js"
+      },
+      "require": {
+        "types": "./dist/ag-grid/index.d.cts",
+        "default": "./dist/ag-grid/index.cjs"
+      }
     },
     "./datetime": {
-      "types": "./dist/datetime/index.d.ts",
-      "import": "./dist/datetime/index.js",
-      "require": "./dist/datetime/index.cjs"
+      "import": {
+        "types": "./dist/datetime/index.d.ts",
+        "default": "./dist/datetime/index.js"
+      },
+      "require": {
+        "types": "./dist/datetime/index.d.cts",
+        "default": "./dist/datetime/index.cjs"
+      }
+    },
+    "./datetime/client": {
+      "import": {
+        "types": "./dist/datetime/client.d.ts",
+        "default": "./dist/datetime/client.js"
+      },
+      "require": {
+        "types": "./dist/datetime/client.d.cts",
+        "default": "./dist/datetime/client.cjs"
+      }
     },
     "./package.json": "./package.json",
     "./fonts/inter.css": "./dist/fonts/inter.css",
@@ -69,11 +95,11 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build && npm run build:lib",
-    "build:lib": "vite build --config vite.lib.config.ts && tsc -p tsconfig.lib.json && node scripts/copy-font-assets.mjs && tsc -p tsconfig.cli.json && node scripts/generate-cli-manifest.mjs --write",
+    "build:lib": "vite build --config vite.lib.config.ts && tsc -p tsconfig.lib.json && node scripts/generate-cjs-declarations.mjs && node scripts/copy-font-assets.mjs && tsc -p tsconfig.cli.json && node scripts/generate-cli-manifest.mjs --write",
     "lint": "eslint .",
     "test": "vitest",
     "test:run": "vitest --run && npm run test:scripts",
-    "test:scripts": "node --test scripts/generate-cli-manifest.test.mjs scripts/datetime-host-timezones.test.mjs scripts/repo-guardrails.test.mjs",
+    "test:scripts": "node --test scripts/generate-cli-manifest.test.mjs scripts/datetime-host-timezones.test.mjs scripts/repo-guardrails.test.mjs scripts/generate-cjs-declarations.test.mjs",
     "test:pack": "node scripts/pack-smoke.mjs",
     "prepublishOnly": "node scripts/guard-publish.cjs",
     "preview": "vite preview"
@@ -99,9 +125,9 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@eslint/js": "^10.0.1",
-    "@mui/icons-material": "^9.5.0",
-    "@mui/material": "^9.5.0",
-    "@mui/x-date-pickers": "^9.17.0",
+    "@mui/icons-material": "^9.6.0",
+    "@mui/material": "^9.6.0",
+    "@mui/x-date-pickers": "^9.18.0",
     "@playwright/test": "^1.64.1",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/jest-dom": "^7.0.1",

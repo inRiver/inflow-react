@@ -53,19 +53,31 @@ function isInside(root, path) {
 }
 
 async function checkDeclarations(packageRoot, archiveEntries) {
-  const options = { module: ts.ModuleKind.ESNext, moduleResolution: ts.ModuleResolutionKind.Bundler };
-  const declarations = archiveEntries.filter(entry => /\.d\.[cm]?ts$/.test(entry));
-  assert.ok(declarations.length, 'tarball contains no declarations');
+  const packed = new Set(archiveEntries.map(entry => resolve(packageRoot, entry.slice('package/'.length))));
+  const declarations = archiveEntries.filter(entry => /\.d\.(?:ts|cts)$/.test(entry));
+  assert.ok(declarations.some(entry => entry.endsWith('.d.ts')), 'tarball contains no ESM declarations');
+  assert.ok(declarations.some(entry => entry.endsWith('.d.cts')), 'tarball contains no CJS declarations');
   for (const entry of declarations) {
     const path = join(packageRoot, entry.slice('package/'.length));
-    const parsed = ts.preProcessFile(await readFile(path, 'utf8'), true, true);
-    for (const { fileName: specifier } of [...parsed.importedFiles, ...parsed.referencedFiles, ...parsed.typeReferenceDirectives]) {
-      if (!/^\.\.?\//.test(specifier)) continue;
-      const target = ts.resolveModuleName(specifier, path, options, ts.sys).resolvedModule?.resolvedFileName;
-      assert.ok(
-        target && isInside(packageRoot, resolve(target)) && /\.d\.[cm]?ts$/.test(target),
-        `declaration ${entry} has missing or unpacked relative target ${specifier}`,
-      );
+    const cjs = entry.endsWith('.d.cts');
+    const text = await readFile(path, 'utf8');
+    if (cjs) assert.doesNotMatch(text, /[#@]\s*sourceMappingURL=/, `${entry} must not reference a declaration map`);
+    const parsed = ts.preProcessFile(text, true, true);
+    const configurations = cjs
+      ? [{ module: ts.ModuleKind.NodeNext, moduleResolution: ts.ModuleResolutionKind.NodeNext }]
+      : [
+          { module: ts.ModuleKind.NodeNext, moduleResolution: ts.ModuleResolutionKind.NodeNext },
+          { module: ts.ModuleKind.ESNext, moduleResolution: ts.ModuleResolutionKind.Bundler },
+        ];
+    for (const options of configurations) {
+      for (const { fileName: specifier } of [...parsed.importedFiles, ...parsed.referencedFiles, ...parsed.typeReferenceDirectives]) {
+        if (!/^\.\.?\//.test(specifier)) continue;
+        const target = ts.resolveModuleName(specifier, path, options, ts.sys, undefined, undefined,
+          cjs ? ts.ModuleKind.CommonJS : ts.ModuleKind.ESNext).resolvedModule?.resolvedFileName;
+        assert.ok(target && isInside(packageRoot, resolve(target)) && packed.has(resolve(target)) &&
+          target.endsWith(cjs ? '.d.cts' : '.d.ts'),
+        `declaration ${entry} has missing, unpacked or wrong-format relative target ${specifier} (${target ?? 'unresolved'})`);
+      }
     }
   }
 }
@@ -93,6 +105,7 @@ function javascriptSpecifiers(text, path) {
 
 async function javascriptGraph(packageRoot, archiveEntries, entry) {
   const packedFiles = new Set(archiveEntries.filter(path => !path.endsWith('/')).map(path => resolve(packageRoot, path.slice('package/'.length))));
+  const canonicalRoot = await realpath(packageRoot);
   const pending = [join(packageRoot, entry)];
   const files = new Set();
   const externals = new Set();
@@ -108,8 +121,14 @@ async function javascriptGraph(packageRoot, archiveEntries, entry) {
         continue;
       }
       const base = resolve(dirname(path), specifier);
-      const target = [base, `${base}.js`, `${base}.cjs`, `${base}.mjs`, join(base, 'index.js'), join(base, 'index.cjs'), join(base, 'index.mjs')]
-        .find(candidate => packedFiles.has(candidate));
+      let target = base;
+      if (path.endsWith('.cjs')) {
+        try {
+          const resolved = await realpath(createRequire(path).resolve(specifier));
+          target = isInside(canonicalRoot, resolved) ? resolve(packageRoot, relative(canonicalRoot, resolved)) : undefined;
+        } catch { target = undefined; }
+      }
+      if (!packedFiles.has(target)) target = undefined;
       assert.ok(target && isInside(packageRoot, target), `JS graph ${entry}: ${relative(packageRoot, path)} references missing or unpacked ${specifier}`);
       pending.push(target);
     }
@@ -133,25 +152,48 @@ async function checkJavascriptGraphs(packageRoot, archiveEntries) {
   const bundledPeer = new RegExp(`(?:^|/)node_modules/(?:${peers.join('|')})(?:/|$)`);
   const exportedScripts = targetsOf(manifest.exports).filter(target => /^\.\/dist\/.*\.c?js$/.test(target));
   for (const extension of ['js', 'cjs']) {
+    for (const [entry, expected] of [
+      ['index', true], ['datetime/client', true], ['datetime/index', false], ['ag-grid/index', false],
+    ]) {
+      const path = join(packageRoot, `dist/${entry}.${extension}`);
+      const source = ts.createSourceFile(path, await readFile(path, 'utf8'), ts.ScriptTarget.Latest, true, ts.ScriptKind.JS);
+      const first = source.statements[0];
+      const client = first && ts.isExpressionStatement(first) && ts.isStringLiteral(first.expression) && first.expression.text === 'use client';
+      const directives = [];
+      for (const statement of source.statements) {
+        if (!ts.isExpressionStatement(statement) || !ts.isStringLiteral(statement.expression)) break;
+        directives.push(statement.expression.text);
+      }
+      assert.equal(expected ? Boolean(client) : directives.includes('use client'), expected,
+        `dist/${entry}.${extension} ${expected ? 'must start with' : 'must not have'} use client`);
+    }
     const root = await javascriptGraph(packageRoot, archiveEntries, `dist/index.${extension}`);
     const datetime = await javascriptGraph(packageRoot, archiveEntries, `dist/datetime/index.${extension}`);
+    const client = await javascriptGraph(packageRoot, archiveEntries, `dist/datetime/client.${extension}`);
     for (const pattern of [/^@mui\/x-date-pickers/, /^dayjs/]) {
       assert.ok(![...root.externals].some(specifier => pattern.test(specifier)), `root ${extension} graph unexpectedly imports ${pattern}`);
-      assert.ok([...datetime.externals].some(specifier => pattern.test(specifier)), `datetime ${extension} graph must externalize ${pattern}`);
+      assert.ok([...client.externals].some(specifier => pattern.test(specifier)), `datetime/client ${extension} graph must externalize ${pattern}`);
     }
+    assert.ok([...datetime.externals].some(specifier => /^dayjs(?:\/|$)/.test(specifier)), `datetime ${extension} graph must import dayjs`);
+    for (const pattern of [/^react(?:\/|$)/, /^react-dom(?:\/|$)/, /^@emotion\//, /^@mui\/x-date-pickers/]) {
+      assert.ok(![...datetime.externals].some(specifier => pattern.test(specifier)), `datetime ${extension} graph unexpectedly imports ${pattern}`);
+    }
+    assert.ok([...datetime.files].some(path => client.files.has(path) &&
+      isInside(join(packageRoot, 'dist', '_chunks'), path)), `datetime and datetime/client ${extension} graphs must share a chunk`);
     const graphFiles = new Set();
     const entryFiles = new Set(exportedScripts.filter(script => script.endsWith(`.${extension}`)).map(script => join(packageRoot, script.slice(2))));
     for (const target of exportedScripts.filter(script => script.endsWith(`.${extension}`))) {
       for (const path of (await javascriptGraph(packageRoot, archiveEntries, target.slice(2))).files) graphFiles.add(path);
     }
+    const checkedFiles = new Set();
     for (const path of graphFiles) {
       const text = await readFile(path, 'utf8');
       const maps = new Set([`${path}.map`]);
       for (const [, url] of text.matchAll(/[#@] sourceMappingURL=([^\s]+)/g)) {
         if (url.endsWith('.map')) maps.add(resolve(dirname(path), url));
       }
-      // The bundled-peer check reads source maps, so an entry without a packed one cannot be checked. Helper chunks may
-      // lack one (the bundler's runtime chunk has none).
+      // The bundled-peer check reads source maps, so an entry without a packed one cannot be checked unless it is a
+      // pure chunk-forwarding facade (like datetime/index) whose target chunks all carry source maps.
       let checked = 0;
       for (const mapPath of maps) {
         assert.ok(isInside(packageRoot, mapPath), `source map outside package: ${mapPath}`);
@@ -163,9 +205,17 @@ async function checkJavascriptGraphs(packageRoot, archiveEntries) {
           assert.doesNotMatch(source.replaceAll('\\', '/'), bundledPeer, `inlined peer dependency in ${mapPath}: ${source}`);
         }
       }
-      if (entryFiles.has(path)) {
-        assert.ok(checked > 0, `no source map is packed for ${relative(packageRoot, path)}, so peers bundled into it cannot be detected`);
+      if (checked > 0) checkedFiles.add(path);
+      if (entryFiles.has(path) && checked === 0) {
+        const specifiers = javascriptSpecifiers(text, path);
+        const isPureRelativeFacade = specifiers.length > 0 && specifiers.every(specifier => /^\.\.?\//.test(specifier));
+        assert.ok(isPureRelativeFacade, `no source map is packed for ${relative(packageRoot, path)}, so peers bundled into it cannot be detected`);
       }
+    }
+    for (const entry of entryFiles) {
+      const entryGraph = await javascriptGraph(packageRoot, archiveEntries, relative(packageRoot, entry).replaceAll('\\', '/'));
+      assert.ok([...entryGraph.files].some(file => checkedFiles.has(file)),
+        `entry ${relative(packageRoot, entry)} has no packed source maps in its module graph`);
     }
   }
 }
@@ -208,8 +258,8 @@ async function checkHoistedPeers(consumerRoot) {
   }
 }
 
-function typecheckConsumer(consumerRoot) {
-  const result = spawnSync(process.execPath, ['node_modules/typescript/bin/tsc', '-p', 'tsconfig.json', '--pretty', 'false'], {
+function typecheckConsumer(consumerRoot, config = 'tsconfig.json') {
+  const result = spawnSync(process.execPath, ['node_modules/typescript/bin/tsc', '-p', config, '--pretty', 'false'], {
     cwd: consumerRoot, encoding: 'utf8', timeout: 120_000,
   });
   if (result.error) throw result.error;
@@ -335,10 +385,14 @@ Module._resolveFilename = function (specifier, ...args) {
 `;
 const rootOnlyRender = `
 const markup = renderToString(createElement(inflow.InflowProvider, { mode: 'light' }, [
-  createElement(inflow.ThemedButton, { key: 'button' }, 'root without optional peers'),
+  createElement(inflow.ThemedChip, { key: 'chip', label: 'root without optional peers' }),
+  createElement(inflow.ThemedFileTypeIcon, { key: 'file', extension: 'report.PDF' }),
   createElement(inflow.ThemedBadge, { badgeContent: '3', key: 'badge' }, createElement('span', null, 'root badge')),
 ]));
 assert.match(markup, /data-inflow-root/);
+assert.ok(markup.includes('<svg'));
+assert.ok(markup.includes('<title>PDF file</title>'));
+assert.ok(markup.includes('>PDF</text>'));
 assert.match(markup, /root without optional peers/);
 assert.match(markup, /root badge/);
 assert.match(markup, />3</);
@@ -351,8 +405,8 @@ import { renderToString } from 'react-dom/server';
 import * as inflow from '${packageName}';
 const require = createRequire(import.meta.url);
 for (const specifier of ['dayjs', 'dayjs/plugin/utc.js', '@mui/x-date-pickers', '@mui/x-date-pickers/DatePicker']) {
-  await assert.rejects(import(specifier), { code: 'ERR_OPTIONAL_PEER_BLOCKED' });
-  assert.throws(() => require(specifier), { code: 'ERR_OPTIONAL_PEER_BLOCKED' });
+  await assert.rejects(import(specifier), { code: process.env.INFLOW_REAL_MISSING ? 'ERR_MODULE_NOT_FOUND' : 'ERR_OPTIONAL_PEER_BLOCKED' });
+  assert.throws(() => require(specifier), { code: process.env.INFLOW_REAL_MISSING ? 'MODULE_NOT_FOUND' : 'ERR_OPTIONAL_PEER_BLOCKED' });
 }
 ${rootOnlyRender}
 console.log(JSON.stringify({ format: 'esm', rootWithoutOptionalPeers: 'PASS' }));
@@ -364,8 +418,8 @@ const { renderToString } = require('react-dom/server');
 const inflow = require('${packageName}');
 (async () => {
   for (const specifier of ['dayjs', 'dayjs/plugin/utc.js', '@mui/x-date-pickers', '@mui/x-date-pickers/DatePicker']) {
-    await assert.rejects(import(specifier), { code: 'ERR_OPTIONAL_PEER_BLOCKED' });
-    assert.throws(() => require(specifier), { code: 'ERR_OPTIONAL_PEER_BLOCKED' });
+    await assert.rejects(import(specifier), { code: process.env.INFLOW_REAL_MISSING ? 'ERR_MODULE_NOT_FOUND' : 'ERR_OPTIONAL_PEER_BLOCKED' });
+    assert.throws(() => require(specifier), { code: process.env.INFLOW_REAL_MISSING ? 'MODULE_NOT_FOUND' : 'ERR_OPTIONAL_PEER_BLOCKED' });
   }
   ${rootOnlyRender}
   console.log(JSON.stringify({ format: 'cjs', rootWithoutOptionalPeers: 'PASS' }));
@@ -379,7 +433,8 @@ import { renderToString } from 'react-dom/server';
 import { realpath } from 'node:fs/promises';
 import * as inflow from '${packageName}';
 import { inflowGridThemeParams } from '${packageName}/ag-grid';
-import { InflowLocalizationProvider, formatDateTime } from '${packageName}/datetime';
+import { formatDateTime, configureDateTime } from '${packageName}/datetime';
+import { InflowLocalizationProvider } from '${packageName}/datetime/client';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { DesktopTimePicker } from '@mui/x-date-pickers/DesktopTimePicker';
@@ -394,10 +449,14 @@ assert.ok(!relative(canonicalRoot, canonicalEntry).startsWith('..'), 'ESM resolv
 assert.equal(inflow.createInflowTheme('light').palette.mode, 'light');
 assert.ok(Object.keys(inflowGridThemeParams).length > 0);
 const markup = renderToString(createElement(inflow.InflowProvider, { mode: 'light' }, [
-  createElement(inflow.ThemedButton, { key: 'button' }, 'packed ESM smoke'),
+  createElement(inflow.ThemedChip, { key: 'chip', label: 'packed ESM smoke' }),
+  createElement(inflow.ThemedFileTypeIcon, { key: 'file', extension: 'report.PDF' }),
   createElement(inflow.ThemedBadge, { badgeContent: '3', key: 'badge' }, createElement('span', null, 'packed ESM badge')),
 ]));
 assert.match(markup, /data-inflow-root/);
+assert.ok(markup.includes('<svg'));
+assert.ok(markup.includes('<title>PDF file</title>'));
+assert.ok(markup.includes('>PDF</text>'));
 assert.match(markup, /packed ESM smoke/);
 assert.match(markup, /packed ESM badge/);
 assert.match(markup, />3</);
@@ -413,6 +472,17 @@ const timePickerMarkup = renderToString(createElement(inflow.InflowProvider, { m
     createElement(TimePicker, { label: 'Appointment time', defaultValue: dayjs('2024-01-01T07:30:00') }))));
 assert.match(timePickerMarkup, /Appointment time/);
 assert.match(timePickerMarkup, /<input[^>]*value="7:30 AM"/);
+// The two subpaths must share the preferences singleton, not duplicate it in their chunks.
+try {
+  configureDateTime({ locale: 'en', hourCycle: '24' });
+  const configuredPicker = renderToString(createElement(inflow.InflowProvider, { mode: 'light' },
+    createElement(InflowLocalizationProvider, null,
+      createElement(TimePicker, { defaultValue: dayjs('2024-01-01T07:30:00') }))));
+  assert.match(configuredPicker, /<input[^>]*value="07:30"/);
+  assert.doesNotMatch(configuredPicker, /value="7:30 AM"/);
+} finally {
+  configureDateTime({ locale: 'en', hourCycle: 'locale' });
+}
 ${pickerSlotsSmoke}
 // A zone only reaches the time pickers once the app has registered the dayjs plugins, and never reaches a date picker.
 const zoneProbe = (timeZone) => renderToString(createElement(inflow.InflowProvider, { mode: 'light' },
@@ -436,7 +506,8 @@ const { renderToString } = require('react-dom/server');
 const { realpathSync } = require('node:fs');
 const inflow = require('${packageName}');
 const { inflowGridThemeParams } = require('${packageName}/ag-grid');
-const { InflowLocalizationProvider, formatDateTime } = require('${packageName}/datetime');
+const { formatDateTime, configureDateTime } = require('${packageName}/datetime');
+const { InflowLocalizationProvider } = require('${packageName}/datetime/client');
 const { DatePicker } = require('@mui/x-date-pickers/DatePicker');
 const { TimePicker } = require('@mui/x-date-pickers/TimePicker');
 const { DesktopTimePicker } = require('@mui/x-date-pickers/DesktopTimePicker');
@@ -452,10 +523,14 @@ assert.ok(!require('node:path').relative(canonicalRoot, canonicalEntry).startsWi
 assert.equal(inflow.createInflowTheme('light').palette.mode, 'light');
 assert.ok(Object.keys(inflowGridThemeParams).length > 0);
 const markup = renderToString(createElement(inflow.InflowProvider, { mode: 'light' }, [
-  createElement(inflow.ThemedButton, { key: 'button' }, 'packed CommonJS smoke'),
+  createElement(inflow.ThemedChip, { key: 'chip', label: 'packed CommonJS smoke' }),
+  createElement(inflow.ThemedFileTypeIcon, { key: 'file', extension: 'report.PDF' }),
   createElement(inflow.ThemedBadge, { badgeContent: '3', key: 'badge' }, createElement('span', null, 'packed CommonJS badge')),
 ]));
 assert.match(markup, /data-inflow-root/);
+assert.ok(markup.includes('<svg'));
+assert.ok(markup.includes('<title>PDF file</title>'));
+assert.ok(markup.includes('>PDF</text>'));
 assert.match(markup, /packed CommonJS smoke/);
 assert.match(markup, /packed CommonJS badge/);
 assert.match(markup, />3</);
@@ -471,6 +546,17 @@ const timePickerMarkup = renderToString(createElement(inflow.InflowProvider, { m
     createElement(TimePicker, { label: 'Appointment time', defaultValue: dayjs('2024-01-01T07:30:00') }))));
 assert.match(timePickerMarkup, /Appointment time/);
 assert.match(timePickerMarkup, /<input[^>]*value="7:30 AM"/);
+// The two subpaths must share the preferences singleton, not duplicate it in their chunks.
+try {
+  configureDateTime({ locale: 'en', hourCycle: '24' });
+  const configuredPicker = renderToString(createElement(inflow.InflowProvider, { mode: 'light' },
+    createElement(InflowLocalizationProvider, null,
+      createElement(TimePicker, { defaultValue: dayjs('2024-01-01T07:30:00') }))));
+  assert.match(configuredPicker, /<input[^>]*value="07:30"/);
+  assert.doesNotMatch(configuredPicker, /value="7:30 AM"/);
+} finally {
+  configureDateTime({ locale: 'en', hourCycle: 'locale' });
+}
 ${pickerSlotsSmoke}
 // A zone only reaches the time pickers once the app has registered the dayjs plugins, and never reaches a date picker.
 const zoneProbe = (timeZone) => renderToString(createElement(inflow.InflowProvider, { mode: 'light' },
@@ -487,6 +573,151 @@ assert.throws(() => require('${packageName}/src/index.ts'), { code: 'ERR_PACKAGE
 console.log(JSON.stringify({ format: 'cjs', entry, render: 'PASS', pickerSsr: 'PASS', pickerZone: 'PASS', pickerSlots: 'PASS', agGrid: 'PASS', hiddenImport: 'PASS' }));
 `;
 
+
+// Exercise both export conditions with actual source files, in addition to the JSX/Bundler fixture.
+const nodeFixtureBody = `
+import type { Theme } from '@mui/material/styles';
+const theme: Theme = inflow.createInflowTheme('light');
+const color: string = theme.palette.inflow.surfaceLowest;
+const icon: inflow.ThemedFileTypeIconProps = { extension: 'report.PDF' };
+const provider: client.InflowLocalizationProviderProps = { children: null, locale: 'en' };
+const formatted: string = datetime.formatDateTime('2022-03-09T16:33:00', { locale: 'en' });
+const gridColor: string = grid.inflowGridThemeParams.backgroundColor;
+// @ts-expect-error retired root export
+inflow.ThemedButton;
+// @ts-expect-error retired root export
+inflow.ThemedTextField;
+// @ts-expect-error retired root export
+inflow.createDefaultTheme;
+// @ts-expect-error retired root export
+inflow.defaultTheme;
+// @ts-expect-error client-only provider
+datetime.InflowLocalizationProvider;
+// @ts-expect-error replaced by onSendMessage
+const chat: inflow.ThemedChatPanelProps = { onSend: () => {} };
+void [color, icon, provider, formatted, gridColor, chat, client.InflowLocalizationProvider];
+`;
+
+async function writeNodeFixtures(consumerRoot) {
+  const subpaths = ['', '/ag-grid', '/datetime', '/datetime/client'];
+  const names = ['inflow', 'grid', 'datetime', 'client'];
+  for (const [file, cjs] of [['nodenext-esm.mts', false], ['nodenext-cjs.cts', true]]) {
+    const imports = subpaths.map((subpath, index) => cjs
+      ? `import ${names[index]} = require('${packageName}${subpath}');`
+      : `import * as ${names[index]} from '${packageName}${subpath}';`).join('\n');
+    await writeFile(join(consumerRoot, file), `${imports}\n${nodeFixtureBody}`);
+  }
+  for (const [config, module] of [['nodenext', 'NodeNext'], ['node16', 'Node16']]) {
+    await writeFile(join(consumerRoot, `tsconfig.${config}.json`), JSON.stringify({
+      compilerOptions: { target: 'ES2022', module, moduleResolution: module, strict: true,
+        noEmit: true, skipLibCheck: false, lib: ['ES2022', 'DOM'], types: [] },
+      include: ['nodenext-esm.mts', 'nodenext-cjs.cts'],
+    }, null, 2));
+  }
+}
+
+async function checkNodeResolutions(consumerRoot) {
+  const libraryRoot = await realpath(join(consumerRoot, 'node_modules', '@inriver', 'inflow-react'));
+  for (const kind of [ts.ModuleKind.NodeNext, ts.ModuleKind.Node16]) {
+    const options = { module: kind, moduleResolution: kind === ts.ModuleKind.NodeNext
+      ? ts.ModuleResolutionKind.NodeNext : ts.ModuleResolutionKind.Node16 };
+    for (const [file, mode, suffix] of [
+      ['nodenext-esm.mts', ts.ModuleKind.ESNext, '.d.ts'],
+      ['nodenext-cjs.cts', ts.ModuleKind.CommonJS, '.d.cts'],
+    ]) {
+      for (const subpath of ['', '/ag-grid', '/datetime', '/datetime/client']) {
+        const name = `${packageName}${subpath}`;
+        const result = ts.resolveModuleName(name, join(consumerRoot, file), options, ts.sys, undefined, undefined, mode).resolvedModule;
+        const target = result && await realpath(result.resolvedFileName);
+        assert.ok(target && isInside(libraryRoot, target) && target.endsWith(suffix),
+          `${file} ${name} resolved to ${result?.resolvedFileName ?? 'nothing'}, expected ${suffix}`);
+      }
+    }
+  }
+}
+
+const isolatedRootTypes = `
+import { createInflowTheme, InflowProvider, ThemedFileTypeIcon, type ThemedFileTypeIconProps } from '${packageName}';
+import type { Theme } from '@mui/material/styles';
+const theme: Theme = createInflowTheme('light');
+const surface: string = theme.palette.inflow.surfaceLowest;
+const icon: ThemedFileTypeIconProps = { extension: 'report.PDF' };
+void [surface, icon, InflowProvider, ThemedFileTypeIcon];
+`;
+const formatterTypes = `
+import { formatDate, formatTime, formatDateTime, dateColumn, dateTimeColumn, configureDateTime, getDateTimeFormats } from '${packageName}/datetime';
+configureDateTime({ locale: 'en', hourCycle: '24' });
+const values: string[] = [formatDate('2022-03-09'), formatTime('2022-03-09T07:30:00'),
+  formatDateTime('2022-03-09T07:30:00'), dateColumn.valueFormatter({ value: '2022-03-09' }),
+  dateTimeColumn.valueFormatter({ value: '2022-03-09T07:30:00' }), getDateTimeFormats().time];
+void values;
+`;
+const formatterSmoke = `
+import assert from 'node:assert/strict';
+import { createRequire } from 'node:module';
+import { formatDateTime, formatDate, formatTime, dateColumn, dateTimeColumn, configureDateTime, getDateTimeFormats } from '${packageName}/datetime';
+const require = createRequire(import.meta.url);
+const packageRequire = createRequire(require.resolve('${packageName}/package.json'));
+for (const name of ['@mui/x-date-pickers', 'react', 'react-dom']) {
+  await assert.rejects(import(name), { code: 'ERR_MODULE_NOT_FOUND' });
+  assert.throws(() => require.resolve(name), { code: 'MODULE_NOT_FOUND' });
+  assert.throws(() => packageRequire.resolve(name), { code: 'MODULE_NOT_FOUND' });
+}
+configureDateTime({ locale: 'en', hourCycle: '24' });
+const value = '2022-03-09T07:30:00';
+assert.equal(formatDate(value), '3/9/2022');
+assert.equal(formatTime(value), '07:30');
+assert.equal(formatDateTime(value), '3/9/2022 07:30');
+assert.equal(dateColumn.valueFormatter({ value }), '3/9/2022');
+assert.equal(dateTimeColumn.valueFormatter({ value }), '3/9/2022 07:30');
+assert.deepEqual(getDateTimeFormats(), { date: 'M/D/YYYY', time: 'HH:mm', dateTime: 'M/D/YYYY HH:mm', twelveHour: false });
+console.log('formatter-only react-server: PASS');
+`;
+
+async function setupIsolatedConsumer(directory, tarball, dependencies, fixture) {
+  await mkdir(directory);
+  await writeFile(join(directory, 'package.json'), JSON.stringify({
+    name: 'inflow-isolated-smoke', private: true, type: 'module',
+    dependencies: { [packageName]: `file:${tarball.replaceAll('\\', '/')}`, ...dependencies },
+  }, null, 2));
+  await writeFile(join(directory, 'isolated.mts'), fixture);
+  await writeFile(join(directory, 'tsconfig.json'), JSON.stringify({
+    compilerOptions: { target: 'ES2022', module: 'NodeNext', moduleResolution: 'NodeNext', strict: true,
+      noEmit: true, skipLibCheck: false, lib: ['ES2022', 'DOM'], types: [] }, include: ['isolated.mts'],
+  }, null, 2));
+  // Avoid npm auto-installing missing optional/required peers, so absence is genuine.
+  runNpm(['install', '--legacy-peer-deps', '--ignore-scripts', '--no-audit', '--no-fund', '--package-lock=false'], directory, 300_000);
+  typecheckConsumer(directory);
+}
+
+
+// Check the entire installed tree, not just the top-level module resolver.
+async function assertPackagesAbsent(consumerRoot, forbidden) {
+  const visited = new Set();
+  async function visitModules(directory) {
+    let entries;
+    try { entries = await readdir(directory, { withFileTypes: true }); }
+    catch (error) { if (error.code === 'ENOENT') return; throw error; }
+    for (const entry of entries) {
+      if ((!entry.isDirectory() && !entry.isSymbolicLink()) || entry.name.startsWith('.')) continue;
+      const path = join(directory, entry.name);
+      if (entry.name.startsWith('@')) {
+        for (const child of await readdir(path, { withFileTypes: true })) {
+          if (child.isDirectory() || child.isSymbolicLink()) await visitPackage(join(path, child.name), `${entry.name}/${child.name}`);
+        }
+      } else await visitPackage(path, entry.name);
+    }
+  }
+  async function visitPackage(path, name) {
+    assert.ok(!forbidden.includes(name), `${name} unexpectedly installed in ${path}`);
+    const canonical = await realpath(path);
+    if (visited.has(canonical)) return;
+    visited.add(canonical);
+    await visitModules(join(path, 'node_modules'));
+  }
+  await visitModules(join(consumerRoot, 'node_modules'));
+}
+
 try {
   const packOutput = runNpm(['pack', projectRoot, '--json'], smokeRoot);
   const packed = JSON.parse(packOutput);
@@ -500,12 +731,18 @@ try {
     'package/dist/index.js',
     'package/dist/index.cjs',
     'package/dist/index.d.ts',
+    'package/dist/index.d.cts',
     'package/dist/ag-grid/index.js',
     'package/dist/ag-grid/index.cjs',
     'package/dist/ag-grid/index.d.ts',
     'package/dist/datetime/index.js',
     'package/dist/datetime/index.cjs',
     'package/dist/datetime/index.d.ts',
+    'package/dist/datetime/index.d.cts',
+    'package/dist/datetime/client.js',
+    'package/dist/datetime/client.cjs',
+    'package/dist/datetime/client.d.ts',
+    'package/dist/datetime/client.d.cts',
     'package/dist/datetime/InflowLocalizationProvider.d.ts',
     'package/README.md',
     'package/LICENSE',
@@ -521,6 +758,9 @@ try {
   ]) assert.ok(archiveEntries.includes(required), `tarball missing ${required}`);
   for (const forbidden of ['package/src/', 'package/qa-review/', 'package/.omo/']) {
     assert.ok(!archiveEntries.some((entry) => entry.startsWith(forbidden)), `tarball exposes ${forbidden}`);
+  }
+  for (const retired of ['ThemedButton.d.ts', 'ThemedTextField.d.ts'].map(name => `package/dist/components/themed/${name}`).concat('package/dist/theme/default.d.ts')) {
+    assert.ok(!archiveEntries.includes(retired), `tarball contains retired declaration ${retired}`);
   }
   // Every file that `exports` and `bin` point at must be in the tarball, so a new entry missing from `files` fails here
   // without anyone having to add it to the list above.
@@ -566,7 +806,21 @@ try {
   await writeFile(join(consumerRoot, 'root-only-cjs.cjs'), rootOnlyCjs);
   await writeFile(join(consumerRoot, 'types-check.tsx'), `
 import { InflowProvider, createInflowTheme, ThemedChip } from '${packageName}';
-import { InflowLocalizationProvider, formatDateTime, getDateTimeFormats, dateTimeColumn, type InflowLocalizationProviderProps } from '${packageName}/datetime';
+import { formatDateTime, getDateTimeFormats, dateTimeColumn } from '${packageName}/datetime';
+import { InflowLocalizationProvider, type InflowLocalizationProviderProps } from '${packageName}/datetime/client';
+import { ThemedChatPanel } from '${packageName}';
+// @ts-expect-error retired root exports
+import { ThemedButton } from '${packageName}';
+// @ts-expect-error retired root exports
+import { ThemedTextField } from '${packageName}';
+// @ts-expect-error retired root exports
+import { createDefaultTheme } from '${packageName}';
+// @ts-expect-error retired root exports
+import { defaultTheme } from '${packageName}';
+// @ts-expect-error client provider is not a formatter export
+import { InflowLocalizationProvider as FormatterProvider } from '${packageName}/datetime';
+// @ts-expect-error replaced by onSendMessage
+const oldChat = <ThemedChatPanel onSend={() => {}} />;
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 // @ts-expect-error datetime APIs are only exported by the datetime subpath
@@ -585,7 +839,7 @@ const app = <InflowProvider mode="light"><InflowLocalizationProvider locale="en"
 const zoned = <InflowLocalizationProvider timeZone="Pacific/Kiritimati">{null}</InflowLocalizationProvider>;
 // @ts-expect-error a time zone is a name such as "Europe/Stockholm", not a number
 const wrongZone = <InflowLocalizationProvider timeZone={5}>{null}</InflowLocalizationProvider>;
-void [props, theme, pattern, cell, app, RootLocalizationProvider, RootFormatDate, zoned, wrongZone];
+void [props, theme, pattern, cell, app, RootLocalizationProvider, RootFormatDate, zoned, wrongZone, ThemedButton, ThemedTextField, createDefaultTheme, defaultTheme, FormatterProvider, oldChat];
 `);
   await writeFile(join(consumerRoot, 'tsconfig.json'), JSON.stringify({
     compilerOptions: {
@@ -594,9 +848,13 @@ void [props, theme, pattern, cell, app, RootLocalizationProvider, RootFormatDate
     },
     include: ['types-check.tsx'],
   }, null, 2));
+  await writeNodeFixtures(consumerRoot);
   runNpm(['install', '--ignore-scripts', '--no-audit', '--no-fund', '--package-lock=false'], consumerRoot, 300_000);
   await checkHoistedPeers(consumerRoot);
   typecheckConsumer(consumerRoot);
+  await checkNodeResolutions(consumerRoot);
+  typecheckConsumer(consumerRoot, 'tsconfig.nodenext.json');
+  typecheckConsumer(consumerRoot, 'tsconfig.node16.json');
 
   const installedRoot = await realpath(join(consumerRoot, 'node_modules', '@inriver', 'inflow-react'));
   // On Windows, realpath expands 8.3 short-name segments (e.g. RICHAR~1) while
@@ -726,6 +984,34 @@ createRoot(document.getElementById('root')).render(createElement(InflowProvider,
       throw new Error(`packed ${script} without optional peers failed`, { cause: error });
     }
   }
+  const rootOnlyDir = join(smokeRoot, 'root-only');
+  await setupIsolatedConsumer(rootOnlyDir, tarball, {
+    '@emotion/react': packageMetadata.devDependencies['@emotion/react'],
+    '@emotion/styled': packageMetadata.devDependencies['@emotion/styled'],
+    '@mui/material': packageMetadata.devDependencies['@mui/material'],
+    '@types/react': packageMetadata.devDependencies['@types/react'],
+    '@types/react-dom': packageMetadata.devDependencies['@types/react-dom'],
+    typescript: packageMetadata.devDependencies.typescript,
+    react: packageMetadata.devDependencies.react,
+    'react-dom': packageMetadata.devDependencies['react-dom'],
+  }, isolatedRootTypes);
+  await assertPackagesAbsent(rootOnlyDir, ['dayjs', '@mui/x-date-pickers']);
+  await writeFile(join(rootOnlyDir, 'root-only-esm.mjs'), rootOnlyEsm);
+  await writeFile(join(rootOnlyDir, 'root-only-cjs.cjs'), rootOnlyCjs);
+  for (const script of ['root-only-esm.mjs', 'root-only-cjs.cjs']) {
+    execFileSync(process.execPath, [script], { cwd: rootOnlyDir, encoding: 'utf8', stdio: 'inherit',
+      env: { ...process.env, INFLOW_REAL_MISSING: '1' }, timeout: 120_000 });
+  }
+
+  const formatterOnlyDir = join(smokeRoot, 'formatter-only');
+  await setupIsolatedConsumer(formatterOnlyDir, tarball, {
+    dayjs: packageMetadata.devDependencies.dayjs,
+    typescript: packageMetadata.devDependencies.typescript,
+  }, formatterTypes);
+  await assertPackagesAbsent(formatterOnlyDir, ['@mui/x-date-pickers', 'react', 'react-dom']);
+  await writeFile(join(formatterOnlyDir, 'formatter.mjs'), formatterSmoke);
+  run(process.execPath, ['--conditions=react-server', 'formatter.mjs'], formatterOnlyDir);
+
   console.log(JSON.stringify({
     status: 'PASS',
     tarball: basename(tarball),
@@ -737,6 +1023,9 @@ createRoot(document.getElementById('root')).render(createElement(InflowProvider,
     pickerSsr: 'PASS',
     pickerSlots: 'PASS',
     rootWithoutOptionalPeers: 'PASS',
+    isolatedRoot: 'PASS',
+    isolatedFormatterReactServer: 'PASS',
+    nodeNextAndNode16: 'PASS',
     hoistedPeers: 'PASS',
     cli: 'PASS',
     isolatedConsumer: 'PASS',

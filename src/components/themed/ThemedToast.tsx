@@ -6,7 +6,7 @@ import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import { forwardRef } from 'react';
 import { Box, IconButton } from '@mui/material';
 import type { ReactNode } from 'react';
-import { darkSeverityTint } from '../../theme/inflow';
+import { darkSeverityTint } from '../../theme/inflow.js';
 
 export type ThemedToastSeverity = 'error' | 'info' | 'success' | 'warning';
 

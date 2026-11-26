@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 import { afterEach, describe, expect, it } from 'vitest';
 import { renderWithInflow } from '../test/renderWithInflow';
 import { configureDateTime, resetDateTimeConfig } from './formats';
-import { InflowLocalizationProvider } from './InflowLocalizationProvider';
+import { InflowLocalizationProvider } from './client';
 
 // This file deliberately does not register the dayjs `timezone` plugin. Apps set a zone for their tables, and a picker
 // that threw because the plugin is missing would break every one of them that did not also set pickers up for zones.

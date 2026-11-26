@@ -1,2 +1,2 @@
-export { InflowProvider } from './InflowProvider';
-export type { InflowProviderProps } from './InflowProvider';
+export { InflowProvider } from './InflowProvider.js';
+export type { InflowProviderProps } from './InflowProvider.js';

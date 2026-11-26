@@ -1,5 +1,5 @@
-import { darkTokens, lightTokens } from '../theme/inflow-tokens';
-import { inflowTokens } from '../theme/tokens';
+import { darkTokens, lightTokens } from '../theme/inflow-tokens.js';
+import { inflowTokens } from '../theme/tokens.js';
 
 /**
  * Dependency-free Inflow values for the corresponding AG Grid theme parameters.

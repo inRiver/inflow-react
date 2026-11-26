@@ -477,7 +477,7 @@ const metaOverrides: Record<string, Partial<CustomizationMeta>> = {
   datepicker: {
     importName: 'DatePicker',
     importFrom: '@mui/x-date-pickers/DatePicker',
-    extraImports: ["import { InflowLocalizationProvider } from '@inriver/inflow-react/datetime';"],
+    extraImports: ["import { InflowLocalizationProvider } from '@inriver/inflow-react/datetime/client';"],
     themeKey: 'MuiPickersTextField',
     slotSelector: '.MuiPickersOutlinedInput-root',
     sxSurfaceSelector: '.MuiPickersOutlinedInput-root',
@@ -496,7 +496,7 @@ const metaOverrides: Record<string, Partial<CustomizationMeta>> = {
   timepicker: {
     importName: 'TimePicker',
     importFrom: '@mui/x-date-pickers/TimePicker',
-    extraImports: ["import { InflowLocalizationProvider } from '@inriver/inflow-react/datetime';"],
+    extraImports: ["import { InflowLocalizationProvider } from '@inriver/inflow-react/datetime/client';"],
     themeKey: 'MuiPickersTextField',
     slotSelector: '.MuiPickersOutlinedInput-root',
     sxSurfaceSelector: '.MuiPickersOutlinedInput-root',
@@ -579,7 +579,8 @@ const resolveThemeToken = (theme: Theme, value: string) => {
   return tokens[value] ?? value;
 };
 
-const previewContainerSelector = '& > .MuiPaper-root:nth-child(1 of .MuiPaper-root)';
+// Match the first Paper regardless of preceding non-Paper siblings (including Emotion's SSR style tags).
+const previewContainerSelector = '& > .MuiPaper-root:not(.MuiPaper-root ~ .MuiPaper-root)';
 
 const composeSelectors = (baseSelector: string, selector: string): string[] =>
   selector

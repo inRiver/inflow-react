@@ -1,8 +1,8 @@
 import { Box, Typography } from '@mui/material';
 import type { BoxProps } from '@mui/material';
 import { forwardRef, type ForwardedRef, type ReactElement, type ReactNode, type RefAttributes } from 'react';
-import { ThemedPageHeader, type ThemedPageHeaderProps } from './ThemedPageHeader';
-import { ThemedTable, type ThemedTableProps } from './ThemedTable';
+import { ThemedPageHeader, type ThemedPageHeaderProps } from './ThemedPageHeader.js';
+import { ThemedTable, type ThemedTableProps } from './ThemedTable.js';
 
 type TableRowData = Record<string, unknown>;
 

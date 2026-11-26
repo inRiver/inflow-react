@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Stack } from '@mui/material';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import dayjs from 'dayjs';
-import { InflowLocalizationProvider } from '../../datetime';
+import { InflowLocalizationProvider } from '../../datetime/client';
 import { DemoFrame } from '../DemoFrame';
 import { CodeBlock } from '../CodeBlock';
 import { PropsPlayground } from '../PropsPlayground';
@@ -29,7 +29,7 @@ export function TimePickerDemo() {
   const codeExample = `
 import dayjs from 'dayjs';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
-import { InflowLocalizationProvider } from '@inriver/inflow-react/datetime';
+import { InflowLocalizationProvider } from '@inriver/inflow-react/datetime/client';
 
 // Needs the optional peers @mui/x-date-pickers and dayjs. <InflowProvider> is declared once at your app root.
 // Locale and the 12/24-hour clock come from configureDateTime(...) or the provider props (props win) - see Content

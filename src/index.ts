@@ -1,3 +1,3 @@
-export * from './theme';
-export * from './components/themed';
-export * from './providers';
+export * from './theme/index.js';
+export * from './components/themed/index.js';
+export * from './providers/index.js';

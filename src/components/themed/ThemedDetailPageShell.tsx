@@ -1,8 +1,8 @@
 import { Box } from '@mui/material';
 import type { BoxProps } from '@mui/material';
 import { forwardRef, type ReactNode } from 'react';
-import { ThemedDetailPanel, type ThemedDetailPanelProps } from './ThemedDetailPanel';
-import { ThemedRightPanel, type ThemedRightPanelProps } from './ThemedRightPanel';
+import { ThemedDetailPanel, type ThemedDetailPanelProps } from './ThemedDetailPanel.js';
+import { ThemedRightPanel, type ThemedRightPanelProps } from './ThemedRightPanel.js';
 
 export interface ThemedDetailPageShellProps extends Omit<BoxProps, 'children'> {
   /** Main page content; applications own its landmarks and layout. */

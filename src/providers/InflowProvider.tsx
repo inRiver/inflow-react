@@ -3,7 +3,7 @@ import { CacheProvider } from '@emotion/react';
 import { ScopedCssBaseline } from '@mui/material';
 import { ThemeProvider, type SxProps, type Theme } from '@mui/material/styles';
 import { useMemo, type ReactNode } from 'react';
-import { createInflowTheme, createInflowVariables, type InflowColorMode } from '../theme/inflow';
+import { createInflowTheme, createInflowVariables, type InflowColorMode } from '../theme/inflow.js';
 
 type EmotionCacheFactory = (options: Parameters<typeof createCache>[0]) => EmotionCache;
 type EmotionCacheFactoryModule = { readonly default: EmotionCacheFactory };

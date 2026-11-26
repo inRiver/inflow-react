@@ -2,7 +2,7 @@ import { forwardRef, useRef, useState } from 'react';
 import type { CSSProperties, KeyboardEvent, ReactNode, SyntheticEvent } from 'react';
 import { Box, Icon } from '@mui/material';
 import { alpha } from '@mui/material/styles';
-import { inflowTokens } from '../../theme';
+import { inflowTokens } from '../../theme/index.js';
 
 export interface ThemedTabItem {
   label: string;

@@ -14,7 +14,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { ThemedDialog } from './ThemedDialog';
+import { ThemedDialog } from './ThemedDialog.js';
 
 export type ThemedRightPanelMode = 'push' | 'overlay';
 export type ThemedRightPanelWidth = 'narrow' | 'medium' | 'wide';

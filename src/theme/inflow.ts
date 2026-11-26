@@ -9,9 +9,9 @@ import { createTheme } from '@mui/material/styles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import type { Shadows, Theme } from '@mui/material/styles';
 import type {} from '@mui/x-date-pickers/themeAugmentation';
-import { resolveInflowColorMode } from './featureFlags';
-import { darkOnlyTokens, darkTokens, lightTokens, type InflowThemeTokens } from './inflow-tokens';
-import { inflowCustomColors, inflowTokens } from './tokens';
+import { resolveInflowColorMode } from './featureFlags.js';
+import { darkOnlyTokens, darkTokens, lightTokens, type InflowThemeTokens } from './inflow-tokens.js';
+import { inflowCustomColors, inflowTokens } from './tokens.js';
 
 export type InflowColorMode = 'light' | 'dark';
 

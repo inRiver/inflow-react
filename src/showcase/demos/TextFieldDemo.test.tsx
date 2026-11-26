@@ -4,6 +4,16 @@ import { renderWithInflow } from '../../test/renderWithInflow';
 import { TextFieldDemo } from './TextFieldDemo';
 
 describe('TextFieldDemo', () => {
+  it('shows the removal notice and scenario frames', () => {
+    renderWithInflow(<TextFieldDemo />);
+
+    expect(screen.getByRole('alert')).toHaveTextContent('ThemedTextField was removed in 4.0.0.');
+    expect(screen.getByRole('alert')).toHaveTextContent('Use MUI TextField from @mui/material directly inside InflowProvider');
+    for (const title of ['Text Field - Interactive', 'All States', 'Read only - all inputs', 'Character limit']) {
+      expect(screen.getByText(title)).toBeInTheDocument();
+    }
+  });
+
   it('renders the states', () => {
     renderWithInflow(<TextFieldDemo />);
 
