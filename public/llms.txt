@@ -6,6 +6,8 @@
 
 Install `@inriver/inflow-react` with React 19, React DOM 19, MUI 9, @emotion/react and @emotion/styled. Wrap your app in `<InflowProvider>` imported from `@inriver/inflow-react`. Set a distinct `cacheKey` for each independently deployed microfrontend. `mode` is `light` by default; the app controls light or dark mode. Bundled fonts and icons are optional: import `@inriver/inflow-react/local-assets.css` once in your global CSS entry.
 
+For `@inriver/inflow-react/datetime`, also install the optional peers `@mui/x-date-pickers` (`>=9.0.0 <10.0.0`) and `dayjs` (`^1.11.0`). Keep `<InflowProvider>` at the app root and use `InflowLocalizationProvider` around MUI X pickers inside it.
+
 ## Documentation
 
 - [Introduction](https://inriver.github.io/inflow-react/#/introduction): purpose and audiences.
@@ -28,6 +30,8 @@ Install `@inriver/inflow-react` with React 19, React DOM 19, MUI 9, @emotion/rea
 ## Components and patterns
 
 Themed wrappers (for example ThemedCard, ThemedChip, ThemedDialog, ThemedTable, ThemedTabs, ThemedAlert) are thin, composable MUI wrappers exported from the package root. Pattern shells compose them into page shapes: `ThemedTablePage` (list/table pages with toolbar, loading and empty states) and `ThemedDetailPageShell` (detail views with a controlled right panel). Copy-paste page recipes live under the Patterns section of the component catalog. `ThemedButton` and `ThemedTextField` are deprecated — use MUI `Button`/`TextField` inside `InflowProvider`. `createDefaultTheme` and `defaultTheme` are deprecated (the showcase no longer offers an MUI-default comparison); use `createInflowTheme`/`inflowTheme`.
+
+Date and time preferences, display formatters, grid column fragments and `InflowLocalizationProvider` are exported only from `@inriver/inflow-react/datetime`; the root entry does not load the optional peers.
 
 ## CLI
 

@@ -12,6 +12,8 @@ describe('LlmsPage', () => {
     // Rendered from the real public/llms.txt, so the preview cannot drift from the file.
     expect(screen.getByText(/# Inflow React/)).toHaveTextContent('@inriver/inflow-react');
     expect(screen.getByText(/## CLI/)).toHaveTextContent('inflow component --list');
+    expect(screen.getByText(/# Inflow React/)).toHaveTextContent('@inriver/inflow-react/datetime');
+    expect(screen.getByText(/# Inflow React/)).toHaveTextContent('dayjs');
   });
 
   it('offers open and download links resolved against the base path', () => {
