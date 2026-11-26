@@ -44,6 +44,7 @@ describe('TextFieldDemo', () => {
 
     expect(screen.getByLabelText('Multiline')).toHaveAttribute('readonly');
     expect(screen.getByLabelText('Autocomplete')).toHaveAttribute('readonly');
+    expect(screen.getByRole('group', { name: 'Date' })).toHaveClass('Mui-readOnly');
     expect(screen.getByLabelText('Filled')).toHaveAttribute('readonly');
     expect(screen.getByLabelText('Standard')).toHaveAttribute('readonly');
   });

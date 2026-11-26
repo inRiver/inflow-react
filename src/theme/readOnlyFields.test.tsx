@@ -3,6 +3,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { describe, expect, it } from 'vitest';
+import { InflowLocalizationProvider } from '../datetime';
 import { renderWithInflow } from '../test/renderWithInflow';
 
 const TINT = 'rgb(241, 246, 254)';
@@ -45,6 +46,18 @@ describe('read-only outlined fields', () => {
         <DatePicker label="ro" readOnly />
         <DatePicker label="editable" />
       </LocalizationProvider>,
+    );
+
+    expect(bg('.MuiPickersOutlinedInput-root', 0)).toBe(TINT);
+    expect(bg('.MuiPickersOutlinedInput-root', 1)).not.toBe(TINT);
+  });
+
+  it('keeps the read-only date picker tint inside InflowLocalizationProvider', () => {
+    renderWithInflow(
+      <InflowLocalizationProvider>
+        <DatePicker label="ro" readOnly />
+        <DatePicker label="editable" />
+      </InflowLocalizationProvider>,
     );
 
     expect(bg('.MuiPickersOutlinedInput-root', 0)).toBe(TINT);

@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { Alert, Autocomplete, Box, MenuItem, TextField, Stack } from '@mui/material';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { InflowLocalizationProvider } from '../../datetime';
 import { DemoFrame } from '../DemoFrame';
 import { CodeBlock } from '../CodeBlock';
 import { PropsPlayground } from '../PropsPlayground';
@@ -159,7 +158,7 @@ import { TextField } from '@mui/material';
       </DemoFrame>
 
       <DemoFrame title="Read only - all inputs">
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <InflowLocalizationProvider>
           <Stack spacing={3}>
             <Stack direction="row" useFlexGap spacing={2} sx={{ flexWrap: 'wrap' }}>
               <TextField label="Text" defaultValue="SKU-48213" slotProps={{ input: { readOnly: true } }} />
@@ -181,7 +180,7 @@ import { TextField } from '@mui/material';
               <TextField label="Standard" variant="standard" defaultValue="SKU-48213" slotProps={{ input: { readOnly: true } }} />
             </Stack>
           </Stack>
-        </LocalizationProvider>
+        </InflowLocalizationProvider>
       </DemoFrame>
 
       <DemoFrame title="Character limit">
