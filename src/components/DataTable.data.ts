@@ -1,4 +1,4 @@
-import { formatDateTime } from '../datetime';
+import { formatDate, formatDateTime } from '../datetime';
 
 export type DataTableStatus = 'Active' | 'Draft' | 'Archived';
 
@@ -12,7 +12,8 @@ export interface DataTableRow {
   readonly createdAt: string;
 }
 
-export type DataTableField = keyof DataTableRow;
+/** A grid column id: the row fields, and the date-only view of `createdAt`. */
+export type DataTableField = keyof DataTableRow | 'createdDate';
 
 export interface DataTableCellContext {
   readonly rowId: string;
@@ -35,6 +36,7 @@ const dataTableFieldLabels = {
   status: 'Status',
   completeness: 'Completeness',
   createdAt: 'Created',
+  createdDate: 'Created (date)',
 } as const satisfies Record<DataTableField, string>;
 
 export function isDataTableField(value: string | undefined): value is DataTableField {
@@ -45,9 +47,23 @@ export function isDataTableField(value: string | undefined): value is DataTableF
     case 'status':
     case 'completeness':
     case 'createdAt':
+    case 'createdDate':
       return true;
     default:
       return false;
+  }
+}
+
+function shownValue(row: DataTableRow, field: DataTableField): string {
+  switch (field) {
+    case 'completeness':
+      return `${row.completeness}%`;
+    case 'createdAt':
+      return formatDateTime(row.createdAt);
+    case 'createdDate':
+      return formatDate(row.createdAt);
+    default:
+      return String(row[field]);
   }
 }
 
@@ -55,17 +71,10 @@ export function createDataTableCellContext(
   row: DataTableRow,
   field: DataTableField,
 ): DataTableCellContext {
-  const value =
-    field === 'completeness'
-      ? `${row[field]}%`
-      : field === 'createdAt'
-        ? formatDateTime(row[field])
-        : String(row[field]);
-
   return {
     rowId: row.sku,
     columnLabel: dataTableFieldLabels[field],
-    value,
+    value: shownValue(row, field),
   };
 }
 

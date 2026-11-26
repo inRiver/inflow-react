@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   createDataTableCellContext,
   createFocusedCellReply,
+  isDataTableField,
   type DataTableRow,
 } from './DataTable.data';
 
@@ -59,5 +60,38 @@ describe('DataTable created-at formatting', () => {
     };
 
     expect(createDataTableCellContext(row, 'createdAt').value).toBe('8/4/2026 2:14 PM');
+  });
+
+  it('reports the date-only column as its own column, with the date it shows', () => {
+    const row: DataTableRow = {
+      sku: 'ABX-200',
+      name: 'Running shoe',
+      channel: 'Amazon',
+      status: 'Active',
+      completeness: 98,
+      createdAt: '2026-08-04T14:14:00',
+    };
+
+    expect(createDataTableCellContext(row, 'createdAt')).toEqual({
+      rowId: 'ABX-200',
+      columnLabel: 'Created',
+      value: '8/4/2026 2:14 PM',
+    });
+    expect(createDataTableCellContext(row, 'createdDate')).toEqual({
+      rowId: 'ABX-200',
+      columnLabel: 'Created (date)',
+      value: '8/4/2026',
+    });
+    expect(createFocusedCellReply(createDataTableCellContext(row, 'createdDate'))).toBe(
+      'The focused Created (date) cell for ABX-200 currently contains “8/4/2026”. That is the latest value in the grid.',
+    );
+  });
+
+  it('knows every grid column id, and only those', () => {
+    for (const id of ['sku', 'name', 'channel', 'status', 'completeness', 'createdAt', 'createdDate']) {
+      expect(isDataTableField(id)).toBe(true);
+    }
+    expect(isDataTableField('created')).toBe(false);
+    expect(isDataTableField(undefined)).toBe(false);
   });
 });

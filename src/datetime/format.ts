@@ -162,9 +162,16 @@ export const formatDateTime = (value: DateInput, options?: DateTimeOptions) => f
 
 /**
  * Column-definition fragment for a date-time column in AG Grid. Spread it into a
- * colDef. `filterParams.valueFormatter` makes the Set filter list readable values
- * instead of raw ISO strings such as "2026-08-04T02:14:00.000Z".
+ * colDef. `valueFormatter` shows the formatted value, and `filterParams.valueFormatter` makes the Set filter
+ * (Enterprise) list readable values instead of raw ISO strings such as "2026-08-04T02:14:00.000Z".
  * Typed structurally so this module does not depend on AG Grid.
+ *
+ * Filtering is left to the caller: whichever default filter the grid picks for the column works on the raw value, not
+ * on the shown text. AG Grid normally exports and copies the shown text, which depends on the locale. Set
+ * `useValueFormatterForExport: false` to keep the raw values, or use an export callback (`processCellCallback`) to
+ * write machine timestamps as ISO 8601 with an offset or `Z`; the "iso" style is a display pattern without an offset.
+ * After `configureDateTime` changes a preference, refresh the cells with `api.refreshCells({ force: true })` and
+ * re-apply filters with `api.onFilterChanged()`.
  */
 export const dateTimeColumn = {
   valueFormatter: ({ value }: { value?: DateInput }) => formatDateTime(value),
@@ -175,4 +182,50 @@ export const dateTimeColumn = {
 export const dateColumn = {
   valueFormatter: ({ value }: { value?: DateInput }) => formatDate(value),
   filterParams: { valueFormatter: ({ value }: { value?: DateInput }) => formatDate(value) },
+} as const;
+
+interface Day {
+  year: number;
+  month: number;
+  day: number;
+}
+
+/** The calendar day the formatters show for a value, or `undefined` for a value they cannot show. */
+function displayedDay(value: unknown): Day | undefined {
+  if (!(typeof value === 'string' || typeof value === 'number' || value instanceof Date) || value === '') return undefined;
+  const shown = resolve(value, getDateTimeConfig().timeZone);
+  if (!shown) return undefined;
+  if ('wall' in shown) {
+    const date = new Date(shown.wall);
+    return { year: date.getUTCFullYear(), month: date.getUTCMonth() + 1, day: date.getUTCDate() };
+  }
+  const date = new Date(shown.local);
+  return { year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() };
+}
+
+// Compared as numbers rather than as Dates: the Date constructor maps the years 0-99 to 1900-1999.
+function compareToFilterDate(filterLocalDateAtMidnight: Date, cellValue: unknown): number {
+  const day = displayedDay(cellValue);
+  if (!day) return 0;
+  return Math.sign(
+    day.year - filterLocalDateAtMidnight.getFullYear() ||
+      day.month - (filterLocalDateAtMidnight.getMonth() + 1) ||
+      day.day - filterLocalDateAtMidnight.getDate(),
+  );
+}
+
+/**
+ * Opt-in for the Community date filter (`DateFilterModule`, part of `AllCommunityModule`): it filters by the calendar
+ * day the formatters show, in the configured timezone, instead of the raw value. Spread it after a date fragment. The
+ * filter has no time of day, so a date-time column is filtered by its day too. Blank cells follow AG Grid's blank
+ * options; a value that is not blank but cannot be shown is left out of every comparison, so it matches neither
+ * "equals", "before", "after" nor "in range".
+ */
+export const displayedDayFilter = {
+  filter: 'agDateColumnFilter',
+  filterParams: {
+    includeTime: false,
+    isValidDate: (value: unknown) => displayedDay(value) !== undefined,
+    comparator: compareToFilterDate,
+  },
 } as const;
