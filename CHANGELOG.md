@@ -4,6 +4,8 @@ All notable changes to `@inriver/inflow-react` are documented here. This project
 
 ## [Unreleased]
 
+## [3.16.0] - 2026-11-26
+
 ### Added
 - Opt-in `@inriver/inflow-react/datetime` entry: `configureDateTime`, `getDateTimeFormats`, the `formatDate`/`formatTime`/`formatDateTime` display formatters, the `dateColumn`/`dateTimeColumn` AG Grid column fragments and `InflowLocalizationProvider`, which gives MUI X pickers the shared locale, clock and formats, the compact Cancel/OK action bar and the popup gap. A `timeZone` (provider prop or `configureDateTime`) also becomes the default `timezone` of time and date-time pickers when the app has registered the dayjs `utc` and `timezone` plugins; date-only pickers are never converted. The root entry does not load it (library-facing).
 - Autocomplete rows that contain a `Checkbox` or `Radio` stay flat when selected, since the control already shows the state, and sit tighter (6px 12px padding, 10px between control and label). Use with `multiple` and `disableCloseOnSelect` for checkbox multi-select (library-facing).
@@ -21,8 +23,8 @@ All notable changes to `@inriver/inflow-react` are documented here. This project
 
 ### Changed
 - `@mui/x-date-pickers` (`>=9.0.0 <10.0.0`) and `dayjs` (`^1.11.0`) are now optional peers instead of dependencies, so installing this package no longer installs them. The root entry never loaded them, so apps that do not use `@inriver/inflow-react/datetime` are unaffected. Install both if you use that entry, or if your app imports them without listing them in its own `package.json` (library-facing).
-- (library-facing) Read-only fields (outlined text fields, selects, Autocomplete and date pickers; filled and standard variants drop their hover change and text cursor) now look distinct without looking disabled: full-contrast text, a subtle tint (`action.hover`), the soft divider border with no hover change, a default cursor and the normal focus ring
-- (library-facing) Autocomplete chips for selected values in multiple mode are now small by default, matching the design spec
+- Read-only fields (outlined text fields, selects, Autocomplete and date pickers; filled and standard variants drop their hover change and text cursor) now look distinct without looking disabled: full-contrast text, a subtle tint (`action.hover`), the soft divider border with no hover change, a default cursor and the normal focus ring (library-facing).
+- Autocomplete chips for selected values in multiple mode are now small by default, matching the design spec (library-facing).
 
 ## [3.15.0] - 2026-11-17
 
