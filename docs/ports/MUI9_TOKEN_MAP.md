@@ -124,7 +124,7 @@ Concrete API changes the rewrite must apply (these are NOT optional — MUI 9 re
 | `ThemedMenu` | `PaperProps={{ elevation, sx }}` (Menu.tsx:44) | `slotProps={{ paper: { elevation, sx } }}` |
 | `ThemedMenu` | `primaryTypographyProps={{…}}` (Menu.tsx:69) | `slotProps={{ primary: {…} }}` |
 | `ThemedChatPanel` | `slotProps={{ paper: {…} }}` already used (ChatPanel.tsx:147) — keep, verify against MUI 9 | ✅ already slot-based |
-| `ThemedMenu` / `ThemedChatPanel` | DS `Button`/`Chip` imports (`../Button/Button`, `../Chip/Chip`) | use **target's** `ThemedButton`/`ThemedChip`. ChatPanel needs Chip `size="sm"` + `variant="filled-primary"/"outlined-primary"` → **resolved (Q5): extend `ThemedChip`** with these variants (task T2.8) before porting ChatPanel (T4.1). |
+| `ThemedMenu` / `ThemedChatPanel` | DS `Button`/`Chip` imports (`../Button/Button`, `../Chip/Chip`) | use **target's** MUI `Button`/`ThemedChip`. ChatPanel needs Chip `size="sm"` + `variant="filled-primary"/"outlined-primary"` → **resolved (Q5): extend `ThemedChip`** with these variants (task T2.8) before porting ChatPanel (T4.1). |
 | All state styling | DS theme hardcodes `navy700` | rewrite as color-key-aware `ownerState.color` variants per target `inflow.ts` pattern |
 | All components | `borderRadius: '4px'/'8px'` literals | use `tokens.radius.*` or `theme.shape.borderRadius` |
 

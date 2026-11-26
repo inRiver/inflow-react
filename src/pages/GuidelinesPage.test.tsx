@@ -12,16 +12,21 @@ describe('GuidelinesPage', () => {
     expect(screen.getByText(/The library and InflowProvider do not import font CSS by default/)).toBeInTheDocument();
     expect(screen.getByText(/This theme showcase imports and uses the bundled local assets by default/))
       .toHaveTextContent('Exception: This theme showcase imports and uses the bundled local assets by default.');
-    expect(screen.getByText(/npm install @inriver\/inflow-react@react19-mui9.5/)).toBeInTheDocument();
+    expect(screen.getByText(/npm install @inriver\/inflow-react@react19-mui9.6/)).toBeInTheDocument();
   });
 
   it('documents the opt-in datetime subpath and its optional peers', () => {
     renderWithInflow(<MemoryRouter><GuidelinesPage /></MemoryRouter>);
 
     expect(screen.getByText(/npm install @mui\/x-date-pickers/)).toHaveTextContent('dayjs@^1.11.0');
-    expect(screen.getByText(/Date and time formatters, grid column fragments/)).toHaveTextContent(
-      '@inriver/inflow-react/datetime',
+    expect(screen.getByText(/Date and time preferences, formatters, and grid column fragments/)).toHaveTextContent(
+      '@inriver/inflow-react/datetime/client',
     );
+    expect(screen.getByText(/The server-safe/)).toHaveTextContent('only dayjs');
+    expect(screen.getByText(/Light and dark mode ship enabled/)).toHaveTextContent('INFLOW_DARK_MODE_ENABLED remains true');
+    expect(screen.queryByText(/Dark mode is currently disabled/)).not.toBeInTheDocument();
+    expect(screen.getByText(/current compatibility target is React 19/)).toHaveTextContent('MUI 9.6');
+    expect(screen.queryByText(/createDefaultTheme|defaultTheme/)).not.toBeInTheDocument();
   });
 
   it('uses persistent themed guidance for the release checkpoint', () => {

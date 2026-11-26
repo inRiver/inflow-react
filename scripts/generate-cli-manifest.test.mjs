@@ -70,9 +70,18 @@ describe('CLI manifest generator', () => {
     assert.match(component('ThemedChatAccordion').description, /Reasoning/);
     assert.equal(component('ThemedChatAccordion').descriptionSource, 'jsdoc');
     assert.equal(component('ThemedTabPanel').descriptionSource, 'fallback');
-    assert.equal(component('ThemedButton').deprecated, true);
-    assert.equal(component('ThemedTextField').deprecated, true);
-    assert.deepEqual(component('ThemedTextField').extends, ['TextFieldProps']);
     assert.equal(component('ThemedFileTypeIcon').props.some((prop) => prop.name === 'ref'), false);
+  });
+
+  it('omits removed v4 components and chat prop while documenting their replacements', () => {
+    assert.equal(component('ThemedButton'), undefined);
+    assert.equal(component('ThemedTextField'), undefined);
+    const chatProps = component('ThemedChatPanel').props.map((prop) => prop.name);
+    assert.equal(chatProps.includes('onSend'), false);
+    assert.equal(chatProps.includes('onSendMessage'), true);
+    const migration = manifest.docs.migration;
+    assert.match(migration, /In 4\.0\.0, deprecated ThemedButton, ThemedTextField, createDefaultTheme, defaultTheme and ThemedChatPanel onSend were removed\./);
+    assert.match(migration, /Use MUI Button and TextField, createInflowTheme and inflowTheme, and onSendMessage instead\./);
+    assert.match(migration, /InflowLocalizationProvider moved to @inriver\/inflow-react\/datetime\/client\./);
   });
 });

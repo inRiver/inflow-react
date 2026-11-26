@@ -10,6 +10,7 @@ describe('CliDocsPage', () => {
     expect(screen.getByRole('heading', { name: 'CLI reference' })).toBeInTheDocument();
     expect(screen.getByText(/zero-dependency inflow CLI ships/)).toBeInTheDocument();
     expect(screen.getByText(/\$ inflow --help/)).toHaveTextContent('inflow docs <setup|theming|migration>');
+    expect(screen.getByText(/List all exported themed components/)).toBeInTheDocument();
     expect(screen.getByText(/\$ inflow component --list/)).toHaveTextContent('ThemedAccordion');
     expect(screen.getByText(/\$ inflow component ThemedChip/)).toHaveTextContent('Owned props:');
     expect(screen.getByText(/\$ inflow tokens/)).toHaveTextContent('navy900: #16243d');

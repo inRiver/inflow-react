@@ -1,5 +1,8 @@
 // @vitest-environment node
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import ts from 'typescript';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { THEMED_COMPONENT_INFO } from '../showcase/themedComponentInfo';
@@ -42,12 +45,44 @@ describe('generated CLI manifest', () => {
     expect(chip.text).toContain("Omit<ChipProps, 'size' | 'variant'>");
     expect(chip.text).toContain('leadingIcon?: string');
     expect((chip.response.data as { usageExample: string | null }).usageExample).toBeNull();
-    expect(execute(['component', 'ThemedButton'], manifest).text).toContain('Deprecated: yes');
+    for (const name of ['ThemedButton', 'ThemedTextField']) {
+      expect(manifest.components.some((entry) => entry.componentName === name)).toBe(false);
+      const missing = execute(['component', name], manifest);
+      expect(missing.response).toMatchObject({ ok: false, error: `Unknown component: ${name}` });
+      expect(missing.text).toBe(`Unknown component: ${name}`);
+    }
+    const chat = execute(['component', 'ThemedChatPanel'], manifest);
+    expect(chat.response.ok).toBe(true);
+    expect((chat.response.data as { props: { name: string }[] }).props.map((prop) => prop.name))
+      .toContain('onSendMessage');
+    expect((chat.response.data as { props: { name: string }[] }).props.map((prop) => prop.name))
+      .not.toContain('onSend');
+    expect(chat.text).not.toMatch(/^ {2}onSend\??:/m);
     expect(execute(['tokens', '--json'], manifest).response.data).toEqual(inflowTokens);
     for (const topic of ['setup', 'theming', 'migration']) {
       expect(execute(['docs', topic], manifest).response.ok).toBe(true);
     }
     expect(execute([], manifest).text).toContain('Usage:');
+  });
+
+  it('exits 1 for removed components through the CLI entry point', () => {
+    const directory = mkdtempSync(join(tmpdir(), 'inflow-cli-test-'));
+    try {
+      writeFileSync(join(directory, 'package.json'), JSON.stringify({ type: 'module' }));
+      writeFileSync(join(directory, 'manifest.json'), JSON.stringify(manifest));
+      for (const name of ['cli', 'inflow']) {
+        const source = readFileSync(join('src/cli', `${name}.ts`), 'utf8');
+        const output = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.ESNext } }).outputText;
+        writeFileSync(join(directory, `${name}.js`), output);
+      }
+      for (const name of ['ThemedButton', 'ThemedTextField']) {
+        const result = spawnSync(process.execPath, [join(directory, 'inflow.js'), 'component', name], { encoding: 'utf8' });
+        expect(result.status).toBe(1);
+        expect(result.stderr.trim()).toBe(`Unknown component: ${name}`);
+      }
+    } finally {
+      rmSync(directory, { recursive: true, force: true });
+    }
   });
 
   it('ranks matches and reports errors for unknown or invalid input', () => {

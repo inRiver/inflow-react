@@ -4,6 +4,28 @@ All notable changes to `@inriver/inflow-react` are documented here. This project
 
 ## [Unreleased]
 
+## [4.0.0] - 2026-11-26
+
+### Removed
+- `ThemedButton` and `ThemedButtonProps`; use MUI `Button` inside `InflowProvider` (library-facing).
+- `ThemedTextField` and `ThemedTextFieldProps`; use MUI `TextField` inside `InflowProvider` (library-facing).
+- `createDefaultTheme` and `defaultTheme`; use `createInflowTheme` and `inflowTheme`, or MUI `createTheme` for an unthemed baseline (library-facing).
+- `ThemedChatPanel` `onSend`; use `onSendMessage(text)` (library-facing).
+- Showcase-only: removed the legacy `--iv-purple-LEGACY-DO-NOT-USE` CSS variable.
+
+### Changed
+- Moved `InflowLocalizationProvider` to `@inriver/inflow-react/datetime/client`; `@inriver/inflow-react/datetime` remains server-safe. The package root and `/datetime/client` carry `'use client'` boundaries (so root exports, including `createInflowTheme` and tokens, are client-side in React Server Components) (library-facing).
+- Upgraded to MUI 9.6 (`@mui/material` 9.6.0, `@mui/icons-material` 9.6.0, `@mui/x-date-pickers` 9.18.0) and promoted the `react19-mui9.6` checkpoint (library-facing).
+- Added an optional `container` prop to `ThemedMenu` (library-facing).
+
+### Fixed
+- Fixed the `ThemedFileTypeIcon` CommonJS `SvgIcon` import (library-facing).
+- Fixed TypeScript `NodeNext` / `node16` declaration resolution with `.js` / `.cjs` relative specifiers and dual `.d.ts` / `.d.cts` exports (library-facing).
+- Showcase-only: fixed `DataTable` isolated row state, `readOnlyEdit`, and focus/edit decoupling.
+- Showcase-only: updated `ComponentCustomizationPanel` snippets to use `/datetime/client`.
+- Showcase-only: updated `GuidelinesPage` and `MigrationPage` for the 4.0.0 API and checkpoint.
+- Showcase-only: updated `ButtonDemo` and `TextFieldDemo` to use MUI components.
+
 ## [3.16.0] - 2026-11-26
 
 ### Added

@@ -51,7 +51,7 @@ export function CliDocsPage() {
         </Stack></CardContent></Card>
         <Card variant="outlined"><CardContent><Stack spacing={2}>
           <Typography variant="h5">Components</Typography>
-          <Typography>List all components, including deprecated ones. This output is an excerpt:</Typography>
+          <Typography>List all exported themed components. This output is an excerpt:</Typography>
           <CodeBlock code={list} language="text" plain />
           <Typography>Look up a full component name (case-insensitive) to see its description, deprecation status, owned props and available notes. This output is an excerpt:</Typography>
           <CodeBlock code={component} language="text" plain />

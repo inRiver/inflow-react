@@ -56,17 +56,11 @@ GitHub Actions workflows drive everything:
      npm mints a short-lived, workflow-scoped credential via GitHub's OIDC
      identity, and the publish is signed with a provenance attestation
      (visible on the npm package page and in Sigstore's transparency log).
-  4. `npm dist-tag add ... latest` to auto-promote the just-published
-     version to `latest`.
-
-**Why step 4 needs a stored secret when step 3 doesn't:** npm's Trusted
-Publishing only covers two actions - `npm publish` and `npm stage publish`.
-It does not extend to `npm dist-tag`, `npm deprecate`, `npm unpublish`, or
-`npm trust` management; those all return `401`/`403` for an OIDC-derived
-publish token. So the "Promote to latest" step authenticates with a single
-scoped npm Granular Access Token, stored as the `NPM_PUBLISH_TOKEN` GitHub
-Actions secret (repo → Settings → Secrets and variables → Actions). This is
-the **only** stored credential anywhere in the pipeline.
+  4. `npm dist-tag add ...` to set the checkpoint tag and auto-promote the
+     just-published version to `latest`, also authenticated via **npm Trusted
+     Publishing (OIDC)** (`npm@11.21.1+` supports OIDC for `npm dist-tag`
+     when **Allow `npm dist-tag`** is enabled on the trusted publisher). No
+     stored `NPM_PUBLISH_TOKEN` secret is required.
 
 ### Ordinary release sequence
 
@@ -77,8 +71,8 @@ For a normal release, see the release workflow steps in
 npm version patch
 VERSION="$(node -p "require('./package.json').version")"
 git push origin master
-git tag -a "theme/react19-mui9.5/v$VERSION" -m "@inriver/inflow-react $VERSION - <summary>"
-git push origin "theme/react19-mui9.5/v$VERSION"
+git tag -a "theme/react19-mui9.6/v$VERSION" -m "@inriver/inflow-react $VERSION - <summary>"
+git push origin "theme/react19-mui9.6/v$VERSION"
 ```
 
 Pushing that tag is the entire release step. There is no manual `npm
@@ -95,7 +89,7 @@ etc.), on npmjs.com under the package's **Settings → Trusted Publishers**:
 - Repository: `inflow-react`
 - Workflow filename: `publish.yml`
 - Environment name: (blank)
-- Allowed actions: **Allow `npm publish`**
+- Allowed actions: **Allow `npm publish`** and **Allow `npm dist-tag`**
 
 This action requires live 2FA on npmjs.com (a bypass-2FA token cannot create
 or list trust configurations - confirmed via `403` even with a valid
@@ -138,9 +132,9 @@ be straightforward:
   requirement still enabled continued to trigger `EOTP` on publish. The fix
   that worked: generate the Granular Access Token, then explicitly confirm
   (or re-generate) it without its own 2FA requirement - this is a separate
-  toggle from the account-wide setting, easy to miss. (This detail still
-  applies to the current `NPM_PUBLISH_TOKEN` used for the latest-promotion
-  step.)
+  toggle from the account-wide setting, easy to miss. (The current CI
+  workflow no longer needs a stored token because `npm@11.21.1+` supports
+  OIDC for `npm dist-tag`.)
 - **What actually worked at the time**: account 2FA mode set to
   `auth-only`, plus a Granular Access Token generated with its per-token 2FA
   requirement disabled, used directly on the local machine via a temporary
@@ -225,13 +219,13 @@ Verify a release after CI reports success:
 - [ ] In a fresh throwaway project, test install from the checkpoint tag:
 
 ```bash
-npm install @inriver/inflow-react@react19-mui9.5
+npm install @inriver/inflow-react@react19-mui9.6
 ```
 
 - [ ] Verify the expected exports work in a consumer:
 
 ```ts
-import { InflowProvider, ThemedButton } from '@inriver/inflow-react';
+import { InflowProvider, ThemedChip } from '@inriver/inflow-react';
 ```
 
 - [ ] Confirm `latest` now points at the new version

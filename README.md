@@ -20,26 +20,26 @@ Install a compatible version of each required peer dependency in the consuming a
 | `@emotion/react` | `^11.13.0` |
 | `@emotion/styled` | `^11.13.0` |
 
-`@mui/x-date-pickers` (`>=9.0.0 <10.0.0`) and `dayjs` (`^1.11.0`) are optional peers: install them only if you import from `@inriver/inflow-react/datetime`. See [Optional date and time setup](#optional-date-and-time-setup).
+`dayjs` (`^1.11.0`) and `@mui/x-date-pickers` (`>=9.0.0 <10.0.0`) are optional peers: the server-safe `@inriver/inflow-react/datetime` entry needs only `dayjs`; install both when using the picker provider from `@inriver/inflow-react/datetime/client`. See [Optional date and time setup](#optional-date-and-time-setup).
 
-Import most APIs from the package root; import AG Grid theme parameters from the `@inriver/inflow-react/ag-grid` subpath and the opt-in date and time APIs from the `@inriver/inflow-react/datetime` subpath:
+Import most APIs from the package root; import AG Grid theme parameters from the `@inriver/inflow-react/ag-grid` subpath and date and time APIs from the `@inriver/inflow-react/datetime` and `@inriver/inflow-react/datetime/client` subpaths:
 
 ```ts
-import { InflowProvider, ThemedButton } from '@inriver/inflow-react';
+import { InflowProvider, ThemedChip } from '@inriver/inflow-react';
 ```
 
 Do not import showcase code, demo components, or internal source paths. The package ships TypeScript declarations and supports both ESM and CommonJS through its `exports` map.
 
-Compatibility is managed through checkpoint tags. The current compatibility target is `react19-mui9.5` (React 19 / MUI 9.5); the prior `react19-mui9.4`, `react19-mui9.3`, and `react19-mui7.3` checkpoints remain available for apps still on MUI 9.4, 9.3, or 7. Use a checkpoint tag or an exact version when you need a known React and MUI contract. The `latest` tag is promoted automatically by CI and is never published to directly. The npm registry is authoritative for published versions and dist-tags.
+Compatibility is managed through checkpoint tags. The current compatibility target is `react19-mui9.6` (React 19 / MUI 9.6); the prior `react19-mui9.5`, `react19-mui9.4`, `react19-mui9.3`, and `react19-mui7.3` checkpoints remain available for apps still on MUI 9.5, 9.4, 9.3, or 7. Use a checkpoint tag or an exact version when you need a known React and MUI contract. The `latest` tag is promoted automatically by CI and is never published to directly. The npm registry is authoritative for published versions and dist-tags.
 
 ## Installation
 
 ```sh
-npm install @inriver/inflow-react@react19-mui9.5
+npm install @inriver/inflow-react@react19-mui9.6
 npm install react@^19.0.0 react-dom@^19.0.0 @mui/material@">=9.0.0 <10.0.0" @emotion/react@^11.13.0 @emotion/styled@^11.13.0
 ```
 
-Use the checkpoint tag instead of `latest` so the installed package stays on the validated React 19 and MUI 9 compatibility channel. If you are still on MUI 9.4, use the `react19-mui9.4` checkpoint tag; for MUI 9.3, use `react19-mui9.3`; for MUI 7, use `react19-mui7.3`.
+Use the checkpoint tag instead of `latest` so the installed package stays on the validated React 19 and MUI 9 compatibility channel. If you are still on MUI 9.5, use the `react19-mui9.5` checkpoint tag; for MUI 9.4, use the `react19-mui9.4` checkpoint tag; for MUI 9.3, use `react19-mui9.3`; for MUI 7, use `react19-mui7.3`.
 
 ## Quick start: existing/default setup
 
@@ -118,21 +118,21 @@ The main package remains MIT-licensed. Bundled fonts retain SIL Open Font Licens
 
 ## API overview
 
-Most public exports are available from `@inriver/inflow-react`; AG Grid theme parameters are available from `@inriver/inflow-react/ag-grid`, and date and time APIs only from `@inriver/inflow-react/datetime`.
+Most public exports are available from `@inriver/inflow-react`; AG Grid theme parameters are available from `@inriver/inflow-react/ag-grid`, date and time preferences and formatters from `@inriver/inflow-react/datetime`, and the picker provider from `@inriver/inflow-react/datetime/client`.
 
 | Group | Exports | Import path |
 | --- | --- | --- |
 | Provider | `InflowProvider`, `InflowProviderProps` | `@inriver/inflow-react` |
-| Theme factories | `createInflowTheme`, `getInflowPalette`, `getInflowTokensForMode`, `createDefaultTheme` | `@inriver/inflow-react` |
-| Theme instances | `inflowTheme`, `defaultTheme` | `@inriver/inflow-react` |
+| Theme factories | `createInflowTheme`, `getInflowPalette`, `getInflowTokensForMode` | `@inriver/inflow-react` |
+| Theme instances | `inflowTheme` | `@inriver/inflow-react` |
 | Theme tokens | `inflowTokens`, `inflowCustomColors`, `inflowSpacing` | `@inriver/inflow-react` |
 | Theme flags & types | `INFLOW_DARK_MODE_ENABLED`, `InflowColorMode` | `@inriver/inflow-react` |
-| Components | `ThemedAccordion`, `ThemedAlert`, `ThemedAppNav` (+ `ThemedAppNavPlaceholder`), `ThemedAvatar` (+ `ThemedAvatarGroup`), `ThemedBadge`, `ThemedBreadcrumbs`, `ThemedButton`, `ThemedCard`, `ThemedChatPanel`, `ThemedChip`, `ThemedDetailPanel` (+ `ThemedDetailPanelSection`), `ThemedDialog`, `ThemedFileTypeIcon`, `ThemedMenu`, `ThemedPageHeader`, `ThemedRightPanel`, `ThemedStepper`, `ThemedTable`, `ThemedTabs` (+ `ThemedTabPanel`), `ThemedTextField`, `ThemedToast`, plus their prop types and `Column` | `@inriver/inflow-react` |
+| Components | `ThemedAccordion`, `ThemedAlert`, `ThemedAppNav` (+ `ThemedAppNavPlaceholder`), `ThemedAvatar` (+ `ThemedAvatarGroup`), `ThemedBadge`, `ThemedBreadcrumbs`, `ThemedCard`, `ThemedChatPanel`, `ThemedChip`, `ThemedDetailPanel` (+ `ThemedDetailPanelSection`), `ThemedDialog`, `ThemedFileTypeIcon`, `ThemedMenu`, `ThemedPageHeader`, `ThemedRightPanel`, `ThemedStepper`, `ThemedTable`, `ThemedTabs` (+ `ThemedTabPanel`), `ThemedToast`, plus their prop types and `Column` | `@inriver/inflow-react` |
 | Autocomplete helpers | `renderCheckboxOption`, `renderRadioOption` | `@inriver/inflow-react` |
 | AG Grid theme params | `inflowGridThemeParams`, `inflowGridThemeParamsDark`, `InflowGridThemeParams` | `@inriver/inflow-react/ag-grid` |
 | Date and time preferences | `configureDateTime`, `getDateTimeFormats`, `DateTimeOptions`, `DateTimeFormats`, `DateTimeStyle`, `HourCycle` | `@inriver/inflow-react/datetime` |
 | Date and time display | `formatDate`, `formatTime`, `formatDateTime`, `dateColumn`, `dateTimeColumn` | `@inriver/inflow-react/datetime` |
-| Picker localization | `InflowLocalizationProvider`, `InflowLocalizationProviderProps` | `@inriver/inflow-react/datetime` |
+| Picker localization | `InflowLocalizationProvider`, `InflowLocalizationProviderProps` | `@inriver/inflow-react/datetime/client` |
 The components are thin MUI wrappers. See the [live showcase](https://inriver.github.io/inflow-react/) for behavior and props.
 
 ## Theming and tokens
@@ -218,7 +218,7 @@ Inside an `InflowProvider`, use the scoped CSS variables for CSS authored outsid
 
 ## Optional date and time setup
 
-`@inriver/inflow-react/datetime` provides date and time preferences, display formatters, AG Grid column fragments and localization for MUI X pickers. It needs two optional peers, even if you only use the formatters. The package root never loads them.
+`@inriver/inflow-react/datetime` is server-safe and provides date and time preferences, display formatters and AG Grid column fragments. It needs only `dayjs`; `@inriver/inflow-react/datetime/client` exports `InflowLocalizationProvider` and also needs `@mui/x-date-pickers`. The package root never loads these optional peers. The root and `/datetime/client` carry `'use client'` boundaries for React Server Components.
 
 ```sh
 npm install @mui/x-date-pickers@">=9.0.0 <10.0.0" dayjs@^1.11.0
@@ -228,16 +228,15 @@ Use `InflowProvider` once at the app root and `InflowLocalizationProvider` aroun
 
 ```tsx
 import { InflowProvider } from '@inriver/inflow-react';
-import { configureDateTime, InflowLocalizationProvider } from '@inriver/inflow-react/datetime';
+import { InflowLocalizationProvider } from '@inriver/inflow-react/datetime/client';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import 'dayjs/locale/de.js';
 
-configureDateTime({ locale: 'de', hourCycle: '24' });
 
 export function App() {
   return (
     <InflowProvider>
-      <InflowLocalizationProvider>
+      <InflowLocalizationProvider locale="de" hourCycle="24">
         <DatePicker label="Due date" />
       </InflowLocalizationProvider>
     </InflowProvider>
@@ -245,7 +244,7 @@ export function App() {
 }
 ```
 
-Set shared defaults with `configureDateTime`. Provider props (`locale`, `hourCycle`, `style`) override them for that provider, and a mounted provider follows later configuration changes for the values it does not override. `getDateTimeFormats` returns the Day.js patterns; `formatDate`, `formatTime` and `formatDateTime` return display text, and accept the same options to override the defaults for one call.
+Set shared defaults at app startup with `configureDateTime` from `@inriver/inflow-react/datetime`. Provider props (`locale`, `hourCycle`, `style`) override them for that provider, and a mounted provider follows later configuration changes for the values it does not override. `getDateTimeFormats` returns the Day.js patterns; `formatDate`, `formatTime` and `formatDateTime` return display text, and accept the same options to override the defaults for one call.
 
 - **Tables and pickers.** Table formats always use a Gregorian calendar, Latin digits, English month names and AM/PM. Pickers use the Day.js locale if you load it before rendering (`import 'dayjs/locale/de.js'`; keep the `.js`, which plain Node ESM needs on the server), so a 12-hour clock or the `unambiguous` style can show that locale's words in picker fields while tables stay English.
 - **Leading zeros.** Pickers and the built-in field components respect the pattern's leading zeros. A custom `slots.field` replacement receives `shouldRespectLeadingZeros` from the picker, so pass the props on to `useDateField` (or the matching hook). A field you build outside a picker has to set it itself. To turn it off, set `shouldRespectLeadingZeros` in the picker's `slotProps.field`, or set the `MuiDateField`, `MuiTimeField` or `MuiDateTimeField` theme default above `InflowLocalizationProvider`; a theme nested below it that sets only the field default does not reach the pickers.
@@ -255,7 +254,8 @@ Set shared defaults with `configureDateTime`. Provider props (`locale`, `hourCyc
   - **Values.** `onChange` hands back a Day.js value in the zone of the value you gave the picker, or in the picker's zone when it had none, so persist it with `value.toISOString()`. Build values from an instant (`dayjs.utc(...)` or `dayjs.tz(...)`): `dayjs('2024-01-01T07:30')` is read in the browser's zone, and a table would show that same text unconverted.
   - **Changing the zone.** Pickers that already hold a value update when the zone changes. An empty picker that is already mounted keeps reading what is typed in the zone it mounted with, so set the zone before pickers mount, or give the picker a `key` that includes the zone so it remounts. A provider nested in another one uses its own zone for its pickers.
   - **Limits.** Standalone `TimeField` and `DateTimeField` take no default and need their own `timezone` prop; do not set a `timezone` default for them in the theme, because MUI X applies it to the field after the picker's zone. Pickers use Day.js's `timezone` plugin, which reads wall times in the device's zone: on a device in a daylight-saving zone, a time that falls in that zone's skipped hour on the spring-forward day shows an hour later than the table does.
-- **SSR.** Set shared defaults before rendering and use the same values on the server and the client, and load the same Day.js locales before hydration. If you use a time zone for pickers, register the Day.js `utc` and `timezone` plugins before both the server and the client render, or the two render different picker values. `configureDateTime` changes module-wide state, so do not call it per request; pass request-specific preferences as provider props or formatter options.
+- **SSR.** Set shared defaults before rendering and use the same values on the server and the client, and load the same Day.js locales before hydration. If you use a time zone for pickers, register the Day.js `utc` and `timezone` plugins before both the server and the client render, or the two render different picker values. `configureDateTime` changes module-wide state, so do not call it per request; pass request-specific preferences as provider props or formatter options. Import `@inriver/inflow-react/datetime` and `@inriver/inflow-react/datetime/client` using the same module format (ESM or CJS) so they share that store.
+- **React Server Components.** `@inriver/inflow-react` (root) and `@inriver/inflow-react/datetime/client` carry `'use client'` boundaries, so root exports (including `createInflowTheme` and `inflowTokens`) are client-side in RSC. Import `@inriver/inflow-react/datetime` and `@inriver/inflow-react/ag-grid` in Server Components.
 
 ### AG Grid date columns
 

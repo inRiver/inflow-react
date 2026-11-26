@@ -34,13 +34,13 @@ flowchart TB
 
 ## Package boundary
 
-The public JavaScript entries are `src/index.ts` (the package root), `src/ag-grid/index.ts` (the `./ag-grid` subpath) and `src/datetime/index.ts` (the `./datetime` subpath):
+The public JavaScript entries are `src/index.ts` (the package root), `src/ag-grid/index.ts` (the `./ag-grid` subpath), `src/datetime/index.ts` (the server-safe `./datetime` subpath), and `src/datetime/client.ts` (the `./datetime/client` subpath):
 
 ```ts
 // src/index.ts
-export * from './theme';
-export * from './components/themed';
-export * from './providers';
+export * from './theme/index.js';
+export * from './components/themed/index.js';
+export * from './providers/index.js';
 
 // src/ag-grid/index.ts
 export const inflowGridThemeParams = {
@@ -48,20 +48,22 @@ export const inflowGridThemeParams = {
 };
 
 // src/datetime/index.ts (an explicit allowlist)
-export { configureDateTime, getDateTimeFormats } from './formats';
-export { formatDate, formatTime, formatDateTime, dateColumn, dateTimeColumn } from './format';
-export { InflowLocalizationProvider } from './InflowLocalizationProvider';
+export { configureDateTime, getDateTimeFormats } from './formats.js';
+export { formatDate, formatTime, formatDateTime, dateColumn, dateTimeColumn } from './format.js';
+
+// src/datetime/client.ts
+export { InflowLocalizationProvider } from './InflowLocalizationProvider.js';
 ```
 
 That means consumers get:
 
 - `inflowTheme`
-- `defaultTheme`
 - `inflowTokens`, `inflowCustomColors`, `inflowSpacing`
 - `InflowProvider`
-- `ThemedButton`, `ThemedChip`, `ThemedTextField`, `ThemedCard`, `ThemedDialog`, `ThemedTable`
+- `ThemedChip`, `ThemedCard`, `ThemedDialog`, `ThemedTable`
 - `inflowGridThemeParams` from `@inriver/inflow-react/ag-grid`
-- Date and time preferences, display formatters, grid column fragments and `InflowLocalizationProvider` from `@inriver/inflow-react/datetime`
+- Date and time preferences, display formatters and grid column fragments from `@inriver/inflow-react/datetime`
+- `InflowLocalizationProvider` from `@inriver/inflow-react/datetime/client`
 
 They should not import from `src/pages`, `src/showcase`, `src/app`, or individual source paths. The library build and declarations are limited by `tsconfig.lib.json` to the package boundary:
 
@@ -74,7 +76,7 @@ src/ag-grid/**/*
 src/datetime/**/*
 ```
 
-`src/datetime/` owns date and time formatting and the picker defaults. It is a separate, opt-in entry: the root entry never imports it, and only consumers of `./datetime` install its optional peers, `@mui/x-date-pickers` and `dayjs`. Its barrel is an explicit list, so internals (the picker action bar, the popup gap, the shared preferences object) are not public API.
+`src/datetime/` owns date and time formatting and the picker defaults. Its entries are opt-in: the root never imports them. The server-safe `./datetime` entry needs only the optional `dayjs` peer; `./datetime/client` also needs `@mui/x-date-pickers`. The root and `./datetime/client` carry `'use client'` boundaries. Their barrels are explicit lists, so internals (the picker action bar, the popup gap, the shared preferences object) are not public API. `configureDateTime` changes module-wide state; pass per-request formatter options or provider props instead of calling it per request on a server.
 
 ## Theme source of truth
 
@@ -141,9 +143,9 @@ function EmbeddedDialog({ open }: { open: boolean }) {
 ```
 
 Wait for the target to mount before opening a portal. The same `container`
-prop works on plain MUI `Menu` / `Dialog`; a MUI
-`Tooltip` uses `slotProps.popper.container`. `ThemedMenu` does not currently
-expose a portal container prop. Do not move variables onto the host `:root` to
+prop works on `ThemedMenu` and plain MUI `Menu` / `Dialog`; a MUI
+`Tooltip` uses `slotProps.popper.container`. Locked-item tooltips in
+`ThemedMenu` retain their separate popper portal. Do not move variables onto the host `:root` to
 work around this: separate embedded apps may use different modes. Use distinct
 Emotion cache keys for independently deployed bundles, and verify their real
 host-page integration; a unit test with nested providers does not prove that
@@ -191,7 +193,7 @@ The showcase app is the documentation and review surface. It is not the package 
 Important paths:
 
 - `src/app/routes.tsx` - routes for `/`, `/components`, `/tokens`, `/guidelines`, and examples.
-- `src/app/ThemeContext.tsx` - wraps the showcase in `InflowProvider` and manages the light/dark color mode. The showcase always renders the Inflow theme; the deprecated `createDefaultTheme`/`defaultTheme` exports remain for backward compatibility but are no longer used here.
+- `src/app/ThemeContext.tsx` - wraps the showcase in `InflowProvider` and manages the light/dark color mode. The showcase always renders the Inflow theme.
 - `src/showcase/categories.ts` - component catalog metadata.
 - `src/showcase/demos/` - demo implementations for individual MUI components.
 - `src/pages/GuidelinesPage.tsx` - live import/versioning guidance.
@@ -237,7 +239,7 @@ sequenceDiagram
 
 `vite.lib.config.ts` externalizes React, React DOM, MUI, and Emotion. This is intentional: consuming apps own those dependencies through peer dependencies, which avoids duplicate React trees and duplicate MUI style engines. The datetime entry also externalizes `@mui/x-date-pickers` and `dayjs`, which are optional peers.
 
-The package ships `dist/index.{js,cjs}`, `dist/ag-grid/index.{js,cjs}` and `dist/datetime/index.{js,cjs}` with their declarations. Code shared between entries is emitted under `dist/_chunks/`, which `package.json` `files` must include. `npm run test:pack` installs the tarball into a consumer to check this.
+The package ships `dist/index.{js,cjs}`, `dist/ag-grid/index.{js,cjs}`, `dist/datetime/index.{js,cjs}` and `dist/datetime/client.{js,cjs}` with dual `.d.ts` / `.d.cts` declarations for NodeNext and Node16 resolution. Code shared between entries is emitted under `dist/_chunks/`, which `package.json` `files` must include. `npm run test:pack` installs the tarball into a consumer to check this.
 
 ## Change workflow
 
@@ -252,7 +254,7 @@ For theme changes:
 
 ## Stability rule
 
-The stable API is the package's declared exports (the root, `./ag-grid` and `./datetime`), not the repository structure. Internal files may move as the showcase evolves. Consumers should depend on package exports and compatibility checkpoints, not on source paths or assumptions about the showcase app.
+The stable API is the package's declared exports (the root, `./ag-grid`, `./datetime` and `./datetime/client`), not the repository structure. Internal files may move as the showcase evolves. Consumers should depend on package exports and compatibility checkpoints, not on source paths or assumptions about the showcase app.
 
 ## Optional font assets
 

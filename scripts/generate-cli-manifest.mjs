@@ -172,7 +172,7 @@ const { inflowTokens } = await import(`data:text/javascript;base64,${Buffer.from
 const docsTopics = {
   setup: 'Install @inriver/inflow-react and its React 19, MUI 9 and Emotion peer dependencies. Wrap your app in InflowProvider. Optional local font assets: import @inriver/inflow-react/local-assets.css in your global CSS entry.',
   theming: 'Use InflowProvider mode=light or mode=dark; the consumer controls the mode. Prefer the MUI theme for MUI components and inflowTokens for custom surfaces. The provider scopes its baseline and CSS variables to its own root.',
-  migration: 'Choose a validated React/MUI checkpoint tag or pin an exact version. Review peer compatibility and release notes before upgrading; breaking public API or peer-baseline changes require a major version. Deprecated ThemedButton and ThemedTextField remain exported; prefer their MUI equivalents.',
+  migration: 'In 4.0.0, deprecated ThemedButton, ThemedTextField, createDefaultTheme, defaultTheme and ThemedChatPanel onSend were removed. Use MUI Button and TextField, createInflowTheme and inflowTheme, and onSendMessage instead. InflowLocalizationProvider moved to @inriver/inflow-react/datetime/client. Review peer compatibility and release notes before upgrading.',
 };
 const manifest = { strategy: 'TypeScript source AST and checker; own props plus React ref; inherited props noted, not flattened', metadataEntries: descriptions.size, counts, components, tokens: inflowTokens, docs: docsTopics };
 const output = JSON.stringify(manifest, null, 2) + '\n';

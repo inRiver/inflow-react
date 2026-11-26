@@ -10,7 +10,7 @@ const documented = [
   {
     label: 'Migration',
     to: '/migration',
-    description: 'What to change when upgrading, including deprecated components.',
+    description: 'What to change when upgrading, including removed APIs and breaking changes for 4.0.0.',
   },
   {
     label: 'Accessibility',

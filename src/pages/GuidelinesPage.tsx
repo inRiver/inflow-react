@@ -14,11 +14,10 @@ import {
 } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { CodeBlock } from '../showcase/CodeBlock';
-import { INFLOW_DARK_MODE_ENABLED } from '../theme';
 import { THEMED_COMPONENT_INFO } from '../showcase/themedComponentInfo';
 import { ThemedToast } from '../components/themed';
 
-const installCode = `npm install @inriver/inflow-react@react19-mui9.5 @mui/material@">=9.0.0 <10.0.0" @emotion/react@^11.13.0 @emotion/styled@^11.13.0 react@^19 react-dom@^19`;
+const installCode = `npm install @inriver/inflow-react@react19-mui9.6 @mui/material@">=9.0.0 <10.0.0" @emotion/react@^11.13.0 @emotion/styled@^11.13.0 react@^19 react-dom@^19`;
 const datetimeInstallCode = `npm install @mui/x-date-pickers@">=9.0.0 <10.0.0" dayjs@^1.11.0`;
 
 const releaseTagCode = `# Release only after validating this checkpoint against consuming apps.
@@ -180,11 +179,11 @@ npm unlink @inriver/inflow-react
 npm install  # Reinstalls from public npm or your normal lockfile source`;
 
 const publicExports = [
-  'inflowTheme (defaultTheme is deprecated)',
+  'createInflowTheme and inflowTheme',
   'inflowTokens, inflowCustomColors, and inflowSpacing',
   'ThemedChip, ThemedCard, ThemedDialog, ThemedTable, and other structural themed components',
   'inflowGridThemeParams (via @inriver/inflow-react/ag-grid)',
-  'Date and time formatters, grid column fragments, and InflowLocalizationProvider (via @inriver/inflow-react/datetime)',
+  'Date and time preferences, formatters, and grid column fragments (via @inriver/inflow-react/datetime); InflowLocalizationProvider (via @inriver/inflow-react/datetime/client)',
 ];
 
 const releaseTerms = [
@@ -228,7 +227,7 @@ const architectureItems = [
   },
   {
     label: 'Package boundary',
-    path: 'src/index.ts + ./ag-grid and ./datetime subpaths',
+    path: 'src/index.ts + ./ag-grid, ./datetime and ./datetime/client subpaths',
     description: 'The only import surfaces consumers should use. Showcase pages and demos are documentation, not package API.',
   },
 ];
@@ -320,36 +319,13 @@ export function GuidelinesPage() {
           <CardContent>
             <Stack spacing={2}>
               <Typography variant="h5">Color mode support</Typography>
-              {INFLOW_DARK_MODE_ENABLED ? (
-                <>
-                  <Box>
-                    <Chip label="Light + dark mode available" color="success" variant="outlined" />
-                  </Box>
-                  <Typography variant="body2" color="text.secondary">
-                    Both light and dark mode are currently supported. Consuming apps can request
-                    either mode when creating an Inflow theme, and the exported flag is the
-                    authoritative runtime check for whether dark mode is available in the current
-                    package build.
-                  </Typography>
-                </>
-              ) : (
-                <>
-                  <Box>
-                    <Chip label="Light mode only" color="default" variant="outlined" />
-                  </Box>
-                  <Typography variant="body2" color="text.secondary">
-                    Dark mode is currently disabled behind the published
-                    <code> INFLOW_DARK_MODE_ENABLED </code>
-                    feature flag. If a consuming app calls{' '}
-                    <code>createInflowTheme('dark')</code> or{' '}
-                    <code>createDefaultTheme('dark')</code> while the flag is off, the request
-                    resolves to light mode instead, and development builds log a{' '}
-                    <code>console.warn</code>. This is a deliberate product toggle, not a permanent
-                    API limitation, so consumers should check the exported flag instead of assuming
-                    dark mode availability.
-                  </Typography>
-                </>
-              )}
+              <Box>
+                <Chip label="Light + dark mode available" color="success" variant="outlined" />
+              </Box>
+              <Typography variant="body2" color="text.secondary">
+                Light and dark mode ship enabled. Consuming apps can request either mode, and
+                INFLOW_DARK_MODE_ENABLED remains true as a compatibility export.
+              </Typography>
               <Typography variant="subtitle2">Designing for dark</Typography>
               <Typography variant="body2" color="text.secondary" component="ul" sx={{ pl: 3, m: 0 }}>
                 <li>Keep the brand hue. Dark changes lightness and saturation, never the blue.</li>
@@ -398,7 +374,8 @@ export function GuidelinesPage() {
                 The showcase and the library live together, but only the package boundary is stable
                 API. Apps should import from <code>@inriver/inflow-react</code>, the{' '}
                 <code>@inriver/inflow-react/ag-grid</code> subpath or the{' '}
-                <code>@inriver/inflow-react/datetime</code> subpath, not from source files, showcase
+                <code>@inriver/inflow-react/datetime</code> and <code>@inriver/inflow-react/datetime/client</code>
+                {' '}subpaths, not from source files, showcase
                 pages, or demo components.
               </Typography>
               <List dense disablePadding>
@@ -527,7 +504,7 @@ export function GuidelinesPage() {
               <Typography variant="body2" color="text.secondary">
                 Avoid a single rolling design-system package that every UI consumes blindly. Tag
                 each verified React/MUI checkpoint so applications can opt in, test, and roll
-                forward intentionally. The current compatibility target is React 19 / MUI 9.5;
+                forward intentionally. The current compatibility target is React 19 / MUI 9.6;
                 the package declares MUI &gt;=9.0.0 &lt;10.0.0. Older release-command examples below
                 illustrate historical checkpoints, not current installation instructions.
               </Typography>
@@ -553,9 +530,11 @@ export function GuidelinesPage() {
               </Typography>
               <CodeBlock code={installCode} language="bash" plain />
               <Typography variant="body2" color="text.secondary">
-                Only apps that use <code>@inriver/inflow-react/datetime</code> need two more optional
-                peers. Keep <code>InflowProvider</code> at the app root and wrap MUI X pickers inside it
-                with <code>InflowLocalizationProvider</code>.
+                The server-safe <code>@inriver/inflow-react/datetime</code> entry needs only dayjs.
+                For MUI X pickers, install both optional peers below and import
+                <code> InflowLocalizationProvider </code> from
+                <code> @inriver/inflow-react/datetime/client</code>. Keep <code>InflowProvider</code>
+                {' '}at the app root and wrap pickers inside it.
               </Typography>
               <CodeBlock code={datetimeInstallCode} language="bash" plain />
             </Stack>

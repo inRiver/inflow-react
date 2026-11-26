@@ -14,6 +14,16 @@ describe('LlmsPage', () => {
     expect(screen.getByText(/## CLI/)).toHaveTextContent('inflow component --list');
     expect(screen.getByText(/# Inflow React/)).toHaveTextContent('@inriver/inflow-react/datetime');
     expect(screen.getByText(/# Inflow React/)).toHaveTextContent('dayjs');
+    const content = screen.getByText(/# Inflow React/);
+    expect(content).toHaveTextContent('react19-mui9.6');
+    expect(content).toHaveTextContent('@inriver/inflow-react/datetime/client');
+    expect(content).toHaveTextContent('server-safe');
+    expect(content).toHaveTextContent('ThemedButtonProps');
+    expect(content).toHaveTextContent('ThemedTextFieldProps');
+    expect(content).toHaveTextContent('createDefaultTheme');
+    expect(content).toHaveTextContent('defaultTheme');
+    expect(content).toHaveTextContent('onSendMessage(text)');
+    expect(content).toHaveTextContent('configureDateTime');
   });
 
   it('offers open and download links resolved against the base path', () => {
