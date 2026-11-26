@@ -15,10 +15,11 @@ import {
 import { Link as RouterLink } from 'react-router-dom';
 import { formatDate, formatDateTime, formatTime, getDateTimeFormats } from '../datetime';
 
-// One fixed moment so the examples are the real output of the shared formatters, not hand-typed copies.
+// One fixed moment so the examples are the real output of the shared formatters, not hand-typed copies. Every
+// example pins its own options so a later `configureDateTime` call cannot change what this page documents.
 const EXAMPLE = '2022-03-09T16:33:00';
 
-const US = { locale: 'en' } as const;
+const US = { locale: 'en', style: 'locale', hourCycle: 'locale' } as const;
 const us = getDateTimeFormats(US);
 
 interface FormatRule {
@@ -35,23 +36,29 @@ const localeRows = [
   { locale: 'sv', name: 'Swedish' },
   { locale: 'fr', name: 'French' },
   { locale: 'ja', name: 'Japanese' },
-].map(({ locale, name }) => ({
-  name,
-  date: formatDate(EXAMPLE, { locale }),
-  time: formatTime(EXAMPLE, { locale }),
-  dateTime: formatDateTime(EXAMPLE, { locale }),
-}));
+].map(({ locale, name }) => {
+  const options = { locale, style: 'locale', hourCycle: 'locale' } as const;
+  return {
+    name,
+    date: formatDate(EXAMPLE, options),
+    time: formatTime(EXAMPLE, options),
+    dateTime: formatDateTime(EXAMPLE, options),
+  };
+});
 
-const fixedStyles = (['iso', 'unambiguous'] as const).map((style) => ({
-  name: style === 'iso' ? 'ISO' : 'Unambiguous',
-  style,
-  format: getDateTimeFormats({ style, locale: 'de' }).dateTime,
-  example: formatDateTime(EXAMPLE, { style, locale: 'de' }),
-  use:
-    style === 'iso'
-      ? 'Exports, logs and anything copied into tickets or other systems.'
-      : 'Views that people in several regions read together, such as audit trails.',
-}));
+const fixedStyles = (['iso', 'unambiguous'] as const).map((style) => {
+  const options = { style, locale: 'de', hourCycle: '24' } as const;
+  return {
+    name: style === 'iso' ? 'ISO' : 'Unambiguous',
+    style,
+    format: getDateTimeFormats(options).dateTime,
+    example: formatDateTime(EXAMPLE, options),
+    use:
+      style === 'iso'
+        ? 'Display where an unambiguous, sortable pattern is needed. Use ISO 8601 timestamps with an offset or Z for exports and logs.'
+        : 'Views that people in several regions read together, such as audit trails.',
+  };
+});
 
 const dateTimeRules: FormatRule[] = [
   { value: 'Date', format: us.date, example: formatDate(EXAMPLE, US), use: 'Dates on their own, such as a due date or a birthday.' },
@@ -80,7 +87,7 @@ export function ContentStandardsPage() {
   return (
     <Container maxWidth="lg" sx={{ py: 2 }}>
       <Stack spacing={4}>
-        <Typography variant="h3">Content standards</Typography>
+        <Typography variant="h3" component="h1">Content standards</Typography>
         <Typography variant="body1">
           How text and values are written and formatted in every Inflow interface, so the same thing looks the same
           everywhere. For the casing of labels, buttons and headings, see <Link component={RouterLink} to="/capitalization">
@@ -193,8 +200,9 @@ export function ContentStandardsPage() {
           <Box component="ul" sx={{ m: 0, pl: 3 }}>
             {li(
               <>
-                Write AM and PM in capitals, with a space and no periods: {code('2:00 PM')}. On a 24-hour clock do not
-                show AM or PM: {code('14:00')}. Remove the leading zero from single-digit hours.
+                Write AM and PM in capitals, with a space and no periods: {code('2:00 PM')}. On a 12-hour clock, drop
+                the leading zero from single-digit hours. On a 24-hour clock, keep it and leave out AM and PM:{' '}
+                {code('08:00')}.
               </>,
             )}
             {li('Put the date before the time, separated by a single space.')}
@@ -238,7 +246,9 @@ export function ContentStandardsPage() {
             )}
           </Box>
           <Typography variant="body1">
-            Tables always show the year, so sorting and filtering read clearly.
+            Tables always show the year, so sorting and filtering read clearly. Table formats use Gregorian dates and
+            Latin digits, with English month names and AM/PM. Locale can change the numeric date order, separators and
+            clock, but not the language of those words.
           </Typography>
         </Stack>
       </Stack>
