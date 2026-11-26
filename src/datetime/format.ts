@@ -1,35 +1,156 @@
 import dayjs from 'dayjs';
-import timezone from 'dayjs/plugin/timezone';
-import utc from 'dayjs/plugin/utc';
-import { dateTimeConfig, getDateTimeFormats, type DateTimeOptions } from './formats';
+import utc from 'dayjs/plugin/utc.js';
+import { getDateTimeConfig, getDateTimeFormats, type DateTimeOptions } from './formats';
 
+// Registers the dayjs `utc` plugin, which the formatters use to show wall-clock fields exactly as they are. Apps that
+// want a MUI X picker's `timezone` prop also have to extend dayjs with its `timezone` plugin themselves.
 dayjs.extend(utc);
-dayjs.extend(timezone);
 
 type DateInput = string | number | Date | null | undefined;
 
-// A moment in time: a Date, a timestamp, or an ISO string that ends in "Z" or an offset such as "+02:00".
-const isInstant = (value: Exclude<DateInput, null | undefined>) =>
-  value instanceof Date || typeof value === 'number' || /T.*(Z|[+-]\d{2}:?\d{2})$/i.test(value);
+// What to show: wall-clock fields kept as a UTC timestamp (UTC has no DST gap or overflow, so they can never shift), or a
+// moment in time shown in the browser timezone.
+type Shown = { wall: number } | { local: number };
 
-function parse(value: Exclude<DateInput, null | undefined>, timeZone?: string) {
-  let parsed = dayjs(value);
-  if (timeZone && parsed.isValid() && isInstant(value)) {
+const MAX_TIMESTAMP = 8.64e15;
+const CACHE_LIMIT = 64;
+// "2022-03-09", "2022-03-09T16:33", "2022-03-09 16:33:00.123", with an optional "Z" or offset after a time. The year may
+// be expanded to six digits with a sign ("+002022").
+const ISO = /^([+-]\d{6}|\d{4})-(\d{2})-(\d{2})(?:[T ](\d{2}):(\d{2})(?::(\d{2})(?:\.(\d+))?)?)?(Z|[+-]\d{2}(?::?\d{2})?)?$/i;
+const ISO_PREFIX = /^[+-]?\d{4,6}-\d{2}-\d{2}/;
+const DAYS_IN_MONTH = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+const isLeapYear = (year: number) => year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+const daysInMonth = (year: number, month: number) => (month === 2 && isLeapYear(year) ? 29 : DAYS_IN_MONTH[month - 1]);
+
+// `Date.UTC` maps years 0-99 to 1900-1999, so set the fields on a date instead.
+function utcTimestamp(year: number, month: number, day: number, hour: number, minute: number, second: number, ms: number) {
+  const date = new Date(0);
+  date.setUTCFullYear(year, month - 1, day);
+  date.setUTCHours(hour, minute, second, ms);
+  return date.getTime();
+}
+
+function offsetMinutes(zone: string): number | undefined {
+  if (zone.toUpperCase() === 'Z') return 0;
+  const digits = zone.slice(1).replace(':', '');
+  const hours = Number(digits.slice(0, 2));
+  const minutes = digits.length > 2 ? Number(digits.slice(2)) : 0;
+  if (hours > 23 || minutes > 59) return undefined;
+  return (zone.startsWith('-') ? -1 : 1) * (hours * 60 + minutes);
+}
+
+/**
+ * `undefined` when the text is not ISO-shaped, `null` when it is but is not a real moment (month 13, 31 February, 24:30),
+ * otherwise a wall-clock value or, with a "Z" or offset, an instant in milliseconds.
+ */
+function parseIso(text: string): { wall: number } | { instant: number } | null | undefined {
+  const match = ISO.exec(text);
+  if (!match) return undefined;
+  const [, year, month, day, hour, minute, second, fraction, zone] = match;
+  if (zone !== undefined && hour === undefined) return undefined;
+
+  const y = Number(year);
+  const mo = Number(month);
+  const d = Number(day);
+  const h = hour === undefined ? 0 : Number(hour);
+  const mi = minute === undefined ? 0 : Number(minute);
+  const s = second === undefined ? 0 : Number(second);
+  const ms = fraction === undefined ? 0 : Number(fraction.padEnd(3, '0').slice(0, 3));
+  // "-000000" is not a year, and a fraction counts as a whole, not as the milliseconds it is cut to.
+  if (year === '-000000' || mo < 1 || mo > 12 || d < 1 || d > daysInMonth(y, mo) || h > 24 || mi > 59 || s > 59) return null;
+  const hasFraction = fraction !== undefined && /[1-9]/.test(fraction);
+  // 24:00 is the end of the day, which only a moment in time can be.
+  if (h === 24 && (mi !== 0 || s !== 0 || hasFraction || zone === undefined)) return null;
+
+  const wall = utcTimestamp(y, mo, d, h, mi, s, ms);
+  // An expanded year can be past the largest timestamp.
+  if (!Number.isFinite(wall)) return null;
+  if (zone === undefined) return { wall };
+  const offset = offsetMinutes(zone);
+  return offset === undefined ? null : { instant: wall - offset * 60_000 };
+}
+
+const projectors = new Map<string, Intl.DateTimeFormat | null>();
+
+function projector(timeZone: string) {
+  let projection = projectors.get(timeZone);
+  if (projection === undefined) {
     try {
-      parsed = parsed.tz(timeZone);
+      projection = new Intl.DateTimeFormat('en-US', {
+        timeZone,
+        calendar: 'gregory',
+        numberingSystem: 'latn',
+        hourCycle: 'h23',
+        year: 'numeric',
+        era: 'short',
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+      });
     } catch {
-      // Unknown timezone name: show the value in the browser timezone rather than failing.
+      // Unknown timezone name: the value is shown in the browser timezone rather than failing.
+      projection = null;
     }
+    if (projectors.size >= CACHE_LIMIT) projectors.clear();
+    projectors.set(timeZone, projection);
   }
-  // "en" keeps month names and AM/PM stable; digits and order come from the pattern.
-  return parsed.locale('en');
+  return projection;
+}
+
+/** The wall-clock fields of an instant in a timezone, as a UTC timestamp. Dayjs' own `tz` re-parses them in the host zone, which can shift them through a host DST gap. */
+function zonedWall(instant: number, timeZone: string): number | undefined {
+  const projection = projector(timeZone);
+  if (!projection) return undefined;
+  const fields: Record<string, number> = {};
+  let beforeCommonEra = false;
+  for (const { type, value } of projection.formatToParts(instant)) {
+    if (type === 'era') beforeCommonEra = value.startsWith('B');
+    else fields[type] = Number(value);
+  }
+  const ms = ((Math.floor(instant) % 1000) + 1000) % 1000;
+  // The year is counted from 1 before and after the era, so 1 BC is year 0.
+  const year = beforeCommonEra ? 1 - fields.year : fields.year;
+  const wall = utcTimestamp(year, fields.month, fields.day, fields.hour % 24, fields.minute, fields.second, ms);
+  // A wall time past the largest timestamp (the last day in a zone ahead of UTC) cannot be shown as one.
+  return Number.isFinite(wall) ? wall : undefined;
+}
+
+function place(instant: number, timeZone?: string): Shown | undefined {
+  if (!Number.isFinite(instant) || Math.abs(instant) > MAX_TIMESTAMP) return undefined;
+  const wall = timeZone ? zonedWall(instant, timeZone) : undefined;
+  return wall === undefined ? { local: instant } : { wall };
+}
+
+function resolve(value: Exclude<DateInput, null | undefined>, timeZone?: string): Shown | undefined {
+  if (value instanceof Date) return place(value.getTime(), timeZone);
+  if (typeof value === 'number') return place(value, timeZone);
+
+  const text = value.trim();
+  // Digits only look like a timestamp but are not one: numbers are milliseconds, so leave the text as it is.
+  if (/^[+-]?\d+$/.test(text)) return undefined;
+  const iso = parseIso(text);
+  if (iso === null) return undefined;
+  if (iso) return 'instant' in iso ? place(iso.instant, timeZone) : iso;
+  // Starts like an ISO date but is not valid ISO (such as "2022-02-31T16:33:00."): leave it, rather than let the
+  // browser read it as some other day.
+  if (ISO_PREFIX.test(text)) return undefined;
+  // Not ISO: whatever the browser can read, shown in the browser timezone as before.
+  const parsed = dayjs(text);
+  return parsed.isValid() ? { local: parsed.valueOf() } : undefined;
 }
 
 function format(value: DateInput, pick: 'date' | 'time' | 'dateTime', options?: DateTimeOptions) {
   if (value === null || value === undefined || value === '') return '';
-  const parsed = parse(value, options?.timeZone ?? dateTimeConfig.timeZone);
+  const shown = resolve(value, options?.timeZone ?? getDateTimeConfig().timeZone);
   // Fall back to the raw value rather than rendering "Invalid Date".
-  return parsed.isValid() ? parsed.format(getDateTimeFormats(options)[pick]) : String(value);
+  if (!shown) return String(value);
+  const moment = 'wall' in shown ? dayjs.utc(shown.wall) : dayjs(shown.local);
+  // "en" keeps month names and AM/PM stable, and ignores any digit-changing dayjs locale the app has loaded: digits and
+  // order come from the pattern.
+  return moment.locale('en').format(getDateTimeFormats(options)[pick]);
 }
 
 /** e.g. "3/9/2022" (English US) or "09.03.2022" (German) */
