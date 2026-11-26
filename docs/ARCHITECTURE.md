@@ -34,7 +34,7 @@ flowchart TB
 
 ## Package boundary
 
-The public package entry is `src/index.ts`, plus the additional `./ag-grid` subpath:
+The public JavaScript entries are `src/index.ts` (the package root), `src/ag-grid/index.ts` (the `./ag-grid` subpath) and `src/datetime/index.ts` (the `./datetime` subpath):
 
 ```ts
 // src/index.ts
@@ -46,6 +46,11 @@ export * from './providers';
 export const inflowGridThemeParams = {
   // AG Grid theme parameter values
 };
+
+// src/datetime/index.ts (an explicit allowlist)
+export { configureDateTime, getDateTimeFormats } from './formats';
+export { formatDate, formatTime, formatDateTime, dateColumn, dateTimeColumn } from './format';
+export { InflowLocalizationProvider } from './InflowLocalizationProvider';
 ```
 
 That means consumers get:
@@ -56,6 +61,7 @@ That means consumers get:
 - `InflowProvider`
 - `ThemedButton`, `ThemedChip`, `ThemedTextField`, `ThemedCard`, `ThemedDialog`, `ThemedTable`
 - `inflowGridThemeParams` from `@inriver/inflow-react/ag-grid`
+- Date and time preferences, display formatters, grid column fragments and `InflowLocalizationProvider` from `@inriver/inflow-react/datetime`
 
 They should not import from `src/pages`, `src/showcase`, `src/app`, or individual source paths. The library build and declarations are limited by `tsconfig.lib.json` to the package boundary:
 
@@ -65,7 +71,10 @@ src/theme/**/*
 src/components/themed/**/*
 src/providers/**/*
 src/ag-grid/**/*
+src/datetime/**/*
 ```
+
+`src/datetime/` owns date and time formatting and the picker defaults. It is a separate, opt-in entry: the root entry never imports it, and only consumers of `./datetime` install its optional peers, `@mui/x-date-pickers` and `dayjs`. Its barrel is an explicit list, so internals (the picker action bar, the popup gap, the shared preferences object) are not public API.
 
 ## Theme source of truth
 
@@ -226,7 +235,9 @@ sequenceDiagram
 2. Showcase build with the normal Vite config.
 3. Library build through `vite.lib.config.ts` plus declaration output from `tsconfig.lib.json`.
 
-`vite.lib.config.ts` externalizes React, React DOM, MUI, and Emotion. This is intentional: consuming apps own those dependencies through peer dependencies, which avoids duplicate React trees and duplicate MUI style engines.
+`vite.lib.config.ts` externalizes React, React DOM, MUI, and Emotion. This is intentional: consuming apps own those dependencies through peer dependencies, which avoids duplicate React trees and duplicate MUI style engines. The datetime entry also externalizes `@mui/x-date-pickers` and `dayjs`, which are optional peers.
+
+The package ships `dist/index.{js,cjs}`, `dist/ag-grid/index.{js,cjs}` and `dist/datetime/index.{js,cjs}` with their declarations. Code shared between entries is emitted under `dist/_chunks/`, which `package.json` `files` must include. `npm run test:pack` installs the tarball into a consumer to check this.
 
 ## Change workflow
 
@@ -241,7 +252,7 @@ For theme changes:
 
 ## Stability rule
 
-The stable API is the package root export, not the repository structure. Internal files may move as the showcase evolves. Consumers should depend on package exports and compatibility checkpoints, not on source paths or assumptions about the showcase app.
+The stable API is the package's declared exports (the root, `./ag-grid` and `./datetime`), not the repository structure. Internal files may move as the showcase evolves. Consumers should depend on package exports and compatibility checkpoints, not on source paths or assumptions about the showcase app.
 
 ## Optional font assets
 
