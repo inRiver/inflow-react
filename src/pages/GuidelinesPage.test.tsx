@@ -15,6 +15,15 @@ describe('GuidelinesPage', () => {
     expect(screen.getByText(/npm install @inriver\/inflow-react@react19-mui9.5/)).toBeInTheDocument();
   });
 
+  it('documents the opt-in datetime subpath and its optional peers', () => {
+    renderWithInflow(<MemoryRouter><GuidelinesPage /></MemoryRouter>);
+
+    expect(screen.getByText(/npm install @mui\/x-date-pickers/)).toHaveTextContent('dayjs@^1.11.0');
+    expect(screen.getByText(/Date and time formatters, grid column fragments/)).toHaveTextContent(
+      '@inriver/inflow-react/datetime',
+    );
+  });
+
   it('uses persistent themed guidance for the release checkpoint', () => {
     renderWithInflow(
       <MemoryRouter>

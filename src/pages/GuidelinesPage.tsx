@@ -19,6 +19,7 @@ import { THEMED_COMPONENT_INFO } from '../showcase/themedComponentInfo';
 import { ThemedToast } from '../components/themed';
 
 const installCode = `npm install @inriver/inflow-react@react19-mui9.5 @mui/material@">=9.0.0 <10.0.0" @emotion/react@^11.13.0 @emotion/styled@^11.13.0 react@^19 react-dom@^19`;
+const datetimeInstallCode = `npm install @mui/x-date-pickers@">=9.0.0 <10.0.0" dayjs@^1.11.0`;
 
 const releaseTagCode = `# Release only after validating this checkpoint against consuming apps.
 # The package is already publish-ready with "private": false.
@@ -183,6 +184,7 @@ const publicExports = [
   'inflowTokens, inflowCustomColors, and inflowSpacing',
   'ThemedChip, ThemedCard, ThemedDialog, ThemedTable, and other structural themed components',
   'inflowGridThemeParams (via @inriver/inflow-react/ag-grid)',
+  'Date and time formatters, grid column fragments, and InflowLocalizationProvider (via @inriver/inflow-react/datetime)',
 ];
 
 const releaseTerms = [
@@ -226,7 +228,7 @@ const architectureItems = [
   },
   {
     label: 'Package boundary',
-    path: 'src/index.ts + ./ag-grid subpath',
+    path: 'src/index.ts + ./ag-grid and ./datetime subpaths',
     description: 'The only import surfaces consumers should use. Showcase pages and demos are documentation, not package API.',
   },
 ];
@@ -394,8 +396,9 @@ export function GuidelinesPage() {
               <Typography variant="h5">How the repo is structured</Typography>
               <Typography variant="body2" color="text.secondary">
                 The showcase and the library live together, but only the package boundary is stable
-                API. Apps should import from <code>@inriver/inflow-react</code> or the{' '}
-                <code>@inriver/inflow-react/ag-grid</code> subpath, not from source files, showcase
+                API. Apps should import from <code>@inriver/inflow-react</code>, the{' '}
+                <code>@inriver/inflow-react/ag-grid</code> subpath or the{' '}
+                <code>@inriver/inflow-react/datetime</code> subpath, not from source files, showcase
                 pages, or demo components.
               </Typography>
               <List dense disablePadding>
@@ -549,6 +552,12 @@ export function GuidelinesPage() {
                 Match the package tag to the app&apos;s React/MUI checkpoint.
               </Typography>
               <CodeBlock code={installCode} language="bash" plain />
+              <Typography variant="body2" color="text.secondary">
+                Only apps that use <code>@inriver/inflow-react/datetime</code> need two more optional
+                peers. Keep <code>InflowProvider</code> at the app root and wrap MUI X pickers inside it
+                with <code>InflowLocalizationProvider</code>.
+              </Typography>
+              <CodeBlock code={datetimeInstallCode} language="bash" plain />
             </Stack>
           </CardContent>
         </Card>

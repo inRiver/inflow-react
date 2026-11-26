@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { Stack } from '@mui/material';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { type Dayjs } from 'dayjs';
+import { InflowLocalizationProvider } from '../../datetime';
 import { DemoFrame } from '../DemoFrame';
 import { CodeBlock } from '../CodeBlock';
 import { PropsPlayground } from '../PropsPlayground';
@@ -29,17 +28,32 @@ export function DatePickerDemo() {
   ];
 
   const codeExample = `
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { useState } from 'react';
+import dayjs, { type Dayjs } from 'dayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { InflowLocalizationProvider } from '@inriver/inflow-react/datetime';
 
-// <InflowProvider> only needs to be declared once at your app root - see Guidelines
-<LocalizationProvider dateAdapter={AdapterDayjs}>
-  <DatePicker label="Birthday" />
-</LocalizationProvider>`;
+// Needs the optional peers @mui/x-date-pickers and dayjs. <InflowProvider> is declared once at your app root.
+// Locale and date order come from configureDateTime(...) or the provider props (props win) - see Content standards.
+// The time zone is not applied to a date-only picker, so a date never moves to another day.
+function BirthdayPicker() {
+  const [value, setValue] = useState<Dayjs | null>(dayjs('2024-01-01'));
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <InflowLocalizationProvider>
+      <DatePicker
+        label="Birthday"
+        value={value}
+        onChange={setValue}
+        disabled={${props.disabled}}
+        slotProps={{ textField: { size: '${props.size}' } }}
+      />
+    </InflowLocalizationProvider>
+  );
+}`;
+
+  return (
+    <InflowLocalizationProvider>
       <DemoFrame title="Date Picker - Interactive">
         <DatePicker
           label="Birthday"
@@ -61,6 +75,6 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
           <DatePicker label="Disabled" disabled defaultValue={dayjs('2024-01-01')} />
         </Stack>
       </DemoFrame>
-    </LocalizationProvider>
+    </InflowLocalizationProvider>
   );
 }

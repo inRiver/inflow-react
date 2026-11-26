@@ -48,6 +48,12 @@ interface CustomizationMeta {
    * small rounded highlight by default instead of a raw edge-to-edge fill.
    */
   isCompactControl?: boolean;
+  /** Where `importName` comes from, when it is not '@mui/material' (for example an MUI X picker). */
+  importFrom?: string;
+  /** Import lines the example needs besides the component itself. */
+  extraImports?: string[];
+  /** Where the sx example puts the controls that style the component's own surface, when that is not its root. */
+  sxSurfaceSelector?: string;
   example: string;
 }
 
@@ -211,8 +217,8 @@ const sxControlsByComponent: Record<string, SxControlName[]> = {
   bottomnavigation: ['textColor', 'secondaryTextColor', 'iconColor'],
   speeddial: ['backgroundColor', 'textColor', 'iconColor'],
   fab: ['borderRadius', 'backgroundColor', 'iconColor'],
-  datepicker: ['borderRadius', 'backgroundColor', 'textColor', 'labelColor', 'borderColor', 'padding'],
-  timepicker: ['borderRadius', 'backgroundColor', 'textColor', 'labelColor', 'borderColor', 'padding'],
+  datepicker: ['backgroundColor', 'textColor', 'borderColor', 'borderRadius', 'labelColor', 'padding'],
+  timepicker: ['backgroundColor', 'textColor', 'borderColor', 'borderRadius', 'labelColor', 'padding'],
   radiogroup: ['textColor', 'labelColor', 'iconColor'],
   checkboxgroup: ['textColor', 'labelColor', 'iconColor'],
   box: ['backgroundColor', 'textColor', 'padding', 'borderRadius', 'borderColor'],
@@ -469,36 +475,42 @@ const metaOverrides: Record<string, Partial<CustomizationMeta>> = {
   fab: { importName: 'Fab', themeKey: 'MuiFab', iconSlotSelector: '& svg' },
   typographyvariants: { importName: 'Typography', themeKey: 'MuiTypography' },
   datepicker: {
-    importName: 'TextField',
-    themeKey: 'MuiTextField',
-    slotSelector: '.MuiOutlinedInput-root',
+    importName: 'DatePicker',
+    importFrom: '@mui/x-date-pickers/DatePicker',
+    extraImports: ["import { InflowLocalizationProvider } from '@inriver/inflow-react/datetime';"],
+    themeKey: 'MuiPickersTextField',
+    slotSelector: '.MuiPickersOutlinedInput-root',
+    sxSurfaceSelector: '.MuiPickersOutlinedInput-root',
     stateClass: '.Mui-focused',
-    stateSelector: '.ProductTextField .MuiOutlinedInput-root.Mui-focused',
-    textSlotSelector: '.MuiOutlinedInput-input',
+    stateSelector: '.ProductDatePicker .MuiPickersOutlinedInput-root.Mui-focused',
+    textSlotSelector: '.MuiPickersInputBase-sectionsContainer',
     controlSelectorOverrides: {
-      borderColor: '.MuiOutlinedInput-notchedOutline',
+      borderColor: '.MuiPickersOutlinedInput-notchedOutline',
       labelColor: '.MuiInputLabel-root',
     },
     themeSnippetExcludeControls: ['labelColor'],
-    note: 'This page is a native MUI TextField date input, not an MUI X picker. Customize TextField and its input slots here.',
-    supportsVariants: true,
-    example: '<TextField type="date" label="Date" InputLabelProps={{ shrink: true }} />',
+    note: 'This page uses the MUI X DatePicker. Its field is a PickersTextField, styled through MuiPickersOutlinedInput rather than MuiOutlinedInput, and it renders inside InflowLocalizationProvider.',
+    supportsClasses: false,
+    example: '<InflowLocalizationProvider><DatePicker label="Date" /></InflowLocalizationProvider>',
   },
   timepicker: {
-    importName: 'TextField',
-    themeKey: 'MuiTextField',
-    slotSelector: '.MuiOutlinedInput-root',
+    importName: 'TimePicker',
+    importFrom: '@mui/x-date-pickers/TimePicker',
+    extraImports: ["import { InflowLocalizationProvider } from '@inriver/inflow-react/datetime';"],
+    themeKey: 'MuiPickersTextField',
+    slotSelector: '.MuiPickersOutlinedInput-root',
+    sxSurfaceSelector: '.MuiPickersOutlinedInput-root',
     stateClass: '.Mui-focused',
-    stateSelector: '.ProductTextField .MuiOutlinedInput-root.Mui-focused',
-    textSlotSelector: '.MuiOutlinedInput-input',
+    stateSelector: '.ProductTimePicker .MuiPickersOutlinedInput-root.Mui-focused',
+    textSlotSelector: '.MuiPickersInputBase-sectionsContainer',
     controlSelectorOverrides: {
-      borderColor: '.MuiOutlinedInput-notchedOutline',
+      borderColor: '.MuiPickersOutlinedInput-notchedOutline',
       labelColor: '.MuiInputLabel-root',
     },
     themeSnippetExcludeControls: ['labelColor'],
-    note: 'This page is a native MUI TextField time input, not an MUI X picker. Customize TextField and its input slots here.',
-    supportsVariants: true,
-    example: '<TextField type="time" label="Time" InputLabelProps={{ shrink: true }} />',
+    note: 'This page uses the MUI X TimePicker. Its field is a PickersTextField, styled through MuiPickersOutlinedInput rather than MuiOutlinedInput, and it renders inside InflowLocalizationProvider.',
+    supportsClasses: false,
+    example: '<InflowLocalizationProvider><TimePicker label="Time" /></InflowLocalizationProvider>',
   },
   box: { importName: 'Box', themeKey: undefined, supportsClasses: false },
   stack: { importName: 'Stack', themeKey: 'MuiStack', supportsClasses: false },
@@ -526,8 +538,25 @@ const getMeta = (componentId: string): CustomizationMeta => {
   return { ...base, sxControls: sxControlsByComponent[componentId] ?? ['backgroundColor', 'textColor'], ...metaOverrides[componentId] };
 };
 
+// A field whose visible surface is not the component's own root is styled through its input slot's theme key.
+const THEME_KEY_BY_SLOT_SELECTOR: Record<string, string> = {
+  '.MuiOutlinedInput-root': 'MuiOutlinedInput',
+  '.MuiPickersOutlinedInput-root': 'MuiPickersOutlinedInput',
+};
+
 const getThemeStyleKey = (meta: CustomizationMeta) =>
-  meta.slotSelector === '.MuiOutlinedInput-root' ? 'MuiOutlinedInput' : meta.themeKey;
+  (meta.slotSelector && THEME_KEY_BY_SLOT_SELECTOR[meta.slotSelector]) || meta.themeKey;
+
+// The import lines for a snippet. Components from '@mui/material' keep a single line; others (an MUI X picker) import
+// from their own path, followed by the imports their example needs.
+const buildImports = (meta: CustomizationMeta, alsoFromMaterial: string[] = [], includeExtras = true) =>
+  meta.importFrom
+    ? [
+        ...(alsoFromMaterial.length > 0 ? [`import { ${alsoFromMaterial.join(', ')} } from '@mui/material';`] : []),
+        `import { ${meta.importName} } from '${meta.importFrom}';`,
+        ...(includeExtras ? meta.extraImports ?? [] : []),
+      ].join('\n')
+    : `import { ${[...alsoFromMaterial, meta.importName].join(', ')} } from '@mui/material';`;
 
 const getSelectedValue = (values: Record<string, unknown> | undefined, key: string): string | undefined => {
   const value = values?.[key];
@@ -1081,14 +1110,15 @@ const formatSnippetObject = (entries: SnippetEntry[]) => {
 };
 
 const buildSxCodeSnippet = (
-  componentName: string,
   meta: CustomizationMeta,
   excludedControls?: SxControlName[],
 ) => {
-  const snippetEntries = getSnippetEntries(meta, sxSnippetValues, excludedControls);
+  const snippetEntries = getSnippetEntries(meta, sxSnippetValues, excludedControls).map((entry) =>
+    entry.selector || !meta.sxSurfaceSelector ? entry : { ...entry, selector: meta.sxSurfaceSelector },
+  );
   const sxObject = formatSnippetObject(snippetEntries);
 
-  return `import { ${componentName} } from '@mui/material';
+  return `${buildImports(meta)}
 
 ${meta.example.replace('/>', `\n  sx={{\n${sxObject}\n  }}\n/>`)}`;
 };
@@ -1118,7 +1148,7 @@ export function ComponentCustomizationPanel({ componentId, excludedControls }: C
   const themeKey = meta.themeKey;
   const themeStyleKey = getThemeStyleKey(meta);
   const wrapperImports = componentName === 'Box' ? 'Box' : `Box, ${componentName}`;
-  const sxCode = buildSxCodeSnippet(componentName, meta, excludedControls);
+  const sxCode = buildSxCodeSnippet(meta, excludedControls);
   const themeSnippetEntries = getSnippetEntries(
     meta,
     themeSnippetValues,
@@ -1145,8 +1175,13 @@ export function ComponentCustomizationPanel({ componentId, excludedControls }: C
       ]`
     : '';
   const classMethodLabel = meta.supportsClasses ? 'className/classes' : 'className';
+  // MUI X theme keys are typed by its theme augmentation.
+  const themeImports = meta.importFrom
+    ? `import { createTheme } from '@mui/material/styles';
+import type {} from '@mui/x-date-pickers/themeAugmentation';`
+    : `import { createTheme } from '@mui/material/styles';`;
 
-  const classCode = `import { ${componentName} } from '@mui/material';
+  const classCode = `${buildImports(meta)}
 import './product-${componentId}.css';
 
 ${meta.example.replace('/>', `${classProps} />`)}
@@ -1156,24 +1191,31 @@ ${classSelector} {
   ${classDeclaration}
 }`;
 
+  const styledRules = `  borderRadius: theme.shape.borderRadius,
+  ...(emphasis === 'strong' && {
+    boxShadow: theme.shadows[2],
+  }),`;
+  const styledBody = meta.sxSurfaceSelector
+    ? `  '& ${meta.sxSurfaceSelector}': {\n${styledRules.replace(/^/gm, '  ')}\n  },`
+    : styledRules;
+  // Pickers style their input surface, not the outer field, so these examples target it like the live preview does.
+  const globalStylesSelector = `.Product${componentName}Global${meta.sxSurfaceSelector ? ` ${meta.sxSurfaceSelector}` : ''}`;
+
   const styledCode = `import { styled } from '@mui/material/styles';
-import { ${componentName} } from '@mui/material';
+${buildImports(meta, [], false)}
 
 const Product${componentName} = styled(${componentName}, {
   shouldForwardProp: (prop) => prop !== 'emphasis',
 })<{ emphasis?: 'normal' | 'strong' }>(({ theme, emphasis }) => ({
-  borderRadius: theme.shape.borderRadius,
-  ...(emphasis === 'strong' && {
-    boxShadow: theme.shadows[2],
-  }),
+${styledBody}
 }));`;
 
-  const globalStylesCode = `import { GlobalStyles, ${componentName} } from '@mui/material';
+  const globalStylesCode = `${buildImports(meta, ['GlobalStyles'])}
 
 <>
   <GlobalStyles
     styles={(theme) => ({
-      '.Product${componentName}Global': {
+      '${globalStylesSelector}': {
         borderRadius: theme.shape.borderRadius,
         outline: \`1px solid \${theme.palette.divider}\`,
       },
@@ -1184,7 +1226,7 @@ const Product${componentName} = styled(${componentName}, {
 
   const themeCode = themeKey
     ? themeStyleKey !== themeKey
-      ? `import { createTheme } from '@mui/material/styles';
+      ? `${themeImports}
 
 const theme = createTheme({
   components: {
@@ -1202,7 +1244,7 @@ ${themeOverrideObject}
     },
   },
 });`
-      : `import { createTheme } from '@mui/material/styles';
+      : `${themeImports}
 
 const theme = createTheme({
   components: {

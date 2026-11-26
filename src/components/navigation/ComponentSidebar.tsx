@@ -257,6 +257,18 @@ export const ComponentSidebar: React.FC<ComponentSidebarProps> = ({
           </ListItem>
           <ListItem disablePadding>
             <ListItemButton
+              onClick={() => handleNavigate('/content-standards')}
+              selected={location.pathname === '/content-standards'}
+              sx={{ px: 2.5 }}
+            >
+              <ListItemIcon sx={{ minWidth: 0, mr: 2, justifyContent: 'center' }}>
+                <Icon aria-hidden baseClassName="material-icons-outlined">rule</Icon>
+              </ListItemIcon>
+              <ListItemText primary="Content standards" slotProps={{ primary: { sx: { fontWeight: 'bold' } } }} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton
               onClick={() => handleNavigate('/accessibility')}
               selected={location.pathname === '/accessibility'}
               sx={{

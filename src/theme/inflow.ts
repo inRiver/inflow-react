@@ -751,6 +751,27 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
           }),
         },
       },
+      // Pickers follow the Inflow text field (small, 14px). The time list keeps MUI's own row sizing: MUI computes its scroll position from it.
+      MuiPickersTextField: { defaultProps: { size: 'small' } },
+      MuiPickersInputBase: {
+        styleOverrides: {
+          root: {
+            '&.MuiPickersInputBase-inputSizeSmall': { fontSize: '0.875rem', lineHeight: '1.429' },
+          },
+        },
+      },
+      // List text matches the field text (14px).
+      // Still the MUI X clock; only its divider lines are removed (no prop exists for this, so it is a theme override).
+      MuiMultiSectionDigitalClock: { styleOverrides: { root: { borderBottom: 'none' } } },
+      MuiMultiSectionDigitalClockSection: {
+        styleOverrides: {
+          // MUI centers the selected time. With 36px row pitch (32px box + 4px margins) a 180px list centers it with
+          // two whole rows above and below, so no number is cut off at the edges.
+          root: { maxHeight: 180, '&:not(:first-of-type)': { borderLeft: 'none' } },
+          // 32px boxes, close to the small button (30px) and field (37px), instead of MUI's 40px.
+          item: { fontSize: '0.875rem', lineHeight: '1.5rem', padding: '4px 8px', borderRadius: T.radiusSm },
+        },
+      },
       MuiPickerDay: {
         styleOverrides: {
           root: ({ theme }) => ({

@@ -1,5 +1,8 @@
 import { useState } from 'react';
-import { Stack, TextField } from '@mui/material';
+import { Stack } from '@mui/material';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import dayjs from 'dayjs';
+import { InflowLocalizationProvider } from '../../datetime';
 import { DemoFrame } from '../DemoFrame';
 import { CodeBlock } from '../CodeBlock';
 import { PropsPlayground } from '../PropsPlayground';
@@ -24,29 +27,35 @@ export function TimePickerDemo() {
   ];
 
   const codeExample = `
-import { TextField } from '@mui/material';
+import dayjs from 'dayjs';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { InflowLocalizationProvider } from '@inriver/inflow-react/datetime';
 
-// <InflowProvider> only needs to be declared once at your app root - see Guidelines
-<TextField
-  type="time"
-  label="Alarm"
-  size={props.size}
-  disabled={props.disabled}
-  InputLabelProps={{ shrink: true }}
-/>`;
+// Needs the optional peers @mui/x-date-pickers and dayjs. <InflowProvider> is declared once at your app root.
+// Locale and the 12/24-hour clock come from configureDateTime(...) or the provider props (props win) - see Content
+// standards. Pass hourCycle="24" to force a 24-hour clock. A timeZone (provider prop or configureDateTime) becomes the
+// time picker's zone once dayjs's utc and timezone plugins are registered; build values with dayjs.utc or dayjs.tz.
+function AlarmPicker() {
+  return (
+    <InflowLocalizationProvider>
+      <TimePicker
+        label="Alarm"
+        defaultValue={dayjs('2024-01-01T07:30')}
+        disabled={${props.disabled}}
+        slotProps={{ textField: { size: '${props.size}' } }}
+      />
+    </InflowLocalizationProvider>
+  );
+}`;
 
   return (
-    <>
+    <InflowLocalizationProvider>
       <DemoFrame title="Time Picker - Interactive">
-        <TextField
-          type="time"
+        <TimePicker
           label="Alarm"
-          size={props.size}
+          defaultValue={dayjs('2024-01-01T07:30')}
           disabled={props.disabled}
-          defaultValue="07:30"
-          slotProps={{
-            inputLabel: { shrink: true }
-          }}
+          slotProps={{ textField: { size: props.size } }}
         />
       </DemoFrame>
 
@@ -55,20 +64,16 @@ import { TextField } from '@mui/material';
       <CodeBlock code={codeExample} language="tsx" />
 
       <DemoFrame title="All States">
-        <Stack spacing={2} direction="column">
-          <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap' }}>
-            <TextField type="time" label="Alarm" defaultValue="07:30" slotProps={{
-              inputLabel: { shrink: true }
-            }} />
-            <TextField type="time" label="Meeting" defaultValue="14:00" slotProps={{
-              inputLabel: { shrink: true }
-            }} />
-            <TextField type="time" label="Disabled" disabled defaultValue="09:00" slotProps={{
-              inputLabel: { shrink: true }
-            }} />
-          </Stack>
+        <Stack spacing={2} direction="row" sx={{ flexWrap: 'wrap' }}>
+          <TimePicker label="Alarm" defaultValue={dayjs('2024-01-01T07:30')} />
+          <TimePicker
+            label="Small"
+            defaultValue={dayjs('2024-01-01T14:00')}
+            slotProps={{ textField: { size: 'small' } }}
+          />
+          <TimePicker label="Disabled" disabled defaultValue={dayjs('2024-01-01T09:00')} />
         </Stack>
       </DemoFrame>
-    </>
+    </InflowLocalizationProvider>
   );
 }

@@ -38,6 +38,8 @@ import {
   type DataTableRow,
   type DataTableStatus,
 } from './DataTable.data';
+import { dateColumn, dateTimeColumn } from '../datetime';
+import { displayedDayFilter } from '../datetime/format';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -125,6 +127,8 @@ const columnDefs: ColDef<DataTableRow>[] = [
       return Number.isFinite(parsedValue) ? Math.min(100, Math.max(0, parsedValue)) : oldValue;
     },
   },
+  { field: 'createdAt', headerName: 'Created', minWidth: 170, ...dateTimeColumn, ...displayedDayFilter },
+  { field: 'createdAt', colId: 'createdDate', headerName: 'Created (date)', minWidth: 150, ...dateColumn, ...displayedDayFilter },
 ];
 
 export interface DataTableProps {
@@ -141,17 +145,18 @@ export function DataTable({ onFocusedCellChange }: DataTableProps) {
   );
 
   const publishFocusedContext = useCallback((event: CellFocusedEvent<DataTableRow>) => {
-    const field = typeof event.column === 'string' || event.column === null
+    // The column id, not the field: two columns can show the same field differently.
+    const columnId = typeof event.column === 'string' || event.column === null
       ? undefined
-      : event.column.getColDef().field;
+      : event.column.getColId();
     const row = event.rowIndex === null ? undefined : event.api.getDisplayedRowAtIndex(event.rowIndex)?.data;
-    onFocusedCellChange?.(row && isDataTableField(field) ? createDataTableCellContext(row, field) : null);
+    onFocusedCellChange?.(row && isDataTableField(columnId) ? createDataTableCellContext(row, columnId) : null);
   }, [onFocusedCellChange]);
 
   const publishEditedContext = useCallback((event: CellValueChangedEvent<DataTableRow>) => {
-    const field = event.colDef.field;
+    const columnId = event.column.getColId();
     onFocusedCellChange?.(
-      event.data && isDataTableField(field) ? createDataTableCellContext(event.data, field) : null,
+      event.data && isDataTableField(columnId) ? createDataTableCellContext(event.data, columnId) : null,
     );
   }, [onFocusedCellChange]);
 

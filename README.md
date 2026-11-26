@@ -10,7 +10,7 @@ Shared Inflow React and MUI theme, design tokens, and themed components for Inri
 
 ## Requirements and compatibility
 
-Install a compatible version of each peer dependency in the consuming application.
+Install a compatible version of each required peer dependency in the consuming application.
 
 | Peer dependency | Compatible version |
 | --- | --- |
@@ -20,7 +20,9 @@ Install a compatible version of each peer dependency in the consuming applicatio
 | `@emotion/react` | `^11.13.0` |
 | `@emotion/styled` | `^11.13.0` |
 
-Import most APIs from the package root; import AG Grid theme parameters from the `@inriver/inflow-react/ag-grid` subpath:
+`@mui/x-date-pickers` (`>=9.0.0 <10.0.0`) and `dayjs` (`^1.11.0`) are optional peers: install them only if you import from `@inriver/inflow-react/datetime`. See [Optional date and time setup](#optional-date-and-time-setup).
+
+Import most APIs from the package root; import AG Grid theme parameters from the `@inriver/inflow-react/ag-grid` subpath and the opt-in date and time APIs from the `@inriver/inflow-react/datetime` subpath:
 
 ```ts
 import { InflowProvider, ThemedButton } from '@inriver/inflow-react';
@@ -116,7 +118,7 @@ The main package remains MIT-licensed. Bundled fonts retain SIL Open Font Licens
 
 ## API overview
 
-Most public exports are available from `@inriver/inflow-react`; AG Grid theme parameters are available from `@inriver/inflow-react/ag-grid`.
+Most public exports are available from `@inriver/inflow-react`; AG Grid theme parameters are available from `@inriver/inflow-react/ag-grid`, and date and time APIs only from `@inriver/inflow-react/datetime`.
 
 | Group | Exports | Import path |
 | --- | --- | --- |
@@ -127,7 +129,9 @@ Most public exports are available from `@inriver/inflow-react`; AG Grid theme pa
 | Theme flags & types | `INFLOW_DARK_MODE_ENABLED`, `InflowColorMode` | `@inriver/inflow-react` |
 | Components | `ThemedAccordion`, `ThemedAlert`, `ThemedAppNav` (+ `ThemedAppNavPlaceholder`), `ThemedAvatar` (+ `ThemedAvatarGroup`), `ThemedBadge`, `ThemedBreadcrumbs`, `ThemedButton`, `ThemedCard`, `ThemedChatPanel`, `ThemedChip`, `ThemedDetailPanel` (+ `ThemedDetailPanelSection`), `ThemedDialog`, `ThemedFileTypeIcon`, `ThemedMenu`, `ThemedPageHeader`, `ThemedRightPanel`, `ThemedStepper`, `ThemedTable`, `ThemedTabs` (+ `ThemedTabPanel`), `ThemedTextField`, `ThemedToast`, plus their prop types and `Column` | `@inriver/inflow-react` |
 | AG Grid theme params | `inflowGridThemeParams`, `inflowGridThemeParamsDark`, `InflowGridThemeParams` | `@inriver/inflow-react/ag-grid` |
-
+| Date and time preferences | `configureDateTime`, `getDateTimeFormats`, `DateTimeOptions`, `DateTimeFormats`, `DateTimeStyle`, `HourCycle` | `@inriver/inflow-react/datetime` |
+| Date and time display | `formatDate`, `formatTime`, `formatDateTime`, `dateColumn`, `dateTimeColumn` | `@inriver/inflow-react/datetime` |
+| Picker localization | `InflowLocalizationProvider`, `InflowLocalizationProviderProps` | `@inriver/inflow-react/datetime` |
 The components are thin MUI wrappers. See the [live showcase](https://inriver.github.io/inflow-react/) for behavior and props.
 
 ## Theming and tokens
@@ -210,6 +214,53 @@ Inside an `InflowProvider`, use the scoped CSS variables for CSS authored outsid
 - For multiple roots or independently deployed microfrontends on one page, pass a distinct `cacheKey` to each provider.
 - For a Shadow DOM or iframe, pass an `emotionCache` configured for the target container. It overrides `cacheKey`.
 - MUI portal components render outside the provider root by default. Theme values still flow through React context, but consumer-authored `var(--infl-*)` styles in portal content need a matching portal container.
+
+## Optional date and time setup
+
+`@inriver/inflow-react/datetime` provides date and time preferences, display formatters, AG Grid column fragments and localization for MUI X pickers. It needs two optional peers, even if you only use the formatters. The package root never loads them.
+
+```sh
+npm install @mui/x-date-pickers@">=9.0.0 <10.0.0" dayjs@^1.11.0
+```
+
+Use `InflowProvider` once at the app root and `InflowLocalizationProvider` around MUI X pickers inside it:
+
+```tsx
+import { InflowProvider } from '@inriver/inflow-react';
+import { configureDateTime, InflowLocalizationProvider } from '@inriver/inflow-react/datetime';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import 'dayjs/locale/de.js';
+
+configureDateTime({ locale: 'de', hourCycle: '24' });
+
+export function App() {
+  return (
+    <InflowProvider>
+      <InflowLocalizationProvider>
+        <DatePicker label="Due date" />
+      </InflowLocalizationProvider>
+    </InflowProvider>
+  );
+}
+```
+
+Set shared defaults with `configureDateTime`. Provider props (`locale`, `hourCycle`, `style`) override them for that provider, and a mounted provider follows later configuration changes for the values it does not override. `getDateTimeFormats` returns the Day.js patterns; `formatDate`, `formatTime` and `formatDateTime` return display text, and accept the same options to override the defaults for one call.
+
+- **Tables and pickers.** Table formats always use a Gregorian calendar, Latin digits, English month names and AM/PM. Pickers use the Day.js locale if you load it before rendering (`import 'dayjs/locale/de.js'`; keep the `.js`, which plain Node ESM needs on the server), so a 12-hour clock or the `unambiguous` style can show that locale's words in picker fields while tables stay English.
+- **Leading zeros.** Pickers and the built-in field components respect the pattern's leading zeros. A custom `slots.field` replacement receives `shouldRespectLeadingZeros` from the picker, so pass the props on to `useDateField` (or the matching hook). A field you build outside a picker has to set it itself. To turn it off, set `shouldRespectLeadingZeros` in the picker's `slotProps.field`, or set the `MuiDateField`, `MuiTimeField` or `MuiDateTimeField` theme default above `InflowLocalizationProvider`; a theme nested below it that sets only the field default does not reach the pickers.
+- **Time zones.** `configureDateTime({ timeZone })` (or the `timeZone` option of a formatter) sets the zone in which table formatters show a moment in time: an ISO string ending in `Z` or an offset, a `Date`, or a millisecond number. ISO values without an offset, such as `2022-03-09T16:33:00` or a date-only `2022-03-09`, are wall-clock values and are shown as written. Any other string that the browser can parse, and any unknown zone name, falls back to the browser's time zone.
+  - **Pickers.** The same zone (the `timeZone` prop of `InflowLocalizationProvider`, or else the configured one) becomes the default `timezone` of the MUI X `TimePicker` and `DateTimePicker`, so a picker shows and writes the same wall time as a table. It only applies once your app has registered the Day.js `utc` and then `timezone` plugins (`dayjs.extend(utc); dayjs.extend(timezone)`, with `.js` in the paths for plain Node ESM); without them pickers ignore the zone, because MUI X cannot use one. A `timezone` prop on a picker wins. Unknown names, `default`, `system` and numeric offsets are ignored.
+  - **Dates.** Date-only pickers (`DatePicker`, `DateField`) are never converted: converting a date to another zone can show the day before or after.
+  - **Values.** `onChange` hands back a Day.js value in the zone of the value you gave the picker, or in the picker's zone when it had none, so persist it with `value.toISOString()`. Build values from an instant (`dayjs.utc(...)` or `dayjs.tz(...)`): `dayjs('2024-01-01T07:30')` is read in the browser's zone, and a table would show that same text unconverted.
+  - **Changing the zone.** Pickers that already hold a value update when the zone changes. An empty picker that is already mounted keeps reading what is typed in the zone it mounted with, so set the zone before pickers mount, or give the picker a `key` that includes the zone so it remounts. A provider nested in another one uses its own zone for its pickers.
+  - **Limits.** Standalone `TimeField` and `DateTimeField` take no default and need their own `timezone` prop; do not set a `timezone` default for them in the theme, because MUI X applies it to the field after the picker's zone. Pickers use Day.js's `timezone` plugin, which reads wall times in the device's zone: on a device in a daylight-saving zone, a time that falls in that zone's skipped hour on the spring-forward day shows an hour later than the table does.
+- **SSR.** Set shared defaults before rendering and use the same values on the server and the client, and load the same Day.js locales before hydration. If you use a time zone for pickers, register the Day.js `utc` and `timezone` plugins before both the server and the client render, or the two render different picker values. `configureDateTime` changes module-wide state, so do not call it per request; pass request-specific preferences as provider props or formatter options.
+
+### AG Grid date columns
+
+Spread `dateColumn` or `dateTimeColumn` into a column definition, for example `{ field: 'createdAt', ...dateTimeColumn }`. They format the cell and the Enterprise Set Filter labels and leave the cell value unchanged. Choose the filter yourself: the default filter works on the raw value, not on the shown text. After `configureDateTime` changes a preference, call `api.refreshCells({ force: true })` and re-apply filters with `api.onFilterChanged()`.
+
+AG Grid normally exports and copies the shown text. Set `useValueFormatterForExport: false` to keep the raw values, or use `processCellCallback` (CSV and Excel) or `processCellForClipboard` to write your own output. For machine timestamps, keep ISO 8601 values with an offset or `Z`: the `iso` style is a `YYYY-MM-DD HH:mm` display pattern, not a machine timestamp.
 
 ## SSR and Next.js
 

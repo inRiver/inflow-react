@@ -32,13 +32,11 @@
     "dist/index.cjs.map",
     "dist/index.d.ts",
     "dist/index.d.ts.map",
-    "dist/tokens.js",
-    "dist/tokens.js.map",
-    "dist/tokens.cjs",
-    "dist/tokens.cjs.map",
+    "dist/_chunks",
     "dist/cli",
     "dist/ag-grid",
     "dist/components",
+    "dist/datetime",
     "dist/providers",
     "dist/theme",
     "dist/fonts",
@@ -58,6 +56,11 @@
       "import": "./dist/ag-grid/index.js",
       "require": "./dist/ag-grid/index.cjs"
     },
+    "./datetime": {
+      "types": "./dist/datetime/index.d.ts",
+      "import": "./dist/datetime/index.js",
+      "require": "./dist/datetime/index.cjs"
+    },
     "./package.json": "./package.json",
     "./fonts/inter.css": "./dist/fonts/inter.css",
     "./fonts/material-icons.css": "./dist/fonts/material-icons.css",
@@ -70,7 +73,7 @@
     "lint": "eslint .",
     "test": "vitest",
     "test:run": "vitest --run && npm run test:scripts",
-    "test:scripts": "node --test scripts/generate-cli-manifest.test.mjs",
+    "test:scripts": "node --test scripts/generate-cli-manifest.test.mjs scripts/datetime-host-timezones.test.mjs scripts/repo-guardrails.test.mjs",
     "test:pack": "node scripts/pack-smoke.mjs",
     "prepublishOnly": "node scripts/guard-publish.cjs",
     "preview": "vite preview"
@@ -79,8 +82,18 @@
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
     "@mui/material": ">=9.0.0 <10.0.0",
+    "@mui/x-date-pickers": ">=9.0.0 <10.0.0",
+    "dayjs": "^1.11.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@mui/x-date-pickers": {
+      "optional": true
+    },
+    "dayjs": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@emotion/react": "^11.14.0",
@@ -88,6 +101,7 @@
     "@eslint/js": "^10.0.1",
     "@mui/icons-material": "^9.5.0",
     "@mui/material": "^9.5.0",
+    "@mui/x-date-pickers": "^9.17.0",
     "@playwright/test": "^1.64.1",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/jest-dom": "^7.0.1",
@@ -103,6 +117,7 @@
     "ag-grid-react": "^36.2.0",
     "axe-core": "^4.14.0",
     "clipboard-copy": "^4.0.1",
+    "dayjs": "^1.11.23",
     "eslint": "^10.14.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.7",
@@ -120,9 +135,7 @@
     "vitest": "^5.1.0"
   },
   "dependencies": {
-    "@emotion/cache": "^11.14.0",
-    "@mui/x-date-pickers": "^9.17.0",
-    "dayjs": "^1.11.23"
+    "@emotion/cache": "^11.14.0"
   },
   "overrides": {
     "react-router": "^7.18.5",
