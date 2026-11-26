@@ -15,7 +15,7 @@ import {
   Tooltip,
 } from '@mui/material';
 import type { ReactNode } from 'react';
-import type { MenuItemProps } from '@mui/material';
+import type { MenuItemProps, MenuProps } from '@mui/material';
 
 // Keep Button's visual styling while MenuItem owns roving focus and keyboard activation.
 // A non-native root stays focusable when aria-disabled, unlike a native disabled button.
@@ -64,6 +64,11 @@ export interface ThemedMenuCta {
 
 export interface ThemedMenuProps {
   anchorEl: Element | null;
+  /**
+   * Forwards to MUI Menu's portal container, e.g. to inherit `--infl-*` variables in nested providers.
+   * Locked-item tooltips still use their own popper portal.
+   */
+  container?: MenuProps['container'];
   open: boolean;
   onClose: () => void;
   items: ThemedMenuItemDef[];
@@ -91,10 +96,11 @@ export interface ThemedMenuProps {
 }
 
 export const ThemedMenu = forwardRef<HTMLDivElement, ThemedMenuProps>(
-  ({ anchorEl, open, onClose, items, onSelect, dense = false, header, cta, multiple = false, radio = false }, ref) => (
+  ({ anchorEl, container, open, onClose, items, onSelect, dense = false, header, cta, multiple = false, radio = false }, ref) => (
     <Menu
       ref={ref}
       anchorEl={anchorEl}
+      container={container}
       open={open}
       onClose={onClose}
       slotProps={{

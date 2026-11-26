@@ -32,6 +32,13 @@ describe('ThemedFileTypeIcon', () => {
     expect(screen.getByText('DOCX')).toBeInTheDocument();
   });
 
+  it('renders an uppercase extension from a file name with a custom title', () => {
+    renderWithInflow(<ThemedFileTypeIcon extension="report.PDF" title="Quarterly report" />);
+
+    expect(screen.getByRole('img', { name: 'Quarterly report' })).toBeInTheDocument();
+    expect(screen.getByText('PDF')).toBeInTheDocument();
+  });
+
   it('is hidden from assistive technology when decorative', () => {
     renderWithInflow(<ThemedFileTypeIcon extension="pdf" decorative />);
 

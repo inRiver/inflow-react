@@ -93,8 +93,63 @@ describe('ThemedMenu', () => {
   it('opens a portaled menu when open with an anchor element', () => {
     renderWithInflow(<MenuHarness />);
 
-    expect(screen.getByRole('menu')).toBeInTheDocument();
+    const menu = screen.getByRole('menu');
+    expect(menu).toBeInTheDocument();
+    expect(menu.closest('.MuiMenu-root')?.parentElement).toBe(document.body);
+    expect(menu.closest('[data-inflow-root]')).toBeNull();
     expect(screen.getAllByRole('menuitem')).toHaveLength(items.length);
+  });
+
+  it.each(['element', 'callback'] as const)('renders inside a provider-scoped %s container', (kind) => {
+    function ScopedMenu() {
+      const [target, setTarget] = useState<HTMLDivElement | null>(null);
+      return (
+        <>
+          <div data-testid="menu-container" ref={setTarget} />
+          {target && (
+            <ThemedMenu
+              anchorEl={document.body}
+              container={kind === 'element' ? target : () => target}
+              open
+              onClose={vi.fn()}
+              items={items}
+            />
+          )}
+        </>
+      );
+    }
+
+    renderWithInflow(<ScopedMenu />);
+    const target = screen.getByTestId('menu-container');
+    const menu = screen.getByRole('menu');
+    expect(target.closest('[data-inflow-root]')).not.toBeNull();
+    expect(menu.closest('.MuiMenu-root')?.parentElement).toBe(target);
+    expect(target).toContainElement(menu);
+  });
+
+  it('keeps default portal keyboard selection and Escape behavior', async () => {
+    const user = userEvent.setup();
+    const onSelect = vi.fn();
+    const onClose = vi.fn();
+    renderWithInflow(<InteractiveMenuHarness onSelect={onSelect} onClose={onClose} />);
+    const trigger = screen.getByRole('button', { name: 'Open keyboard menu' });
+    await user.tab();
+    await user.keyboard('{Enter}');
+    expect(screen.getByRole('menu').closest('.MuiMenu-root')?.parentElement).toBe(document.body);
+    expect(screen.getByRole('menuitem', { name: 'Alpha' })).toHaveFocus();
+    await user.keyboard('{ArrowDown}{ArrowDown}{ArrowDown}');
+    expect(screen.getByRole('menuitem', { name: 'Omega' })).toHaveFocus();
+    await user.keyboard('{Enter}');
+    await waitFor(() => expect(screen.queryByRole('menu')).not.toBeInTheDocument());
+    expect(onSelect).toHaveBeenCalledExactlyOnceWith('omega');
+    expect(onClose).toHaveBeenCalledOnce();
+    expect(trigger).toHaveFocus();
+
+    await user.keyboard('{Enter}{Escape}');
+    await waitFor(() => expect(screen.queryByRole('menu')).not.toBeInTheDocument());
+    expect(onSelect).toHaveBeenCalledOnce();
+    expect(onClose).toHaveBeenCalledTimes(2);
+    expect(trigger).toHaveFocus();
   });
 
   it('renders item labels, icons, shortcuts, and dividers', () => {

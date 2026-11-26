@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import {
   Box,
   Button,
@@ -18,9 +18,10 @@ import {
   colorSchemeDark,
   themeQuartz,
   type CellFocusedEvent,
-  type CellValueChangedEvent,
+  type CellEditRequestEvent,
   type ColDef,
   type FirstDataRenderedEvent,
+  type ModelUpdatedEvent,
   type SelectionChangedEvent,
 } from 'ag-grid-community';
 import { AgGridReact, type CustomCellRendererProps } from 'ag-grid-react';
@@ -35,6 +36,7 @@ import {
   dataTableRows,
   isDataTableField,
   type DataTableCellContext,
+  type DataTableField,
   type DataTableRow,
   type DataTableStatus,
 } from './DataTable.data';
@@ -54,6 +56,9 @@ const lightGridTheme = themeQuartz.withParams({ ...inflowGridThemeParams, ...gri
 const darkGridTheme = themeQuartz
   .withPart(colorSchemeDark)
   .withParams({ ...inflowGridThemeParamsDark, ...gridDimensionParams });
+
+const defaultColDef = { sortable: true, filter: true, resizable: true } as const;
+const getRowId = ({ data }: { data: DataTableRow }) => data.sku;
 
 const rowSelection = {
   mode: 'multiRow',
@@ -131,6 +136,28 @@ const columnDefs: ColDef<DataTableRow>[] = [
   { field: 'createdAt', colId: 'createdDate', headerName: 'Created (date)', minWidth: 150, ...dateColumn, ...displayedDayFilter },
 ];
 
+function isVisibleInTab(row: DataTableRow, tab: number): boolean {
+  return tab === 0 || row.status === ['Active', 'Draft', 'Archived'][tab - 1];
+}
+
+function applyEdit(row: DataTableRow, columnId: string, value: unknown): DataTableRow | null {
+  switch (columnId) {
+    case 'name':
+    case 'channel':
+      return typeof value === 'string' ? { ...row, [columnId]: value } : null;
+    case 'status':
+      return value === 'Active' || value === 'Draft' || value === 'Archived'
+        ? { ...row, status: value }
+        : null;
+    case 'completeness': {
+      const parsed = typeof value === 'number' ? value : typeof value === 'string' ? Number.parseFloat(value) : NaN;
+      return Number.isFinite(parsed) ? { ...row, completeness: Math.min(100, Math.max(0, parsed)) } : null;
+    }
+    default:
+      return null;
+  }
+}
+
 export interface DataTableProps {
   readonly onFocusedCellChange?: (context: DataTableCellContext | null) => void;
 }
@@ -138,26 +165,77 @@ export interface DataTableProps {
 export function DataTable({ onFocusedCellChange }: DataTableProps) {
   const gridTheme = useTheme().palette.mode === 'dark' ? darkGridTheme : lightGridTheme;
   const [tab, setTab] = useState(0);
+  const [rows, setRows] = useState<DataTableRow[]>(() => dataTableRows.map((row) => ({ ...row })));
+  // Events can arrive in a batch before React renders the next rowData/tab props.
+  const rowsRef = useRef(rows);
+  const tabRef = useRef(tab);
+  const focusedCellRef = useRef<{ sku: string; colId: DataTableField } | null>(null);
   const [selectedCount, setSelectedCount] = useState(0);
-  const rowData = useMemo(
-    () => dataTableRows.filter(({ status }) => tab === 0 || status === ['Active', 'Draft', 'Archived'][tab - 1]),
-    [tab],
-  );
+  const rowData = useMemo(() => rows.filter((row) => isVisibleInTab(row, tab)), [rows, tab]);
 
   const publishFocusedContext = useCallback((event: CellFocusedEvent<DataTableRow>) => {
+    // AG Grid retains cell focus when browser focus moves outside the grid.
     // The column id, not the field: two columns can show the same field differently.
-    const columnId = typeof event.column === 'string' || event.column === null
-      ? undefined
-      : event.column.getColId();
-    const row = event.rowIndex === null ? undefined : event.api.getDisplayedRowAtIndex(event.rowIndex)?.data;
-    onFocusedCellChange?.(row && isDataTableField(columnId) ? createDataTableCellContext(row, columnId) : null);
+    const columnId = typeof event.column === 'string' ? event.column : event.column?.getColId();
+    const displayedRow = event.rowIndex === null ? undefined : event.api.getDisplayedRowAtIndex(event.rowIndex)?.data;
+    const row = rowsRef.current.find(({ sku }) => sku === displayedRow?.sku);
+    if (row && isVisibleInTab(row, tabRef.current) && isDataTableField(columnId)) {
+      focusedCellRef.current = { sku: row.sku, colId: columnId };
+      onFocusedCellChange?.(createDataTableCellContext(row, columnId));
+    } else {
+      focusedCellRef.current = null;
+      onFocusedCellChange?.(null);
+    }
   }, [onFocusedCellChange]);
 
-  const publishEditedContext = useCallback((event: CellValueChangedEvent<DataTableRow>) => {
+  const handleEditRequest = useCallback((event: CellEditRequestEvent<DataTableRow>) => {
     const columnId = event.column.getColId();
-    onFocusedCellChange?.(
-      event.data && isDataTableField(columnId) ? createDataTableCellContext(event.data, columnId) : null,
-    );
+    const row = rowsRef.current.find(({ sku }) => sku === event.data?.sku);
+    if (!row) return;
+    const updatedRow = applyEdit(row, columnId, event.newValue);
+    if (!updatedRow) return;
+
+    const nextRows = rowsRef.current.map((current) => current.sku === row.sku ? updatedRow : current);
+    rowsRef.current = nextRows;
+    setRows(nextRows);
+
+    const focused = focusedCellRef.current;
+    if (focused?.sku !== row.sku) return;
+    if (!isVisibleInTab(updatedRow, tabRef.current)) {
+      focusedCellRef.current = null;
+      onFocusedCellChange?.(null);
+    } else if (focused.colId === columnId) {
+      onFocusedCellChange?.(createDataTableCellContext(updatedRow, focused.colId));
+    }
+  }, [onFocusedCellChange]);
+
+  const changeTab = useCallback((nextTab: number) => {
+    tabRef.current = nextTab;
+    setTab(nextTab);
+    const focused = focusedCellRef.current;
+    if (focused && !rowsRef.current.some((row) => row.sku === focused.sku && isVisibleInTab(row, nextTab))) {
+      focusedCellRef.current = null;
+      onFocusedCellChange?.(null);
+    }
+  }, [onFocusedCellChange]);
+
+  const reconcileDisplayedFocus = useCallback((event: ModelUpdatedEvent<DataTableRow>) => {
+    const focused = focusedCellRef.current;
+    const activeCell = event.api.getFocusedCell();
+    const displayedRow = activeCell ? event.api.getDisplayedRowAtIndex(activeCell.rowIndex)?.data : undefined;
+    const activeColId = activeCell?.column.getColId();
+    const row = displayedRow ? rowsRef.current.find(({ sku }) => sku === displayedRow.sku) : undefined;
+    if (!row || !isVisibleInTab(row, tabRef.current) || !isDataTableField(activeColId)) {
+      if (focused) {
+        focusedCellRef.current = null;
+        onFocusedCellChange?.(null);
+      }
+      return;
+    }
+    if (row.sku !== focused?.sku || activeColId !== focused.colId) {
+      focusedCellRef.current = { sku: row.sku, colId: activeColId };
+      onFocusedCellChange?.(createDataTableCellContext(row, activeColId));
+    }
   }, [onFocusedCellChange]);
 
   const selectReferenceRow = useCallback((event: FirstDataRenderedEvent<DataTableRow>) => {
@@ -175,7 +253,7 @@ export function DataTable({ onFocusedCellChange }: DataTableProps) {
           <Tabs
             value={tab}
             onChange={(_event, value: unknown) => {
-              if (typeof value === 'number') setTab(value);
+              if (typeof value === 'number') changeTab(value);
             }}
             variant="scrollable"
             scrollButtons="auto"
@@ -219,15 +297,17 @@ export function DataTable({ onFocusedCellChange }: DataTableProps) {
       >
         <AgGridReact<DataTableRow>
           columnDefs={columnDefs}
-          defaultColDef={{ sortable: true, filter: true, resizable: true }}
-          getRowId={({ data }) => data.sku}
+          defaultColDef={defaultColDef}
+          getRowId={getRowId}
           rowData={rowData}
           rowSelection={rowSelection}
           selectionColumnDef={selectionColumnDef}
           theme={gridTheme}
           onCellFocused={publishFocusedContext}
-          onCellValueChanged={publishEditedContext}
+          readOnlyEdit
+          onCellEditRequest={handleEditRequest}
           onFirstDataRendered={selectReferenceRow}
+          onModelUpdated={reconcileDisplayedFocus}
           onSelectionChanged={updateSelectedCount}
         />
       </Box>

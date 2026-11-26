@@ -1,8 +1,8 @@
 import { memo } from 'react';
-import SvgIcon from '@mui/material/SvgIcon';
+import { SvgIcon } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { inflowFileTypeColors, inflowFileTypeExtensions, normalizeFileExtension } from '../../theme/fileTypes';
-import type { InflowFileTypeFamily } from '../../theme/fileTypes';
+import { inflowFileTypeColors, inflowFileTypeExtensions, normalizeFileExtension } from '../../theme/fileTypes.js';
+import type { InflowFileTypeFamily } from '../../theme/fileTypes.js';
 
 export interface ThemedFileTypeIconProps {
   /** "pdf", ".PDF", or "report.docx". Any extension renders. */
