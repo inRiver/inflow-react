@@ -12,6 +12,7 @@ import { ThemingPage } from '../pages/ThemingPage';
 import { CliDocsPage } from '../pages/CliDocsPage';
 import { LlmsPage } from '../pages/LlmsPage';
 import { CapitalizationPage } from '../pages/CapitalizationPage';
+import { ContentStandardsPage } from '../pages/ContentStandardsPage';
 import { AccessibilityPage } from '../pages/AccessibilityPage';
 import { MigrationPage } from '../pages/MigrationPage';
 import { ChangelogPage } from '../pages/ChangelogPage';
@@ -33,6 +34,7 @@ export const docsRoutes = [
   { path: 'cli', element: <CliDocsPage /> },
   { path: 'llms', element: <LlmsPage /> },
   { path: 'capitalization', element: <CapitalizationPage /> },
+  { path: 'content-standards', element: <ContentStandardsPage /> },
   { path: 'accessibility', element: <AccessibilityPage /> },
   { path: 'migration', element: <MigrationPage /> },
   { path: 'guidelines', element: <GuidelinesPage /> },

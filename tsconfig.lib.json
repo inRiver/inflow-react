@@ -12,6 +12,7 @@
   "include": [
     "src/index.ts",
     "src/ag-grid/**/*",
+    "src/datetime/**/*",
     "src/theme/**/*",
     "src/components/themed/**/*",
     "src/providers/**/*"

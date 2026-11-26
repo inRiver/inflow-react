@@ -1,3 +1,5 @@
+import { formatDate, formatDateTime } from '../datetime';
+
 export type DataTableStatus = 'Active' | 'Draft' | 'Archived';
 
 export interface DataTableRow {
@@ -6,9 +8,12 @@ export interface DataTableRow {
   readonly channel: string;
   readonly status: DataTableStatus;
   readonly completeness: number;
+  /** ISO 8601 timestamp; display formatting is owned by src/datetime. */
+  readonly createdAt: string;
 }
 
-export type DataTableField = keyof DataTableRow;
+/** A grid column id: the row fields, and the date-only view of `createdAt`. */
+export type DataTableField = keyof DataTableRow | 'createdDate';
 
 export interface DataTableCellContext {
   readonly rowId: string;
@@ -17,11 +22,11 @@ export interface DataTableCellContext {
 }
 
 export const dataTableRows: readonly DataTableRow[] = [
-  { sku: 'ABX-200', name: 'Running shoe', channel: 'Amazon', status: 'Active', completeness: 98 },
-  { sku: 'TJ-014', name: 'Trail jacket', channel: 'Shopify', status: 'Draft', completeness: 61 },
-  { sku: 'WB-077', name: 'Wool beanie', channel: 'Salsify', status: 'Active', completeness: 100 },
-  { sku: 'MS-310', name: 'Merino socks', channel: 'Print', status: 'Archived', completeness: 44 },
-  { sku: 'HP-512', name: 'Hydration pack', channel: 'Amazon', status: 'Draft', completeness: 73 },
+  { sku: 'ABX-200', name: 'Running shoe', channel: 'Amazon', status: 'Active', completeness: 98, createdAt: '2026-08-04T02:14:00.000Z' },
+  { sku: 'TJ-014', name: 'Trail jacket', channel: 'Shopify', status: 'Draft', completeness: 61, createdAt: '2026-08-05T00:29:00.000Z' },
+  { sku: 'WB-077', name: 'Wool beanie', channel: 'Salsify', status: 'Active', completeness: 100, createdAt: '2026-08-29T11:57:00.000Z' },
+  { sku: 'MS-310', name: 'Merino socks', channel: 'Print', status: 'Archived', completeness: 44, createdAt: '2026-11-11T05:17:00.000Z' },
+  { sku: 'HP-512', name: 'Hydration pack', channel: 'Amazon', status: 'Draft', completeness: 73, createdAt: '2025-06-10T14:09:00.000Z' },
 ];
 
 const dataTableFieldLabels = {
@@ -30,6 +35,8 @@ const dataTableFieldLabels = {
   channel: 'Channel',
   status: 'Status',
   completeness: 'Completeness',
+  createdAt: 'Created',
+  createdDate: 'Created (date)',
 } as const satisfies Record<DataTableField, string>;
 
 export function isDataTableField(value: string | undefined): value is DataTableField {
@@ -39,9 +46,24 @@ export function isDataTableField(value: string | undefined): value is DataTableF
     case 'channel':
     case 'status':
     case 'completeness':
+    case 'createdAt':
+    case 'createdDate':
       return true;
     default:
       return false;
+  }
+}
+
+function shownValue(row: DataTableRow, field: DataTableField): string {
+  switch (field) {
+    case 'completeness':
+      return `${row.completeness}%`;
+    case 'createdAt':
+      return formatDateTime(row.createdAt);
+    case 'createdDate':
+      return formatDate(row.createdAt);
+    default:
+      return String(row[field]);
   }
 }
 
@@ -49,12 +71,10 @@ export function createDataTableCellContext(
   row: DataTableRow,
   field: DataTableField,
 ): DataTableCellContext {
-  const value = field === 'completeness' ? `${row[field]}%` : String(row[field]);
-
   return {
     rowId: row.sku,
     columnLabel: dataTableFieldLabels[field],
-    value,
+    value: shownValue(row, field),
   };
 }
 

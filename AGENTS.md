@@ -16,6 +16,7 @@ This file covers *process and pitfalls*. For architecture and package boundaries
 | Run tests once (CI-style) | `npm run test:run` |
 | Lint | `npm run lint` |
 | Build (library + showcase) | `npm run build` |
+| Packed-install smoke (library packaging) | `npm run build`, then `npm run test:pack` |
 | Dev server (showcase) | `npm run dev` |
 
 There is no `typecheck` script — type checking happens through `tsc -b` inside `npm run build`.
@@ -55,6 +56,25 @@ Themed components are thin MUI wrappers with a stable public contract. When addi
 - Keep **orthogonal concerns on separate props**. Elevation/layering (backdrop, scroll lock, z-index, shadow) belongs to the presentation prop (e.g. `mode`); content/behavior defaults (width, resizable, close-on-navigation) belong to the semantic prop (e.g. `variant`). A style that describes where a surface sits in space must be keyed off a prop that describes where it sits in space — never off a prop that describes what it is for.
 - Watch the **state space**: if two props combine into N×M states but only a few are meaningful, the axes are miscut — raise it before adding more prop-driven styling.
 - This is a published, versioned package. Changing a prop's meaning or default is a visual/behavioral change for every consumer — treat it with semver care (see `docs/VERSIONING.md`).
+
+## Package boundary changes
+
+The boundary is what ships and what consumers install: `package.json` (`exports`, `files`, dependencies, peers), `vite.lib.config.ts`, `tsconfig.app.json`, `tsconfig.lib.json`, `tsconfig.cli.json`, the scripts that write into `dist/`, and the published entries (`src/index.ts`, `src/ag-grid/`, `src/datetime/`, `src/cli/`). Tests, lint and `tsc -b` cannot see the packed artifact. `npm run test:pack` can, and it packs the `dist` already on disk, so run `npm run build` first, then `npm run test:pack`, before reporting done.
+
+- **Ask the maintainer before editing.** A change to `exports`, `files`, a dependency's kind or range, a peer, or which packages the bundle externalizes is a maintainer decision (see `.github/CODEOWNERS`): lay out the options and their trade-offs, then wait for the answer. A change that cannot reach the packed artifact (tests, showcase pages) needs no ask; a `devDependency` the library build bundles, such as `@mui/icons-material`, counts as shipped.
+- **Weigh the dependency kind.** For each package, compare dependency, optional peer and bundling. One that only a subpath needs and the host app owns (MUI X pickers, dayjs) fits an optional peer (`peerDependenciesMeta`, plus a matching `devDependency` for the showcase). Changing a required peer range is MAJOR (`docs/VERSIONING.md`).
+- **Opt in per entry.** The root entry loads with every optional package absent; heavy packages enter through their own subpath. Add a new entry to `vite.lib.config.ts`, `tsconfig.lib.json`, `package.json` (`exports` and `files`) and `docs/ARCHITECTURE.md` in one commit, and give it a render check in `scripts/pack-smoke.mjs`.
+- **Keep third-party runtime code with its subpath.** Styling for third-party components can stay in the core theme; behavior that needs their runtime (the picker action bar, popup gap, field defaults) lives in `src/datetime/`, so the core theme never imports an optional package at runtime.
+- **Write imports for native Node ESM and CJS.** Dayjs plugins and locales carry the extension (`dayjs/plugin/utc.js`); library code takes MUI components as named imports from `@mui/material`, because a default import such as `@mui/material/Button` passes tests and breaks the CJS bundle.
+- **Move the docs with it.** `docs/ARCHITECTURE.md` (package boundary), the README API table, `public/llms.txt`, the Guidelines page, and a tagged `CHANGELOG.md` `[Unreleased]` entry.
+
+## Refactors keep the look
+
+When the look must not change (reworking a designer's PR, moving styles into the theme), capture a baseline first: screenshots, plus computed styles for size, spacing, color, typography, shadow, radius and placement of the affected surfaces, open and focused states included, in light and dark. Diff against it after each change; the intended differences are the only differences.
+
+## Date and time code
+
+Results depend on the host time zone, so time-zone-sensitive datetime tests also run under other host zones: list them in `scripts/datetime-host-timezones.test.mjs`. Tests that read "today" freeze `Date` with `vi.useFakeTimers({ toFake: ['Date'] })`.
 
 ## Tests and demos move together
 
@@ -105,3 +125,4 @@ The showcase Changelog page parses `CHANGELOG.md` directly at build time, so mal
 5. No new hardcoded theme literals in components.
 6. `package-lock.json` only committed when `package.json` actually changed.
 7. Release commits include the matching `CHANGELOG.md` section.
+8. Package-boundary changes also pass `npm run test:pack` after the final build, and were agreed with the maintainer before the edit.
