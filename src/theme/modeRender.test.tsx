@@ -1,11 +1,9 @@
 import { screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { renderWithInflow } from '../test/renderWithInflow';
-import { AppBar, FormControl, IconButton, InputLabel, MenuItem, Select, TextField, Toolbar } from '@mui/material';
-import { ThemedButton } from '../components/themed/ThemedButton';
+import { AppBar, Button, FormControl, IconButton, InputLabel, MenuItem, Select, TextField, Toolbar } from '@mui/material';
 import { ThemedCard } from '../components/themed/ThemedCard';
 import { ThemedDialog } from '../components/themed/ThemedDialog';
-import { ThemedTextField } from '../components/themed/ThemedTextField';
 import { darkTokens, lightTokens } from './inflow-tokens';
 import { createInflowTheme } from './inflow';
 import { INFLOW_DARK_MODE_ENABLED } from './featureFlags';
@@ -52,9 +50,9 @@ describe.each([
     expect(style(container.querySelector('[data-inflow-root]')!).colorScheme).toBe(mode);
   });
 
-  describe('ThemedButton', () => {
+  describe('Button', () => {
     it('keeps the filled primary label readable on its fill', () => {
-      renderWithInflow(<ThemedButton variant="contained">Save</ThemedButton>, dark);
+      renderWithInflow(<Button variant="contained">Save</Button>, dark);
       const button = screen.getByRole('button', { name: 'Save' });
       expect(parse(style(button).backgroundColor)).toEqual(parse(D.navy700));
       expect(ratio(solid(style(button).color), solid(style(button).backgroundColor))).toBeGreaterThanOrEqual(4.5);
@@ -63,8 +61,8 @@ describe.each([
     it('keeps text and outlined primary buttons readable on paper', () => {
       renderWithInflow(
         <>
-          <ThemedButton variant="text">Text</ThemedButton>
-          <ThemedButton variant="outlined">Outlined</ThemedButton>
+          <Button variant="text">Text</Button>
+          <Button variant="outlined">Outlined</Button>
         </>,
         dark,
       );
@@ -164,9 +162,9 @@ describe.each([
     });
   });
 
-  describe('ThemedTextField', () => {
+  describe('TextField', () => {
     it('keeps the typed value and the label readable', () => {
-      renderWithInflow(<ThemedTextField label="Name" defaultValue="Ada" />, dark);
+      renderWithInflow(<TextField label="Name" defaultValue="Ada" />, dark);
       expect(ratio(solid(style(screen.getByDisplayValue('Ada')).color), parse(D.surfaceLowest))).toBeGreaterThanOrEqual(4.5);
       expect(ratio(solid(style(screen.getByText('Name', { selector: 'label' })).color), parse(D.surfaceLowest))).toBeGreaterThanOrEqual(4.5);
     });

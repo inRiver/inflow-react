@@ -1,5 +1,5 @@
 export interface ThemedComponentInfo {
-  /** Name of the exported Themed* wrapper, e.g. 'ThemedButton'. */
+  /** Name of the exported Themed* wrapper, e.g. 'ThemedCard'. */
   themedName: string;
   /** Short explanation of why this wrapper exists, shown in the sidebar and demo pages. */
   reason: string;

@@ -23,11 +23,12 @@ export interface ThemedCardProps extends Omit<CardProps, 'title'> {
  *
  * @example
  * ```tsx
+ * import { Button } from '@mui/material';
  * import { ThemedCard } from '@/components/themed';
  *
  * <ThemedCard 
  *   title="Project Details" 
- *   actions={<ThemedButton>Save</ThemedButton>}
+ *   actions={<Button>Save</Button>}
  * >
  *   Main content goes here
  * </ThemedCard>

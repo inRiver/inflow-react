@@ -21,8 +21,8 @@ import {
 } from '@mui/material';
 import type { MenuProps, SxProps, Theme } from '@mui/material';
 import { forwardRef, useCallback, useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
-import { inflowTokens } from '../../theme';
-import { ThemedChip } from './ThemedChip';
+import { inflowTokens } from '../../theme/index.js';
+import { ThemedChip } from './ThemedChip.js';
 
 export type ThemedChatMessageRole = 'assistant' | 'user';
 
@@ -107,8 +107,6 @@ export interface ThemedChatPanelProps {
   /** Aggregate host-owned upload progress, paired with attachment status/progress. */
   uploadProgress?: number;
   uploadProgressLabel?: ReactNode;
-  /** @deprecated Use onSendMessage to receive the composed text. */
-  onSend?: () => void;
   inputValue?: string;
   onInputChange?: (value: string) => void;
   onSendMessage?: (text: string) => void;
@@ -279,7 +277,6 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
       threadSx,
       uploadProgress,
       uploadProgressLabel,
-      onSend,
       inputValue = '',
       onInputChange,
       onSendMessage,
@@ -350,7 +347,6 @@ export const ThemedChatPanel = forwardRef<HTMLDivElement, ThemedChatPanelProps>(
       if ((inputValue.trim() === '' && !attachedFile && !attachments?.length) || isRunning || isSendDisabled) return;
 
       onSendMessage?.(inputValue);
-      onSend?.();
     };
 
     const handleInputKeyDown = (event: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {

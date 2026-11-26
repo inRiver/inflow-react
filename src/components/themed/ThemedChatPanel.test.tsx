@@ -198,16 +198,43 @@ describe('ThemedChatPanel', () => {
 
     expect(input).toHaveValue('hello');
     expect(onInputChange).toHaveBeenCalledWith('hello world');
-    expect(onSendMessage).toHaveBeenCalledWith('hello');
+    expect(onSendMessage).toHaveBeenCalledExactlyOnceWith('hello');
   });
 
   it('sends the current controlled text when Enter is pressed', async () => {
     const onSendMessage = vi.fn();
-    renderChatPanel({ inputValue: 'send by keyboard', onSendMessage });
+    renderChatPanel({ inputValue: '  send by keyboard  ', onSendMessage });
 
     fireEvent.keyDown(await screen.findByRole('textbox', { name: 'How can I help?' }), { key: 'Enter' });
 
-    expect(onSendMessage).toHaveBeenCalledWith('send by keyboard');
+    expect(onSendMessage).toHaveBeenCalledExactlyOnceWith('  send by keyboard  ');
+  });
+
+  it.each([
+    ['legacy attachment', { attachedFile: 'catalog.csv' }],
+    ['attachment list', { attachments: [{ id: 'a', name: 'catalog.csv' }] }],
+  ])('sends an empty string for an attachment-only send (%s)', async (_label, attachmentProps) => {
+    const onSendMessage = vi.fn();
+    renderChatPanel({ ...attachmentProps, onSendMessage });
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Send message' }));
+    expect(onSendMessage).toHaveBeenCalledExactlyOnceWith('');
+  });
+
+  it.each([
+    ['empty', { inputValue: '' }],
+    ['whitespace-only', { inputValue: ' \t  ' }],
+    ['running', { inputValue: 'blocked', isRunning: true }],
+    ['send disabled', { inputValue: 'blocked', isSendDisabled: true }],
+  ])('blocks click and Enter sends when %s', async (_label, props) => {
+    const onSendMessage = vi.fn();
+    renderChatPanel({ ...props, onSendMessage });
+
+    const send = await screen.findByRole('button', { name: 'Send message' });
+    expect(send).toBeDisabled();
+    fireEvent.click(send);
+    fireEvent.keyDown(screen.getByRole('textbox', { name: 'How can I help?' }), { key: 'Enter' });
+    expect(onSendMessage).not.toHaveBeenCalled();
   });
 
   it('supports host-rendered message threads without applying DS message chrome', async () => {

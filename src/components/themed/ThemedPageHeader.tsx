@@ -1,9 +1,8 @@
 import { forwardRef } from 'react';
-import { Box, IconButton, Stack, Typography } from '@mui/material';
+import { Box, Button, IconButton, Stack, Typography } from '@mui/material';
 import type { SxProps, Theme } from '@mui/material/styles';
 import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
 import type { CSSProperties, ReactNode } from 'react';
-import { ThemedButton } from './ThemedButton';
 
 export interface PageHeaderAction {
   label: string;
@@ -90,14 +89,14 @@ export const ThemedPageHeader = forwardRef<HTMLDivElement, ThemedPageHeaderProps
       {actions.length > 0 && (
         <Stack direction="row" spacing={2} sx={{ alignItems: 'center', flexShrink: 0 }}>
           {actions.map((action, index) => (
-            <ThemedButton
+            <Button
               key={`${action.label}-${index}`}
               onClick={action.onClick}
               sx={action.variant !== 'filled' ? { backgroundColor: 'background.paper', '&:hover': { backgroundColor: 'background.paper' } } : undefined}
               variant={action.variant === 'filled' ? 'contained' : 'outlined'}
             >
               {action.label}
-            </ThemedButton>
+            </Button>
           ))}
         </Stack>
       )}

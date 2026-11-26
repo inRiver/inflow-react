@@ -29,13 +29,14 @@ export interface ThemedDialogProps extends Omit<DialogProps, 'title'> {
  *
  * @example
  * ```tsx
- * import { ThemedDialog, ThemedButton } from '@/components/themed';
+ * import { Button } from '@mui/material';
+ * import { ThemedDialog } from '@/components/themed';
  *
  * <ThemedDialog
  *   open={isOpen}
  *   onClose={handleClose}
  *   title="Edit Profile"
- *   actions={<ThemedButton onClick={handleClose}>Save</ThemedButton>}
+ *   actions={<Button onClick={handleClose}>Save</Button>}
  * >
  *   Dialog content goes here
  * </ThemedDialog>

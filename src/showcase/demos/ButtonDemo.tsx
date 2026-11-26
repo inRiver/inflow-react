@@ -66,9 +66,8 @@ import { Button } from '@mui/material';
   return (
     <>
       <Alert severity="warning" sx={{ mb: 2 }}>
-        ThemedButton is deprecated and will be removed in the next major release. A plain MUI
-        Button inside InflowProvider is visually identical — the theme applies all Inflow button
-        styling automatically. Use Button from @mui/material directly.
+        ThemedButton was removed in 4.0.0. Use MUI Button from @mui/material directly inside
+        InflowProvider; the theme applies Inflow button styling automatically.
       </Alert>
 
       <DemoFrame title="Button - Interactive">

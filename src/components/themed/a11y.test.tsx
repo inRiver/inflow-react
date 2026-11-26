@@ -39,7 +39,6 @@ const fixtures = {
   ThemedAvatarGroup: () => <themed.ThemedAvatarGroup><themed.ThemedAvatar alt="Ada">A</themed.ThemedAvatar><themed.ThemedAvatar alt="Bob">B</themed.ThemedAvatar></themed.ThemedAvatarGroup>,
   ThemedBadge: () => <themed.ThemedBadge badgeContent={3}><button type="button">Messages</button></themed.ThemedBadge>,
   ThemedBreadcrumbs: () => <themed.ThemedBreadcrumbs items={[{ label: 'Home', href: '/' }, { label: 'Products' }]} />,
-  ThemedButton: () => <themed.ThemedButton>Save</themed.ThemedButton>,
   ThemedCard: () => <themed.ThemedCard title="Product">Details</themed.ThemedCard>,
   ThemedChatAccordion: () => <themed.ThemedChatAccordion title="Progress" steps={[{ id: 'one', label: 'Working' }]} defaultExpanded />,
   ThemedChatPanel: () => <themed.ThemedChatPanel title="Assistant" messages={[{ id: 'one', role: 'assistant', content: 'Hello' }]} onClose={noop} onSendMessage={noop} />,
@@ -57,7 +56,6 @@ const fixtures = {
   ThemedTablePage: () => <themed.ThemedTablePage header={{ title: 'Products' }} columns={columns} data={data} />,
   ThemedTabPanel: () => <TabsFixture />,
   ThemedTabs: () => <TabsFixture />,
-  ThemedTextField: () => <themed.ThemedTextField label="Name" />,
   ThemedToast: () => <themed.ThemedToast severity="success" title="Saved" message="Your changes were saved" onClose={noop} />,
 } satisfies Record<Extract<keyof typeof themed, `Themed${string}`>, () => ReactElement>;
 

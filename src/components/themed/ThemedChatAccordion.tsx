@@ -198,11 +198,12 @@ export const ThemedChatAccordion = forwardRef<HTMLDivElement, ThemedChatAccordio
               minHeight: 32,
               px: 0,
               width: 'fit-content',
-              fontSize: '0.75rem',
               fontWeight: theme.typography.fontWeightMedium,
               lineHeight: theme.typography.body2.lineHeight,
               letterSpacing: theme.typography.body2.letterSpacing,
               color: 'text.secondary',
+              // MUI 9.6's AccordionSummaryRoot sets `font: inherit`, so keep fontSize in its own rule.
+              '&.MuiAccordionSummary-root': { fontSize: '0.75rem' },
               '&.Mui-expanded': { minHeight: 32 },
               '& .MuiAccordionSummary-content': { my: 0, flexGrow: 0 },
               '& .MuiAccordionSummary-content.Mui-expanded': { my: 0 },
