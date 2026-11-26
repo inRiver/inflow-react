@@ -8,9 +8,9 @@ export const POPPER_FLIPPED_GAP = 12;
 export const flippedGapModifier = {
   name: 'offset',
   options: {
-    offset: ({ placement }: { placement: string }): [number, number] => [
+    offset: ({ placement }: { placement?: string }): [number, number] => [
       0,
-      placement.startsWith('top') ? POPPER_FLIPPED_GAP : 0,
+      placement?.startsWith('top') ? POPPER_FLIPPED_GAP : 0,
     ],
   },
 };

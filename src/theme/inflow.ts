@@ -9,9 +9,6 @@ import { createTheme } from '@mui/material/styles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import type { Shadows, Theme } from '@mui/material/styles';
 import type {} from '@mui/x-date-pickers/themeAugmentation';
-import { InflowPickerActionBar } from '../datetime/InflowPickerActionBar';
-import { InflowPickerPopper } from '../datetime/InflowPickerPopper';
-import { flippedGapModifier } from '../datetime/flippedGapModifier';
 import { resolveInflowColorMode } from './featureFlags';
 import { darkOnlyTokens, darkTokens, lightTokens, type InflowThemeTokens } from './inflow-tokens';
 import { inflowCustomColors, inflowTokens } from './tokens';
@@ -705,15 +702,6 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
           }),
         },
       },
-      MuiDatePicker: { defaultProps: { slots: { actionBar: InflowPickerActionBar, popper: InflowPickerPopper } } },
-      MuiDesktopDatePicker: { defaultProps: { slots: { actionBar: InflowPickerActionBar, popper: InflowPickerPopper } } },
-      MuiMobileDatePicker: { defaultProps: { slots: { actionBar: InflowPickerActionBar } } },
-      MuiTimePicker: { defaultProps: { slots: { actionBar: InflowPickerActionBar, popper: InflowPickerPopper } } },
-      MuiDesktopTimePicker: { defaultProps: { slots: { actionBar: InflowPickerActionBar, popper: InflowPickerPopper } } },
-      MuiMobileTimePicker: { defaultProps: { slots: { actionBar: InflowPickerActionBar } } },
-      MuiDateTimePicker: { defaultProps: { slots: { actionBar: InflowPickerActionBar, popper: InflowPickerPopper } } },
-      MuiDesktopDateTimePicker: { defaultProps: { slots: { actionBar: InflowPickerActionBar, popper: InflowPickerPopper } } },
-      MuiMobileDateTimePicker: { defaultProps: { slots: { actionBar: InflowPickerActionBar } } },
       // Pickers follow the Inflow text field (small, 14px). The time list keeps MUI's own row sizing: MUI computes its scroll position from it.
       MuiPickersTextField: { defaultProps: { size: 'small' } },
       MuiPickersInputBase: {
@@ -735,7 +723,6 @@ export const createInflowTheme = (requestedMode: InflowColorMode = 'light') => {
           item: { fontSize: '0.875rem', lineHeight: '1.5rem', padding: '4px 8px', borderRadius: T.radiusSm },
         },
       },
-      MuiPopper: { defaultProps: { modifiers: [flippedGapModifier] } },
       MuiPickerDay: {
         styleOverrides: {
           root: ({ theme }) => ({

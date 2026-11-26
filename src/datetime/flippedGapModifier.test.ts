@@ -11,4 +11,8 @@ describe('flippedGapModifier', () => {
   it('leaves popups that open below the field flush', () => {
     expect(offset({ placement: 'bottom-start' })).toEqual([0, 0]);
   });
+
+  it('stays flush when Popper does not report a placement', () => {
+    expect(offset({})).toEqual([0, 0]);
+  });
 });
