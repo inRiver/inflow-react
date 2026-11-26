@@ -2,6 +2,15 @@
 
 All notable changes to `@inriver/inflow-react` are documented here. This project follows [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+- Opt-in `@inriver/inflow-react/datetime` entry: `configureDateTime`, `getDateTimeFormats`, the `formatDate`/`formatTime`/`formatDateTime` display formatters, the `dateColumn`/`dateTimeColumn` AG Grid column fragments and `InflowLocalizationProvider`, which gives MUI X pickers the shared locale, clock and formats, the compact Cancel/OK action bar and the popup gap. A `timeZone` (provider prop or `configureDateTime`) also becomes the default `timezone` of time and date-time pickers when the app has registered the dayjs `utc` and `timezone` plugins; date-only pickers are never converted. The root entry does not load it (library-facing).
+- Showcase-only: a Content standards page documenting the date and time formats, the clock and timestamp rules and the English month names and AM/PM used in tables.
+
+### Changed
+- `@mui/x-date-pickers` (`>=9.0.0 <10.0.0`) and `dayjs` (`^1.11.0`) are now optional peers instead of dependencies, so installing this package no longer installs them. The root entry never loaded them, so apps that do not use `@inriver/inflow-react/datetime` are unaffected. Install both if you use that entry, or if your app imports them without listing them in its own `package.json` (library-facing).
+
 ## [3.15.0] - 2026-11-17
 
 ### Added
